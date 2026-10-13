@@ -40,10 +40,12 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
+import { useMounted } from "@/lib/use-mounted";
 
 export default function ContactsPage() {
   const { currentOrg, isAdmin } = useTenant();
   const orgSlug = currentOrg.slug;
+  const mounted = useMounted();
 
   // Local state reflecting store
   const [refreshKey, setRefreshKey] = useState(0);
@@ -210,22 +212,22 @@ export default function ContactsPage() {
     switch (status) {
       case "opted_in":
         return (
-          <Badge variant="success" className="text-[10px] gap-1 font-semibold">
-            <ShieldCheck className="h-3 w-3" />
+          <Badge variant="success" className="text-xs gap-1.5 font-bold py-1 px-2.5">
+            <ShieldCheck className="h-3.5 w-3.5" />
             Opted In
           </Badge>
         );
       case "opted_out":
         return (
-          <Badge variant="danger" className="text-[10px] gap-1 font-semibold">
-            <ShieldAlert className="h-3 w-3" />
+          <Badge variant="danger" className="text-xs gap-1.5 font-bold py-1 px-2.5">
+            <ShieldAlert className="h-3.5 w-3.5" />
             Opted Out
           </Badge>
         );
       default:
         return (
-          <Badge variant="neutral" className="text-[10px] gap-1 font-semibold">
-            <Clock className="h-3 w-3" />
+          <Badge variant="neutral" className="text-xs gap-1.5 font-bold py-1 px-2.5">
+            <Clock className="h-3.5 w-3.5" />
             Pending
           </Badge>
         );
@@ -241,11 +243,17 @@ export default function ContactsPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
               Contacts CRM
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
-              {filteredContacts.length} contacts
+            <span
+              className="glass-pill rounded-full bg-white/90 border border-slate-200/80 text-xs sm:text-sm font-semibold px-3.5 py-1 text-slate-800 shadow-xs flex items-center gap-1.5"
+              suppressHydrationWarning
+            >
+              <span className="font-mono font-black text-slate-950">
+                {mounted ? filteredContacts.length : filteredContacts.length}
+              </span>
+              <span>contacts</span>
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
             Directory, WhatsApp consent records and relationship tracking for {currentOrg.name}.
           </p>
         </div>
@@ -256,22 +264,26 @@ export default function ContactsPage() {
             size="sm"
             onClick={handleExportCSV}
             disabled={filteredContacts.length === 0}
-            className="rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-700 shadow-xs"
+            className="rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-800 font-semibold shadow-xs text-xs sm:text-sm h-10 px-4"
           >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
+            <Download className="mr-1.5 h-4 w-4" />
             Export CSV
           </Button>
           <Button
             variant="secondary"
             size="sm"
             onClick={() => setImportModalOpen(true)}
-            className="rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-700 shadow-xs"
+            className="rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-800 font-semibold shadow-xs text-xs sm:text-sm h-10 px-4"
           >
-            <Upload className="mr-1.5 h-3.5 w-3.5" />
+            <Upload className="mr-1.5 h-4 w-4" />
             Import CSV
           </Button>
-          <Button size="sm" onClick={() => setAddModalOpen(true)} className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs">
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+          <Button
+            size="sm"
+            onClick={() => setAddModalOpen(true)}
+            className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-xs text-xs sm:text-sm h-10 px-4"
+          >
+            <Plus className="mr-1.5 h-4 w-4" />
             Add Contact
           </Button>
         </div>
@@ -287,24 +299,24 @@ export default function ContactsPage() {
               placeholder="Search name, phone, email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-xl border border-white/80 bg-white/70 pl-10 pr-4 text-xs text-slate-900 placeholder:text-slate-400 backdrop-blur-sm focus:border-blue-500/80 focus:bg-white focus:outline-none transition-all shadow-xs"
+              className="h-11 w-full rounded-xl border border-white/80 bg-white/70 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 backdrop-blur-sm focus:border-blue-500/80 focus:bg-white focus:outline-none transition-all shadow-xs"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto text-xs">
             {/* Consent filter */}
             <div className="flex items-center space-x-1 border border-white/80 rounded-xl p-1 bg-white/60 backdrop-blur-xs shadow-2xs">
-              <span className="px-2 text-[11px] font-semibold text-slate-500">
+              <span className="px-2 text-xs font-bold text-slate-600">
                 Consent:
               </span>
               {(["all", "opted_in", "pending", "opted_out"] as const).map((status) => (
                 <button
                   key={status}
                   onClick={() => setConsentFilter(status)}
-                  className={`px-2.5 py-1 rounded-lg capitalize text-[11px] transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg capitalize text-xs sm:text-sm transition-colors cursor-pointer ${
                     consentFilter === status
-                      ? "bg-white text-blue-600 font-bold shadow-xs border border-white"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-white text-blue-600 font-extrabold shadow-xs border border-white"
+                      : "text-slate-600 hover:text-slate-900 font-semibold"
                   }`}
                 >
                   {status.replace("_", " ")}
@@ -316,7 +328,7 @@ export default function ContactsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "name" | "date" | "company")}
-              className="h-9 rounded-xl border border-white/80 bg-white/70 px-3 text-xs text-slate-700 backdrop-blur-xs focus:outline-none focus:bg-white shadow-2xs cursor-pointer"
+              className="h-10 rounded-xl border border-white/80 bg-white/70 px-3 text-xs sm:text-sm font-semibold text-slate-800 backdrop-blur-xs focus:outline-none focus:bg-white shadow-2xs cursor-pointer"
             >
               <option value="date">Newest First</option>
               <option value="name">Sort by Name</option>
@@ -326,10 +338,10 @@ export default function ContactsPage() {
             {/* Archived toggle */}
             <button
               onClick={() => setShowArchived(!showArchived)}
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-colors cursor-pointer shadow-2xs ${
+              className={`h-10 px-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-colors cursor-pointer shadow-2xs ${
                 showArchived
-                  ? "bg-blue-50 border-blue-200 text-blue-700 font-bold"
-                  : "border-white/80 bg-white/70 text-slate-600 hover:text-slate-900 hover:bg-white"
+                  ? "bg-blue-50 border-blue-200 text-blue-700"
+                  : "border-white/80 bg-white/70 text-slate-700 hover:text-slate-900 hover:bg-white"
               }`}
             >
               {showArchived ? "Archived Included" : "Active Only"}
@@ -355,34 +367,34 @@ export default function ContactsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Contact</TableHead>
-              <TableHead>Phone / WhatsApp</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Marketing Consent</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Contact</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Phone / WhatsApp</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Company</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Marketing Consent</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Tags</TableHead>
+              <TableHead className="text-right text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredContacts.map((contact) => (
               <TableRow key={contact.id} className={contact.is_archived ? "opacity-60 bg-surface-subtle/50" : ""}>
                 <TableCell>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-blue text-google-blue font-bold text-xs">
+                  <div className="flex items-center space-x-3.5 py-1">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-sm shadow-xs">
                       {contact.first_name[0]}
                       {contact.last_name ? contact.last_name[0] : ""}
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-semibold text-foreground flex items-center gap-1.5">
+                      <span className="font-bold text-sm sm:text-base text-slate-950 flex items-center gap-1.5">
                         {contact.first_name} {contact.last_name || ""}
                         {contact.is_archived && (
-                          <Badge variant="neutral" className="text-[9px] py-0">
+                          <Badge variant="neutral" className="text-[10px] font-bold py-0.5 px-1.5">
                             Archived
                           </Badge>
                         )}
                       </span>
                       {contact.email && (
-                        <span className="text-xs text-foreground-secondary">
+                        <span className="text-xs sm:text-sm text-slate-600 font-medium">
                           {contact.email}
                         </span>
                       )}
@@ -390,58 +402,58 @@ export default function ContactsPage() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center space-x-1.5 font-mono text-xs text-foreground">
-                    <Phone className="h-3 w-3 text-google-green shrink-0" />
+                  <div className="flex items-center space-x-2 font-mono text-xs sm:text-sm font-bold text-slate-950">
+                    <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                     <span>{contact.phone}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-xs text-foreground-secondary">
+                  <span className="text-xs sm:text-sm font-semibold text-slate-800">
                     {contact.company || "—"}
                   </span>
                 </TableCell>
                 <TableCell>{getConsentBadge(contact.consent_status)}</TableCell>
                 <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1.5">
                     {contact.tags.length > 0
                       ? contact.tags.map((t) => (
-                          <Badge key={t} variant="neutral" className="text-[10px] px-2 py-0">
+                          <Badge key={t} variant="neutral" className="text-xs font-semibold px-2.5 py-0.5 bg-slate-100 text-slate-800 border border-slate-200/60">
                             {t}
                           </Badge>
                         ))
-                      : "—"}
+                      : <span className="text-slate-400 text-xs">—</span>}
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end space-x-1">
                     <Link
                       href={`/app/${orgSlug}/inbox?contactId=${contact.id}`}
-                      className="p-1.5 rounded-full text-foreground-secondary hover:text-google-green hover:bg-google-green-subtle"
+                      className="p-2 rounded-xl text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
                       title="Chat on WhatsApp"
                     >
-                      <MessageSquare className="h-4 w-4 text-google-green" />
+                      <MessageSquare className="h-4.5 w-4.5 text-emerald-600" />
                     </Link>
                     <button
                       onClick={() => setDetailContact(contact)}
-                      className="p-1.5 rounded-full text-foreground-secondary hover:text-google-blue hover:bg-surface-blue"
+                      className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
                       title="View details"
                     >
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4.5 w-4.5" />
                     </button>
                     <button
                       onClick={() => handleArchiveToggle(contact)}
-                      className="p-1.5 rounded-full text-foreground-secondary hover:text-foreground hover:bg-surface-subtle"
+                      className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
                       title={contact.is_archived ? "Unarchive" : "Archive"}
                     >
-                      <Archive className="h-4 w-4" />
+                      <Archive className="h-4.5 w-4.5" />
                     </button>
                     {isAdmin && (
                       <button
                         onClick={() => handleDelete(contact.id)}
-                        className="p-1.5 rounded-full text-foreground-secondary hover:text-google-red hover:bg-google-red-subtle"
+                        className="p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         title="Delete contact"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4.5 w-4.5" />
                       </button>
                     )}
                   </div>

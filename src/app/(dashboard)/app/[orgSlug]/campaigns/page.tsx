@@ -44,6 +44,7 @@ import {
   Filter,
 } from "lucide-react";
 import Link from "next/link";
+import { useMounted } from "@/lib/use-mounted";
 
 const STATUS_CONFIG: Record<
   CampaignStatus,
@@ -61,6 +62,7 @@ const STATUS_CONFIG: Record<
 export default function CampaignsPage() {
   const { currentOrg, userRole, isAdmin } = useTenant();
   const orgSlug = currentOrg.slug;
+  const mounted = useMounted();
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -306,42 +308,54 @@ export default function CampaignsPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 transition-all p-5 flex flex-col justify-between space-y-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Total Campaigns</span>
+          <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Total Campaigns</span>
           <div>
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight block">
-              {metrics.totalCampaigns}
+            <span
+              className="text-3xl sm:text-4xl font-black font-mono text-slate-950 tracking-tight block"
+              suppressHydrationWarning
+            >
+              {mounted ? metrics.totalCampaigns : metrics.totalCampaigns}
             </span>
-            <span className="text-[11px] text-slate-500 mt-1 block">Marketing & Utility</span>
+            <span className="text-xs font-semibold text-slate-500 mt-1 block">Marketing & Utility</span>
           </div>
         </div>
 
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 transition-all p-5 flex flex-col justify-between space-y-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Dispatched</span>
+          <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Dispatched</span>
           <div>
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight block">
-              {metrics.totalSent}
+            <span
+              className="text-3xl sm:text-4xl font-black font-mono text-slate-950 tracking-tight block"
+              suppressHydrationWarning
+            >
+              {mounted ? metrics.totalSent : metrics.totalSent}
             </span>
-            <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">Meta Cloud API</span>
+            <span className="text-xs font-bold text-emerald-700 mt-1 block">Meta Cloud API</span>
           </div>
         </div>
 
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 transition-all p-5 flex flex-col justify-between space-y-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Delivery Rate</span>
+          <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Delivery Rate</span>
           <div>
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight block">
-              {metrics.deliveryRate}
+            <span
+              className="text-3xl sm:text-4xl font-black font-mono text-slate-950 tracking-tight block"
+              suppressHydrationWarning
+            >
+              {mounted ? metrics.deliveryRate : metrics.deliveryRate}
             </span>
-            <span className="text-[11px] text-slate-500 mt-1 block">Network delivery</span>
+            <span className="text-xs font-semibold text-slate-500 mt-1 block">Network delivery</span>
           </div>
         </div>
 
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 transition-all p-5 flex flex-col justify-between space-y-3">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Total Spend</span>
+          <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Total Spend</span>
           <div>
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-blue-600 tracking-tight block">
-              {metrics.totalSpent}
+            <span
+              className="text-3xl sm:text-4xl font-black font-mono text-blue-600 tracking-tight block"
+              suppressHydrationWarning
+            >
+              {mounted ? metrics.totalSpent : metrics.totalSpent}
             </span>
-            <span className="text-[11px] text-slate-500 mt-1 block">
+            <span className="text-xs font-semibold text-slate-500 mt-1 block">
               Monthly limit: ₹10,000
             </span>
           </div>
@@ -349,21 +363,21 @@ export default function CampaignsPage() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="glass-panel p-3.5 rounded-2xl border border-white/70 bg-white/75 backdrop-blur-xl shadow-glass flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="glass-panel p-4 rounded-2xl border border-white/70 bg-white/75 backdrop-blur-xl shadow-glass flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search campaigns..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-white/80 bg-white/70 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/80 focus:bg-white backdrop-blur-sm shadow-xs transition-all"
+            className="w-full pl-10 pr-4 py-2.5 text-sm font-medium rounded-xl border border-white/80 bg-white/70 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/80 focus:bg-white backdrop-blur-sm shadow-xs transition-all"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as CampaignStatus | "all")}
-          className="rounded-xl border border-white/80 bg-white/70 px-3 py-2 text-xs font-semibold text-slate-700 backdrop-blur-xs focus:outline-none focus:bg-white shadow-2xs cursor-pointer"
+          className="rounded-xl border border-white/80 bg-white/70 px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 backdrop-blur-xs focus:outline-none focus:bg-white shadow-2xs cursor-pointer"
         >
           <option value="all">All Statuses</option>
           <option value="completed">Completed</option>
@@ -379,19 +393,19 @@ export default function CampaignsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Campaign Name</TableHead>
-              <TableHead>Template & Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Audience / Progress</TableHead>
-              <TableHead>Cost</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Campaign Name</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Template & Type</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Status</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Audience / Progress</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Cost</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Created</TableHead>
+              <TableHead className="text-right text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {campaigns.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-xs text-foreground-secondary">
+                <TableCell colSpan={7} className="text-center py-12 text-sm text-slate-500 font-medium">
                   No campaigns found. Click &quot;Create Campaign&quot; to launch your first controlled broadcast.
                 </TableCell>
               </TableRow>
@@ -406,11 +420,11 @@ export default function CampaignsPage() {
                 return (
                   <TableRow key={camp.id}>
                     <TableCell>
-                      <div>
-                        <span className="font-semibold text-xs text-foreground block">
+                      <div className="py-1">
+                        <span className="font-bold text-sm sm:text-base text-slate-950 block">
                           {camp.name}
                         </span>
-                        <span className="text-[10px] text-foreground-secondary">
+                        <span className="text-xs text-slate-500 font-medium">
                           By {camp.created_by_name}
                         </span>
                       </div>
@@ -418,30 +432,30 @@ export default function CampaignsPage() {
 
                     <TableCell>
                       <div>
-                        <span className="font-mono text-xs text-foreground block">
+                        <span className="font-mono text-xs sm:text-sm font-bold text-slate-900 block">
                           {camp.template_name}
                         </span>
-                        <Badge variant="neutral" className="text-[9px] uppercase px-1.5 py-0">
+                        <Badge variant="neutral" className="text-[10px] uppercase font-bold px-2 py-0.5 mt-0.5">
                           {camp.template_category}
                         </Badge>
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      <Badge variant={statusCfg.badgeVariant} className="text-[10px] uppercase font-bold">
+                      <Badge variant={statusCfg.badgeVariant} className="text-xs uppercase font-extrabold px-2.5 py-0.5">
                         {statusCfg.label}
                       </Badge>
                     </TableCell>
 
                     <TableCell>
-                      <div className="w-36 space-y-1">
-                        <div className="flex justify-between text-[10px] text-foreground-secondary">
-                          <span>{camp.sent_count} / {camp.total_recipients} sent</span>
-                          <span>{progressPercent}%</span>
+                      <div className="w-44 space-y-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700">
+                          <span className="font-mono">{camp.sent_count} / {camp.total_recipients} sent</span>
+                          <span className="font-mono font-black text-slate-950">{progressPercent}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-surface-subtle rounded-full overflow-hidden border border-border/40">
+                        <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                           <div
-                            className="h-full bg-google-green transition-all"
+                            className="h-full bg-emerald-500 transition-all rounded-full"
                             style={{ width: `${progressPercent}%` }}
                           />
                         </div>
@@ -449,13 +463,13 @@ export default function CampaignsPage() {
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-xs font-semibold text-foreground">
+                      <span className="text-sm sm:text-base font-black font-mono text-slate-950">
                         ₹{camp.actual_cost > 0 ? camp.actual_cost.toFixed(2) : camp.estimated_cost.toFixed(2)}
                       </span>
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-[11px] text-foreground-secondary">
+                      <span className="text-xs sm:text-sm font-semibold text-slate-700">
                         {formatDate(camp.created_at)}
                       </span>
                     </TableCell>
@@ -466,7 +480,7 @@ export default function CampaignsPage() {
                         {camp.status === "processing" && (
                           <button
                             onClick={() => handlePause(camp.id)}
-                            className="p-1 rounded-lg text-google-yellow-hover hover:bg-surface-subtle"
+                            className="p-1.5 rounded-xl text-amber-700 hover:bg-amber-50 cursor-pointer"
                             title="Pause sending"
                           >
                             <PauseCircle className="h-4 w-4" />

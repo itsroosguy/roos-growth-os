@@ -35,9 +35,11 @@ import {
   RotateCcw,
   Clock,
 } from "lucide-react";
+import { useMounted } from "@/lib/use-mounted";
 
 export default function SubscriptionPage() {
   const { currentOrg, isOwner } = useTenant();
+  const mounted = useMounted();
   const [interval, setInterval] = useState<BillingInterval>("monthly");
   const [selectedPlanForDowngrade, setSelectedPlanForDowngrade] = useState<PlanTier | null>(null);
   const [downgradeWarnings, setDowngradeWarnings] = useState<string[]>([]);
@@ -176,27 +178,27 @@ export default function SubscriptionPage() {
       <div className="glass-panel rounded-[26px] border border-white/70 bg-white/75 backdrop-blur-xl p-6 shadow-glass">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Current Plan
             </span>
-            <div className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            <div className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
               {currentPlanDef.name}
             </div>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 font-bold font-mono">
               ₹{interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr} /{" "}
               {interval === "yearly" ? "year" : "month"}
             </p>
           </div>
 
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Billing Cycle
             </span>
-            <div className="text-sm font-bold text-slate-900 capitalize flex items-center space-x-1.5">
-              <Clock className="h-4 w-4 text-blue-600" />
+            <div className="text-sm sm:text-base font-bold text-slate-900 capitalize flex items-center space-x-1.5">
+              <Clock className="h-4.5 w-4.5 text-blue-600" />
               <span>{subscription.billing_interval} interval</span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500 font-medium">
               Renews on {new Date(subscription.current_period_end).toLocaleDateString("en-IN", {
                 month: "short",
                 day: "numeric",
@@ -206,14 +208,14 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Payment Method
             </span>
-            <div className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
-              <CreditCard className="h-4 w-4 text-emerald-600" />
+            <div className="text-sm sm:text-base font-bold text-slate-900 flex items-center space-x-1.5">
+              <CreditCard className="h-4.5 w-4.5 text-emerald-600" />
               <span>UPI AutoPay / e-Mandate</span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500 font-medium">
               Powered by India-compliant Razorpay Gateway
             </p>
           </div>
@@ -221,16 +223,16 @@ export default function SubscriptionPage() {
           <div className="flex flex-col justify-center items-start md:items-end space-y-2">
             {subscription.cancel_at_period_end ? (
               <div className="space-y-1.5">
-                <Badge variant="warning" className="text-xs shadow-2xs">
+                <Badge variant="warning" className="text-xs sm:text-sm shadow-2xs font-bold">
                   Cancels at end of period
                 </Badge>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleReactivate}
-                  className="w-full text-xs rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-700 shadow-xs"
+                  className="w-full text-xs sm:text-sm rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-800 font-bold shadow-xs h-10"
                 >
-                  <RotateCcw className="h-3 w-3 mr-1.5" />
+                  <RotateCcw className="h-4 w-4 mr-1.5" />
                   Reactivate Plan
                 </Button>
               </div>
@@ -239,7 +241,7 @@ export default function SubscriptionPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCancelModal(true)}
-                className="text-xs rounded-xl border-white/80 bg-white/80 hover:bg-white text-rose-600 hover:text-rose-700 shadow-xs"
+                className="text-xs sm:text-sm rounded-xl border-white/80 bg-white/80 hover:bg-white text-rose-600 hover:text-rose-700 font-bold shadow-xs h-10 px-4"
               >
                 Cancel Subscription
               </Button>
@@ -252,15 +254,15 @@ export default function SubscriptionPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-950">
               Current Usage & Quota Consumption
             </h2>
-            <p className="text-xs text-foreground-secondary">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium">
               Actual resource metrics reconciled for period {usageSummary.period_month}. Resets monthly.
             </p>
           </div>
           {usageSummary.is_any_exceeded && (
-            <Badge variant="danger" className="text-xs">
+            <Badge variant="danger" className="text-xs font-bold">
               Quota Limit Reached
             </Badge>
           )}
@@ -271,49 +273,54 @@ export default function SubscriptionPage() {
             const isExceeded = metric.is_exceeded;
             const isWarning = metric.is_warning;
             const barColor = isExceeded
-              ? "bg-google-red"
+              ? "bg-rose-500"
               : isWarning
-              ? "bg-google-yellow"
-              : "bg-google-blue";
+              ? "bg-amber-500"
+              : "bg-blue-600";
 
             return (
               <Card key={metric.metric_name} className="p-4 bg-surface border-border">
                 <div className="flex justify-between items-start mb-2">
                   <div className="space-y-0.5">
-                    <span className="text-xs font-semibold text-foreground">
+                    <span className="text-xs sm:text-sm font-bold text-slate-950">
                       {metric.label}
                     </span>
                     {metric.admin_override_quota && (
-                      <span className="block text-[10px] text-google-green font-medium">
+                      <span className="block text-xs text-emerald-700 font-bold">
                         (+{metric.admin_override_quota} admin bonus)
                       </span>
                     )}
                   </div>
-                  <span className="text-xs font-mono font-medium text-foreground">
-                    {metric.current_count.toLocaleString("en-IN")} / {metric.max_quota.toLocaleString("en-IN")} {metric.unit}
+                  <span
+                    className="text-xs sm:text-sm font-mono font-black text-slate-950"
+                    suppressHydrationWarning
+                  >
+                    {mounted ? metric.current_count.toLocaleString("en-IN") : metric.current_count.toLocaleString("en-IN")} / {metric.max_quota.toLocaleString("en-IN")} {metric.unit}
                   </span>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 bg-surface-subtle rounded-full overflow-hidden mb-2">
+                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-2 border border-slate-200/60">
                   <div
-                    className={`h-full transition-all duration-300 ${barColor}`}
+                    className={`h-full transition-all duration-300 rounded-full ${barColor}`}
                     style={{ width: `${Math.min(metric.percentage_used, 100)}%` }}
                   />
                 </div>
 
-                <div className="flex justify-between items-center text-[11px] text-foreground-secondary">
-                  <span>{metric.percentage_used}% consumed</span>
+                <div className="flex justify-between items-center text-xs text-slate-600">
+                  <span className="font-mono font-bold text-slate-900" suppressHydrationWarning>
+                    {mounted ? metric.percentage_used : metric.percentage_used}% consumed
+                  </span>
                   {isExceeded ? (
-                    <span className="text-google-red font-semibold flex items-center">
-                      <AlertTriangle className="h-3 w-3 mr-1 inline" /> Exceeded
+                    <span className="text-rose-600 font-extrabold flex items-center">
+                      <AlertTriangle className="h-3.5 w-3.5 mr-1 inline" /> Exceeded
                     </span>
                   ) : isWarning ? (
-                    <span className="text-google-yellow font-medium">
+                    <span className="text-amber-700 font-bold">
                       Warning (&gt;80%)
                     </span>
                   ) : (
-                    <span className="text-google-green">Normal</span>
+                    <span className="text-emerald-700 font-bold">Normal</span>
                   )}
                 </div>
               </Card>
@@ -325,10 +332,10 @@ export default function SubscriptionPage() {
       {/* Available Plans Grid */}
       <div>
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground">
+          <h2 className="text-lg sm:text-xl font-bold text-slate-950">
             Available Subscription Plans
           </h2>
-          <p className="text-xs text-foreground-secondary">
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Transparent pricing with zero hidden fees. Upgrade or adjust anytime.
           </p>
         </div>
@@ -342,12 +349,12 @@ export default function SubscriptionPage() {
               <Card
                 key={p.tier}
                 className={`relative flex flex-col justify-between ${
-                  p.popular ? "border-google-blue shadow-card" : "border-border"
+                  p.popular ? "border-blue-500 shadow-card ring-1 ring-blue-500/30" : "border-border"
                 } ${isCurrent ? "bg-surface-subtle/50" : "bg-surface"}`}
               >
                 {p.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge variant="default" className="text-xs px-3 py-1 font-semibold">
+                    <Badge variant="default" className="text-xs px-3.5 py-1 font-extrabold uppercase shadow-sm">
                       Most Popular
                     </Badge>
                   </div>
@@ -356,38 +363,38 @@ export default function SubscriptionPage() {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-xl">{p.name}</CardTitle>
-                      <CardDescription className="mt-1 text-xs">
+                      <CardTitle className="text-xl sm:text-2xl font-black text-slate-950">{p.name}</CardTitle>
+                      <CardDescription className="mt-1 text-xs sm:text-sm text-slate-600 font-medium">
                         {p.tagline}
                       </CardDescription>
                     </div>
                     {isCurrent && (
-                      <Badge variant="success" className="text-xs uppercase font-bold">
+                      <Badge variant="success" className="text-xs uppercase font-extrabold px-2.5 py-0.5">
                         Current
                       </Badge>
                     )}
                   </div>
 
                   <div className="mt-4">
-                    <span className="text-3xl font-bold text-foreground">
+                    <span className="text-3xl sm:text-4xl font-black font-mono text-slate-950">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
-                    <span className="text-xs text-foreground-secondary ml-1">
+                    <span className="text-xs sm:text-sm text-slate-600 font-bold ml-1.5">
                       / {interval === "yearly" ? "year" : "month"}
                     </span>
-                    <span className="block text-[11px] text-foreground-secondary mt-0.5">
+                    <span className="block text-xs text-slate-500 font-medium mt-0.5">
                       + 18% GST applicable
                     </span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-3 flex-1">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-foreground-secondary mb-2">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                     Entitlements & Features
                   </div>
                   {p.features.map((feat) => (
-                    <div key={feat} className="flex items-start text-xs text-foreground">
-                      <Check className="h-4 w-4 text-google-green mr-2 shrink-0 mt-0.5" />
+                    <div key={feat} className="flex items-start text-xs sm:text-sm text-slate-800 font-medium">
+                      <Check className="h-4.5 w-4.5 text-emerald-600 stroke-[2.5] mr-2 shrink-0 mt-0.5" />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -395,13 +402,13 @@ export default function SubscriptionPage() {
 
                 <CardFooter className="pt-4 border-t border-border">
                   {isCurrent ? (
-                    <Button variant="outline" className="w-full text-xs" disabled>
+                    <Button variant="outline" className="w-full text-xs sm:text-sm font-bold h-10" disabled>
                       Active Plan
                     </Button>
                   ) : (
                     <Button
                       variant={p.popular ? "default" : "secondary"}
-                      className="w-full text-xs"
+                      className="w-full text-xs sm:text-sm font-bold h-10"
                       disabled={!isOwner}
                       onClick={() => handleInitiatePlanChange(p.tier)}
                     >
@@ -419,36 +426,36 @@ export default function SubscriptionPage() {
       <Card className="border-border bg-surface">
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-google-blue" />
-            <CardTitle className="text-base">
+            <TrendingUp className="h-5 w-5 text-blue-600" />
+            <CardTitle className="text-base sm:text-lg font-bold text-slate-950">
               Unit Economics & Contribution Margin ({currentPlanDef.name} Plan)
             </CardTitle>
           </div>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
             Direct operational expenses deducted per monthly subscription under standard Indian SaaS cost assumptions.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-1">Subscription Revenue</span>
-              <span className="text-base font-bold text-foreground">₹{unitEconomics.monthlyPriceInr}</span>
-              <span className="text-[10px] text-foreground-secondary block">(excl. GST)</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
+              <span className="text-lg sm:text-xl font-black font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
+              <span className="text-xs text-slate-500 font-medium block mt-0.5">(excl. GST)</span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-1">Gateway Fees (Razorpay 2.36%)</span>
-              <span className="text-base font-bold text-google-red">-₹{unitEconomics.paymentGatewayFeeInr}</span>
-              <span className="text-[10px] text-foreground-secondary block">Domestic UPI/Card</span>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
+              <span className="text-lg sm:text-xl font-black font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
+              <span className="text-xs text-slate-500 font-medium block mt-0.5">Domestic UPI/Card</span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-1">Direct Infrastructure</span>
-              <span className="text-base font-bold text-google-red">-₹{unitEconomics.infrastructureAllocationInr}</span>
-              <span className="text-[10px] text-foreground-secondary block">Server & DB compute</span>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Direct Infrastructure</span>
+              <span className="text-lg sm:text-xl font-black font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
+              <span className="text-xs text-slate-500 font-medium block mt-0.5">Server & DB compute</span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl border border-google-green/30 bg-google-green-subtle/30">
-              <span className="text-foreground-secondary block mb-1">Contribution Margin</span>
-              <span className="text-base font-bold text-google-green">₹{unitEconomics.contributionMarginInr}</span>
-              <span className="text-[10px] text-google-green font-semibold block">{unitEconomics.contributionMarginPercentage}% margin</span>
+            <div className="p-3.5 rounded-xl border border-emerald-200/80 bg-emerald-50/70">
+              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
+              <span className="text-lg sm:text-xl font-black font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
+              <span className="text-xs text-emerald-800 font-extrabold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
             </div>
           </div>
         </CardContent>

@@ -23,12 +23,14 @@ import {
   Search,
   Check,
 } from "lucide-react";
+import { useMounted } from "@/lib/use-mounted";
 
 type FilterTab = "today" | "overdue" | "upcoming" | "completed" | "all";
 
 export default function TasksPage() {
   const { currentOrg } = useTenant();
   const orgSlug = currentOrg.slug;
+  const mounted = useMounted();
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeTab, setActiveTab] = useState<FilterTab>("today");
@@ -125,11 +127,11 @@ export default function TasksPage() {
   const getPriorityBadge = (p: TaskPriority) => {
     switch (p) {
       case "high":
-        return <Badge variant="danger" className="text-[10px] uppercase font-bold">High</Badge>;
+        return <Badge variant="danger" className="text-xs uppercase font-extrabold px-2.5 py-0.5">High</Badge>;
       case "medium":
-        return <Badge variant="warning" className="text-[10px] uppercase font-bold">Medium</Badge>;
+        return <Badge variant="warning" className="text-xs uppercase font-extrabold px-2.5 py-0.5">Medium</Badge>;
       case "low":
-        return <Badge variant="neutral" className="text-[10px] uppercase font-bold">Low</Badge>;
+        return <Badge variant="neutral" className="text-xs uppercase font-extrabold px-2.5 py-0.5">Low</Badge>;
     }
   };
 
@@ -142,17 +144,27 @@ export default function TasksPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
               Tasks & Follow-ups
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
-              {rawTasks.filter((t) => t.status !== "completed").length} active
+            <span
+              className="glass-pill rounded-full bg-white/90 border border-slate-200/80 text-xs sm:text-sm font-semibold px-3.5 py-1 text-slate-800 shadow-xs flex items-center gap-1.5"
+              suppressHydrationWarning
+            >
+              <span className="font-mono font-black text-slate-950">
+                {mounted ? rawTasks.filter((t) => t.status !== "completed").length : rawTasks.filter((t) => t.status !== "completed").length}
+              </span>
+              <span>active</span>
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
             Scheduled customer reminders and team assignments for {currentOrg.name}.
           </p>
         </div>
 
-        <Button size="sm" onClick={() => setCreateModalOpen(true)} className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs">
-          <Plus className="mr-1.5 h-3.5 w-3.5" />
+        <Button
+          size="sm"
+          onClick={() => setCreateModalOpen(true)}
+          className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-xs text-xs sm:text-sm h-10 px-4"
+        >
+          <Plus className="mr-1.5 h-4 w-4" />
           Schedule Follow-up
         </Button>
       </div>
@@ -174,10 +186,10 @@ export default function TasksPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
                   activeTab === tab.id
-                    ? "bg-white text-blue-600 font-bold shadow-xs border border-white"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white text-blue-600 font-extrabold shadow-xs border border-white"
+                    : "text-slate-600 hover:text-slate-900 font-semibold"
                 }`}
               >
                 {tab.label}
@@ -186,13 +198,13 @@ export default function TasksPage() {
           </div>
 
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 w-full rounded-xl border border-white/80 bg-white/70 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 backdrop-blur-sm focus:border-blue-500/80 focus:bg-white focus:outline-none transition-all shadow-xs"
+              className="h-10 w-full rounded-xl border border-white/80 bg-white/70 pl-10 pr-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 backdrop-blur-sm focus:border-blue-500/80 focus:bg-white focus:outline-none transition-all shadow-xs"
             />
           </div>
         </div>
@@ -211,12 +223,12 @@ export default function TasksPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12">Done</TableHead>
-              <TableHead>Task / Follow-up</TableHead>
-              <TableHead>Associated Deal & Customer</TableHead>
-              <TableHead>Due Date</TableHead>
-              <TableHead>Priority</TableHead>
-              <TableHead>Assigned To</TableHead>
+              <TableHead className="w-14 text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Done</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Task / Follow-up</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Associated Deal & Customer</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Due Date</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Priority</TableHead>
+              <TableHead className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 py-3.5">Assigned To</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -236,27 +248,27 @@ export default function TasksPage() {
                   <TableCell>
                     <button
                       onClick={() => handleToggleTask(task)}
-                      className={`flex h-5 w-5 items-center justify-center rounded-md border transition-colors ${
+                      className={`flex h-6 w-6 items-center justify-center rounded-lg border-2 transition-colors cursor-pointer ${
                         task.status === "completed"
-                          ? "bg-google-green border-google-green text-white"
-                          : "border-border hover:border-google-blue"
+                          ? "bg-emerald-600 border-emerald-600 text-white shadow-xs"
+                          : "border-slate-300 hover:border-blue-600 bg-white"
                       }`}
                       aria-label="Toggle completed"
                     >
-                      {task.status === "completed" && <Check className="h-3.5 w-3.5" />}
+                      {task.status === "completed" && <Check className="h-4 w-4 stroke-[3]" />}
                     </button>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col py-1">
                       <span
-                        className={`font-semibold text-foreground ${
-                          task.status === "completed" ? "line-through text-foreground-secondary" : ""
+                        className={`text-sm sm:text-base font-bold ${
+                          task.status === "completed" ? "line-through text-slate-400" : "text-slate-950"
                         }`}
                       >
                         {task.title}
                       </span>
                       {task.description && (
-                        <span className="text-xs text-foreground-secondary line-clamp-1">
+                        <span className="text-xs sm:text-sm text-slate-600 font-medium line-clamp-1">
                           {task.description}
                         </span>
                       )}
@@ -264,26 +276,26 @@ export default function TasksPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="text-xs font-medium text-foreground">
+                      <span className="text-xs sm:text-sm font-bold text-slate-900">
                         {task.lead_title || "General Follow-up"}
                       </span>
                       {task.contact_name && (
-                        <span className="text-[11px] text-foreground-secondary">
+                        <span className="text-xs text-slate-600 font-medium">
                           {task.contact_name}
                         </span>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center space-x-1 text-xs">
-                      <Calendar className="h-3 w-3 text-foreground-secondary" />
+                    <div className="flex items-center space-x-1.5 text-xs sm:text-sm font-mono">
+                      <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
                       <span
                         className={
                           isOverdue
-                            ? "text-google-red font-bold"
+                            ? "text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-lg font-black"
                             : isToday
-                            ? "text-google-yellow-hover font-bold"
-                            : "text-foreground-secondary"
+                            ? "text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg font-black"
+                            : "text-slate-900 font-bold"
                         }
                       >
                         {formatDate(task.due_date)}
@@ -293,7 +305,7 @@ export default function TasksPage() {
                     </div>
                   </TableCell>
                   <TableCell>{getPriorityBadge(task.priority)}</TableCell>
-                  <TableCell className="text-xs text-foreground-secondary">
+                  <TableCell className="text-xs sm:text-sm font-semibold text-slate-800">
                     {task.assigned_to_name || "Unassigned"}
                   </TableCell>
                 </TableRow>

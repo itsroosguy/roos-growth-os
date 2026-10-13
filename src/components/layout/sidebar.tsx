@@ -193,10 +193,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
             {!collapsed && (
               <div className="flex flex-col min-w-0">
-                <span className="font-bold text-sm tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors flex items-center gap-1">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-950 group-hover:text-blue-600 transition-colors flex items-center gap-1">
                   ROOS <span className="text-[#FF7A1A]">STUDIOX</span>
                 </span>
-                <span className="text-[10px] font-medium text-slate-500 tracking-wide uppercase truncate">
+                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 tracking-wide uppercase truncate">
                   Growth Operating System
                 </span>
               </div>
@@ -225,7 +225,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               <React.Fragment key={item.href}>
                 {showSectionHeader && (
                   <div className="pt-3 pb-1 px-3">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
                       {item.section}
                     </span>
                   </div>
@@ -236,13 +236,13 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center rounded-2xl font-medium text-xs sm:text-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                      "flex items-center rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
                       collapsed
                         ? "h-11 w-11 mx-auto justify-center"
-                        : "h-10 px-3 py-2 w-full",
+                        : "h-10.5 px-3 py-2 w-full",
                       isActive
-                        ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/30 border border-blue-500/40"
-                        : "text-slate-600 hover:bg-white/80 hover:text-slate-900 hover:shadow-2xs"
+                        ? "bg-blue-600 text-white font-extrabold shadow-md shadow-blue-500/30 border border-blue-500/40"
+                        : "text-slate-700 hover:bg-white/80 hover:text-slate-950 hover:shadow-2xs"
                     )}
                     aria-label={item.title}
                   >
@@ -251,7 +251,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         "h-4.5 w-4.5 shrink-0 transition-colors",
                         isActive
                           ? "text-white"
-                          : "text-slate-500 group-hover:text-slate-800",
+                          : "text-slate-500 group-hover:text-slate-900",
                         !collapsed && "mr-3"
                       )}
                     />

@@ -17,6 +17,7 @@ import { LeadStage, TaskPriority } from "@/types/crm";
 import { aiService } from "@/lib/ai/ai-service";
 import { ReplySuggestionResult, ConversationSummaryResult } from "@/lib/ai/types";
 import { formatDate, formatCurrency } from "@/lib/utils";
+import { useMounted } from "@/lib/use-mounted";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,6 +89,7 @@ const LEAD_STAGES: Array<{ id: LeadStage; title: string }> = [
 function InboxContent() {
   const { currentOrg, userRole, isAdmin } = useTenant();
   const orgSlug = currentOrg.slug;
+  const mounted = useMounted();
   const searchParams = useSearchParams();
   const contactIdParam = searchParams.get("contactId");
   const phoneParam = searchParams.get("phone");
@@ -539,84 +541,85 @@ function InboxContent() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-1">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
               WhatsApp Shared Inbox
             </h1>
-            <span className="glass-pill px-2.5 py-0.5 text-[10px] font-semibold text-blue-700 bg-blue-50/80 border-blue-200/60 shadow-xs">
-              Live Team Collaboration
+            <span className="glass-pill px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50/90 border-blue-200 shadow-xs">
+              Live Multi-Agent Chat
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-sm text-slate-600 font-medium mt-1">
             Real-time multi-agent customer communication, shared WhatsApp inbox, private notes & CRM sync.
           </p>
         </div>
 
         {/* Quick Actions & Status */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button
             size="sm"
             variant="secondary"
             onClick={() => setSimulatorOpen(!simulatorOpen)}
-            className="glass-pill h-8 text-xs text-blue-700 border-white/80 hover:bg-white/80 transition-all shadow-xs flex items-center gap-1.5"
+            className="glass-pill h-9 px-3.5 text-xs sm:text-sm font-bold text-blue-700 border-white/90 hover:bg-white/90 transition-all shadow-xs flex items-center gap-2 rounded-xl"
           >
-            <Bot className="h-3.5 w-3.5 text-blue-600" />
+            <Bot className="h-4 w-4 text-blue-600" />
             <span>{simulatorOpen ? "Hide Simulator" : "Mock Webhook Simulator"}</span>
           </Button>
 
-          <Link href={`/app/${orgSlug}/whatsapp`}>
-            <Button size="sm" variant="ghost" className="glass-pill h-8 text-xs text-slate-600 hover:text-slate-900 hover:bg-white/70 transition-all flex items-center gap-1.5 shadow-xs">
-              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-              <span>WhatsApp Settings</span>
-            </Button>
+          <Link
+            href={`/app/${orgSlug}/whatsapp`}
+            className="glass-pill h-9 px-3.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-950 hover:bg-white/90 transition-all flex items-center gap-2 shadow-xs rounded-xl border border-white/80 cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 text-amber-500" />
+            <span>WhatsApp Settings</span>
           </Link>
         </div>
       </div>
 
       {/* Simulator Tray (Collapsible) */}
       {simulatorOpen && (
-        <div className="glass-card p-4 bg-white/70 backdrop-blur-xl border border-white/80 rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between mb-3">
+        <div className="glass-card p-5 bg-white/80 backdrop-blur-xl border border-white/90 rounded-2xl shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-blue-600" />
-              <h3 className="text-xs font-semibold text-blue-700">
+              <Bot className="h-4.5 w-4.5 text-blue-600" />
+              <h3 className="text-sm font-bold text-blue-800">
                 Interactive Mock Inbound Message Simulator
               </h3>
             </div>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               Zero-cost testing • Simulates incoming customer webhooks without Meta credentials
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="text-[11px] font-medium text-slate-600 block mb-1">
+              <label className="text-xs font-bold text-slate-700 block mb-1">
                 From Phone (E.164)
               </label>
               <Input
                 value={simInboundPhone}
                 onChange={(e) => setSimInboundPhone(e.target.value)}
                 placeholder="+919876543210"
-                className="h-8 text-xs font-mono glass-input bg-white/80"
+                className="h-9 text-xs font-mono font-bold glass-input bg-white/90"
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-slate-600 block mb-1">
+              <label className="text-xs font-bold text-slate-700 block mb-1">
                 Sender Name
               </label>
               <Input
                 value={simInboundName}
                 onChange={(e) => setSimInboundName(e.target.value)}
                 placeholder="Aarav Patel"
-                className="h-8 text-xs glass-input bg-white/80"
+                className="h-9 text-xs font-semibold glass-input bg-white/90"
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-slate-600 block mb-1">
+              <label className="text-xs font-bold text-slate-700 block mb-1">
                 Message Text
               </label>
               <div className="flex gap-2">
@@ -624,12 +627,12 @@ function InboxContent() {
                   value={simInboundText}
                   onChange={(e) => setSimInboundText(e.target.value)}
                   placeholder="Inquiry text..."
-                  className="h-8 text-xs flex-1 glass-input bg-white/80"
+                  className="h-9 text-xs flex-1 glass-input bg-white/90"
                 />
                 <Button
                   size="sm"
                   onClick={handleSimulateInbound}
-                  className="h-8 text-xs bg-blue-600 text-white hover:bg-blue-700 shrink-0 shadow-xs"
+                  className="h-9 text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shrink-0 shadow-xs px-3.5"
                 >
                   Fire Webhook
                 </Button>
@@ -640,27 +643,27 @@ function InboxContent() {
       )}
 
       {/* Mobile View Switcher Tabs */}
-      <div className="flex md:hidden rounded-2xl bg-white/60 backdrop-blur-md p-1 border border-white/70 shadow-xs">
+      <div className="flex md:hidden rounded-2xl bg-white/70 backdrop-blur-md p-1 border border-white/80 shadow-xs">
         <button
           onClick={() => setMobileTab("list")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-xl transition-all ${
-            mobileTab === "list" ? "bg-white text-blue-600 shadow-sm font-semibold" : "text-slate-600"
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+            mobileTab === "list" ? "bg-white text-blue-700 shadow-sm font-extrabold" : "text-slate-600"
           }`}
         >
           Conversations ({conversations.length})
         </button>
         <button
           onClick={() => setMobileTab("chat")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-xl transition-all ${
-            mobileTab === "chat" ? "bg-white text-blue-600 shadow-sm font-semibold" : "text-slate-600"
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+            mobileTab === "chat" ? "bg-white text-blue-700 shadow-sm font-extrabold" : "text-slate-600"
           }`}
         >
           Active Chat
         </button>
         <button
           onClick={() => setMobileTab("details")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-xl transition-all ${
-            mobileTab === "details" ? "bg-white text-blue-600 shadow-sm font-semibold" : "text-slate-600"
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+            mobileTab === "details" ? "bg-white text-blue-700 shadow-sm font-extrabold" : "text-slate-600"
           }`}
         >
           CRM Context
@@ -670,51 +673,54 @@ function InboxContent() {
       {/* Feedback Banner */}
       {feedbackMessage && (
         <div
-          className={`p-3 rounded-2xl text-xs flex items-center justify-between border ${
+          className={`p-3.5 rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between border ${
             feedbackMessage.type === "success"
-              ? "bg-emerald-50/80 border-emerald-200 text-emerald-800"
-              : "bg-rose-50/80 border-rose-200 text-rose-800"
+              ? "bg-emerald-50/90 border-emerald-200 text-emerald-900"
+              : "bg-rose-50/90 border-rose-200 text-rose-900"
           }`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {feedbackMessage.type === "success" ? (
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+              <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-emerald-600" />
             ) : (
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+              <AlertCircle className="h-4.5 w-4.5 shrink-0 text-rose-600" />
             )}
             <span>{feedbackMessage.text}</span>
           </div>
-          <button onClick={() => setFeedbackMessage(null)} className="text-[11px] underline">
+          <button onClick={() => setFeedbackMessage(null)} className="text-xs font-bold underline cursor-pointer">
             Dismiss
           </button>
         </div>
       )}
 
       {/* Main 3-Column Responsive Inbox Grid */}
-      <div className="glass-panel rounded-[26px] border border-white/70 shadow-glass overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[760px] max-h-[calc(100vh-140px)]">
+      <div className="glass-panel rounded-[26px] border border-white/80 shadow-glass overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[780px] max-h-[calc(100vh-140px)]">
         {/* ==================================================================== */}
         {/* LEFT PANEL: Conversation List (3 Cols) */}
         {/* ==================================================================== */}
         <div
-          className={`md:col-span-3 lg:col-span-3 border-r border-white/60 flex flex-col bg-white/40 backdrop-blur-xl overflow-hidden ${
+          className={`md:col-span-3 lg:col-span-3 border-r border-white/60 flex flex-col bg-white/50 backdrop-blur-xl overflow-hidden ${
             mobileTab !== "list" ? "hidden md:flex" : "flex"
           }`}
         >
           {/* Search & Filter Header */}
-          <div className="p-3.5 border-b border-white/60 space-y-2.5 bg-white/40">
+          <div className="p-4 border-b border-white/60 space-y-3 bg-white/50">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">Inbox</h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100/80 text-blue-700 border border-blue-200/50">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-lg font-black text-slate-950 tracking-tight">Inbox</h2>
+                <span
+                  suppressHydrationWarning
+                  className="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-100/90 text-blue-800 border border-blue-300 font-mono shadow-xs"
+                >
                   {counts.all}
                 </span>
               </div>
               <button
                 onClick={() => { setStatusFilter("all"); setAssigneeFilter("all"); setUnreadOnly(false); setSearchQuery(""); }}
-                className="p-1.5 rounded-xl hover:bg-white/80 text-slate-400 hover:text-slate-700 transition-colors"
+                className="p-1.5 rounded-xl hover:bg-white text-slate-500 hover:text-slate-900 transition-colors shadow-2xs border border-transparent hover:border-white/80 cursor-pointer"
                 title="Reset filters"
               >
-                <Filter className="h-3.5 w-3.5" />
+                <Filter className="h-4 w-4" />
               </button>
             </div>
 
@@ -722,43 +728,83 @@ function InboxContent() {
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               <button
                 onClick={() => { setStatusFilter("all"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
-                    ? "bg-blue-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-blue-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                All {counts.all}
+                <span>All</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-200/90 text-slate-900 border border-slate-300/60"
+                  }`}
+                >
+                  {counts.all}
+                </span>
               </button>
               <button
                 onClick={() => { setAssigneeFilter("unassigned"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   assigneeFilter === "unassigned"
-                    ? "bg-blue-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-blue-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Unassigned {counts.unassigned}
+                <span>Unassigned</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    assigneeFilter === "unassigned"
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-200/90 text-slate-900 border border-slate-300/60"
+                  }`}
+                >
+                  {counts.unassigned}
+                </span>
               </button>
               <button
                 onClick={() => { setAssigneeFilter(currentStaffUser?.id || "me"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
-                    ? "bg-blue-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-blue-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Mine {Math.max(0, counts.all - counts.unassigned)}
+                <span>Mine</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-200/90 text-slate-900 border border-slate-300/60"
+                  }`}
+                >
+                  {Math.max(0, counts.all - counts.unassigned)}
+                </span>
               </button>
               <button
                 onClick={() => setUnreadOnly(!unreadOnly)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   unreadOnly
-                    ? "bg-blue-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-blue-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Unread {counts.unread}
+                <span>Unread</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    unreadOnly
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-200/90 text-slate-900 border border-slate-300/60"
+                  }`}
+                >
+                  {counts.unread}
+                </span>
               </button>
             </div>
 
@@ -766,47 +812,78 @@ function InboxContent() {
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => { setStatusFilter("open"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "open"
-                    ? "bg-emerald-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-emerald-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Open {counts.open}
+                <span>Open</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    statusFilter === "open"
+                      ? "bg-white/25 text-white"
+                      : "bg-emerald-100 text-emerald-900 border border-emerald-300/60"
+                  }`}
+                >
+                  {counts.open}
+                </span>
               </button>
               <button
                 onClick={() => { setStatusFilter("pending"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "pending"
-                    ? "bg-amber-600 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-amber-600 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Pending {counts.pending}
+                <span>Pending</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    statusFilter === "pending"
+                      ? "bg-white/25 text-white"
+                      : "bg-amber-100 text-amber-900 border border-amber-300/60"
+                  }`}
+                >
+                  {counts.pending}
+                </span>
               </button>
               <button
                 onClick={() => { setStatusFilter("resolved"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "resolved"
-                    ? "bg-slate-700 text-white shadow-xs font-semibold"
-                    : "bg-white/70 hover:bg-white text-slate-600 border border-white/80"
+                    ? "bg-slate-800 text-white font-extrabold shadow-sm"
+                    : "bg-white/80 hover:bg-white text-slate-700 border border-white/90"
                 }`}
               >
-                Resolved {counts.resolved}
+                <span>Resolved</span>
+                <span
+                  suppressHydrationWarning
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                    statusFilter === "resolved"
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-200 text-slate-900 border border-slate-300/60"
+                  }`}
+                >
+                  {counts.resolved}
+                </span>
               </button>
             </div>
 
             {/* Search Input */}
-            <div className="relative pt-0.5">
-              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+            <div className="relative pt-1">
+              <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search name, phone, message..."
-                className="pl-8.5 h-8 text-xs bg-white/70 backdrop-blur-sm border-white/80 focus:bg-white rounded-xl shadow-xs"
+                className="pl-9.5 h-9 text-xs sm:text-sm bg-white/80 backdrop-blur-sm border-white/90 focus:bg-white rounded-xl shadow-xs"
               />
             </div>
           </div>
+
 
           {/* Conversation Cards Scroll List */}
           <div className="flex-1 overflow-y-auto p-2 space-y-1.5 divide-none">
@@ -826,68 +903,71 @@ function InboxContent() {
                   <div
                     key={c.id}
                     onClick={() => handleSelectConversation(c)}
-                    className={`p-3 rounded-2xl cursor-pointer transition-all border ${
+                    className={`p-3.5 rounded-2xl cursor-pointer transition-all border ${
                       isActive
-                        ? "bg-white/95 border-blue-400/60 shadow-sm ring-1 ring-blue-400/20"
-                        : "bg-white/50 hover:bg-white/85 border-white/60 hover:shadow-xs"
+                        ? "bg-white/95 border-blue-500/70 shadow-md ring-2 ring-blue-500/20"
+                        : "bg-white/60 hover:bg-white/90 border-white/70 hover:shadow-xs"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-start justify-between gap-2.5">
+                      <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-700 font-bold flex items-center justify-center text-xs shadow-xs border border-white">
+                          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 text-indigo-800 font-black flex items-center justify-center text-sm shadow-xs border-2 border-white">
                             {initials}
                           </div>
                           {c.unread_count > 0 && (
-                            <span className="absolute -top-1 -right-1 h-4 w-4 bg-blue-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center shadow-xs ring-2 ring-white">
+                            <span
+                              suppressHydrationWarning
+                              className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white rounded-full text-xs font-black flex items-center justify-center shadow-xs ring-2 ring-white font-mono"
+                            >
                               {c.unread_count}
                             </span>
                           )}
                         </div>
                         <div>
-                          <h3 className="text-xs font-semibold text-slate-900 leading-tight">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-950 leading-tight">
                             {c.contact_name}
                           </h3>
-                          <span className="text-[10px] text-slate-400 font-mono">
+                          <span className="text-xs text-slate-500 font-semibold font-mono">
                             {c.contact_phone}
                           </span>
                         </div>
                       </div>
 
                       <div className="text-right space-y-1">
-                        <span className="text-[10px] text-slate-400 block font-medium">
+                        <span className="text-xs text-slate-500 block font-bold">
                           {formatDate(c.last_message_at)}
                         </span>
                         <span
-                          className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-semibold border ${statusCfg.colorClass}`}
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusCfg.colorClass}`}
                         >
                           {statusCfg.label}
                         </span>
                       </div>
                     </div>
 
-                    <p className="mt-2 text-[11px] text-slate-600 line-clamp-1 leading-snug">
+                    <p className="mt-2.5 text-xs sm:text-sm text-slate-700 line-clamp-1 leading-snug font-normal">
                       {c.last_message_text}
                     </p>
 
-                    <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-slate-100/80">
-                      <div className="flex items-center gap-1">
+                    <div className="mt-2.5 flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-1.5 font-medium">
                         {c.assigned_to_name ? (
-                          <span className="inline-flex items-center gap-1 text-blue-700 font-medium">
-                            <UserCheck className="h-3 w-3" />
+                          <span className="inline-flex items-center gap-1 text-blue-700 font-bold">
+                            <UserCheck className="h-3.5 w-3.5" />
                             {c.assigned_to_name}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-amber-700 font-medium">
-                            <UserX className="h-3 w-3" />
+                          <span className="inline-flex items-center gap-1 text-amber-800 font-bold">
+                            <UserX className="h-3.5 w-3.5" />
                             Unassigned
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1 text-slate-500">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span className="text-[9px]">WhatsApp</span>
+                      <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span className="text-xs font-semibold">WhatsApp</span>
                       </div>
                     </div>
                   </div>
@@ -896,6 +976,7 @@ function InboxContent() {
             )}
           </div>
         </div>
+
 
         {/* ==================================================================== */}
         {/* CENTER PANEL: Active Conversation & Smart Composer (6 Cols) */}
@@ -908,42 +989,42 @@ function InboxContent() {
           {activeConversation ? (
             <>
               {/* Conversation Header */}
-              <div className="p-3.5 border-b border-white/60 bg-white/50 backdrop-blur-md space-y-2">
+              <div className="p-4 border-b border-white/60 bg-white/60 backdrop-blur-md space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3.5">
                     <div className="relative">
-                      <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-200 text-blue-800 font-bold flex items-center justify-center text-sm shadow-xs border border-white">
+                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-200 text-blue-900 font-black flex items-center justify-center text-base shadow-xs border-2 border-white">
                         {activeConversation.contact_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
                       </div>
-                      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-500/20" />
+                      <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-500/20" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5">
-                        <h2 className="text-sm font-bold text-slate-900">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base sm:text-lg font-black text-slate-950">
                           {activeConversation.contact_name}
                         </h2>
-                        <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
+                        <Star className="h-4 w-4 text-amber-500 fill-amber-400" />
                       </div>
-                      <span className="text-[11px] text-slate-500 font-medium">
+                      <span className="text-xs sm:text-sm text-slate-600 font-semibold">
                         {contact?.company ? `${contact.company} • ` : ""}{activeConversation.contact_phone}
                       </span>
                     </div>
                   </div>
 
                   {/* Header Actions */}
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     {/* Status Dropdown Pill */}
                     <div className="relative">
                       <select
                         value={activeConversation.status}
                         onChange={(e) => handleStatusChange(e.target.value as ConversationStatus)}
-                        className="appearance-none glass-pill bg-white/80 border-white/80 px-2.5 py-1 pr-6 rounded-full text-xs font-semibold text-slate-800 shadow-xs focus:outline-none cursor-pointer"
+                        className="appearance-none glass-pill bg-white/90 border-white/90 px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-bold text-slate-800 shadow-xs focus:outline-none cursor-pointer"
                       >
                         <option value="open">Open</option>
                         <option value="pending">Pending</option>
                         <option value="resolved">Resolved</option>
                       </select>
-                      <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-slate-400 pointer-events-none" />
+                      <ChevronDown className="absolute right-2.5 top-2.5 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
                     </div>
 
                     {/* Assignee Dropdown Pill */}
@@ -951,7 +1032,7 @@ function InboxContent() {
                       <select
                         value={activeConversation.assigned_to_name || "unassigned"}
                         onChange={(e) => handleAssigneeChange(e.target.value)}
-                        className="appearance-none glass-pill bg-white/80 border-white/80 px-2.5 py-1 pr-6 rounded-full text-xs text-slate-700 shadow-xs focus:outline-none cursor-pointer"
+                        className="appearance-none glass-pill bg-white/90 border-white/90 px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-bold text-slate-800 shadow-xs focus:outline-none cursor-pointer"
                       >
                         <option value="unassigned">Assign</option>
                         {teamMembers.map((m) => (
@@ -960,32 +1041,32 @@ function InboxContent() {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-slate-400 pointer-events-none" />
+                      <ChevronDown className="absolute right-2.5 top-2.5 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
                     </div>
 
                     {/* Phone Call Button */}
                     <button
                       onClick={() => setFeedbackMessage({ type: "success", text: `Calling ${activeConversation.contact_phone}...` })}
-                      className="p-1.5 rounded-xl bg-white/70 hover:bg-white text-slate-600 hover:text-slate-900 border border-white/80 shadow-xs transition-colors"
+                      className="p-2 rounded-xl bg-white/80 hover:bg-white text-slate-700 hover:text-slate-950 border border-white/90 shadow-xs transition-colors cursor-pointer"
                       title="Call Contact"
                     >
-                      <PhoneCall className="h-3.5 w-3.5 text-blue-600" />
+                      <PhoneCall className="h-4 w-4 text-blue-600" />
                     </button>
 
                     {/* Toggle Read */}
                     <button
                       onClick={handleToggleRead}
-                      className="p-1.5 rounded-xl bg-white/70 hover:bg-white text-slate-600 hover:text-slate-900 border border-white/80 shadow-xs transition-colors"
+                      className="p-2 rounded-xl bg-white/80 hover:bg-white text-slate-700 hover:text-slate-950 border border-white/90 shadow-xs transition-colors cursor-pointer"
                       title={activeConversation.unread_count > 0 ? "Mark as Read" : "Mark as Unread"}
                     >
-                      <Mail className="h-3.5 w-3.5" />
+                      <Mail className="h-4 w-4" />
                     </button>
 
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => setMobileTab("details")}
-                      className="md:hidden text-xs text-blue-600"
+                      className="md:hidden text-xs font-bold text-blue-600"
                     >
                       Context &gt;
                     </Button>
@@ -995,17 +1076,17 @@ function InboxContent() {
 
               {/* 24-Hour Policy Notice */}
               {windowStatus.allowed ? (
-                <div className="bg-emerald-50/70 px-4 py-1.5 border-b border-emerald-100 text-[11px] text-emerald-800 flex items-center justify-between backdrop-blur-sm">
-                  <span className="flex items-center gap-1.5 font-medium">
+                <div className="bg-emerald-50/80 px-4 py-2 border-b border-emerald-100 text-xs text-emerald-900 flex items-center justify-between backdrop-blur-sm">
+                  <span className="flex items-center gap-2 font-bold">
                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     Inside 24-Hour Customer Service Window ({windowStatus.hoursRemaining} hours remaining)
                   </span>
-                  <span className="text-[10px] text-emerald-700/80">Free-text replies allowed</span>
+                  <span className="text-xs text-emerald-800 font-semibold">Free-text replies allowed</span>
                 </div>
               ) : (
-                <div className="bg-amber-50/80 p-2 px-4 border-b border-amber-200/60 text-[11px] text-amber-800 flex items-center justify-between backdrop-blur-sm">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                <div className="bg-amber-50/90 p-2.5 px-4 border-b border-amber-200 text-xs text-amber-900 flex items-center justify-between backdrop-blur-sm">
+                  <div className="flex items-center gap-2 font-bold">
+                    <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
                     <span>
                       Meta 24h Customer Window Expired: Free-text blocked. Select an approved template to re-engage.
                     </span>
@@ -1014,16 +1095,16 @@ function InboxContent() {
               )}
 
               {/* Chronological Message History */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white/20 backdrop-blur-sm">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-white/20 backdrop-blur-sm">
                 {/* Centered Date Separator */}
                 <div className="flex justify-center my-2">
-                  <span className="glass-pill px-3 py-1 rounded-full text-[11px] font-medium text-slate-600 bg-white/80 border-white/90 shadow-xs">
+                  <span className="glass-pill px-3.5 py-1 rounded-full text-xs font-bold text-slate-700 bg-white/90 border-white/95 shadow-xs">
                     Today, 11 Oct 2026
                   </span>
                 </div>
 
                 {messages.length === 0 ? (
-                  <div className="text-center py-12 text-slate-400 text-xs">
+                  <div className="text-center py-12 text-slate-500 text-sm font-medium">
                     No messages yet in this conversation.
                   </div>
                 ) : (
@@ -1036,19 +1117,19 @@ function InboxContent() {
                       return (
                         <div
                           key={m.id}
-                          className="my-3 p-3.5 rounded-2xl bg-[#FFF7ED]/95 backdrop-blur-md border border-amber-300/70 text-xs shadow-xs"
+                          className="my-3 p-4 rounded-2xl bg-[#FFF7ED] backdrop-blur-md border border-amber-300 text-sm shadow-xs space-y-1.5"
                         >
-                          <div className="flex items-center justify-between text-[11px] text-amber-900 font-bold mb-1">
+                          <div className="flex items-center justify-between text-xs text-amber-950 font-bold mb-1">
                             <span className="flex items-center gap-1.5">
-                              <Lock className="h-3 w-3 text-amber-600" />
+                              <Lock className="h-3.5 w-3.5 text-amber-600" />
                               Private Team Note • {m.sender_name || "Operations Lead"}
                             </span>
-                            <span className="text-amber-700 font-normal">{formatDate(m.created_at)}</span>
+                            <span className="text-amber-800 font-medium">{formatDate(m.created_at)}</span>
                           </div>
-                          <p className="text-amber-950 leading-relaxed whitespace-pre-wrap">
+                          <p className="text-amber-950 leading-relaxed whitespace-pre-wrap font-medium text-sm sm:text-base">
                             {m.body}
                           </p>
-                          <span className="text-[9px] text-amber-700/80 block mt-1.5 font-medium">
+                          <span className="text-xs text-amber-800 font-semibold block pt-1 border-t border-amber-200/60">
                             Visible only to workspace team members • Never sent to WhatsApp customer
                           </span>
                         </div>
@@ -1059,19 +1140,19 @@ function InboxContent() {
                     if (isStaff) {
                       return (
                         <div key={m.id} className="flex flex-col items-end">
-                          <div className="max-w-[82%] rounded-2xl rounded-tr-xs bg-[#DCF8C6]/95 backdrop-blur-md text-slate-900 border border-emerald-200/60 p-3.5 text-xs shadow-xs">
-                            <div className="flex items-center justify-between gap-3 text-[10px] text-emerald-900 mb-1 font-semibold">
+                          <div className="max-w-[84%] rounded-2xl rounded-tr-xs bg-[#DCF8C6] backdrop-blur-md text-slate-950 border border-emerald-300/70 p-3.5 sm:p-4 text-sm shadow-xs space-y-1.5">
+                            <div className="flex items-center justify-between gap-3 text-xs text-emerald-950 font-bold">
                               <span>{m.sender_name || "Staff"}</span>
                               {m.is_simulated && (
-                                <span className="bg-emerald-200/70 px-1.5 py-0.2 rounded text-[9px] font-mono text-emerald-900 border border-emerald-300/50">
+                                <span className="bg-emerald-200 px-1.5 py-0.2 rounded text-[10px] font-mono text-emerald-950 border border-emerald-400 font-bold">
                                   [SIMULATED]
                                 </span>
                               )}
                             </div>
-                            <p className="leading-relaxed whitespace-pre-wrap text-slate-900">{m.body}</p>
-                            <div className="flex items-center justify-end gap-1 mt-1 text-[9px] text-emerald-800">
+                            <p className="leading-relaxed whitespace-pre-wrap text-slate-950 text-sm sm:text-base">{m.body}</p>
+                            <div className="flex items-center justify-end gap-1.5 pt-1 text-xs text-emerald-900 font-medium">
                               <span>{formatDate(m.created_at)}</span>
-                              <CheckCheck className="h-3.5 w-3.5 text-blue-600" />
+                              <CheckCheck className="h-4 w-4 text-blue-600" />
                             </div>
                           </div>
                         </div>
@@ -1081,20 +1162,21 @@ function InboxContent() {
                     // 3. Inbound Customer Message
                     return (
                       <div key={m.id} className="flex flex-col items-start">
-                        <div className="max-w-[82%] rounded-2xl rounded-tl-xs bg-white/95 backdrop-blur-md border border-white/90 p-3.5 text-xs text-slate-900 shadow-xs">
-                          <div className="flex items-center justify-between gap-3 text-[10px] text-slate-500 mb-1">
-                            <span className="font-semibold text-slate-900">
+                        <div className="max-w-[84%] rounded-2xl rounded-tl-xs bg-white backdrop-blur-md border border-white p-3.5 sm:p-4 text-sm text-slate-950 shadow-xs space-y-1.5">
+                          <div className="flex items-center justify-between gap-3 text-xs text-slate-600 font-bold">
+                            <span className="font-bold text-slate-950">
                               {m.sender_name || activeConversation.contact_name}
                             </span>
                             <span>{formatDate(m.created_at)}</span>
                           </div>
-                          <p className="leading-relaxed whitespace-pre-wrap text-slate-900">{m.body}</p>
+                          <p className="leading-relaxed whitespace-pre-wrap text-slate-950 text-sm sm:text-base">{m.body}</p>
                         </div>
                       </div>
                     );
                   })
                 )}
               </div>
+
 
               {/* Smart Dual-Mode Composer */}
               <div className="p-3 border-t border-white/60 bg-white/60 backdrop-blur-md space-y-2">
@@ -1382,15 +1464,15 @@ function InboxContent() {
           {activeConversation && contact ? (
             <>
               {/* Segmented Top Tabs */}
-              <div className="flex items-center rounded-2xl bg-white/60 backdrop-blur-sm p-1 border border-white/80 shadow-xs text-xs">
+              <div className="flex items-center rounded-2xl bg-white/70 backdrop-blur-sm p-1 border border-white/90 shadow-xs text-xs sm:text-sm">
                 {(["contact", "deal", "tasks", "activity"] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setContextTab(tab)}
-                    className={`flex-1 py-1.5 text-center font-medium rounded-xl capitalize transition-all ${
+                    className={`flex-1 py-2 text-center font-bold rounded-xl capitalize transition-all cursor-pointer ${
                       contextTab === tab
-                        ? "bg-white text-blue-700 shadow-xs font-bold"
-                        : "text-slate-600 hover:text-slate-900"
+                        ? "bg-white text-blue-700 shadow-xs font-extrabold"
+                        : "text-slate-600 hover:text-slate-950"
                     }`}
                   >
                     {tab}
@@ -1402,20 +1484,20 @@ function InboxContent() {
               {contextTab === "contact" && (
                 <>
                   {/* Customer Profile Card */}
-                  <div className="p-4 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-3 text-center">
+                  <div className="p-5 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-3.5 text-center">
                     <div className="relative inline-block mx-auto">
-                      <div className="h-16 w-16 rounded-3xl bg-gradient-to-tr from-blue-100 via-indigo-100 to-purple-100 text-blue-800 font-bold flex items-center justify-center text-xl shadow-xs border-2 border-white">
+                      <div className="h-16 w-16 rounded-3xl bg-gradient-to-tr from-blue-100 via-indigo-100 to-purple-100 text-blue-900 font-black flex items-center justify-center text-xl shadow-xs border-2 border-white">
                         {contact.first_name.charAt(0)}{contact.last_name?.charAt(0) || ""}
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                      <h3 className="text-base sm:text-lg font-black text-slate-950 leading-tight">
                         {contact.first_name} {contact.last_name || ""}
                       </h3>
-                      <p className="text-[11px] text-slate-500 font-medium">
+                      <p className="text-xs sm:text-sm text-slate-600 font-bold mt-0.5">
                         {contact.company || "Enterprise Customer"}
                       </p>
-                      <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                      <p className="text-xs sm:text-sm text-slate-800 font-mono font-bold mt-0.5">
                         {contact.phone}
                       </p>
                     </div>
@@ -1424,31 +1506,31 @@ function InboxContent() {
                     <div className="flex items-center justify-center gap-2 pt-1">
                       <button
                         onClick={() => setComposerMode("message")}
-                        className="h-8 w-8 rounded-xl bg-white/90 hover:bg-white text-blue-600 border border-white flex items-center justify-center shadow-xs transition-colors"
+                        className="h-9 w-9 rounded-xl bg-white hover:bg-slate-50 text-blue-600 border border-white/90 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                         title="Chat"
                       >
-                        <MessageSquare className="h-3.5 w-3.5" />
+                        <MessageSquare className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setFeedbackMessage({ type: "success", text: `Calling ${contact.phone}...` })}
-                        className="h-8 w-8 rounded-xl bg-white/90 hover:bg-white text-emerald-600 border border-white flex items-center justify-center shadow-xs transition-colors"
+                        className="h-9 w-9 rounded-xl bg-white hover:bg-slate-50 text-emerald-600 border border-white/90 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                         title="Call"
                       >
-                        <Phone className="h-3.5 w-3.5" />
+                        <Phone className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => { if (contact.email) window.open(`mailto:${contact.email}`); }}
-                        className="h-8 w-8 rounded-xl bg-white/90 hover:bg-white text-indigo-600 border border-white flex items-center justify-center shadow-xs transition-colors"
+                        className="h-9 w-9 rounded-xl bg-white hover:bg-slate-50 text-indigo-600 border border-white/90 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                         title="Email"
                       >
-                        <Mail className="h-3.5 w-3.5" />
+                        <Mail className="h-4 w-4" />
                       </button>
                       <Link
                         href={`/app/${orgSlug}/contacts`}
-                        className="h-8 w-8 rounded-xl bg-white/90 hover:bg-white text-slate-600 border border-white flex items-center justify-center shadow-xs transition-colors"
+                        className="h-9 w-9 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-white/90 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                         title="View in CRM"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <ExternalLink className="h-4 w-4" />
                       </Link>
                     </div>
 
@@ -1457,7 +1539,7 @@ function InboxContent() {
                       {(contact.tags && contact.tags.length > 0 ? contact.tags : ["Fleet", "Enterprise", "Hot Lead"]).map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60 shadow-xs"
+                          className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200/80 shadow-xs"
                         >
                           {tag}
                         </span>
@@ -1465,40 +1547,40 @@ function InboxContent() {
                     </div>
 
                     {/* Marketing Consent */}
-                    <div className="pt-1 flex items-center justify-between text-[11px] text-slate-500">
-                      <span>Consent:</span>
-                      <span className="glass-pill px-2 py-0.5 rounded-full text-[9px] font-bold text-emerald-700 bg-emerald-50 border-emerald-200 uppercase">
+                    <div className="pt-1 flex items-center justify-between text-xs text-slate-600 font-medium">
+                      <span>Marketing Consent:</span>
+                      <span className="glass-pill px-2.5 py-0.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 uppercase">
                         {contact.consent_status.replace("_", " ")}
                       </span>
                     </div>
                   </div>
 
                   {/* Opportunity Deal Card */}
-                  <div className="p-3.5 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-2.5">
+                  <div className="p-4 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-900">Sales Opportunity</span>
+                      <span className="text-sm font-bold text-slate-950">Sales Opportunity</span>
                       {lead ? (
-                        <Link href={`/app/${orgSlug}/leads`} className="text-[11px] text-blue-600 hover:underline flex items-center gap-0.5 font-medium">
+                        <Link href={`/app/${orgSlug}/leads`} className="text-xs text-blue-700 hover:underline flex items-center gap-0.5 font-bold">
                           Pipeline <ExternalLink className="h-3 w-3" />
                         </Link>
                       ) : null}
                     </div>
 
                     {lead ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold text-slate-800">{lead.title}</span>
-                          <span className="text-sm font-bold text-emerald-600">
+                          <span className="text-sm font-bold text-slate-900">{lead.title}</span>
+                          <span className="text-base font-black font-mono text-emerald-700">
                             {formatCurrency(lead.estimated_value)}
                           </span>
                         </div>
 
                         <div>
-                          <label className="text-[10px] text-slate-400 block mb-1">Current Deal Stage:</label>
+                          <label className="text-xs font-bold text-slate-600 block mb-1">Current Deal Stage:</label>
                           <select
                             value={lead.stage}
                             onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                            className="w-full rounded-xl border border-white/90 bg-white/90 px-2.5 py-1 text-xs text-slate-800 font-semibold focus:outline-none shadow-xs"
+                            className="w-full rounded-xl border border-white/90 bg-white px-3 py-1.5 text-xs sm:text-sm text-slate-900 font-bold focus:outline-none shadow-xs cursor-pointer"
                           >
                             {LEAD_STAGES.map((s) => (
                               <option key={s.id} value={s.id}>
@@ -1510,39 +1592,39 @@ function InboxContent() {
                       </div>
                     ) : (
                       <div className="text-center py-2 space-y-2">
-                        <p className="text-[11px] text-slate-400">No deal linked yet.</p>
-                        <Button size="sm" variant="secondary" onClick={() => setLeadModalOpen(true)} className="w-full text-xs text-blue-600">
-                          <Plus className="h-3 w-3 mr-1" /> Create Deal
+                        <p className="text-xs text-slate-500 font-medium">No deal linked yet.</p>
+                        <Button size="sm" variant="secondary" onClick={() => setLeadModalOpen(true)} className="w-full text-xs font-bold text-blue-700">
+                          <Plus className="h-3.5 w-3.5 mr-1" /> Create Deal
                         </Button>
                       </div>
                     )}
                   </div>
 
                   {/* Next Follow-up Card */}
-                  <div className="p-3.5 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-2">
+                  <div className="p-4 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-900">Next Follow-up</span>
+                      <span className="text-sm font-bold text-slate-950">Next Follow-up</span>
                       <button
                         onClick={() => setFollowUpModalOpen(true)}
-                        className="text-[11px] text-blue-600 hover:underline flex items-center gap-0.5 font-medium"
+                        className="text-xs text-blue-700 hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
                       >
-                        <Plus className="h-3 w-3" /> Add Task
+                        <Plus className="h-3.5 w-3.5" /> Add Task
                       </button>
                     </div>
 
                     {contactTasks.length > 0 ? (
-                      <div className="space-y-1.5">
+                      <div className="space-y-2">
                         {contactTasks.slice(0, 2).map((t) => (
-                          <div key={t.id} className="p-2.5 rounded-2xl bg-white/85 border border-white/80 flex items-center justify-between shadow-xs">
+                          <div key={t.id} className="p-3 rounded-2xl bg-white border border-white/90 flex items-center justify-between shadow-xs">
                             <div>
-                              <span className="text-xs font-medium text-slate-900 block">{t.title}</span>
-                              <span className="text-[10px] text-slate-500 flex items-center gap-1">
-                                <Clock className="h-3 w-3 text-slate-400" />
+                              <span className="text-sm font-bold text-slate-950 block">{t.title}</span>
+                              <span className="text-xs text-slate-600 font-medium flex items-center gap-1 mt-0.5">
+                                <Clock className="h-3.5 w-3.5 text-slate-400" />
                                 {formatDate(t.due_date)}
                               </span>
                             </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase ${
-                              t.priority === "high" ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-blue-50 text-blue-700 border border-blue-200"
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${
+                              t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-blue-50 text-blue-800 border border-blue-200"
                             }`}>
                               {t.priority}
                             </span>
@@ -1550,7 +1632,7 @@ function InboxContent() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-[11px] text-slate-400 text-center py-1">No scheduled follow-ups.</p>
+                      <p className="text-xs text-slate-500 font-medium text-center py-1">No scheduled follow-ups.</p>
                     )}
                   </div>
                 </>
@@ -1558,30 +1640,30 @@ function InboxContent() {
 
               {/* View 2: Deal Tab */}
               {contextTab === "deal" && (
-                <div className="p-4 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-3">
+                <div className="p-5 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900">Pipeline Deal Details</span>
-                    <Button size="sm" variant="ghost" onClick={() => setLeadModalOpen(true)} className="h-6 text-xs text-blue-600">
-                      <Plus className="h-3 w-3 mr-1" /> New Deal
+                    <span className="text-sm font-bold text-slate-950">Pipeline Deal Details</span>
+                    <Button size="sm" variant="ghost" onClick={() => setLeadModalOpen(true)} className="h-7 text-xs font-bold text-blue-700">
+                      <Plus className="h-3.5 w-3.5 mr-1" /> New Deal
                     </Button>
                   </div>
 
                   {lead ? (
-                    <div className="space-y-2.5 text-xs">
+                    <div className="space-y-3 text-sm">
                       <div>
-                        <span className="text-slate-400 text-[10px]">Title</span>
-                        <p className="font-semibold text-slate-900">{lead.title}</p>
+                        <span className="text-slate-500 text-xs font-bold">Deal Name</span>
+                        <p className="font-bold text-slate-950 text-base">{lead.title}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 text-[10px]">Estimated Value</span>
-                        <p className="text-base font-bold text-emerald-600">{formatCurrency(lead.estimated_value)}</p>
+                        <span className="text-slate-500 text-xs font-bold">Estimated Pipeline Value</span>
+                        <p className="text-2xl font-black font-mono text-emerald-700">{formatCurrency(lead.estimated_value)}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 text-[10px]">Stage</span>
+                        <span className="text-slate-500 text-xs font-bold">Stage</span>
                         <select
                           value={lead.stage}
                           onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                          className="w-full mt-1 rounded-xl border border-white/90 bg-white/90 px-2.5 py-1 text-xs text-slate-800 font-semibold focus:outline-none shadow-xs"
+                          className="w-full mt-1 rounded-xl border border-white/90 bg-white px-3 py-1.5 text-sm text-slate-900 font-bold focus:outline-none shadow-xs cursor-pointer"
                         >
                           {LEAD_STAGES.map((s) => (
                             <option key={s.id} value={s.id}>
@@ -1590,13 +1672,13 @@ function InboxContent() {
                           ))}
                         </select>
                       </div>
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400">Assigned To:</span>
-                        <span className="font-medium text-slate-700">{lead.assigned_to_name || "Unassigned"}</span>
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <span className="text-slate-500 font-medium">Assigned Sales Rep:</span>
+                        <span className="font-bold text-slate-800">{lead.assigned_to_name || "Unassigned"}</span>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-xs text-slate-400">
+                    <div className="text-center py-8 text-xs sm:text-sm text-slate-500 font-medium">
                       No deal linked to this conversation yet.
                     </div>
                   )}
@@ -1605,34 +1687,34 @@ function InboxContent() {
 
               {/* View 3: Tasks Tab */}
               {contextTab === "tasks" && (
-                <div className="p-4 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-3">
+                <div className="p-5 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900">Customer Follow-ups</span>
-                    <button onClick={() => setFollowUpModalOpen(true)} className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1">
-                      <Plus className="h-3 w-3" /> Add Task
+                    <span className="text-sm font-bold text-slate-950">Customer Follow-ups</span>
+                    <button onClick={() => setFollowUpModalOpen(true)} className="text-xs text-blue-700 font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                      <Plus className="h-3.5 w-3.5" /> Add Task
                     </button>
                   </div>
 
                   {contactTasks.length > 0 ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {contactTasks.map((t) => (
-                        <div key={t.id} className="p-3 rounded-2xl bg-white/85 border border-white/80 shadow-xs space-y-1">
+                        <div key={t.id} className="p-3.5 rounded-2xl bg-white border border-white/90 shadow-xs space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-slate-900">{t.title}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase ${
-                              t.priority === "high" ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-blue-50 text-blue-700 border border-blue-200"
+                            <span className="text-sm font-bold text-slate-950">{t.title}</span>
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${
+                              t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-blue-50 text-blue-800 border border-blue-200"
                             }`}>
                               {t.priority}
                             </span>
                           </div>
-                          <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                            <Clock className="h-3 w-3" /> Due {formatDate(t.due_date)}
+                          <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5 mt-1">
+                            <Clock className="h-3.5 w-3.5 text-slate-400" /> Due {formatDate(t.due_date)}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-xs text-slate-400">
+                    <div className="text-center py-8 text-xs sm:text-sm text-slate-500 font-medium">
                       No tasks scheduled for this customer.
                     </div>
                   )}
@@ -1641,25 +1723,26 @@ function InboxContent() {
 
               {/* View 4: Activity Tab */}
               {contextTab === "activity" && (
-                <div className="p-4 rounded-3xl bg-white/70 border border-white/80 shadow-xs space-y-3">
-                  <span className="text-xs font-bold text-slate-900 block">Activity Audit Trail</span>
-                  <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+                <div className="p-5 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-4">
+                  <span className="text-sm font-bold text-slate-950 block">Activity Audit Trail</span>
+                  <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                     {activities.length === 0 ? (
-                      <span className="text-[11px] text-slate-400 block text-center py-4">No activities recorded yet.</span>
+                      <span className="text-xs text-slate-500 font-medium block text-center py-6">No activities recorded yet.</span>
                     ) : (
                       activities.map((a) => (
-                        <div key={a.id} className="p-2.5 rounded-xl bg-white/80 border border-white/70 text-[11px] space-y-0.5 shadow-xs">
-                          <div className="flex items-center justify-between text-[10px] text-slate-400">
-                            <span className="font-semibold text-slate-800">{a.actor_name}</span>
+                        <div key={a.id} className="p-3 rounded-xl bg-white border border-white/80 text-xs space-y-1 shadow-xs">
+                          <div className="flex items-center justify-between text-xs text-slate-500">
+                            <span className="font-bold text-slate-900">{a.actor_name}</span>
                             <span>{formatDate(a.created_at)}</span>
                           </div>
-                          <p className="text-slate-600 leading-snug">{a.description}</p>
+                          <p className="text-slate-700 leading-snug font-medium">{a.description}</p>
                         </div>
                       ))
                     )}
                   </div>
                 </div>
               )}
+
             </>
           ) : (
             <div className="text-center py-8 text-xs text-slate-400">

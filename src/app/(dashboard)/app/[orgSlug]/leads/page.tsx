@@ -7,6 +7,7 @@ import { crmStore } from "@/lib/crm/crm-store";
 import { Lead, LeadStage, Contact } from "@/types/crm";
 import { leadQualificationStore } from "@/lib/ai/lead-qualification-store";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useMounted } from "@/lib/use-mounted";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -97,6 +98,7 @@ const STAGES: StageConfig[] = [
 export default function LeadsPage() {
   const { currentOrg, isAdmin } = useTenant();
   const orgSlug = currentOrg.slug;
+  const mounted = useMounted();
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [viewMode, setViewMode] = useState<"board" | "table">("board");
@@ -257,48 +259,51 @@ export default function LeadsPage() {
       {/* ===================================================================== */}
       {/* COMPACT PAGE HEADER                                                   */}
       {/* ===================================================================== */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/60">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/60">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
               Sales Pipeline
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
+            <span
+              suppressHydrationWarning
+              className="glass-pill rounded-full bg-white/90 border border-white text-xs sm:text-sm font-black px-3.5 py-1 text-slate-900 shadow-xs font-mono"
+            >
               {filteredLeads.length} {filteredLeads.length === 1 ? "lead" : "leads"}
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal">
+          <p className="text-sm text-slate-600 font-medium">
             Track and advance commercial opportunities through active conversion stages.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Board / Table View Toggle */}
-          <div className="flex items-center rounded-xl bg-white/70 backdrop-blur-sm p-1 border border-white/80 shadow-2xs">
+          <div className="flex items-center rounded-xl bg-white/80 backdrop-blur-sm p-1 border border-white/90 shadow-2xs">
             <button
               type="button"
               onClick={() => setViewMode("board")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 viewMode === "board"
-                  ? "bg-white text-slate-900 shadow-xs border border-white/90"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-950 shadow-xs border border-white"
+                  : "text-slate-600 hover:text-slate-950"
               }`}
               title="Kanban Board View"
             >
-              <Kanban className="h-3.5 w-3.5" />
+              <Kanban className="h-4 w-4" />
               <span>Board</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("table")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 viewMode === "table"
-                  ? "bg-white text-slate-900 shadow-xs border border-white/90"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-950 shadow-xs border border-white"
+                  : "text-slate-600 hover:text-slate-950"
               }`}
               title="List Table View"
             >
-              <TableIcon className="h-3.5 w-3.5" />
+              <TableIcon className="h-4 w-4" />
               <span>Table</span>
             </button>
           </div>
@@ -307,7 +312,7 @@ export default function LeadsPage() {
           <Button
             onClick={() => setCreateModalOpen(true)}
             size="default"
-            className="shadow-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center gap-1.5"
+            className="shadow-xs bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center gap-2 h-10 px-4"
           >
             <Plus className="h-4 w-4" />
             <span>New Lead</span>
@@ -318,7 +323,7 @@ export default function LeadsPage() {
       {/* ===================================================================== */}
       {/* COMPACT TOOLBAR (SEARCH & STAGE / OWNER FILTERS)                       */}
       {/* ===================================================================== */}
-      <div className="glass-panel flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl border border-white/70 bg-white/75 backdrop-blur-xl shadow-glass">
+      <div className="glass-panel flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl border border-white/80 bg-white/85 backdrop-blur-xl shadow-glass">
         <div className="flex flex-1 flex-wrap items-center gap-3 min-w-[240px]">
           {/* Search Box */}
           <div className="relative flex-1 min-w-[200px] max-w-md">
@@ -328,26 +333,26 @@ export default function LeadsPage() {
               placeholder="Search by lead title, contact name, or phone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/80 bg-white/70 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/80 focus:bg-white backdrop-blur-sm shadow-xs transition-all"
+              className="w-full pl-9.5 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/90 bg-white/80 text-slate-950 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white backdrop-blur-sm shadow-xs transition-all font-medium"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </div>
 
           {/* Stage Filter */}
-          <div className="flex items-center gap-1 text-xs">
-            <span className="text-slate-500 font-medium hidden sm:inline">Stage:</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <span className="text-slate-600 font-bold hidden sm:inline">Stage:</span>
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
-              className="px-2.5 py-2 rounded-xl border border-white/80 bg-white/70 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500/80 focus:bg-white backdrop-blur-sm shadow-xs cursor-pointer"
+              className="px-3 py-2 rounded-xl border border-white/90 bg-white/80 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white backdrop-blur-sm shadow-xs cursor-pointer"
             >
               <option value="all">All Stages ({leads.length})</option>
               {STAGES.map((s) => {
@@ -363,12 +368,12 @@ export default function LeadsPage() {
 
           {/* Owner Filter */}
           {uniqueOwners.length > 0 && (
-            <div className="flex items-center gap-1 text-xs">
-              <span className="text-slate-500 font-medium hidden sm:inline">Owner:</span>
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+              <span className="text-slate-600 font-bold hidden sm:inline">Owner:</span>
               <select
                 value={ownerFilter}
                 onChange={(e) => setOwnerFilter(e.target.value)}
-                className="px-2.5 py-2 rounded-xl border border-white/80 bg-white/70 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500/80 focus:bg-white backdrop-blur-sm shadow-xs cursor-pointer"
+                className="px-3 py-2 rounded-xl border border-white/90 bg-white/80 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white backdrop-blur-sm shadow-xs cursor-pointer"
               >
                 <option value="all">All Owners</option>
                 {uniqueOwners.map((owner) => (
@@ -390,7 +395,7 @@ export default function LeadsPage() {
               setStageFilter("all");
               setOwnerFilter("all");
             }}
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer px-3 py-1.5 rounded-xl bg-white/80 border border-white shadow-xs"
+            className="text-xs sm:text-sm font-bold text-blue-700 hover:text-blue-900 transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-white border border-white shadow-xs"
           >
             Reset Filters
           </button>
@@ -409,31 +414,37 @@ export default function LeadsPage() {
             return (
               <div
                 key={stage.id}
-                className="w-80 shrink-0 rounded-[22px] bg-white/45 backdrop-blur-md border border-white/60 p-3.5 flex flex-col space-y-3 shadow-xs"
+                className="w-80 shrink-0 rounded-[24px] bg-white/55 backdrop-blur-md border border-white/70 p-4 flex flex-col space-y-3.5 shadow-xs"
               >
                 {/* Stage Header */}
-                <div className="flex items-center justify-between pb-2.5 border-b border-white/60">
+                <div className="flex items-center justify-between pb-3 border-b border-white/60">
                   <div className="flex items-center gap-2">
-                    <span className={`h-2.5 w-2.5 rounded-full ${stage.dotColor} shadow-xs`} />
-                    <span className="font-bold text-xs uppercase tracking-wider text-slate-800">
+                    <span className={`h-3 w-3 rounded-full ${stage.dotColor} shadow-xs`} />
+                    <span className="font-extrabold text-xs sm:text-sm uppercase tracking-wider text-slate-900">
                       {stage.title}
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-white/80 border border-white text-[10px] font-mono font-bold text-slate-700 shadow-2xs">
+                    <span
+                      suppressHydrationWarning
+                      className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-xs font-mono font-black text-slate-950 shadow-2xs"
+                    >
                       {stageLeads.length}
                     </span>
                   </div>
 
                   {stageValue > 0 && (
-                    <span className="text-[11px] font-mono font-bold text-slate-700">
+                    <span
+                      suppressHydrationWarning
+                      className="text-xs sm:text-sm font-mono font-black text-slate-950"
+                    >
                       {formatCurrency(stageValue)}
                     </span>
                   )}
                 </div>
 
                 {/* Cards List in Stage */}
-                <div className="space-y-2.5 min-h-[120px]">
+                <div className="space-y-3 min-h-[120px]">
                   {stageLeads.length === 0 ? (
-                    <div className="p-6 text-center rounded-2xl border border-dashed border-white/80 bg-white/30 text-xs text-slate-400">
+                    <div className="p-8 text-center rounded-2xl border border-dashed border-white/90 bg-white/40 text-xs sm:text-sm text-slate-500 font-medium">
                       No leads in {stage.title}
                     </div>
                   ) : (
@@ -447,44 +458,47 @@ export default function LeadsPage() {
                         <div
                           key={lead.id}
                           onClick={() => setActiveLead(lead)}
-                          className="glass-card group relative rounded-2xl border border-white/85 bg-white/85 backdrop-blur-md p-4 shadow-xs hover:shadow-glass hover:bg-white hover:border-white transition-all duration-200 cursor-pointer text-left space-y-3"
+                          className="glass-card group relative rounded-2xl border border-white/90 bg-white/90 backdrop-blur-md p-4.5 shadow-xs hover:shadow-glass hover:bg-white hover:border-white transition-all duration-200 cursor-pointer text-left space-y-3"
                         >
                           {/* Card Top: Title & Source */}
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                          <div className="flex items-start justify-between gap-2.5">
+                            <h4 className="text-sm sm:text-base font-bold text-slate-950 group-hover:text-blue-700 transition-colors line-clamp-2">
                               {lead.title}
                             </h4>
-                            <span className="shrink-0 text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/90 text-slate-600 border border-white shadow-2xs font-semibold">
+                            <span className="shrink-0 text-xs font-mono px-2.5 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 shadow-2xs font-bold">
                               {lead.source}
                             </span>
                           </div>
 
                           {/* Contact & Company */}
-                          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                            <Building2 className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                            <span className="truncate font-medium">{lead.contact_name}</span>
+                          <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700">
+                            <Building2 className="h-4 w-4 text-slate-400 shrink-0" />
+                            <span className="truncate font-semibold">{lead.contact_name}</span>
                           </div>
 
                           {/* Card Bottom: Deal Value & Follow-up */}
-                          <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/80 text-xs">
-                            <span className="font-mono font-bold text-slate-900 text-sm">
+                          <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs sm:text-sm">
+                            <span
+                              suppressHydrationWarning
+                              className="font-mono font-black text-emerald-700 text-base sm:text-lg"
+                            >
                               {formatCurrency(lead.estimated_value)}
                             </span>
 
                             {hasFollowUp ? (
                               <div
-                                className={`flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${
+                                className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full ${
                                   isFollowUpOverdue
-                                    ? "bg-rose-500/10 text-rose-700 border border-rose-500/20 font-bold"
-                                    : "bg-amber-500/10 text-amber-700 border border-amber-500/20 font-medium"
+                                    ? "bg-rose-100 text-rose-800 border border-rose-300"
+                                    : "bg-amber-100 text-amber-800 border border-amber-300"
                                 }`}
                                 title={formatDate(lead.next_follow_up_at!)}
                               >
-                                <Clock className="h-3 w-3" />
+                                <Clock className="h-3.5 w-3.5" />
                                 <span>{isFollowUpOverdue ? "Overdue" : "Due Soon"}</span>
                               </div>
                             ) : (
-                              <span className="text-[10px] text-slate-400 font-medium">
+                              <span className="text-xs text-slate-500 font-medium">
                                 {lead.assigned_to_name ? lead.assigned_to_name.split(" ")[0] : "Unassigned"}
                               </span>
                             )}
@@ -498,6 +512,7 @@ export default function LeadsPage() {
             );
           })}
         </div>
+
       ) : (
         /* ===================================================================== */
         /* TABLE LIST VIEW                                                       */

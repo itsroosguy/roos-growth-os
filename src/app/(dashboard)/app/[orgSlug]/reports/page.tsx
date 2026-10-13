@@ -28,9 +28,11 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { useMounted } from "@/lib/use-mounted";
 
 export default function ReportsPage() {
   const { currentOrg } = useTenant();
+  const mounted = useMounted();
   const [timeRange, setTimeRange] = useState<ReportTimeRange>("30d");
 
   const report = reportingEngine.generateReport(currentOrg.slug, timeRange);
@@ -96,7 +98,7 @@ export default function ReportsPage() {
         {/* Card 1: Active Pipeline */}
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 hover:shadow-glass hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Active Pipeline Value
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/15 text-blue-600 border border-blue-500/20 shadow-xs">
@@ -104,11 +106,14 @@ export default function ReportsPage() {
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight">
-              ₹{s.pipelineValue.toLocaleString("en-IN")}
+            <div
+              className="text-3xl sm:text-4xl font-black font-mono text-slate-950 tracking-tight"
+              suppressHydrationWarning
+            >
+              ₹{mounted ? s.pipelineValue.toLocaleString("en-IN") : s.pipelineValue.toLocaleString("en-IN")}
             </div>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Across {s.totalLeads} sales opportunities
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5" suppressHydrationWarning>
+              Across <span className="font-bold text-slate-900">{mounted ? s.totalLeads : s.totalLeads}</span> sales opportunities
             </p>
           </div>
         </div>
@@ -116,7 +121,7 @@ export default function ReportsPage() {
         {/* Card 2: Lead Conversion Rate */}
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 hover:shadow-glass hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider flex items-center">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center">
               Lead Conversion Rate
               <span
                 title={s.conversionFormula}
@@ -130,11 +135,14 @@ export default function ReportsPage() {
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600 tracking-tight">
-              {s.leadConversionRate}%
+            <div
+              className="text-3xl sm:text-4xl font-black font-mono text-emerald-600 tracking-tight"
+              suppressHydrationWarning
+            >
+              {mounted ? s.leadConversionRate : s.leadConversionRate}%
             </div>
-            <p className="text-xs text-slate-500 mt-1.5">
-              {s.wonDealsCount} Won / {s.wonDealsCount + s.lostDealsCount} Closed Deals
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5" suppressHydrationWarning>
+              <span className="font-bold text-slate-900">{mounted ? s.wonDealsCount : s.wonDealsCount}</span> Won / <span className="font-bold text-slate-900">{mounted ? s.wonDealsCount + s.lostDealsCount : s.wonDealsCount + s.lostDealsCount}</span> Closed
             </p>
           </div>
         </div>
@@ -142,7 +150,7 @@ export default function ReportsPage() {
         {/* Card 3: Follow-Up Completion */}
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 hover:shadow-glass hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Follow-up Completion
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 border border-amber-500/20 shadow-xs">
@@ -150,14 +158,17 @@ export default function ReportsPage() {
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight">
-              {s.taskCompletionRate}%
+            <div
+              className="text-3xl sm:text-4xl font-black font-mono text-slate-950 tracking-tight"
+              suppressHydrationWarning
+            >
+              {mounted ? s.taskCompletionRate : s.taskCompletionRate}%
             </div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mt-1.5">
-              <span>{s.completedTasksCount} of {s.totalTasks} completed</span>
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-600 font-medium mt-1.5" suppressHydrationWarning>
+              <span>{mounted ? s.completedTasksCount : s.completedTasksCount} of {mounted ? s.totalTasks : s.totalTasks} completed</span>
               {s.overdueTasksCount > 0 && (
                 <span className="text-rose-600 font-bold">
-                  {s.overdueTasksCount} overdue
+                  {mounted ? s.overdueTasksCount : s.overdueTasksCount} overdue
                 </span>
               )}
             </div>
@@ -167,7 +178,7 @@ export default function ReportsPage() {
         {/* Card 4: Automation Reliability */}
         <div className="glass-card rounded-[22px] border border-white/70 shadow-glass bg-white/75 backdrop-blur-xl hover:bg-white/90 hover:shadow-glass hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Automation Health
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/15 text-blue-600 border border-blue-500/20 shadow-xs">
@@ -175,11 +186,14 @@ export default function ReportsPage() {
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-blue-600 tracking-tight">
-              {s.workflowSuccessRate}%
+            <div
+              className="text-3xl sm:text-4xl font-black font-mono text-blue-600 tracking-tight"
+              suppressHydrationWarning
+            >
+              {mounted ? s.workflowSuccessRate : s.workflowSuccessRate}%
             </div>
-            <p className="text-xs text-slate-500 mt-1.5">
-              {s.totalWorkflowExecutions} runs across {report.workflowMetrics.activeRulesCount} active rules
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5" suppressHydrationWarning>
+              <span className="font-bold text-slate-900">{mounted ? s.totalWorkflowExecutions : s.totalWorkflowExecutions}</span> runs across {report.workflowMetrics.activeRulesCount} active rules
             </p>
           </div>
         </div>
@@ -191,43 +205,43 @@ export default function ReportsPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-base">Sales Pipeline Funnel</CardTitle>
-                <CardDescription className="text-xs">
+                <CardTitle className="text-base sm:text-lg font-bold text-slate-950">Sales Pipeline Funnel</CardTitle>
+                <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
                   Distribution of leads and estimated deal value by pipeline stage.
                 </CardDescription>
               </div>
-              <Badge variant="neutral" className="text-xs font-mono">
-                Total Deals: ₹{s.pipelineValue.toLocaleString("en-IN")}
+              <Badge variant="neutral" className="text-xs sm:text-sm font-mono font-bold px-3 py-1 bg-slate-100 text-slate-950" suppressHydrationWarning>
+                Total: ₹{mounted ? s.pipelineValue.toLocaleString("en-IN") : s.pipelineValue.toLocaleString("en-IN")}
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {report.leadsByStage.map((st) => (
               <div key={st.stage} className="space-y-1.5">
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-xs sm:text-sm">
                   <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-foreground">
+                    <span className="font-bold text-slate-950">
                       {st.label}
                     </span>
-                    <Badge variant="neutral" className="text-[10px]">
+                    <Badge variant="neutral" className="text-xs font-mono font-bold px-2 py-0.5 bg-slate-100 text-slate-800">
                       {st.count} leads
                     </Badge>
                   </div>
-                  <div className="font-mono text-foreground font-medium">
+                  <div className="font-mono text-slate-950 font-bold">
                     ₹{st.value.toLocaleString("en-IN")}{" "}
-                    <span className="text-foreground-secondary text-[11px]">
+                    <span className="text-slate-500 font-extrabold text-xs">
                       ({st.percentage}%)
                     </span>
                   </div>
                 </div>
-                <div className="w-full h-2 bg-surface-subtle rounded-full overflow-hidden">
+                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
                   <div
-                    className={`h-full transition-all duration-300 ${
+                    className={`h-full transition-all duration-300 rounded-full ${
                       st.stage === "won"
-                        ? "bg-google-green"
+                        ? "bg-emerald-500"
                         : st.stage === "lost"
-                        ? "bg-google-red/60"
-                        : "bg-google-blue"
+                        ? "bg-rose-500/70"
+                        : "bg-blue-600"
                     }`}
                     style={{ width: `${Math.max(st.percentage, 3)}%` }}
                   />
@@ -240,37 +254,37 @@ export default function ReportsPage() {
         {/* Won vs Lost Comparison Box */}
         <Card className="border-border bg-surface flex flex-col justify-between">
           <CardHeader>
-            <CardTitle className="text-base">Win / Loss Breakdown</CardTitle>
-            <CardDescription className="text-xs">
+            <CardTitle className="text-base sm:text-lg font-bold text-slate-950">Win / Loss Breakdown</CardTitle>
+            <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
               Commercial outcomes for closed deals.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="p-4 rounded-2xl bg-google-green-subtle/50 border border-google-green/20 space-y-1">
-              <span className="text-xs font-semibold text-google-green uppercase tracking-wider block">
+            <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 space-y-1">
+              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block">
                 Closed Won Deals
               </span>
-              <div className="text-2xl font-bold text-google-green">
-                ₹{s.wonDealsValue.toLocaleString("en-IN")}
+              <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-700" suppressHydrationWarning>
+                ₹{mounted ? s.wonDealsValue.toLocaleString("en-IN") : s.wonDealsValue.toLocaleString("en-IN")}
               </div>
-              <p className="text-xs text-foreground-secondary">
-                {s.wonDealsCount} deals successfully converted
+              <p className="text-xs sm:text-sm text-slate-600 font-medium" suppressHydrationWarning>
+                <span className="font-bold text-emerald-800">{mounted ? s.wonDealsCount : s.wonDealsCount}</span> deals successfully converted
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-google-red-subtle/50 border border-google-red/20 space-y-1">
-              <span className="text-xs font-semibold text-google-red uppercase tracking-wider block">
+            <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80 space-y-1">
+              <span className="text-xs font-bold text-rose-800 uppercase tracking-wider block">
                 Closed Lost Deals
               </span>
-              <div className="text-2xl font-bold text-google-red">
-                {s.lostDealsCount} deals
+              <div className="text-2xl sm:text-3xl font-black font-mono text-rose-700" suppressHydrationWarning>
+                {mounted ? s.lostDealsCount : s.lostDealsCount} deals
               </div>
-              <p className="text-xs text-foreground-secondary">
+              <p className="text-xs sm:text-sm text-slate-600 font-medium">
                 Documented reasons tracked in CRM logs
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-surface-subtle text-[11px] text-foreground-secondary leading-relaxed border border-border">
+            <div className="p-3 rounded-xl bg-slate-50 text-xs text-slate-600 leading-relaxed border border-slate-200">
               <strong>Formula Audit:</strong> {s.conversionFormula}
             </div>
           </CardContent>
@@ -283,42 +297,42 @@ export default function ReportsPage() {
         <Card className="border-border bg-surface">
           <CardHeader>
             <div className="flex items-center space-x-2">
-              <MessageSquare className="h-5 w-5 text-google-green" />
-              <CardTitle className="text-base">WhatsApp Delivery Funnel</CardTitle>
+              <MessageSquare className="h-5 w-5 text-emerald-600" />
+              <CardTitle className="text-base sm:text-lg font-bold text-slate-950">WhatsApp Delivery Funnel</CardTitle>
             </div>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
               Official delivery states verified by webhook status reports.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-4 gap-2 text-center">
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Sent</span>
-                <span className="text-base font-bold text-foreground">
-                  {report.messagingFunnel.sent}
+            <div className="grid grid-cols-4 gap-2.5 text-center">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Sent</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-slate-950" suppressHydrationWarning>
+                  {mounted ? report.messagingFunnel.sent : report.messagingFunnel.sent}
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Delivered</span>
-                <span className="text-base font-bold text-google-blue">
-                  {report.messagingFunnel.delivered}
+              <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100">
+                <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">Delivered</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-blue-700" suppressHydrationWarning>
+                  {mounted ? report.messagingFunnel.delivered : report.messagingFunnel.delivered}
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Read</span>
-                <span className="text-base font-bold text-google-green">
-                  {report.messagingFunnel.read}
+              <div className="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-100">
+                <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">Read</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-emerald-800" suppressHydrationWarning>
+                  {mounted ? report.messagingFunnel.read : report.messagingFunnel.read}
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Failed</span>
-                <span className="text-base font-bold text-google-red">
-                  {report.messagingFunnel.failed}
+              <div className="p-3.5 bg-rose-50/70 rounded-xl border border-rose-100">
+                <span className="text-xs font-bold text-rose-700 uppercase tracking-wider block mb-1">Failed</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-rose-800" suppressHydrationWarning>
+                  {mounted ? report.messagingFunnel.failed : report.messagingFunnel.failed}
                 </span>
               </div>
             </div>
 
-            <p className="text-[11px] text-foreground-secondary leading-relaxed">
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
               Acceptance and dispatch times are recorded per recipient. Read receipts are reported when the customer opens the conversation.
             </p>
           </CardContent>
@@ -328,36 +342,36 @@ export default function ReportsPage() {
         <Card className="border-border bg-surface">
           <CardHeader>
             <div className="flex items-center space-x-2">
-              <Zap className="h-5 w-5 text-google-blue" />
-              <CardTitle className="text-base">Workflow Queue Health</CardTitle>
+              <Zap className="h-5 w-5 text-blue-600" />
+              <CardTitle className="text-base sm:text-lg font-bold text-slate-950">Workflow Queue Health</CardTitle>
             </div>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
               Durable background queue metrics with idempotent execution logging.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Total Runs</span>
-                <span className="text-base font-bold text-foreground">
-                  {report.workflowMetrics.totalRuns}
+            <div className="grid grid-cols-3 gap-2.5 text-center">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Runs</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-slate-950" suppressHydrationWarning>
+                  {mounted ? report.workflowMetrics.totalRuns : report.workflowMetrics.totalRuns}
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Successful</span>
-                <span className="text-base font-bold text-google-green">
-                  {report.workflowMetrics.successfulRuns}
+              <div className="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-100">
+                <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">Successful</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-emerald-800" suppressHydrationWarning>
+                  {mounted ? report.workflowMetrics.successfulRuns : report.workflowMetrics.successfulRuns}
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl">
-                <span className="text-[11px] text-foreground-secondary block">Failed / Retried</span>
-                <span className="text-base font-bold text-google-red">
-                  {report.workflowMetrics.failedRuns}
+              <div className="p-3.5 bg-rose-50/70 rounded-xl border border-rose-100">
+                <span className="text-xs font-bold text-rose-700 uppercase tracking-wider block mb-1">Failed</span>
+                <span className="text-xl sm:text-2xl font-black font-mono text-rose-800" suppressHydrationWarning>
+                  {mounted ? report.workflowMetrics.failedRuns : report.workflowMetrics.failedRuns}
                 </span>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-surface-subtle text-[11px] text-foreground-secondary border border-border">
+            <div className="p-3 rounded-xl bg-slate-50 text-xs text-slate-600 border border-slate-200">
               All automation executions adhere to bounded exponential backoff (max 3 retries) and anti-loop recursion depth limits.
             </div>
           </CardContent>
