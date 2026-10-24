@@ -11,18 +11,10 @@ export default function AuthLayout({
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#F7F7F8] p-4 sm:p-6 lg:p-8 selection:bg-[#FF7900] selection:text-white">
       <div className="w-full max-w-md">
         {/* Brand Header */}
-        <div className="mb-6 text-center flex flex-col items-center">
-          <div className="flex items-center justify-center mb-2.5">
+        <div className="mb-8 text-center flex flex-col items-center">
+          <div className="flex items-center justify-center">
             <RoosLogo variant="dark" size="lg" />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#24180E] border border-[#FF7900]/30 text-[10px] font-semibold text-[#FF7900] uppercase tracking-wider mb-2">
-            <span>Growth OS</span>
-            <span className="text-[#8E8E93]">•</span>
-            <span className="text-[#8E8E93]">CRM & Automation</span>
-          </div>
-          <p className="text-xs text-[#8E8E93]">
-            Institutional WhatsApp CRM &amp; Commercial Pipeline Platform
-          </p>
         </div>
 
         {/* Content Card */}

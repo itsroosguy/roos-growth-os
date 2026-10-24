@@ -68,9 +68,6 @@ export default function LoginPage() {
     <Card className="border-[#E5E5E7] bg-white rounded-2xl shadow-xs overflow-hidden">
       <CardHeader className="space-y-1 p-6 pb-4">
         <CardTitle className="text-xl font-bold tracking-tight text-[#0D0D0E]">Sign in</CardTitle>
-        <CardDescription className="text-xs text-[#8E8E93]">
-          Access your business dashboard and WhatsApp CRM
-        </CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
         <CardContent className="space-y-4 px-6">
