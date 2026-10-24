@@ -224,6 +224,25 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Quick Demo Credentials Pill */}
+          <div className="mb-4 p-2.5 sm:p-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-between text-xs">
+            <div className="flex items-center space-x-2 truncate">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span className="text-[#0D0D0E] font-semibold text-[11px] sm:text-xs">Demo Access:</span>
+              <span className="font-mono text-[#71717A] text-[11px] truncate">admin@acmetech.io</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("admin@acmetech.io");
+                setPassword("roos2026demo");
+              }}
+              className="text-[11px] font-semibold text-[#FF7900] hover:text-[#E66D00] hover:underline cursor-pointer ml-2 shrink-0"
+            >
+              1-Click Fill
+            </button>
+          </div>
+
           {/* Email / Password Form (Removed Google & Apple logins and divider) */}
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
