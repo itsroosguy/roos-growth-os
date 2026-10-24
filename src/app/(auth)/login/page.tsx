@@ -18,6 +18,7 @@ import {
   User,
   X,
   Send,
+  PlayCircle,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -138,14 +139,38 @@ export default function LoginPage() {
         <div className="relative z-10 h-4" />
 
         {/* Centered Brand Presentation */}
-        <div className="relative z-10 py-10 flex flex-col items-center text-center">
-          {/* Official ROOS Emblem Squircle (Replacing old RX text) */}
-          <div className="h-20 w-20 rounded-3xl overflow-hidden shadow-2xl mb-8 group hover:scale-105 transition-transform duration-300 border border-[#27272A] bg-black flex items-center justify-center p-2.5">
-            <img
-              src="/mark.png"
-              alt="ROOS STUDIOX"
-              className="h-full w-full object-contain"
-            />
+        <div className="relative z-10 py-8 flex flex-col items-center text-center">
+          {/* ROOS Signature Preloader Celestial Orbit & Kangaroo Emblem */}
+          <div className="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center mb-6">
+            {/* Ambient Glowing Aura */}
+            <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#FF7900]/30 via-[#FFA665]/15 to-transparent blur-2xl animate-preloader-glow pointer-events-none" />
+
+            {/* Outer Rotating Celestial Orbital Ring (Clockwise) */}
+            <div className="absolute inset-0 rounded-full border border-dashed border-[#FF7900]/35 animate-spin-slow pointer-events-none">
+              {/* Orbit Beacon Dot */}
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#FF7900] shadow-[0_0_12px_#FF7900]" />
+            </div>
+
+            {/* Counter-Rotating Inner Accent Ring */}
+            <div className="absolute inset-3 rounded-full border border-white/10 animate-spin-slow-reverse pointer-events-none">
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white/70 shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+            </div>
+
+            {/* Elevated Central Emblem Squircle (Increased Size with Pure White Overlay) */}
+            <div className="relative z-10 h-28 w-28 sm:h-32 sm:w-32 rounded-[28px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.15)] border border-[#27272A] bg-[#121214] flex items-center justify-center p-3.5 group hover:scale-105 transition-all duration-300">
+              <img
+                src="/mark.png"
+                alt="ROOS STUDIOX"
+                className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_0_16px_rgba(255,255,255,0.45)] drop-shadow-[0_0_24px_rgba(255,121,0,0.35)]"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            </div>
+          </div>
+
+          {/* Preloader Micro-Readout */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161619] border border-[#27272A] text-[10px] font-mono text-[#FF7900] tracking-widest uppercase mb-4 shadow-inner">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FF7900] animate-pulse" />
+            <span>[ ROOS STUDIOX // GROWTH OS ]</span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -158,7 +183,7 @@ export default function LoginPage() {
           </p>
 
           {/* Carousel Indicator Dots */}
-          <div className="flex items-center justify-center gap-2 mt-8">
+          <div className="flex items-center justify-center gap-2 mt-7">
             <span className="w-6 h-1.5 rounded-full bg-[#FF7900]" />
             <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
             <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
@@ -176,16 +201,21 @@ export default function LoginPage() {
       {/* RIGHT PANEL: SIGN IN & TRY DEMO FORM (PURE WHITE SURFACE)             */}
       {/* ===================================================================== */}
       <div className="w-full lg:w-[52%] bg-white p-8 sm:p-12 flex flex-col justify-between">
-        {/* Top Header with Brand Logo (Removed "Don't have an account? Sign Up") */}
-        <div className="flex items-center justify-between pb-6">
-          <Link href="/" className="inline-flex items-center" title="ROOS STUDIOX">
-            <RoosLogo variant="dark" size="sm" />
-          </Link>
-        </div>
+        {/* Top Spacer to balance vertical alignment */}
+        <div className="h-2" />
 
         {/* Centered Form */}
         <div className="max-w-md w-full mx-auto my-auto py-4">
-          <div className="text-center mb-6">
+          {/* Centered Logo above "Welcome back to ROOS!" */}
+          <div className="text-center mb-7 flex flex-col items-center">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center mb-5 group hover:opacity-85 transition-opacity"
+              title="ROOS STUDIOX"
+            >
+              <RoosLogo variant="dark" size="lg" />
+            </Link>
+
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0D0D0E]">
               Welcome back to ROOS!
             </h1>
@@ -194,58 +224,8 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Social Sign-in Buttons */}
-          <div className="space-y-2.5 mb-5">
-            <button
-              type="button"
-              onClick={() => router.push("/app/acme-corp/overview")}
-              className="w-full h-11 rounded-xl border border-[#E5E5E7] hover:border-[#0D0D0E] hover:bg-[#F7F7F8] text-xs font-semibold text-[#0D0D0E] flex items-center justify-center gap-2.5 transition-all shadow-2xs cursor-pointer"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => router.push("/app/acme-corp/overview")}
-              className="w-full h-11 rounded-xl border border-[#E5E5E7] hover:border-[#0D0D0E] hover:bg-[#F7F7F8] text-xs font-semibold text-[#0D0D0E] flex items-center justify-center gap-2.5 transition-all shadow-2xs cursor-pointer"
-            >
-              <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-2 .6-2.65 1.35-.58.67-1.09 1.74-.95 2.77.99.08 2.03-.52 2.68-1.27z" />
-              </svg>
-              <span>Continue with Apple</span>
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="relative my-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#E5E5E7]" />
-            </div>
-            <div className="relative flex justify-center text-[11px] text-[#8E8E93]">
-              <span className="bg-white px-3 font-medium">Or sign in with</span>
-            </div>
-          </div>
-
-          {/* Email / Password Form */}
-          <form onSubmit={handleLogin} className="space-y-3.5">
+          {/* Email / Password Form (Removed Google & Apple logins and divider) */}
+          <form onSubmit={handleLogin} className="space-y-4">
             {error && (
               <div className="rounded-xl bg-rose-50 p-3 border border-rose-200 text-xs text-rose-700 flex items-start space-x-2">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -270,7 +250,7 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="minimum 8 character"
+                  placeholder="minimum 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -298,19 +278,13 @@ export default function LoginPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
 
-              {/* Try Demo Button with Official ROOS Brand Emblem */}
+              {/* Try Demo Button with Professional PlayCircle Demo Icon */}
               <Button
                 type="button"
                 onClick={() => setDemoModalOpen(true)}
                 className="w-full sm:flex-1 h-11 bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white border border-[#27272A] font-semibold rounded-xl text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer group"
               >
-                <div className="h-5 w-5 rounded-md overflow-hidden shrink-0 border border-white/10 flex items-center justify-center bg-black p-0.5 group-hover:scale-105 transition-transform">
-                  <img
-                    src="/mark.png"
-                    alt=""
-                    className="h-full w-full object-contain"
-                  />
-                </div>
+                <PlayCircle className="h-4 w-4 text-[#FF7900] group-hover:scale-110 transition-transform" />
                 <span>Try Demo</span>
               </Button>
             </div>
@@ -383,8 +357,8 @@ export default function LoginPage() {
                 {/* Modal Header */}
                 <div className="p-6 border-b border-[#E5E5E7] flex items-center justify-between bg-[#F7F7F8]">
                   <div className="flex items-center space-x-2.5">
-                    <div className="h-9 w-9 rounded-xl bg-black border border-[#27272A] flex items-center justify-center p-1.5 overflow-hidden">
-                      <img src="/mark.png" alt="" className="h-full w-full object-contain" />
+                    <div className="h-9 w-9 rounded-xl bg-[#24180E] text-[#FF7900] border border-[#FF7900]/25 flex items-center justify-center shadow-2xs">
+                      <PlayCircle className="h-4.5 w-4.5 text-[#FF7900]" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[#0D0D0E]">Request Demo Access</h3>

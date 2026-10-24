@@ -221,4 +221,62 @@
   animation: pulse-subtle 2s infinite ease-in-out;
 }
 
+/* ========================================================================= */
+/* ROOS STUDIOX PRELOADER & CELESTIAL ORBIT ANIMATIONS                       */
+/* ========================================================================= */
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-slow-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes preloader-glow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 16s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 24s linear infinite;
+}
+
+.animate-float {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+.animate-preloader-glow {
+  animation: preloader-glow 3.5s ease-in-out infinite;
+}
+
 
