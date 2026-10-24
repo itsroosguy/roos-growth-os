@@ -5,23 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RoosLogo } from "@/components/ui/roos-logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
 import {
   AlertCircle,
   Eye,
   EyeOff,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
-  Lock,
   Building2,
   Mail,
   Phone,
   User,
   X,
   Send,
-  Layers,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -138,22 +134,18 @@ export default function LoginPage() {
         <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#FF7900]/15 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-[#FF7900]/10 blur-3xl pointer-events-none" />
 
-        {/* Top Header on Dark Panel */}
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1C1C20] border border-[#2D2D35] text-[10px] font-mono text-[#FF7900] uppercase tracking-wider">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#FF7900] animate-pulse" />
-            <span>Growth Operating System</span>
-          </div>
-        </div>
+        {/* Clean Top Spacer on Dark Panel */}
+        <div className="relative z-10 h-4" />
 
         {/* Centered Brand Presentation */}
-        <div className="relative z-10 py-12 flex flex-col items-center text-center">
-          {/* Stylized App Icon Squircle */}
-          <div className="h-20 w-20 rounded-3xl bg-[#161619] border border-[#27272A] flex items-center justify-center shadow-xl mb-8 group hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center text-2xl font-black tracking-tighter">
-              <span className="text-white">R</span>
-              <span className="text-[#FF7900]">X</span>
-            </div>
+        <div className="relative z-10 py-10 flex flex-col items-center text-center">
+          {/* Official ROOS Emblem Squircle (Replacing old RX text) */}
+          <div className="h-20 w-20 rounded-3xl overflow-hidden shadow-2xl mb-8 group hover:scale-105 transition-transform duration-300 border border-[#27272A] bg-black flex items-center justify-center p-2.5">
+            <img
+              src="/mark.png"
+              alt="ROOS STUDIOX"
+              className="h-full w-full object-contain"
+            />
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -165,7 +157,7 @@ export default function LoginPage() {
             Automate customer journeys, manage commercial deal stages, and empower 3-tier team governance in one unified workspace.
           </p>
 
-          {/* Carousel Indicator Dots (matching reference) */}
+          {/* Carousel Indicator Dots */}
           <div className="flex items-center justify-center gap-2 mt-8">
             <span className="w-6 h-1.5 rounded-full bg-[#FF7900]" />
             <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
@@ -184,22 +176,11 @@ export default function LoginPage() {
       {/* RIGHT PANEL: SIGN IN & TRY DEMO FORM (PURE WHITE SURFACE)             */}
       {/* ===================================================================== */}
       <div className="w-full lg:w-[52%] bg-white p-8 sm:p-12 flex flex-col justify-between">
-        {/* Top Header */}
+        {/* Top Header with Brand Logo (Removed "Don't have an account? Sign Up") */}
         <div className="flex items-center justify-between pb-6">
           <Link href="/" className="inline-flex items-center" title="ROOS STUDIOX">
             <RoosLogo variant="dark" size="sm" />
           </Link>
-
-          <div className="text-xs text-[#8E8E93]">
-            Don&apos;t have an account?{" "}
-            <button
-              type="button"
-              onClick={() => setDemoModalOpen(true)}
-              className="text-[#0D0D0E] font-semibold underline hover:text-[#FF7900] transition-colors cursor-pointer"
-            >
-              Sign Up
-            </button>
-          </div>
         </div>
 
         {/* Centered Form */}
@@ -298,7 +279,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-[#0D0D0E] transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-[#0D0D0E] transition-colors p-1 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -317,13 +298,19 @@ export default function LoginPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
 
-              {/* Try Demo Button */}
+              {/* Try Demo Button with Official ROOS Brand Emblem */}
               <Button
                 type="button"
                 onClick={() => setDemoModalOpen(true)}
-                className="w-full sm:flex-1 h-11 bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white border border-[#1C1C1F] font-semibold rounded-xl text-xs sm:text-sm shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="w-full sm:flex-1 h-11 bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white border border-[#27272A] font-semibold rounded-xl text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer group"
               >
-                <Sparkles className="h-3.5 w-3.5 text-[#FF7900]" />
+                <div className="h-5 w-5 rounded-md overflow-hidden shrink-0 border border-white/10 flex items-center justify-center bg-black p-0.5 group-hover:scale-105 transition-transform">
+                  <img
+                    src="/mark.png"
+                    alt=""
+                    className="h-full w-full object-contain"
+                  />
+                </div>
                 <span>Try Demo</span>
               </Button>
             </div>
@@ -339,9 +326,9 @@ export default function LoginPage() {
           </form>
         </div>
 
-        {/* Bottom Footer */}
+        {/* Bottom Footer (Cleaned, no Orion) */}
         <div className="flex items-center justify-between text-[11px] text-[#8E8E93] border-t border-[#E5E5E7] pt-4 mt-6">
-          <span>© 2026 Orion • ROOS STUDIOX</span>
+          <span>© 2026 ROOS STUDIOX</span>
           <div className="flex items-center space-x-3">
             <a href="https://roosstudiox.com" target="_blank" rel="noreferrer" className="hover:text-[#0D0D0E] transition-colors">Privacy Policy</a>
             <span>•</span>
@@ -396,18 +383,18 @@ export default function LoginPage() {
                 {/* Modal Header */}
                 <div className="p-6 border-b border-[#E5E5E7] flex items-center justify-between bg-[#F7F7F8]">
                   <div className="flex items-center space-x-2.5">
-                    <div className="h-9 w-9 rounded-xl bg-[#24180E] text-[#FF7900] border border-[#FF7900]/25 flex items-center justify-center">
-                      <Sparkles className="h-4 w-4" />
+                    <div className="h-9 w-9 rounded-xl bg-black border border-[#27272A] flex items-center justify-center p-1.5 overflow-hidden">
+                      <img src="/mark.png" alt="" className="h-full w-full object-contain" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[#0D0D0E]">Request Demo Access</h3>
-                      <p className="text-[11px] text-[#8E8E93]">Credentials mailed to your inbox by Praveen</p>
+                      <p className="text-[11px] text-[#8E8E93]">Credentials dispatched by Praveen over email</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={resetDemoModal}
-                    className="text-[#8E8E93] hover:text-[#0D0D0E] p-1 rounded-lg transition-colors"
+                    className="text-[#8E8E93] hover:text-[#0D0D0E] p-1 rounded-lg transition-colors cursor-pointer"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -443,7 +430,7 @@ export default function LoginPage() {
                       <Building2 className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E93]" />
                       <input
                         type="text"
-                        placeholder="e.g. Orion Retail Solutions"
+                        placeholder="e.g. Acme Technologies"
                         value={demoOrgName}
                         onChange={(e) => setDemoOrgName(e.target.value)}
                         required
