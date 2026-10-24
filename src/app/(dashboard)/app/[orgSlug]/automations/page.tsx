@@ -103,31 +103,31 @@ export default function AutomationsPage() {
   };
 
   return (
-    <div className="space-y-7 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Workflow Automation & Triggers
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+              Workflow Automation &amp; Triggers
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
               {workflowUsage.current_count} / {workflowUsage.max_quota} Active Workflows
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
             Automate lead assignments, follow-up reminders, and customer notifications for {currentOrg.name}.
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center bg-white/70 backdrop-blur-sm border border-white/80 rounded-xl p-1 shadow-2xs self-start sm:self-auto">
+        <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
           <button
             onClick={() => setActiveTab("workflows")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "workflows"
-                ? "bg-white shadow-xs text-blue-600 font-bold border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             <Layers className="h-3.5 w-3.5" />
@@ -135,21 +135,21 @@ export default function AutomationsPage() {
           </button>
           <button
             onClick={() => setActiveTab("templates")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "templates"
-                ? "bg-white shadow-xs text-blue-600 font-bold border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <Sparkles className="h-3.5 w-3.5" />
             <span>Templates A–F</span>
           </button>
           <button
             onClick={() => setActiveTab("history")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "history"
-                ? "bg-white shadow-xs text-blue-600 font-bold border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             <History className="h-3.5 w-3.5" />
@@ -159,12 +159,12 @@ export default function AutomationsPage() {
       </div>
 
       {feedback && (
-        <div className="rounded-2xl bg-blue-50/90 backdrop-blur-sm p-4 border border-blue-200/80 text-xs text-blue-700 flex items-center justify-between shadow-xs">
+        <div className="rounded-2xl bg-[#FFF4EC] p-4 border border-[#FF7900]/30 text-xs text-[#0D0D0E] flex items-center justify-between shadow-2xs">
           <div className="flex items-center space-x-2">
-            <Zap className="h-4 w-4 shrink-0 text-blue-600" />
-            <span className="font-semibold">{feedback}</span>
+            <Zap className="h-4 w-4 shrink-0 text-[#FF7900]" />
+            <span className="font-bold">{feedback}</span>
           </div>
-          <button onClick={() => setFeedback(null)} className="font-bold underline ml-4 hover:text-blue-900 cursor-pointer">
+          <button onClick={() => setFeedback(null)} className="font-bold text-[#FF7900] underline ml-4 hover:text-[#E66D00] cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -174,18 +174,18 @@ export default function AutomationsPage() {
       {activeTab === "workflows" && (
         <div className="space-y-4">
           {rules.length === 0 ? (
-            <div className="p-10 text-center glass-panel rounded-3xl border border-white/70 bg-white/75 backdrop-blur-xl shadow-glass">
-              <Zap className="h-9 w-9 text-blue-600 mx-auto mb-2" />
-              <h3 className="text-base font-bold text-slate-900">
+            <div className="p-12 text-center rounded-2xl border border-[#E5E5E7] bg-white shadow-2xs">
+              <Zap className="h-9 w-9 text-[#FF7900] mx-auto mb-2" />
+              <h3 className="text-base font-black text-[#0D0D0E]">
                 No automation rules active yet
               </h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
+              <p className="text-xs text-[#8E8E93] max-w-sm mx-auto mt-1 mb-4 font-medium">
                 Activate one of our pre-built workflow templates with a single click.
               </p>
               <Button
                 variant="default"
                 size="sm"
-                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold shadow-xs cursor-pointer text-xs"
                 onClick={() => setActiveTab("templates")}
               >
                 Browse Ready-to-Use Templates
@@ -196,44 +196,44 @@ export default function AutomationsPage() {
               {rules.map((rule) => (
                 <div
                   key={rule.id}
-                  className={`glass-card rounded-[22px] border border-white/75 bg-white/80 backdrop-blur-xl p-5 shadow-glass hover:bg-white/95 transition-all ${
-                    rule.is_active ? "border-l-4 border-l-blue-600" : "opacity-80"
+                  className={`rounded-2xl border border-[#E5E5E7] bg-white p-5 shadow-2xs hover:shadow-md hover:border-[#FF7900]/40 transition-all ${
+                    rule.is_active ? "border-l-4 border-l-[#FF7900]" : "opacity-80"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5 max-w-2xl">
                       <div className="flex items-center space-x-2">
-                        <span className="font-semibold text-foreground text-sm">
+                        <span className="font-black text-[#0D0D0E] text-sm sm:text-base">
                           {rule.name}
                         </span>
                         <Badge
                           variant={rule.is_active ? "success" : "neutral"}
-                          className="text-[10px] uppercase font-bold"
+                          className="text-[10px] uppercase font-black"
                         >
                           {rule.is_active ? "Active" : "Paused"}
                         </Badge>
-                        <Badge variant="neutral" className="text-[10px] font-mono">
+                        <Badge variant="neutral" className="text-[10px] font-mono font-bold">
                           {rule.trigger_type}
                         </Badge>
                       </div>
 
-                      <p className="text-xs text-foreground-secondary">
+                      <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
                         {rule.description}
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-foreground-secondary">
+                      <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#8E8E93] font-medium">
                         <span>
-                          <strong>Actions:</strong> {rule.actions.map((a) => a.type).join(" → ")}
+                          <strong className="text-[#0D0D0E]">Actions:</strong> {rule.actions.map((a) => a.type).join(" → ")}
                         </span>
                         <span>•</span>
                         <span>
-                          <strong>Runs:</strong> {rule.total_executions} ({rule.success_count} success, {rule.failure_count} fail)
+                          <strong className="text-[#0D0D0E]">Runs:</strong> {rule.total_executions} ({rule.success_count} success, {rule.failure_count} fail)
                         </span>
                         {rule.last_executed_at && (
                           <>
                             <span>•</span>
                             <span>
-                              <strong>Last Run:</strong> {new Date(rule.last_executed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                              <strong className="text-[#0D0D0E]">Last Run:</strong> {new Date(rule.last_executed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </span>
                           </>
                         )}
@@ -244,18 +244,22 @@ export default function AutomationsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs h-8"
+                        className="text-xs h-8 font-bold border-[#E5E5E7] rounded-xl text-[#0D0D0E] hover:bg-[#F7F7F8] cursor-pointer"
                         onClick={() => handleTestTrigger(rule)}
                         title="Simulate trigger event"
                       >
-                        <Play className="h-3 w-3 mr-1 text-google-blue" />
+                        <Play className="h-3 w-3 mr-1 text-[#FF7900]" />
                         Test Run
                       </Button>
 
                       <Button
                         variant={rule.is_active ? "secondary" : "default"}
                         size="sm"
-                        className="text-xs h-8"
+                        className={`text-xs h-8 font-bold rounded-xl cursor-pointer ${
+                          rule.is_active
+                            ? "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7] hover:bg-[#E5E5E7]"
+                            : "bg-[#0D0D0E] text-white hover:bg-[#1C1C1F]"
+                        }`}
                         onClick={() => handleToggleRule(rule.id, rule.is_active)}
                       >
                         {rule.is_active ? "Pause" : "Enable"}
@@ -264,7 +268,7 @@ export default function AutomationsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 text-google-red hover:bg-google-red-subtle"
+                        className="h-8 text-rose-600 hover:bg-rose-50 rounded-xl cursor-pointer"
                         onClick={() => handleDeleteRule(rule.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -282,50 +286,50 @@ export default function AutomationsPage() {
       {activeTab === "templates" && (
         <div className="space-y-4">
           <div className="mb-2">
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">
+            <h2 className="text-base font-black text-[#0D0D0E] tracking-tight">
               Predefined Workflow Templates (Templates A–F)
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
               Production-tested workflow patterns ready for instant activation with zero coding.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PREDEFINED_TEMPLATES.map((tmpl) => (
               <div
                 key={tmpl.id}
-                className="p-5 flex flex-col justify-between glass-card rounded-[22px] border border-white/75 bg-white/80 backdrop-blur-xl shadow-glass hover:bg-white/95 hover:shadow-glass hover:-translate-y-0.5 transition-all duration-200"
+                className="p-5 flex flex-col justify-between rounded-2xl border border-[#E5E5E7] bg-white shadow-2xs hover:shadow-md hover:border-[#FF7900]/40 hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div>
                   <div className="flex justify-between items-start mb-2">
-                    <Badge variant="neutral" className="text-[10px] uppercase font-bold shadow-2xs">
+                    <Badge variant="orangeSubtle" className="text-[10px] uppercase font-bold shadow-2xs">
                       {tmpl.category.replace("_", " ")}
                     </Badge>
-                    <span className="text-[10px] font-mono text-slate-400 font-semibold">
+                    <span className="text-[11px] font-mono text-[#8E8E93] font-bold">
                       {tmpl.id.toUpperCase()}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-sm text-slate-900 mb-1">
+                  <h3 className="font-black text-sm sm:text-base text-[#0D0D0E] mb-1">
                     {tmpl.name}
                   </h3>
-                  <p className="text-xs text-slate-500 mb-3">
+                  <p className="text-xs text-[#8E8E93] font-medium mb-3">
                     {tmpl.tagline}
                   </p>
 
-                  <div className="space-y-2 text-xs bg-white/60 p-3.5 rounded-2xl border border-white/80 backdrop-blur-xs mb-4 shadow-2xs">
+                  <div className="space-y-2 text-xs bg-[#F7F7F8] p-3.5 rounded-xl border border-[#E5E5E7] mb-4 shadow-2xs">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                      <span className="text-[10px] uppercase font-bold text-[#8E8E93] block">
                         When (Trigger):
                       </span>
-                      <span className="text-slate-800 font-semibold">{tmpl.trigger_label}</span>
+                      <span className="text-[#0D0D0E] font-bold">{tmpl.trigger_label}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                      <span className="text-[10px] uppercase font-bold text-[#8E8E93] block">
                         Then (Actions):
                       </span>
-                      <span className="text-slate-700">
-                        {tmpl.actions.length} automated steps (tasks, assignment & internal notes)
+                      <span className="text-[#8E8E93] font-medium">
+                        {tmpl.actions.length} automated steps (tasks, assignment &amp; internal notes)
                       </span>
                     </div>
                   </div>
@@ -334,7 +338,7 @@ export default function AutomationsPage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="w-full text-xs rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                  className="w-full text-xs font-bold rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-xs cursor-pointer"
                   onClick={() => handleActivateTemplate(tmpl.id)}
                 >
                   <Sparkles className="h-3.5 w-3.5 mr-1.5" />
@@ -348,55 +352,53 @@ export default function AutomationsPage() {
 
       {/* Tab 3: Execution History & Audit Logs */}
       {activeTab === "history" && (
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base">Recent Execution Audit Trail</CardTitle>
-                <CardDescription className="text-xs">
-                  Idempotent execution history and duration diagnostics for background jobs.
-                </CardDescription>
-              </div>
-              <Badge variant="neutral" className="text-xs font-mono">
-                {executions.length} Events Logged
-              </Badge>
+        <div className="rounded-2xl border border-[#E5E5E7] bg-white overflow-hidden shadow-2xs">
+          <div className="p-5 border-b border-[#E5E5E7] flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-black text-[#0D0D0E]">Recent Execution Audit Trail</h3>
+              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                Idempotent execution history and duration diagnostics for background jobs.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
+            <Badge variant="neutral" className="text-xs font-mono font-bold">
+              {executions.length} Events Logged
+            </Badge>
+          </div>
+          <div>
             {executions.length === 0 ? (
-              <p className="text-xs text-foreground-secondary py-6 text-center">
+              <p className="text-xs text-[#8E8E93] py-12 text-center font-medium">
                 No workflow execution events logged yet.
               </p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-border text-foreground-secondary font-medium">
-                      <th className="py-2.5 px-3">Timestamp</th>
-                      <th className="py-2.5 px-3">Rule Name</th>
-                      <th className="py-2.5 px-3">Trigger Event</th>
-                      <th className="py-2.5 px-3">Status</th>
-                      <th className="py-2.5 px-3">Duration</th>
-                      <th className="py-2.5 px-3 text-right">Action</th>
+                <table className="w-full text-left text-xs sm:text-sm">
+                  <thead className="bg-[#F7F7F8] border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase font-mono text-[11px] tracking-wider">
+                    <tr>
+                      <th className="py-3 px-4">Timestamp</th>
+                      <th className="py-3 px-4">Rule Name</th>
+                      <th className="py-3 px-4">Trigger Event</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4">Duration</th>
+                      <th className="py-3 px-4 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/60">
+                  <tbody className="divide-y divide-[#E5E5E7]">
                     {executions.map((exec) => (
-                      <tr key={exec.id} className="hover:bg-surface-subtle/50">
-                        <td className="py-3 px-3 font-mono text-foreground-secondary">
+                      <tr key={exec.id} className="hover:bg-[#F7F7F8]/80 transition-colors">
+                        <td className="py-3 px-4 font-mono text-[#8E8E93] text-xs">
                           {new Date(exec.created_at).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                             second: "2-digit",
                           })}
                         </td>
-                        <td className="py-3 px-3 font-semibold text-foreground">
+                        <td className="py-3 px-4 font-bold text-[#0D0D0E]">
                           {exec.rule_name || "Custom Rule"}
                         </td>
-                        <td className="py-3 px-3 font-mono text-foreground-secondary">
+                        <td className="py-3 px-4 font-mono text-[#8E8E93] text-xs">
                           {exec.trigger_event}
                         </td>
-                        <td className="py-3 px-3">
+                        <td className="py-3 px-4">
                           <Badge
                             variant={
                               exec.status === "completed"
@@ -405,20 +407,20 @@ export default function AutomationsPage() {
                                 ? "danger"
                                 : "warning"
                             }
-                            className="text-[10px]"
+                            className="text-[10px] uppercase font-bold"
                           >
                             {exec.status}
                           </Badge>
                         </td>
-                        <td className="py-3 px-3 font-mono text-foreground-secondary">
+                        <td className="py-3 px-4 font-mono font-bold text-[#0D0D0E] text-xs">
                           {exec.duration_ms ? `${exec.duration_ms}ms` : "—"}
                         </td>
-                        <td className="py-3 px-3 text-right">
+                        <td className="py-3 px-4 text-right">
                           {exec.status === "failed" && (
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-7 text-xs text-google-blue"
+                              className="h-7 text-xs font-bold text-[#FF7900] hover:text-[#E66D00]"
                               onClick={() => handleRetryExecution(exec.id)}
                             >
                               <RotateCw className="h-3 w-3 mr-1" />
@@ -432,8 +434,8 @@ export default function AutomationsPage() {
                 </table>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );

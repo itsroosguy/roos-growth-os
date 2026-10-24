@@ -22,6 +22,9 @@ import {
   Power,
   Key,
   Globe,
+  Radio,
+  Sliders,
+  Check,
 } from "lucide-react";
 
 export default function WhatsAppSettingsPage() {
@@ -109,27 +112,27 @@ export default function WhatsAppSettingsPage() {
   };
 
   return (
-    <div className="space-y-7 max-w-5xl">
+    <div className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
               WhatsApp Cloud API Settings
             </h1>
             <Badge
               variant={connection.status === "connected" ? "success" : "neutral"}
-              className="text-xs uppercase font-bold shadow-2xs"
+              className="text-xs uppercase font-black shadow-2xs"
             >
               {connection.status}
             </Badge>
             {connection.mode === "mock" && (
-              <Badge variant="warning" className="text-xs shadow-2xs">
+              <Badge variant="orangeSubtle" className="text-xs shadow-2xs font-bold font-mono">
                 MOCK DEV MODE
               </Badge>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
             Configure official Meta WhatsApp Business Cloud API or local mock simulation for {currentOrg.name}.
           </p>
         </div>
@@ -139,10 +142,10 @@ export default function WhatsAppSettingsPage() {
             variant={connection.status === "connected" ? "outline" : "default"}
             size="sm"
             onClick={handleToggleConnection}
-            className={`rounded-xl shadow-xs ${
+            className={`rounded-xl shadow-2xs font-bold text-xs ${
               connection.status === "connected"
-                ? "border-white/80 bg-white/80 hover:bg-white text-slate-700"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
+                ? "border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
+                : "bg-[#FF7900] hover:bg-[#E66D00] text-white"
             }`}
           >
             <Power className="mr-1.5 h-3.5 w-3.5" />
@@ -152,17 +155,17 @@ export default function WhatsAppSettingsPage() {
       </div>
 
       {/* Mode Switcher Banner */}
-      <div className="glass-panel rounded-[22px] border border-white/70 bg-white/75 backdrop-blur-xl shadow-glass p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-start space-x-3">
-          <div className="p-2.5 rounded-2xl bg-blue-500/15 text-blue-600 border border-blue-500/20 shadow-xs shrink-0 mt-0.5">
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-start space-x-3.5">
+          <div className="p-2.5 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 shrink-0 mt-0.5">
             <Zap className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">
-              Current Messaging Mode:{" "}
-              <span className="capitalize text-blue-600 font-extrabold">{mode} Mode</span>
+            <h3 className="text-sm font-bold text-[#0D0D0E]">
+              Active Messaging Mode:{" "}
+              <span className="capitalize text-[#FF7900] font-black">{mode} Mode</span>
             </h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-xl leading-relaxed">
+            <p className="text-xs text-[#8E8E93] font-medium mt-1 max-w-xl leading-relaxed">
               {mode === "mock"
                 ? "Mock mode operates completely free without requiring Meta credentials. Test chats, 24h window expiry, and webhook simulation locally."
                 : "Live mode connects directly to official Meta WhatsApp Cloud API via Graph API v20.0."}
@@ -170,23 +173,23 @@ export default function WhatsAppSettingsPage() {
           </div>
         </div>
 
-        <div className="flex items-center rounded-xl border border-white/80 p-1 bg-white/60 backdrop-blur-xs shadow-2xs shrink-0">
+        <div className="flex items-center rounded-xl border border-[#E5E5E7] p-1 bg-[#F7F7F8] shadow-2xs shrink-0">
           <button
             onClick={() => setMode("mock")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               mode === "mock"
-                ? "bg-white text-blue-600 font-bold shadow-xs border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             Mock Mode (Free)
           </button>
           <button
             onClick={() => setMode("live")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               mode === "live"
-                ? "bg-white text-blue-600 font-bold shadow-xs border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             Live Meta API
@@ -196,19 +199,20 @@ export default function WhatsAppSettingsPage() {
 
       {/* Connection Details Form */}
       <form onSubmit={handleSaveConfig}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Connection Identifiers & Secrets</CardTitle>
-            <CardDescription>
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+          <div className="p-5 border-b border-[#E5E5E7]">
+            <h2 className="text-base font-black text-[#0D0D0E]">Connection Identifiers &amp; Secrets</h2>
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
               {mode === "mock"
                 ? "Simulated connection details for testing the CRM and inbox."
                 : "Official Meta Business Manager identifiers and System User Token."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </p>
+          </div>
+          
+          <div className="p-5 space-y-4">
             {saveSuccess && (
-              <div className="rounded-2xl bg-google-green-subtle p-3.5 border border-google-green/20 text-xs text-google-green flex items-center space-x-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 font-semibold flex items-center space-x-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                 <span>WhatsApp connection settings saved successfully!</span>
               </div>
             )}
@@ -220,6 +224,7 @@ export default function WhatsAppSettingsPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 disabled={!isAdmin}
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Display Phone Number"
@@ -227,6 +232,7 @@ export default function WhatsAppSettingsPage() {
                 value={displayPhone}
                 onChange={(e) => setDisplayPhone(e.target.value)}
                 disabled={!isAdmin}
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
               />
             </div>
 
@@ -237,6 +243,7 @@ export default function WhatsAppSettingsPage() {
                 value={phoneNumberId}
                 onChange={(e) => setPhoneNumberId(e.target.value)}
                 disabled={!isAdmin}
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
               />
               <Input
                 label="WhatsApp Business Account ID (WABA ID)"
@@ -244,6 +251,7 @@ export default function WhatsAppSettingsPage() {
                 value={wabaId}
                 onChange={(e) => setWabaId(e.target.value)}
                 disabled={!isAdmin}
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
               />
             </div>
 
@@ -255,6 +263,7 @@ export default function WhatsAppSettingsPage() {
                 value={accessToken}
                 onChange={(e) => setAccessToken(e.target.value)}
                 disabled={!isAdmin}
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
               />
             )}
 
@@ -262,60 +271,64 @@ export default function WhatsAppSettingsPage() {
             <div className="pt-2">
               <Button
                 type="button"
-                variant="secondary"
+                variant="outline"
                 size="sm"
                 onClick={handleRunConnectionTest}
                 isLoading={isTesting}
+                className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs"
               >
-                <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+                <RefreshCw className="mr-1.5 h-3.5 w-3.5 text-[#FF7900]" />
                 Test Connection Status
               </Button>
 
               {testResult && (
                 <div
-                  className={`mt-3 p-3 rounded-2xl text-xs flex items-center space-x-2 ${
+                  className={`mt-3 p-3.5 rounded-xl text-xs flex items-center space-x-2 ${
                     testResult.success
-                      ? "bg-google-green-subtle text-google-green border border-google-green/20"
-                      : "bg-google-red-subtle text-google-red border border-google-red/20"
+                      ? "bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium"
+                      : "bg-rose-50 text-rose-800 border border-rose-200 font-medium"
                   }`}
                 >
                   {testResult.success ? (
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   ) : (
-                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
                   )}
                   <span>{testResult.msg}</span>
                 </div>
               )}
             </div>
-          </CardContent>
+          </div>
 
           {isAdmin && (
-            <CardFooter className="flex justify-end border-t border-border pt-4">
-              <Button type="submit">Save WhatsApp Configuration</Button>
-            </CardFooter>
+            <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl shadow-2xs text-xs">
+                Save WhatsApp Configuration
+              </Button>
+            </div>
           )}
-        </Card>
+        </div>
       </form>
 
       {/* Webhook Configuration Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <Globe className="h-5 w-5 text-google-blue" />
-            <CardTitle>Meta Webhook Callback URL</CardTitle>
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
+          <Globe className="h-5 w-5 text-[#FF7900]" />
+          <div>
+            <h2 className="text-base font-black text-[#0D0D0E]">Meta Webhook Callback URL</h2>
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              Enter these endpoints into your Meta App Dashboard under WhatsApp &gt; Configuration.
+            </p>
           </div>
-          <CardDescription>
-            Enter these endpoints into your Meta App Dashboard under WhatsApp &gt; Configuration.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        </div>
+        
+        <div className="p-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-foreground-secondary">
+            <label className="block text-xs font-bold text-[#0D0D0E]">
               Callback URL (Webhook Ingestion)
             </label>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 font-mono text-xs bg-surface-subtle p-2.5 rounded-xl border border-border select-all truncate">
+              <div className="flex-1 font-mono text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-bold">
                 {webhookUrl}
               </div>
               <Button
@@ -323,19 +336,29 @@ export default function WhatsAppSettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => copyToClipboard(webhookUrl, setCopiedUrl)}
+                className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shrink-0 text-xs"
               >
-                <Copy className="h-3.5 w-3.5 mr-1" />
-                {copiedUrl ? "Copied" : "Copy"}
+                {copiedUrl ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" />
+                    Copy
+                  </>
+                )}
               </Button>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-foreground-secondary">
+            <label className="block text-xs font-bold text-[#0D0D0E]">
               Verify Token
             </label>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 font-mono text-xs bg-surface-subtle p-2.5 rounded-xl border border-border select-all truncate">
+              <div className="flex-1 font-mono text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-bold">
                 {connection.webhook_verify_token}
               </div>
               <Button
@@ -343,57 +366,68 @@ export default function WhatsAppSettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => copyToClipboard(connection.webhook_verify_token, setCopiedToken)}
+                className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shrink-0 text-xs"
               >
-                <Copy className="h-3.5 w-3.5 mr-1" />
-                {copiedToken ? "Copied" : "Copy"}
+                {copiedToken ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" />
+                    Copy
+                  </>
+                )}
               </Button>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-surface-subtle p-3.5 border border-border text-xs text-foreground-secondary space-y-1">
-            <span className="font-semibold text-foreground block">Webhook Subscriptions Required:</span>
-            <p>Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded font-mono text-google-blue">messages</code> subscription field in Meta App Dashboard.</p>
+          <div className="rounded-xl bg-[#FFF4EC] p-3.5 border border-[#FF7900]/30 text-xs text-[#0D0D0E] space-y-1">
+            <span className="font-bold text-[#FF7900] block">Webhook Subscriptions Required:</span>
+            <p className="text-[#8E8E93] font-medium">Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded font-mono text-[#0D0D0E] font-bold border border-[#E5E5E7]">messages</code> subscription field in your Meta Developer App Dashboard.</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Message Templates Catalog */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pre-Approved Message Templates</CardTitle>
-          <CardDescription>
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E7]">
+          <h2 className="text-base font-black text-[#0D0D0E]">Pre-Approved Message Templates</h2>
+          <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
             Templates permitted for initiating contact or re-engaging customers outside the 24-hour service window.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        
+        <div className="p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {MOCK_TEMPLATES.map((tpl) => (
               <div
                 key={tpl.id}
-                className="p-4 rounded-2xl border border-border bg-white flex flex-col justify-between"
+                className="p-4 rounded-xl border border-[#E5E5E7] bg-white flex flex-col justify-between shadow-2xs hover:border-[#FF7900]/40 transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xs font-mono text-foreground">
+                    <span className="font-mono font-bold text-xs text-[#0D0D0E]">
                       {tpl.name}
                     </span>
                     <Badge variant="success" className="text-[10px] uppercase font-bold">
                       {tpl.status}
                     </Badge>
                   </div>
-                  <p className="text-xs text-foreground-secondary leading-relaxed bg-surface-subtle p-2.5 rounded-xl border border-border/70 mb-2">
+                  <p className="text-xs text-[#0D0D0E] font-medium leading-relaxed bg-[#F7F7F8] p-2.5 rounded-lg border border-[#E5E5E7] mb-2">
                     &ldquo;{tpl.body_content}&rdquo;
                   </p>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-foreground-secondary pt-2 border-t border-border/50">
-                  <span className="capitalize">Category: {tpl.category}</span>
-                  <span>Variables: {tpl.variables.join(", ")}</span>
+                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] pt-2 border-t border-[#E5E5E7]">
+                  <span className="capitalize font-medium">Category: {tpl.category}</span>
+                  <span className="font-mono text-[10px]">Variables: {tpl.variables.join(", ")}</span>
                 </div>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

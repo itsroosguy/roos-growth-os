@@ -1,8 +1,30 @@
-export type OrganizationRole = "owner" | "admin" | "staff";
+export type OrganizationRole =
+  | "owner"
+  | "admin"
+  | "senior_manager"
+  | "junior_manager"
+  | "staff";
 
 export type OrganizationMemberStatus = "active" | "invited" | "suspended";
 
 export type PlanTier = "starter" | "growth" | "business";
+
+export interface AccessCredential {
+  id: string;
+  organizationId: string;
+  name: string;
+  role: OrganizationRole;
+  email: string;
+  apiKeyId: string;
+  secretMasked: string;
+  scopes: string[];
+  description: string;
+  lastActive: string;
+  status: "active" | "revoked";
+  created_at: string;
+  canAccessFunds: boolean;
+  operationalScope: "full_operational" | "task_performance_only" | "root_governance";
+}
 
 export interface Organization {
   id: string;

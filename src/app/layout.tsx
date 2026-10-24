@@ -2,17 +2,16 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Roos StudioX — Growth Partner for Ambitious Brands",
+  title: "ROOS STUDIOX — Growth OS | WhatsApp CRM & Automation",
   description:
-    "We combine strategy, design, technology, and AI automation to create high-performance digital ecosystems that strengthen brands and drive revenue growth.",
+    "Institutional WhatsApp CRM, commercial pipeline management, and autonomous business workflows by ROOS STUDIOX.",
   keywords: [
-    "Creative Intelligence Studio",
-    "Brand Strategy",
-    "Website Design",
-    "AI Automation",
-    "Growth Systems",
-    "Roos StudioX",
-    "Praveen Raj",
+    "ROOS STUDIOX",
+    "Growth OS",
+    "WhatsApp CRM",
+    "Business Automation",
+    "Enterprise Messaging",
+    "Sales Pipeline",
   ],
 };
 
@@ -23,7 +22,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-[#2563EB] selection:text-white">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen bg-[#F7F7F8] text-[#0D0D0E] antialiased selection:bg-[#FF7900] selection:text-white font-sans text-[15px]">
         {children}
       </body>
     </html>

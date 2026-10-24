@@ -2,12 +2,11 @@
 
 import React, { useState } from "react";
 import { useTenant } from "@/lib/organizations/tenant-context";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { cleanSlug } from "@/lib/organizations/slug";
-import { Building2, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Building2, AlertTriangle, CheckCircle2, Sparkles, Shield, Trash2, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const { currentOrg, userRole, isOwner, isAdmin } = useTenant();
@@ -21,29 +20,42 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-7 max-w-4xl pb-12">
-      <div className="pb-3 border-b border-white/60">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+    <div className="space-y-6 max-w-4xl pb-12">
+      <div className="pb-4 border-b border-[#E5E5E7]">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
           Organisation Settings
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
-          Manage workspace profile and preferences for {currentOrg.name}.
+        <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
+          Manage workspace profile, AI configuration, and preferences for {currentOrg.name}.
         </p>
       </div>
 
+      {!isAdmin && (
+        <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-xs text-amber-900 flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <Shield className="h-4 w-4 text-amber-600 shrink-0" />
+            <span>
+              <strong>Read-Only View:</strong> Workspace configuration and master parameters are restricted to Level 1 Administrators. Your current role is{" "}
+              <strong className="capitalize">{userRole.replace("_", " ")}</strong>.
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Workspace Profile */}
       <form onSubmit={handleSave}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Workspace Profile</CardTitle>
-            <CardDescription>
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+          <div className="p-5 border-b border-[#E5E5E7]">
+            <h2 className="text-base font-black text-[#0D0D0E]">Workspace Profile</h2>
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
               Basic identifying information for this organisation.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </p>
+          </div>
+
+          <div className="p-5 space-y-4">
             {saved && (
-              <div className="rounded-2xl bg-google-green-subtle p-3.5 border border-google-green/20 text-xs text-google-green flex items-center space-x-2">
-                <CheckCircle2 className="h-4 w-4" />
+              <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 font-semibold flex items-center space-x-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                 <span>Organisation settings updated successfully!</span>
               </div>
             )}
@@ -54,130 +66,143 @@ export default function SettingsPage() {
               onChange={(e) => setOrgName(e.target.value)}
               disabled={!isAdmin}
               required
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-foreground-secondary">
+              <label className="block text-xs font-bold text-[#0D0D0E]">
                 Workspace URL Identifier (Slug)
               </label>
-              <div className="flex h-11 items-center rounded-xl border border-border bg-surface-subtle px-3.5 text-sm font-mono text-foreground-secondary">
+              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs font-mono font-bold text-[#0D0D0E]">
                 /app/{currentOrg.slug}
               </div>
-              <p className="text-[11px] text-foreground-secondary">
-                Slugs are immutable to preserve external links and webhook endpoints.
+              <p className="text-[11px] text-[#8E8E93]">
+                Slugs are immutable to preserve external links, webhook callbacks, and tenant isolation.
               </p>
             </div>
-          </CardContent>
+          </div>
+
           {isAdmin && (
-            <CardFooter className="flex justify-end border-t border-border pt-4">
-              <Button type="submit">Save changes</Button>
-            </CardFooter>
+            <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl shadow-2xs text-xs">
+                Save Changes
+              </Button>
+            </div>
           )}
-        </Card>
+        </div>
       </form>
 
       {/* AI Copilot & Business Grounding Knowledge */}
-      <Card className="border-border">
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-google-blue" />
-            <CardTitle>AI Assistant & Business Knowledge</CardTitle>
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
+          <Sparkles className="h-5 w-5 text-[#FF7900]" />
+          <div>
+            <h2 className="text-base font-black text-[#0D0D0E]">AI Assistant &amp; Business Knowledge</h2>
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              Configure tone, model parameters, and ground AI reply suggestions in your verified company profile.
+            </p>
           </div>
-          <CardDescription>
-            Configure tone, model parameters, and ground AI reply suggestions in your verified company profile.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface-subtle border border-border">
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                AI Copilot Settings & Model Controls
-              </p>
-              <p className="text-xs text-foreground-secondary mt-0.5">
-                Toggle features, set response length, configure tone, and track token usage.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.location.href = `/app/${currentOrg.slug}/settings/ai`}
-            >
-              Configure AI Settings
-            </Button>
-          </div>
+        </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface-subtle border border-border">
+        <div className="p-5 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
             <div>
-              <p className="text-sm font-semibold text-foreground">
-                Business Knowledge & FAQs Profile
+              <p className="text-sm font-bold text-[#0D0D0E]">
+                AI Copilot Settings &amp; Model Controls
               </p>
-              <p className="text-xs text-foreground-secondary mt-0.5">
-                Manage official products, operating hours, and FAQs used to prevent hallucinations.
+              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                Toggle automated draft suggestions, configure tone, and track token usage.
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.location.href = `/app/${currentOrg.slug}/settings/business-profile`}
-            >
-              Edit Business Profile
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Platform Administration (Owner Only) */}
-      {isOwner && (
-        <Card className="border-border">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Building2 className="h-5 w-5 text-google-blue" />
-              <CardTitle>Platform Administration</CardTitle>
-            </div>
-            <CardDescription>
-              Authorised operator console for multi-tenant oversight, quota overrides, and subscription health.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface-subtle border border-border">
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  Operator Management Console
-                </p>
-                <p className="text-xs text-foreground-secondary mt-0.5">
-                  Manage tenant states, review payment events, and audit bonus quota grants.
-                </p>
-              </div>
+            <Link href={`/app/${currentOrg.slug}/settings/ai`}>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.location.href = `/app/${currentOrg.slug}/settings/admin`}
+                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
               >
-                Open Admin Console
+                Configure AI Settings
               </Button>
+            </Link>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+            <div>
+              <p className="text-sm font-bold text-[#0D0D0E]">
+                Business Knowledge &amp; FAQs Profile
+              </p>
+              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                Manage official products, operating hours, and FAQs used to prevent AI hallucinations.
+              </p>
             </div>
-          </CardContent>
-        </Card>
+            <Link href={`/app/${currentOrg.slug}/settings/business-profile`}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
+              >
+                Edit Business Profile
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Platform Administration (Owner Only) */}
+      {isOwner && (
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+          <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
+            <Building2 className="h-5 w-5 text-[#FF7900]" />
+            <div>
+              <h2 className="text-base font-black text-[#0D0D0E]">Platform Administration</h2>
+              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                Authorized operator console for multi-tenant oversight, quota overrides, and subscription health.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+              <div>
+                <p className="text-sm font-bold text-[#0D0D0E]">
+                  Operator Management Console
+                </p>
+                <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                  Manage tenant states, review payment events, and audit bonus quota grants.
+                </p>
+              </div>
+              <Link href={`/app/${currentOrg.slug}/settings/admin`}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
+                >
+                  Open Admin Console
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Danger Zone (Owner Only) */}
-      <Card className="border-google-red/30">
-        <CardHeader>
-          <div className="flex items-center space-x-2 text-google-red">
-            <AlertTriangle className="h-5 w-5" />
-            <CardTitle className="text-google-red">Danger Zone</CardTitle>
+      <div className="bg-white rounded-2xl border border-rose-200 shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-rose-100 flex items-center space-x-2 text-rose-600">
+          <AlertTriangle className="h-5 w-5 text-rose-600" />
+          <div>
+            <h2 className="text-base font-black text-rose-700">Danger Zone</h2>
+            <p className="text-xs text-rose-600 font-normal mt-0.5">
+              Irreversible actions for this workspace. Only the Owner can perform these operations.
+            </p>
           </div>
-          <CardDescription>
-            Irreversible actions for this workspace. Only the Owner can perform these operations.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-google-red-subtle/40 border border-google-red/20">
+        </div>
+
+        <div className="p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-rose-50 border border-rose-200">
             <div>
-              <p className="text-sm font-semibold text-foreground">
+              <p className="text-sm font-bold text-rose-950">
                 Delete this organisation
               </p>
-              <p className="text-xs text-foreground-secondary mt-0.5">
+              <p className="text-xs text-rose-800 mt-0.5">
                 Permanently delete all contacts, leads, conversations, and settings.
               </p>
             </div>
@@ -185,17 +210,18 @@ export default function SettingsPage() {
               variant="danger"
               disabled={!isOwner}
               onClick={() => alert("Deletion confirmation required in production.")}
+              className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
             >
-              Delete workspace
+              Delete Workspace
             </Button>
           </div>
           {!isOwner && (
-            <p className="text-xs text-foreground-secondary mt-2">
-              You are currently signed in as <span className="font-semibold uppercase">{userRole}</span>. Contact the workspace Owner to request deletion.
+            <p className="text-xs text-[#8E8E93] mt-2 font-medium">
+              You are currently signed in as <span className="font-bold uppercase text-[#0D0D0E]">{userRole}</span>. Contact the workspace Owner to request deletion.
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

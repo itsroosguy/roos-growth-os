@@ -4,29 +4,35 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-google-blue/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
+  "inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF7900]/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-google-blue text-white shadow-xs hover:bg-google-blue-hover active:scale-[0.98] font-semibold",
+          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] active:scale-[0.98] font-semibold",
+        orange:
+          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] active:scale-[0.98] font-semibold",
+        orangeSubtle:
+          "bg-[rgba(255,121,0,0.12)] text-[#FF7900] hover:bg-[rgba(255,121,0,0.2)] border border-[rgba(255,121,0,0.25)] font-bold",
+        dark:
+          "bg-[#121214] text-white hover:bg-[#1A1A1E] border border-[#232326] active:scale-[0.98] font-semibold shadow-xs",
         secondary:
-          "bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 border border-slate-200/80 active:scale-[0.98] font-medium",
+          "bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-950 border border-slate-200/80 active:scale-[0.98] font-medium",
         outline:
-          "border border-border bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98] shadow-2xs",
+          "border border-[#E5E7EB] bg-white text-slate-800 hover:bg-[#F7F7F8] hover:border-slate-300 hover:text-slate-950 active:scale-[0.98] shadow-2xs font-semibold",
         ghost:
-          "text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:bg-slate-200",
+          "text-slate-600 hover:bg-slate-100 hover:text-slate-950 active:bg-slate-200 font-medium",
         danger:
-          "bg-google-red text-white hover:bg-google-red-hover active:scale-[0.98] shadow-xs",
+          "bg-rose-600 text-white hover:bg-rose-700 active:scale-[0.98] shadow-xs font-semibold",
         dangerGhost:
-          "text-google-red hover:bg-red-50 active:bg-red-100",
+          "text-rose-600 hover:bg-rose-50 active:bg-rose-100 font-medium",
       },
       size: {
-        default: "h-10 px-4 py-2 rounded-xl text-sm font-medium",
-        sm: "h-8 px-3 py-1 rounded-lg text-xs font-medium",
-        lg: "h-12 px-6 py-2.5 rounded-xl text-base font-semibold",
-        icon: "h-10 w-10 rounded-xl p-0 flex items-center justify-center",
-        iconSm: "h-8 w-8 rounded-lg p-0 flex items-center justify-center",
+        default: "h-9.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold",
+        sm: "h-8 px-3 py-1 rounded-lg text-xs font-semibold",
+        lg: "h-11 px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold",
+        icon: "h-9 w-9 rounded-xl p-0 flex items-center justify-center",
+        iconSm: "h-7.5 w-7.5 rounded-lg p-0 flex items-center justify-center",
       },
     },
     defaultVariants: {

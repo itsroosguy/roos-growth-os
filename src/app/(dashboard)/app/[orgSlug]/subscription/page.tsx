@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import {
   Card,
@@ -34,11 +35,17 @@ import {
   Receipt,
   RotateCcw,
   Clock,
+  ShieldCheck,
+  Lock,
+  Building2,
+  ArrowRight,
+  DollarSign,
+  Landmark,
 } from "lucide-react";
 import { useMounted } from "@/lib/use-mounted";
 
 export default function SubscriptionPage() {
-  const { currentOrg, isOwner } = useTenant();
+  const { currentOrg, isOwner, userRole, canAccessFunds } = useTenant();
   const mounted = useMounted();
   const [interval, setInterval] = useState<BillingInterval>("monthly");
   const [selectedPlanForDowngrade, setSelectedPlanForDowngrade] = useState<PlanTier | null>(null);
@@ -113,49 +120,118 @@ export default function SubscriptionPage() {
 
   const currentPlanDef = getPlanDefinition(subscription.plan_tier);
 
+  // Clearance Guard: Only Admin (Level 1) can view overall fund transfers & billing details.
+  // Senior Manager (Level 2) and Junior Manager (Level 3) are restricted.
+  if (!canAccessFunds) {
+    return (
+      <div className="space-y-6 max-w-4xl mx-auto py-8">
+        <div className="bg-white rounded-2xl border border-rose-200/90 p-8 shadow-2xs text-center space-y-4">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 shadow-2xs">
+            <Lock className="h-8 w-8" />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono">
+              Clearance Restricted
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-[#0D0D0E]">
+              Fund Transfer &amp; Billing Details Restricted
+            </h2>
+            <p className="text-xs sm:text-sm text-[#8E8E93] max-w-lg mx-auto leading-relaxed font-medium">
+              Your active credential is{" "}
+              <strong className="text-[#0D0D0E] font-extrabold capitalize">
+                {userRole === "senior_manager"
+                  ? "Senior Manager (Operational Access)"
+                  : userRole === "junior_manager"
+                  ? "Junior Manager (Tasks & Performance)"
+                  : userRole}
+              </strong>
+              . Per company policy, operational managers do not have clearance to view overall fund transfer ledgers, gateway payouts, or banking settlements.
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7] max-w-md mx-auto text-left text-xs space-y-2">
+            <p className="font-bold text-[#0D0D0E] flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              Your Authorized Operational Scope:
+            </p>
+            <ul className="text-[#8E8E93] font-medium text-[11px] space-y-1 list-disc list-inside">
+              {userRole === "senior_manager" ? (
+                <>
+                  <li>Full CRM Pipelines, Contacts &amp; Deals</li>
+                  <li>WhatsApp Shared Inbox &amp; Broadcast Campaigns</li>
+                  <li>Automation Workflow Triggers &amp; Templates</li>
+                  <li>Team operational roster &amp; agent task tracking</li>
+                </>
+              ) : (
+                <>
+                  <li>Daily Tasks &amp; Follow-up checklists</li>
+                  <li>Personal throughput and conversion KPIs</li>
+                  <li>Assigned WhatsApp chats and contacts</li>
+                </>
+              )}
+            </ul>
+          </div>
+
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <Link href={`/app/${currentOrg.slug}/tasks`}>
+              <Button variant="outline" className="rounded-xl text-xs font-bold border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]">
+                Go to Tasks &amp; Follow-ups
+              </Button>
+            </Link>
+            <Link href={`/app/${currentOrg.slug}/overview`}>
+              <Button className="rounded-xl bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white text-xs font-bold">
+                Return to Operational Workspace
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-7 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Subscription & Usage Limits
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+              Subscription &amp; Usage
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs uppercase font-bold px-3 py-0.5 text-emerald-700 shadow-xs">
+            <span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-black px-2.5 py-0.5 text-emerald-700">
               {subscription.status}
             </span>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
-              Sandbox Billing Mode
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-2.5 py-0.5 text-[#FF7900] font-mono">
+              Sandbox Mode
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
-            Manage billing, monitor monthly quota consumption, and review unit economics for {currentOrg.name}.
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
+            Manage plan tier, quota consumption, and review transparent unit economics for {currentOrg.name}.
           </p>
         </div>
 
         {/* Monthly / Annual Toggle */}
-        <div className="flex items-center bg-white/70 backdrop-blur-sm border border-white/80 rounded-xl p-1 shadow-2xs self-start sm:self-auto">
+        <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
           <button
             onClick={() => setInterval("monthly")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
               interval === "monthly"
-                ? "bg-white shadow-xs text-blue-600 font-bold border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             Monthly
           </button>
           <button
             onClick={() => setInterval("yearly")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
               interval === "yearly"
-                ? "bg-white shadow-xs text-blue-600 font-bold border border-white"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             <span>Annual</span>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-bold px-1.5 py-0.5 rounded-full shadow-2xs">
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-black px-1.5 py-0.5 rounded-full">
               Save ~17%
             </span>
           </button>
@@ -163,10 +239,10 @@ export default function SubscriptionPage() {
       </div>
 
       {feedbackMessage && (
-        <div className="rounded-2xl bg-emerald-50/90 backdrop-blur-sm p-4 border border-emerald-200/80 text-xs text-emerald-800 flex items-center justify-between shadow-xs">
+        <div className="rounded-xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between shadow-2xs">
           <div className="flex items-center space-x-2">
             <Check className="h-4 w-4 shrink-0 text-emerald-600" />
-            <span className="font-semibold">{feedbackMessage}</span>
+            <span className="font-bold">{feedbackMessage}</span>
           </div>
           <button onClick={() => setFeedbackMessage(null)} className="font-bold underline ml-4 hover:text-emerald-950 cursor-pointer">
             Dismiss
@@ -175,30 +251,30 @@ export default function SubscriptionPage() {
       )}
 
       {/* Active Subscription Overview Card */}
-      <div className="glass-panel rounded-[26px] border border-white/70 bg-white/75 backdrop-blur-xl p-6 shadow-glass">
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] p-6 shadow-2xs">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
               Current Plan
             </span>
-            <div className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
+            <div className="text-2xl sm:text-3xl font-black text-[#0D0D0E] tracking-tight">
               {currentPlanDef.name}
             </div>
-            <p className="text-xs sm:text-sm text-slate-600 font-bold font-mono">
+            <p className="text-xs sm:text-sm text-[#FF7900] font-black font-mono">
               ₹{interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr} /{" "}
               {interval === "yearly" ? "year" : "month"}
             </p>
           </div>
 
           <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
               Billing Cycle
             </span>
-            <div className="text-sm sm:text-base font-bold text-slate-900 capitalize flex items-center space-x-1.5">
-              <Clock className="h-4.5 w-4.5 text-blue-600" />
+            <div className="text-sm sm:text-base font-bold text-[#0D0D0E] capitalize flex items-center space-x-1.5">
+              <Clock className="h-4 w-4 text-[#FF7900]" />
               <span>{subscription.billing_interval} interval</span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
+            <p className="text-xs text-[#8E8E93] font-medium">
               Renews on {new Date(subscription.current_period_end).toLocaleDateString("en-IN", {
                 month: "short",
                 day: "numeric",
@@ -208,31 +284,31 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
               Payment Method
             </span>
-            <div className="text-sm sm:text-base font-bold text-slate-900 flex items-center space-x-1.5">
-              <CreditCard className="h-4.5 w-4.5 text-emerald-600" />
+            <div className="text-sm sm:text-base font-bold text-[#0D0D0E] flex items-center space-x-1.5">
+              <CreditCard className="h-4 w-4 text-emerald-600" />
               <span>UPI AutoPay / e-Mandate</span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Powered by India-compliant Razorpay Gateway
+            <p className="text-xs text-[#8E8E93] font-medium">
+              India-compliant Razorpay Gateway
             </p>
           </div>
 
           <div className="flex flex-col justify-center items-start md:items-end space-y-2">
             {subscription.cancel_at_period_end ? (
               <div className="space-y-1.5">
-                <Badge variant="warning" className="text-xs sm:text-sm shadow-2xs font-bold">
+                <Badge variant="warning" className="text-xs font-bold">
                   Cancels at end of period
                 </Badge>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleReactivate}
-                  className="w-full text-xs sm:text-sm rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-800 font-bold shadow-xs h-10"
+                  className="w-full text-xs rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shadow-2xs h-9"
                 >
-                  <RotateCcw className="h-4 w-4 mr-1.5" />
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
                   Reactivate Plan
                 </Button>
               </div>
@@ -241,7 +317,7 @@ export default function SubscriptionPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCancelModal(true)}
-                className="text-xs sm:text-sm rounded-xl border-white/80 bg-white/80 hover:bg-white text-rose-600 hover:text-rose-700 font-bold shadow-xs h-10 px-4"
+                className="text-xs rounded-xl border-rose-200 bg-white hover:bg-rose-50 text-rose-600 font-bold shadow-2xs h-9 px-3.5 cursor-pointer"
               >
                 Cancel Subscription
               </Button>
@@ -254,11 +330,11 @@ export default function SubscriptionPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-950">
-              Current Usage & Quota Consumption
+            <h2 className="text-base font-black text-[#0D0D0E]">
+              Usage &amp; Quota Consumption
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium">
-              Actual resource metrics reconciled for period {usageSummary.period_month}. Resets monthly.
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              Actual resource metrics for billing period {usageSummary.period_month}. Resets monthly.
             </p>
           </div>
           {usageSummary.is_any_exceeded && (
@@ -276,23 +352,23 @@ export default function SubscriptionPage() {
               ? "bg-rose-500"
               : isWarning
               ? "bg-amber-500"
-              : "bg-blue-600";
+              : "bg-[#FF7900]";
 
             return (
-              <Card key={metric.metric_name} className="p-4 bg-surface border-border">
+              <div key={metric.metric_name} className="p-4 bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs">
                 <div className="flex justify-between items-start mb-2">
                   <div className="space-y-0.5">
-                    <span className="text-xs sm:text-sm font-bold text-slate-950">
+                    <span className="text-xs font-bold text-[#0D0D0E]">
                       {metric.label}
                     </span>
                     {metric.admin_override_quota && (
-                      <span className="block text-xs text-emerald-700 font-bold">
+                      <span className="block text-[11px] text-emerald-700 font-bold">
                         (+{metric.admin_override_quota} admin bonus)
                       </span>
                     )}
                   </div>
                   <span
-                    className="text-xs sm:text-sm font-mono font-black text-slate-950"
+                    className="text-xs font-mono font-black text-[#0D0D0E]"
                     suppressHydrationWarning
                   >
                     {mounted ? metric.current_count.toLocaleString("en-IN") : metric.current_count.toLocaleString("en-IN")} / {metric.max_quota.toLocaleString("en-IN")} {metric.unit}
@@ -300,30 +376,30 @@ export default function SubscriptionPage() {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-2 border border-slate-200/60">
+                <div className="w-full h-2 bg-[#E5E5E7] rounded-full overflow-hidden mb-2">
                   <div
                     className={`h-full transition-all duration-300 rounded-full ${barColor}`}
                     style={{ width: `${Math.min(metric.percentage_used, 100)}%` }}
                   />
                 </div>
 
-                <div className="flex justify-between items-center text-xs text-slate-600">
-                  <span className="font-mono font-bold text-slate-900" suppressHydrationWarning>
+                <div className="flex justify-between items-center text-xs text-[#8E8E93]">
+                  <span className="font-mono font-bold text-[#0D0D0E]" suppressHydrationWarning>
                     {mounted ? metric.percentage_used : metric.percentage_used}% consumed
                   </span>
                   {isExceeded ? (
-                    <span className="text-rose-600 font-extrabold flex items-center">
-                      <AlertTriangle className="h-3.5 w-3.5 mr-1 inline" /> Exceeded
+                    <span className="text-rose-600 font-bold flex items-center text-[11px]">
+                      <AlertTriangle className="h-3 w-3 mr-1 inline" /> Exceeded
                     </span>
                   ) : isWarning ? (
-                    <span className="text-amber-700 font-bold">
+                    <span className="text-amber-700 font-bold text-[11px]">
                       Warning (&gt;80%)
                     </span>
                   ) : (
-                    <span className="text-emerald-700 font-bold">Normal</span>
+                    <span className="text-emerald-700 font-bold text-[11px]">Normal</span>
                   )}
                 </div>
-              </Card>
+              </div>
             );
           })}
         </div>
@@ -332,156 +408,261 @@ export default function SubscriptionPage() {
       {/* Available Plans Grid */}
       <div>
         <div className="mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-slate-950">
+          <h2 className="text-base font-black text-[#0D0D0E]">
             Available Subscription Plans
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
             Transparent pricing with zero hidden fees. Upgrade or adjust anytime.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {plans.map((p) => {
             const isCurrent = p.tier === subscription.plan_tier;
             const price = interval === "yearly" ? p.yearlyPriceInr : p.monthlyPriceInr;
 
             return (
-              <Card
+              <div
                 key={p.tier}
-                className={`relative flex flex-col justify-between ${
-                  p.popular ? "border-blue-500 shadow-card ring-1 ring-blue-500/30" : "border-border"
-                } ${isCurrent ? "bg-surface-subtle/50" : "bg-surface"}`}
+                className={`relative bg-white rounded-2xl border p-6 flex flex-col justify-between shadow-2xs transition-all ${
+                  p.popular ? "border-[#FF7900] ring-2 ring-[#FF7900]/20" : "border-[#E5E5E7]"
+                }`}
               >
                 {p.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge variant="default" className="text-xs px-3.5 py-1 font-extrabold uppercase shadow-sm">
+                    <span className="bg-[#FF7900] text-white text-[10px] px-3 py-0.5 rounded-full font-black uppercase shadow-2xs tracking-wider">
                       Most Popular
-                    </Badge>
+                    </span>
                   </div>
                 )}
 
-                <CardHeader>
+                <div>
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-xl sm:text-2xl font-black text-slate-950">{p.name}</CardTitle>
-                      <CardDescription className="mt-1 text-xs sm:text-sm text-slate-600 font-medium">
+                      <h3 className="text-lg font-black text-[#0D0D0E]">{p.name}</h3>
+                      <p className="mt-0.5 text-xs text-[#8E8E93] font-medium">
                         {p.tagline}
-                      </CardDescription>
+                      </p>
                     </div>
                     {isCurrent && (
-                      <Badge variant="success" className="text-xs uppercase font-extrabold px-2.5 py-0.5">
+                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Current
-                      </Badge>
+                      </span>
                     )}
                   </div>
 
-                  <div className="mt-4">
-                    <span className="text-3xl sm:text-4xl font-black font-mono text-slate-950">
+                  <div className="mt-4 pb-4 border-b border-[#E5E5E7]">
+                    <span className="text-3xl font-black font-mono text-[#0D0D0E]">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
-                    <span className="text-xs sm:text-sm text-slate-600 font-bold ml-1.5">
+                    <span className="text-xs text-[#8E8E93] font-bold ml-1.5">
                       / {interval === "yearly" ? "year" : "month"}
                     </span>
-                    <span className="block text-xs text-slate-500 font-medium mt-0.5">
+                    <span className="block text-[11px] text-[#8E8E93] font-medium mt-0.5">
                       + 18% GST applicable
                     </span>
                   </div>
-                </CardHeader>
 
-                <CardContent className="space-y-3 flex-1">
-                  <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                    Entitlements & Features
-                  </div>
-                  {p.features.map((feat) => (
-                    <div key={feat} className="flex items-start text-xs sm:text-sm text-slate-800 font-medium">
-                      <Check className="h-4.5 w-4.5 text-emerald-600 stroke-[2.5] mr-2 shrink-0 mt-0.5" />
-                      <span>{feat}</span>
+                  <div className="py-4 space-y-2.5">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8E8E93] mb-1">
+                      Entitlements &amp; Features
                     </div>
-                  ))}
-                </CardContent>
+                    {p.features.map((feat) => (
+                      <div key={feat} className="flex items-start text-xs text-[#0D0D0E] font-medium">
+                        <Check className="h-4 w-4 text-[#FF7900] stroke-[2.5] mr-2 shrink-0 mt-0.5" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-                <CardFooter className="pt-4 border-t border-border">
+                <div className="pt-4 border-t border-[#E5E5E7]">
                   {isCurrent ? (
-                    <Button variant="outline" className="w-full text-xs sm:text-sm font-bold h-10" disabled>
+                    <Button variant="outline" className="w-full text-xs font-bold h-9 border-[#E5E5E7] text-[#8E8E93] rounded-xl" disabled>
                       Active Plan
                     </Button>
                   ) : (
                     <Button
-                      variant={p.popular ? "default" : "secondary"}
-                      className="w-full text-xs sm:text-sm font-bold h-10"
+                      variant={p.popular ? "default" : "outline"}
+                      className={`w-full text-xs font-bold h-9 rounded-xl cursor-pointer ${
+                        p.popular
+                          ? "bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-2xs"
+                          : "border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
+                      }`}
                       disabled={!isOwner}
                       onClick={() => handleInitiatePlanChange(p.tier)}
                     >
                       {isOwner ? "Switch to " + p.name : "Owner access required"}
                     </Button>
                   )}
-                </CardFooter>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </div>
       </div>
 
       {/* Unit Economics & Cost Breakdown */}
-      <Card className="border-border bg-surface">
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-blue-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-slate-950">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6">
+        <div className="flex items-center space-x-2 pb-4 border-b border-slate-100 mb-4">
+          <TrendingUp className="h-5 w-5 text-blue-600" />
+          <div>
+            <h2 className="text-base font-black text-slate-950">
               Unit Economics & Contribution Margin ({currentPlanDef.name} Plan)
-            </CardTitle>
+            </h2>
+            <p className="text-xs text-slate-600 font-normal mt-0.5">
+              Direct operational expenses deducted per monthly subscription under standard Indian SaaS cost assumptions.
+            </p>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
-            Direct operational expenses deducted per monthly subscription under standard Indian SaaS cost assumptions.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
-              <span className="text-lg sm:text-xl font-black font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
-              <span className="text-xs text-slate-500 font-medium block mt-0.5">(excl. GST)</span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
+            <span className="text-xl font-black font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
+            <span className="text-[11px] text-slate-500 font-medium block mt-0.5">(excl. GST)</span>
+          </div>
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
+            <span className="text-xl font-black font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
+            <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Domestic UPI/Card</span>
+          </div>
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Direct Compute</span>
+            <span className="text-xl font-black font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
+            <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Server & DB compute</span>
+          </div>
+          <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50">
+            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
+            <span className="text-xl font-black font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
+            <span className="text-[11px] text-emerald-800 font-bold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Overall Fund Transfers & Banking Settlements (Admin Level 1 Clearance Only) */}
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2.5">
+            <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 flex items-center justify-center text-[#FF7900]">
+              <Landmark className="h-5 w-5" />
             </div>
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
-              <span className="text-lg sm:text-xl font-black font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
-              <span className="text-xs text-slate-500 font-medium block mt-0.5">Domestic UPI/Card</span>
-            </div>
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Direct Infrastructure</span>
-              <span className="text-lg sm:text-xl font-black font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
-              <span className="text-xs text-slate-500 font-medium block mt-0.5">Server & DB compute</span>
-            </div>
-            <div className="p-3.5 rounded-xl border border-emerald-200/80 bg-emerald-50/70">
-              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
-              <span className="text-lg sm:text-xl font-black font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
-              <span className="text-xs text-emerald-800 font-extrabold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-black text-[#0D0D0E]">Overall Fund Transfers &amp; Settlements</h2>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-mono">
+                  Level 1 Admin Only
+                </span>
+              </div>
+              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                Bank disbursement accounts, payment gateway settlements &amp; overall liquidity transfers
+              </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <div className="text-left sm:text-right">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#8E8E93] block">Total Settled (MTD)</span>
+            <span className="text-lg font-black font-mono text-[#0D0D0E]">₹ 24,50,000</span>
+          </div>
+        </div>
+
+        {/* Banking Summary Cards */}
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-[#E5E5E7] bg-[#F7F7F8]">
+          <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Available Balance</span>
+            <span className="text-xl font-black font-mono text-emerald-600">₹ 3,12,450.00</span>
+            <span className="text-[11px] text-[#8E8E93] font-medium block mt-0.5">Ready for auto-disbursement</span>
+          </div>
+          <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Linked Settlement Bank</span>
+            <span className="text-sm font-bold text-[#0D0D0E] block truncate">HDFC Corporate Bank</span>
+            <span className="text-[11px] font-mono text-[#8E8E93] font-medium block mt-0.5">A/C ••••••••8491 (RTGS/NEFT)</span>
+          </div>
+          <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
+            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Clearance Level</span>
+            <span className="text-sm font-bold text-[#FF7900] block">Admin Full Financial Access</span>
+            <span className="text-[11px] text-rose-600 font-bold block mt-0.5">Restricted from Senior &amp; Jr Managers</span>
+          </div>
+        </div>
+
+        {/* Fund Transfer Ledger Table */}
+        <div className="p-5">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase tracking-wider text-[11px]">
+                  <th className="py-2.5 px-3">Transfer Ref</th>
+                  <th className="py-2.5 px-3">Gateway / Route</th>
+                  <th className="py-2.5 px-3">Beneficiary Account</th>
+                  <th className="py-2.5 px-3">Transfer Amount</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3 text-right">Settled Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E5E5E7] font-medium">
+                <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
+                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-884102</td>
+                  <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
+                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
+                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 1,45,000</td>
+                  <td className="py-3 px-3">
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Settled
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Today, 09:30 AM</td>
+                </tr>
+                <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
+                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-883918</td>
+                  <td className="py-3 px-3 text-[#0D0D0E]">Stripe Automated Payout</td>
+                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
+                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 2,20,000</td>
+                  <td className="py-3 px-3">
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Settled
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Yesterday, 14:15 PM</td>
+                </tr>
+                <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
+                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-882045</td>
+                  <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
+                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Treasury Reserve Pool ••1024</td>
+                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 3,75,000</td>
+                  <td className="py-3 px-3">
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Settled
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Oct 20, 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       {/* Payment History & Receipts */}
-      <Card className="border-border bg-surface">
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <Receipt className="h-5 w-5 text-google-blue" />
-            <CardTitle className="text-base">Billing History & GST Invoices</CardTitle>
+      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
+          <Receipt className="h-5 w-5 text-[#FF7900]" />
+          <div>
+            <h2 className="text-base font-black text-[#0D0D0E]">Billing History &amp; GST Invoices</h2>
+            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              Verified tax invoices and transaction records for {currentOrg.name}.
+            </p>
           </div>
-          <CardDescription className="text-xs">
-            Verified tax invoices and transaction records for {currentOrg.name}.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        </div>
+
+        <div className="p-5">
           {paymentEvents.length === 0 ? (
-            <p className="text-xs text-foreground-secondary py-4 text-center">
+            <p className="text-xs text-[#8E8E93] py-4 text-center font-medium">
               No previous payments recorded.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-border text-foreground-secondary font-medium">
+                  <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase tracking-wider text-[11px]">
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Invoice ID</th>
                     <th className="py-2.5 px-3">Description</th>
@@ -491,44 +672,47 @@ export default function SubscriptionPage() {
                     <th className="py-2.5 px-3 text-right">Receipt</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/60">
+                <tbody className="divide-y divide-[#E5E5E7]">
                   {paymentEvents.map((event) => (
-                    <tr key={event.id} className="hover:bg-surface-subtle/50">
-                      <td className="py-3 px-3 font-mono text-foreground-secondary">
+                    <tr key={event.id} className="hover:bg-[#F7F7F8]/80 transition-colors">
+                      <td className="py-3 px-3 font-mono text-[#8E8E93]">
                         {new Date(event.created_at).toLocaleDateString("en-IN", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="py-3 px-3 font-mono text-foreground">
+                      <td className="py-3 px-3 font-mono text-[#0D0D0E] font-bold">
                         {event.provider_invoice_id || "N/A"}
                       </td>
-                      <td className="py-3 px-3 text-foreground font-medium">
+                      <td className="py-3 px-3 text-[#0D0D0E] font-medium">
                         {event.description}
                       </td>
-                      <td className="py-3 px-3 font-semibold text-foreground">
+                      <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">
                         ₹{(event.amount_inr_paise / 100).toLocaleString("en-IN")}
                       </td>
-                      <td className="py-3 px-3 capitalize font-mono text-foreground-secondary">
+                      <td className="py-3 px-3 capitalize font-mono text-[#8E8E93]">
                         {event.payment_method}
                       </td>
                       <td className="py-3 px-3">
-                        <Badge
-                          variant={event.status === "succeeded" ? "success" : "danger"}
-                          className="text-[10px]"
+                        <span
+                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                            event.status === "succeeded"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : "bg-rose-50 text-rose-700 border-rose-200"
+                          }`}
                         >
                           {event.status}
-                        </Badge>
+                        </span>
                       </td>
                       <td className="py-3 px-3 text-right">
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs text-google-blue hover:text-google-blue-hover"
+                          className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] font-bold rounded-xl"
                           onClick={() => alert(`Downloading verified tax invoice ${event.provider_invoice_id}`)}
                         >
-                          <Download className="h-3 w-3 mr-1" />
+                          <Download className="h-3 w-3 mr-1 text-[#8E8E93]" />
                           PDF
                         </Button>
                       </td>
@@ -538,76 +722,76 @@ export default function SubscriptionPage() {
               </table>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Downgrade Warning Modal */}
       {selectedPlanForDowngrade && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <Card className="max-w-md w-full border-border bg-surface shadow-2xl animate-in fade-in zoom-in-95">
-            <CardHeader>
-              <div className="flex items-center space-x-2 text-google-yellow">
-                <AlertTriangle className="h-5 w-5" />
-                <CardTitle className="text-base text-foreground">
-                  Confirm Plan Downgrade
-                </CardTitle>
-              </div>
-              <CardDescription className="text-xs">
-                Before switching to {getPlanDefinition(selectedPlanForDowngrade).name}, please review the following restrictions:
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="max-w-md w-full bg-white rounded-2xl border border-[#E5E5E7] shadow-xl p-6">
+            <div className="flex items-center space-x-2 text-amber-600 mb-2">
+              <AlertTriangle className="h-5 w-5" />
+              <h3 className="text-base font-black text-[#0D0D0E]">
+                Confirm Plan Downgrade
+              </h3>
+            </div>
+            <p className="text-xs text-[#8E8E93] mb-4 font-medium">
+              Before switching to {getPlanDefinition(selectedPlanForDowngrade).name}, please review the following restrictions:
+            </p>
+
+            <div className="space-y-3 mb-6">
               {downgradeWarnings.length > 0 ? (
                 downgradeWarnings.map((warn, i) => (
                   <div
                     key={i}
-                    className="p-3 rounded-xl bg-google-yellow-subtle text-foreground text-xs border border-google-yellow/20"
+                    className="p-3 rounded-xl bg-amber-50 text-amber-900 text-xs border border-amber-200 font-medium"
                   >
                     {warn}
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-foreground-secondary">
+                <p className="text-xs text-[#8E8E93]">
                   Your current workspace resource usage falls within {getPlanDefinition(selectedPlanForDowngrade).name} limits. No restrictions will take effect.
                 </p>
               )}
-              <div className="text-[11px] text-foreground-secondary pt-2">
+              <div className="text-[11px] text-[#8E8E93]">
                 Existing contacts, messages, and invoices will never be deleted.
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-end space-x-2 border-t border-border pt-4">
+            </div>
+
+            <div className="flex justify-end space-x-2 border-t border-[#E5E5E7] pt-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setSelectedPlanForDowngrade(null)}
+                className="border-[#E5E5E7] text-[#0D0D0E] font-bold rounded-xl text-xs"
               >
                 Keep Current Plan
               </Button>
               <Button
-                variant="default"
                 size="sm"
                 onClick={() => handleSimulatePayment(selectedPlanForDowngrade)}
+                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs"
               >
                 Confirm Downgrade
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Cancellation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <Card className="max-w-md w-full border-border bg-surface shadow-2xl">
-            <CardHeader>
-              <CardTitle className="text-base text-google-red">
-                Cancel Subscription?
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Your workspace will remain active until {new Date(subscription.current_period_end).toLocaleDateString("en-IN")}.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs text-foreground-secondary">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="max-w-md w-full bg-white rounded-2xl border border-[#E5E5E7] shadow-xl p-6">
+            <h3 className="text-base font-black text-rose-600 mb-1">
+              Cancel Subscription?
+            </h3>
+            <p className="text-xs text-[#8E8E93] mb-4 font-medium">
+              Your workspace will remain active until {new Date(subscription.current_period_end).toLocaleDateString("en-IN")}.
+            </p>
+
+            <div className="space-y-3 text-xs text-[#8E8E93] mb-6 font-medium">
               <p>
                 After your current billing cycle concludes, your workspace will switch to <strong>Read-Only Mode</strong>.
               </p>
@@ -616,24 +800,26 @@ export default function SubscriptionPage() {
                 <li>You can view and export your customer data anytime.</li>
                 <li>Automated follow-up workflows and outbound campaigns will pause.</li>
               </ul>
-            </CardContent>
-            <CardFooter className="flex justify-end space-x-2 border-t border-border pt-4">
+            </div>
+
+            <div className="flex justify-end space-x-2 border-t border-[#E5E5E7] pt-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCancelModal(false)}
+                className="border-[#E5E5E7] text-[#0D0D0E] font-bold rounded-xl text-xs"
               >
                 Keep Subscription
               </Button>
               <Button
-                variant="danger"
                 size="sm"
                 onClick={handleCancelSubscription}
+                className="bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs"
               >
                 Confirm Cancellation
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -434,6 +434,25 @@ class CRMStore {
     return newLead;
   }
 
+  updateLead(
+    orgSlug: string,
+    leadId: string,
+    updates: Partial<Omit<Lead, "id" | "organization_id" | "created_at">>
+  ): Lead | null {
+    const list = this.leads.get(orgSlug) || [];
+    const index = list.findIndex((l) => l.id === leadId);
+    if (index === -1) return null;
+
+    const updated: Lead = {
+      ...list[index],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    list[index] = updated;
+    this.leads.set(orgSlug, list);
+    return updated;
+  }
+
   updateLeadStage(orgSlug: string, leadId: string, newStage: LeadStage, lostReason?: string): Lead | null {
     const list = this.leads.get(orgSlug) || [];
     const index = list.findIndex((l) => l.id === leadId);

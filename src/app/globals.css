@@ -1,31 +1,30 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Roos StudioX Business OS — Premium Modern SaaS Token System */
-    --background: #F8FAFC; /* Clean Slate-50 Foundation */
-    --foreground: #0F172A; /* Deep Slate-900 Primary Charcoal */
-    --foreground-secondary: #475569; /* Slate-600 Secondary */
-    --foreground-muted: #94A3B8; /* Slate-400 Supporting */
+    /* Roos StudioX Growth OS — Elite Minimal SaaS Palette */
+    --background: #F7F7F8; /* Clean Warm Neutral Canvas */
+    --foreground: #0F172A; /* High-contrast Charcoal */
+    --foreground-secondary: #64748B; /* Neutral Muted Gray */
+    --foreground-muted: #94A3B8; /* Slate Supporting */
     --surface: #FFFFFF; /* Pure White Elevated Surface */
-    --surface-subtle: #F1F5F9; /* Warm Slate-100 */
-    --surface-muted: #F8FAFC; /* Slate-50 Canvas */
-    --surface-hover: #F1F5F9;
-    --surface-blue: rgba(37, 99, 235, 0.08); /* Soft Interaction Blue Tint */
-    --border: #E2E8F0; /* Clean Slate-200 Border */
-    --border-strong: #CBD5E1; /* Slate-300 */
+    --surface-subtle: #F4F4F6;
+    --surface-muted: #F7F7F8;
+    --surface-hover: #F1F1F4;
+    --border: #E5E7EB; /* Subtle Border */
+    --border-strong: #D1D5DB;
 
-    /* Semantic Action Accents */
-    --google-blue: #2563EB; /* Confident Interaction Blue */
-    --google-blue-hover: #1D4ED8;
-    --google-green: #10B981; /* Positive Teal / Emerald */
-    --google-yellow: #F59E0B; /* Attention Amber */
-    --google-red: #EF4444; /* Error / Destructive Coral */
-    --google-purple: #8B5CF6; /* Insight / AI Purple */
+    /* ROOS Identity Orange */
+    --roos-orange: #FF7900;
+    --roos-orange-hover: #E66D00;
+    --roos-orange-subtle: rgba(255, 121, 0, 0.12);
+
+    /* Dark Surfaces */
+    --dark-bg: #0D0D0E;
+    --dark-card: #121214;
+    --dark-border: #1F1F23;
   }
 
   * {
@@ -41,11 +40,21 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: "Plus Jakarta Sans", "Google Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 0.9375rem;
     line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: "Outfit", "Plus Jakarta Sans", sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  code, pre, .font-mono {
+    font-family: "JetBrains Mono", monospace;
   }
 
   /* Respect reduced motion preferences */
@@ -82,12 +91,12 @@
 
 /* Crisp Text Selection */
 ::selection {
-  background-color: #2563EB;
+  background-color: #FF7900;
   color: #FFFFFF;
 }
 
 ::-moz-selection {
-  background-color: #2563EB;
+  background-color: #FF7900;
   color: #FFFFFF;
 }
 
@@ -160,4 +169,56 @@
   background: rgba(255, 255, 255, 0.95);
   border-color: #2563EB;
 }
+
+/* ========================================================================= */
+/* INTERACTIVE ELEMENTS & MICRO-INTERACTIONS                                 */
+/* ========================================================================= */
+
+.interactive-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  border-color: #93C5FD;
+}
+.interactive-card:active {
+  transform: scale(0.995);
+}
+
+.interactive-btn {
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-btn:hover {
+  transform: translateY(-1px);
+}
+.interactive-btn:active {
+  transform: scale(0.96);
+}
+
+.interactive-pill {
+  transition: all 0.15s ease;
+}
+.interactive-pill:hover {
+  transform: translateY(-1px);
+}
+.interactive-pill:active {
+  transform: scale(0.95);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
 

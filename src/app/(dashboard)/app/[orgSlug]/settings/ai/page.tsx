@@ -65,69 +65,68 @@ export default function AISettingsPage() {
   );
 
   return (
-    <div className="space-y-7 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6 max-w-5xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              AI Assistant & Copilot Settings
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+              AI Assistant &amp; Copilot Settings
             </h1>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-blue-700 shadow-xs">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
               Gemini 1.5 Flash
             </span>
-            <span className="glass-pill rounded-full bg-white/80 border border-white text-xs font-semibold px-3 py-0.5 text-slate-700 shadow-xs">
+            <span className="rounded-full bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold px-3 py-0.5 text-[#8E8E93] shadow-2xs font-mono">
               Sandbox Mode
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
             Configure response tone, token consumption limits, and feature permissions for {currentOrg.name}.
           </p>
         </div>
 
         <Link href={`/app/${currentOrg.slug}/settings/business-profile`}>
-          <Button variant="outline" size="sm" className="text-xs rounded-xl border-white/80 bg-white/80 hover:bg-white text-slate-700 shadow-xs">
-            <FileText className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
+          <Button variant="outline" size="sm" className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs">
+            <FileText className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
             Edit Business Knowledge Profile
           </Button>
         </Link>
       </div>
 
       {saved && (
-        <div className="rounded-2xl bg-emerald-50/90 backdrop-blur-sm p-4 border border-emerald-200/80 text-xs text-emerald-800 flex items-center space-x-2 shadow-xs">
+        <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center space-x-2 shadow-2xs">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-          <span className="font-semibold">AI configuration and safety settings updated successfully!</span>
+          <span className="font-bold">AI configuration and safety settings updated successfully!</span>
         </div>
       )}
 
       {/* Main Settings Form */}
       <form onSubmit={handleSave} className="space-y-6">
         {/* Master AI Toggle & Provider Status */}
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Bot className="h-5 w-5 text-google-blue" />
-                <CardTitle className="text-base">Master AI Assistance Control</CardTitle>
-              </div>
-              <Badge
-                variant={isEnabled ? "success" : "neutral"}
-                className="text-[10px] uppercase font-bold"
-              >
-                {isEnabled ? "Enabled" : "Disabled"}
-              </Badge>
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
+            <div className="flex items-center space-x-2">
+              <Bot className="h-5 w-5 text-[#FF7900]" />
+              <h2 className="text-base font-black text-[#0D0D0E]">Master AI Assistance Control</h2>
             </div>
-            <CardDescription className="text-xs">
-              When disabled, all inbox reply suggestions, lead intelligence panels, and automated summaries are switched off completely.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-subtle border border-border">
+            <Badge
+              variant={isEnabled ? "success" : "neutral"}
+              className="text-[10px] uppercase font-bold"
+            >
+              {isEnabled ? "Enabled" : "Disabled"}
+            </Badge>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            When disabled, all inbox reply suggestions, lead intelligence panels, and automated summaries are switched off completely.
+          </p>
+
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
               <div>
-                <p className="text-xs font-semibold text-foreground">
+                <p className="text-xs font-bold text-[#0D0D0E]">
                   Enable AI Assistant for Workspace
                 </p>
-                <p className="text-[11px] text-foreground-secondary mt-0.5">
+                <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">
                   Allows staff agents to generate grounded replies and CRM qualification insights.
                 </p>
               </div>
@@ -135,7 +134,9 @@ export default function AISettingsPage() {
                 type="button"
                 variant={isEnabled ? "default" : "secondary"}
                 size="sm"
-                className="text-xs h-8"
+                className={`text-xs h-8 font-bold rounded-xl cursor-pointer ${
+                  isEnabled ? "bg-[#FF7900] hover:bg-[#E66D00] text-white" : "bg-[#E5E5E7] text-[#0D0D0E]"
+                }`}
                 onClick={() => setIsEnabled(!isEnabled)}
                 disabled={!isAdmin}
               >
@@ -144,45 +145,44 @@ export default function AISettingsPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3 bg-surface-subtle rounded-xl border border-border/60">
-                <span className="text-foreground-secondary block mb-1">Active AI Model</span>
-                <span className="font-semibold text-foreground font-mono">
+              <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
+                <span className="text-[#8E8E93] block mb-1 font-bold text-[11px] uppercase tracking-wider">Active AI Model</span>
+                <span className="font-bold text-[#0D0D0E] font-mono text-sm">
                   Google Gemini 1.5 Flash
                 </span>
-                <span className="text-[10px] text-foreground-secondary block mt-0.5">
+                <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
                   Low latency (~200ms) with grounded contextual retrieval
                 </span>
               </div>
-              <div className="p-3 bg-surface-subtle rounded-xl border border-border/60">
-                <span className="text-foreground-secondary block mb-1">Integration Mode</span>
-                <span className="font-semibold text-foreground font-mono">
+              <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
+                <span className="text-[#8E8E93] block mb-1 font-bold text-[11px] uppercase tracking-wider">Integration Mode</span>
+                <span className="font-bold text-[#0D0D0E] font-mono text-sm">
                   Local Sandbox / Free Tier
                 </span>
-                <span className="text-[10px] text-foreground-secondary block mt-0.5">
+                <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
                   Zero paid API costs incurred during development
                 </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Brand Persona & Tone Configuration */}
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Sparkles className="h-5 w-5 text-google-blue" />
-              <CardTitle className="text-base">Brand Tone & Response Sizing</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              Guide how generated replies communicate with WhatsApp customers.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
+            <Sparkles className="h-5 w-5 text-[#FF7900]" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Brand Tone &amp; Response Sizing</h2>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            Guide how generated replies communicate with WhatsApp customers.
+          </p>
+
+          <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-2">
                 Preferred Communication Tone
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {(
                   [
                     { id: "friendly", label: "Friendly & Warm", desc: "Approachable, conversational" },
@@ -195,21 +195,21 @@ export default function AISettingsPage() {
                     type="button"
                     key={t.id}
                     onClick={() => setTone(t.id)}
-                    className={`p-3 text-left rounded-xl border text-xs transition-all ${
+                    className={`p-3 text-left rounded-xl border text-xs transition-all cursor-pointer ${
                       tone === t.id
-                        ? "border-google-blue bg-surface-blue text-foreground font-semibold shadow-xs"
-                        : "border-border bg-surface hover:bg-surface-subtle text-foreground-secondary"
+                        ? "border-[#FF7900] bg-[#FFF4EC] text-[#0D0D0E] font-bold shadow-2xs"
+                        : "border-[#E5E5E7] bg-[#F7F7F8] hover:bg-white text-[#8E8E93]"
                     }`}
                   >
-                    <span className="block font-medium text-foreground">{t.label}</span>
-                    <span className="text-[10px] text-foreground-secondary">{t.desc}</span>
+                    <span className="block font-bold text-[#0D0D0E]">{t.label}</span>
+                    <span className="text-[10px] text-[#8E8E93] font-medium">{t.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">
+            <div className="pt-2">
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-1.5">
                 Maximum Suggested Reply Length
               </label>
               <div className="flex items-center space-x-3">
@@ -220,31 +220,30 @@ export default function AISettingsPage() {
                   step={25}
                   value={maxLength}
                   onChange={(e) => setMaxLength(Number(e.target.value))}
-                  className="w-full h-1.5 bg-surface-subtle rounded-lg cursor-pointer accent-google-blue"
+                  className="w-full h-1.5 bg-[#E5E5E7] rounded-lg cursor-pointer accent-[#FF7900]"
                 />
-                <span className="text-xs font-mono font-bold text-foreground w-20 text-right">
+                <span className="text-xs font-mono font-bold text-[#0D0D0E] w-20 text-right">
                   {maxLength} words
                 </span>
               </div>
-              <p className="text-[11px] text-foreground-secondary mt-1">
+              <p className="text-[11px] text-[#8E8E93] mt-1 font-medium">
                 WhatsApp messages read best when concise and directly answering customer inquiries.
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Feature Switches */}
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Sliders className="h-5 w-5 text-google-blue" />
-              <CardTitle className="text-base">Granular Feature Permissions</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              Toggle specific AI capabilities on or off independently.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
+            <Sliders className="h-5 w-5 text-[#FF7900]" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Granular Feature Permissions</h2>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            Toggle specific AI capabilities on or off independently.
+          </p>
+
+          <div className="space-y-3 pt-2">
             {[
               {
                 title: "Inbox Reply Suggestions & Rewriting",
@@ -273,17 +272,19 @@ export default function AISettingsPage() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border/60 text-xs"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs"
               >
                 <div>
-                  <span className="font-semibold text-foreground">{f.title}</span>
-                  <p className="text-[11px] text-foreground-secondary">{f.description}</p>
+                  <span className="font-bold text-[#0D0D0E]">{f.title}</span>
+                  <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">{f.description}</p>
                 </div>
                 <Button
                   type="button"
                   variant={f.checked ? "outline" : "secondary"}
                   size="sm"
-                  className="h-7 text-xs"
+                  className={`h-7 text-xs font-bold rounded-lg cursor-pointer ${
+                    f.checked ? "border-[#FF7900]/40 text-[#FF7900] bg-[#FFF4EC]" : "text-[#8E8E93]"
+                  }`}
                   onClick={f.onChange}
                   disabled={!isEnabled || !isAdmin}
                 >
@@ -291,62 +292,62 @@ export default function AISettingsPage() {
                 </Button>
               </div>
             ))}
-          </CardContent>
+          </div>
+
           {isAdmin && (
-            <CardFooter className="flex justify-end border-t border-border pt-4">
-              <Button type="submit" variant="default" size="sm">
+            <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs shadow-2xs">
                 Save AI Configuration
               </Button>
-            </CardFooter>
+            </div>
           )}
-        </Card>
+        </div>
       </form>
 
       {/* Usage Quota & Cost Tracking */}
-      <Card className="border-border bg-surface">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Zap className="h-5 w-5 text-google-yellow" />
-              <CardTitle className="text-base">Token Quota & Cost Tracking</CardTitle>
-            </div>
-            <Badge variant="neutral" className="text-xs font-mono">
-              Monthly Budget Cap
-            </Badge>
+      <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
+          <div className="flex items-center space-x-2">
+            <Zap className="h-5 w-5 text-[#FF7900]" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Token Quota &amp; Cost Tracking</h2>
           </div>
-          <CardDescription className="text-xs">
-            Live token consumption reconciled for {currentOrg.name}.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          <Badge variant="neutral" className="text-xs font-mono font-bold">
+            Monthly Budget Cap
+          </Badge>
+        </div>
+        <p className="text-xs text-[#8E8E93] font-medium">
+          Live token consumption reconciled for {currentOrg.name}.
+        </p>
+
+        <div className="space-y-4 pt-2">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-0.5">Total Generations</span>
-              <span className="text-base font-bold text-foreground">{usage.totalRequests}</span>
-              <span className="text-[10px] text-foreground-secondary block">This month</span>
+            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
+              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Total Generations</span>
+              <span className="text-xl font-black font-mono text-[#0D0D0E]">{usage.totalRequests}</span>
+              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">This month</span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-0.5">Tokens Consumed</span>
-              <span className="text-base font-bold text-foreground font-mono">
+            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
+              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Tokens Consumed</span>
+              <span className="text-xl font-black text-[#0D0D0E] font-mono">
                 {usage.totalTokens.toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] text-foreground-secondary block">
+              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
                 of {settings.monthly_token_quota.toLocaleString("en-IN")} quota
               </span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-0.5">Remaining Quota</span>
-              <span className="text-base font-bold text-google-green font-mono">
+            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
+              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Remaining Quota</span>
+              <span className="text-xl font-black text-emerald-600 font-mono">
                 {usage.remainingQuota.toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] text-foreground-secondary block">Tokens available</span>
+              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">Tokens available</span>
             </div>
-            <div className="p-3 bg-surface-subtle rounded-xl">
-              <span className="text-foreground-secondary block mb-0.5">Estimated Cost</span>
-              <span className="text-base font-bold text-foreground">
+            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
+              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Estimated Cost</span>
+              <span className="text-xl font-black font-mono text-[#FF7900]">
                 ₹{usage.estimatedCostInr.toFixed(4)}
               </span>
-              <span className="text-[10px] text-foreground-secondary block">
+              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
                 At Gemini 1.5 Flash rates
               </span>
             </div>
@@ -354,15 +355,15 @@ export default function AISettingsPage() {
 
           {/* Progress bar */}
           <div>
-            <div className="flex justify-between text-[11px] text-foreground-secondary mb-1">
+            <div className="flex justify-between text-[11px] text-[#8E8E93] font-medium mb-1">
               <span>Monthly Token Consumption ({tokenUsagePercentage}%)</span>
               <span>
                 {usage.totalTokens.toLocaleString("en-IN")} / {settings.monthly_token_quota.toLocaleString("en-IN")} tokens
               </span>
             </div>
-            <div className="w-full h-2 bg-surface-subtle rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E5E5E7] rounded-full overflow-hidden">
               <div
-                className="h-full bg-google-blue transition-all"
+                className="h-full bg-[#FF7900] transition-all rounded-full"
                 style={{ width: `${tokenUsagePercentage}%` }}
               />
             </div>
@@ -370,45 +371,45 @@ export default function AISettingsPage() {
 
           {/* Recent Generation Logs */}
           <div className="pt-2">
-            <span className="text-xs font-semibold text-foreground block mb-2">
+            <span className="text-xs font-bold text-[#0D0D0E] block mb-2">
               Recent AI Generation Audit Trail
             </span>
             {usage.logs.length === 0 ? (
-              <p className="text-xs text-foreground-secondary py-3 text-center">
+              <p className="text-xs text-[#8E8E93] py-4 text-center font-medium">
                 No AI requests generated in this period.
               </p>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto rounded-xl border border-[#E5E5E7]">
                 <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-border text-foreground-secondary font-medium">
-                      <th className="py-2 px-3">Time</th>
-                      <th className="py-2 px-3">Feature</th>
-                      <th className="py-2 px-3">Tokens (In / Out)</th>
-                      <th className="py-2 px-3">Latency</th>
-                      <th className="py-2 px-3">Est. Cost</th>
-                      <th className="py-2 px-3">Status</th>
+                  <thead className="bg-[#F7F7F8]">
+                    <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase text-[11px] tracking-wider">
+                      <th className="py-2.5 px-3">Time</th>
+                      <th className="py-2.5 px-3">Feature</th>
+                      <th className="py-2.5 px-3">Tokens (In / Out)</th>
+                      <th className="py-2.5 px-3">Latency</th>
+                      <th className="py-2.5 px-3">Est. Cost</th>
+                      <th className="py-2.5 px-3">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/60">
+                  <tbody className="divide-y divide-[#E5E5E7]">
                     {usage.logs.slice(0, 5).map((log) => (
-                      <tr key={log.id} className="hover:bg-surface-subtle/50">
-                        <td className="py-2.5 px-3 font-mono text-foreground-secondary">
+                      <tr key={log.id} className="hover:bg-[#F7F7F8]/80 transition-colors">
+                        <td className="py-2.5 px-3 font-mono text-[#8E8E93]">
                           {new Date(log.created_at).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="py-2.5 px-3 font-medium text-foreground capitalize">
+                        <td className="py-2.5 px-3 font-bold text-[#0D0D0E] capitalize">
                           {log.feature.replace("_", " ")}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-foreground-secondary">
+                        <td className="py-2.5 px-3 font-mono text-[#8E8E93]">
                           {log.input_tokens} / {log.output_tokens}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-foreground-secondary">
+                        <td className="py-2.5 px-3 font-mono text-[#8E8E93]">
                           {log.latency_ms}ms
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-foreground">
+                        <td className="py-2.5 px-3 font-mono font-bold text-[#0D0D0E]">
                           ₹{Number(log.estimated_cost_inr).toFixed(4)}
                         </td>
                         <td className="py-2.5 px-3">
@@ -423,8 +424,8 @@ export default function AISettingsPage() {
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

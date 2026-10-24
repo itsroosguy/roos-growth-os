@@ -80,87 +80,88 @@ export default function BusinessProfileSettingsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6 max-w-5xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Business Knowledge & Grounding Profile
+          <div className="flex items-center space-x-2.5">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+              Business Knowledge &amp; Grounding Profile
             </h1>
-            <Badge variant="success" className="text-xs">
+            <Badge variant="orangeSubtle" className="text-xs font-mono font-bold">
               Anti-Hallucination Grounding
             </Badge>
           </div>
-          <p className="text-sm text-foreground-secondary mt-1">
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
             Verified company facts, approved pricing, and FAQs used to ground AI responses for {currentOrg.name}.
           </p>
         </div>
 
         <Link href={`/app/${currentOrg.slug}/settings/ai`}>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button variant="outline" size="sm" className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]">
             Back to AI Settings
           </Button>
         </Link>
       </div>
 
       {saved && (
-        <div className="rounded-2xl bg-google-green-subtle p-3.5 border border-google-green/30 text-xs text-google-green flex items-center space-x-2">
-          <CheckCircle2 className="h-4 w-4 shrink-0" />
-          <span>Business knowledge profile saved and active for AI grounding!</span>
+        <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center space-x-2 shadow-2xs">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+          <span className="font-bold">Business knowledge profile saved and active for AI grounding!</span>
         </div>
       )}
 
       {/* Profile Form */}
       <form onSubmit={handleSave} className="space-y-6">
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Building2 className="h-5 w-5 text-google-blue" />
-              <CardTitle className="text-base">Company Identity & Services</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              These approved facts are injected into system prompts so the AI never invents company policies or unapproved products.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
+            <Building2 className="h-5 w-5 text-[#FF7900]" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Company Identity &amp; Services</h2>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            These approved facts are injected into system prompts so the AI never invents company policies or unapproved products.
+          </p>
+
+          <div className="space-y-4 pt-2">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Registered Business Name"
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Service Area / Geographical Coverage"
                 value={serviceArea}
                 onChange={(e) => setServiceArea(e.target.value)}
                 required
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Company Overview & Value Proposition
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+                Company Overview &amp; Value Proposition
               </label>
               <textarea
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-xl border border-border p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-google-blue"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Products & Commercial Offerings
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+                Products &amp; Commercial Offerings
               </label>
               <textarea
                 rows={2}
                 value={products}
                 onChange={(e) => setProducts(e.target.value)}
-                className="w-full rounded-xl border border-border p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-google-blue"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
                 required
               />
             </div>
@@ -171,88 +172,89 @@ export default function BusinessProfileSettingsPage() {
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
                 required
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Official Contact Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Official Helpline Phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs font-mono"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Pricing & Return Policies */}
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <ShieldCheck className="h-5 w-5 text-google-green" />
-              <CardTitle className="text-base">Pricing & Commercial Policies</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              Strict rules: AI will ONLY quote rates and terms explicitly listed here.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
+            <ShieldCheck className="h-5 w-5 text-emerald-600" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Pricing &amp; Commercial Policies</h2>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            Strict rules: AI will ONLY quote rates and terms explicitly listed here.
+          </p>
+
+          <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Pricing & Subscription Terms
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+                Pricing &amp; Subscription Terms
               </label>
               <textarea
                 rows={2}
                 value={pricing}
                 onChange={(e) => setPricing(e.target.value)}
-                className="w-full rounded-xl border border-border p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-google-blue"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
                 placeholder="e.g. Starter: ₹299/mo, Growth: ₹799/mo, Business: ₹1,499/mo..."
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Refund, Cancellation & SLA Policy
+              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+                Refund, Cancellation &amp; SLA Policy
               </label>
               <textarea
                 rows={2}
                 value={returnPolicy}
                 onChange={(e) => setReturnPolicy(e.target.value)}
-                className="w-full rounded-xl border border-border p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-google-blue"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
                 placeholder="e.g. 14-day refund policy on annual plans. Cancel monthly anytime..."
                 required
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Approved FAQs */}
-        <Card className="border-border bg-surface">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <HelpCircle className="h-5 w-5 text-google-blue" />
-              <CardTitle className="text-base">Approved Frequently Asked Questions (FAQs)</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              Direct question-answer pairs referenced when answering common customer enquiries.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
+            <HelpCircle className="h-5 w-5 text-[#FF7900]" />
+            <h2 className="text-base font-black text-[#0D0D0E]">Approved Frequently Asked Questions (FAQs)</h2>
+          </div>
+          <p className="text-xs text-[#8E8E93] font-medium">
+            Direct question-answer pairs referenced when answering common customer enquiries.
+          </p>
+
+          <div className="space-y-4 pt-2">
             <div className="space-y-3">
               {faqs.map((faq) => (
                 <div
                   key={faq.id}
-                  className="p-3.5 rounded-xl bg-surface-subtle border border-border flex justify-between items-start gap-4"
+                  className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex justify-between items-start gap-4"
                 >
                   <div className="space-y-1 text-xs">
-                    <span className="font-semibold text-foreground block">
+                    <span className="font-bold text-[#0D0D0E] block">
                       Q: {faq.question}
                     </span>
-                    <p className="text-foreground-secondary">
+                    <p className="text-[#8E8E93] font-medium">
                       A: {faq.answer}
                     </p>
                   </div>
@@ -260,7 +262,7 @@ export default function BusinessProfileSettingsPage() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="h-7 text-google-red hover:bg-google-red-subtle"
+                    className="h-7 text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
                     onClick={() => handleRemoveFaq(faq.id)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -270,8 +272,8 @@ export default function BusinessProfileSettingsPage() {
             </div>
 
             {/* Add FAQ Sub-form */}
-            <div className="p-4 rounded-xl border border-dashed border-border bg-surface space-y-3 text-xs">
-              <span className="font-semibold text-foreground block">
+            <div className="p-4 rounded-xl border border-dashed border-[#E5E5E7] bg-[#F7F7F8] space-y-3 text-xs">
+              <span className="font-bold text-[#0D0D0E] block">
                 Add an Approved FAQ Item
               </span>
               <Input
@@ -279,9 +281,10 @@ export default function BusinessProfileSettingsPage() {
                 placeholder="e.g. Do you support broadcast marketing?"
                 value={newFaqQuestion}
                 onChange={(e) => setNewFaqQuestion(e.target.value)}
+                className="bg-white border-[#E5E5E7] focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
+                <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
                   Approved Answer
                 </label>
                 <textarea
@@ -289,29 +292,30 @@ export default function BusinessProfileSettingsPage() {
                   placeholder="e.g. Yes, on Growth and Business plans..."
                   value={newFaqAnswer}
                   onChange={(e) => setNewFaqAnswer(e.target.value)}
-                  className="w-full rounded-xl border border-border p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-google-blue"
+                  className="w-full rounded-xl border border-[#E5E5E7] bg-white p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:border-[#FF7900]"
                 />
               </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="text-xs"
+                className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
                 onClick={handleAddFaq}
               >
-                <Plus className="h-3.5 w-3.5 mr-1 text-google-blue" />
+                <Plus className="h-3.5 w-3.5 mr-1 text-[#FF7900]" />
                 Add FAQ
               </Button>
             </div>
-          </CardContent>
+          </div>
+
           {isAdmin && (
-            <CardFooter className="flex justify-end border-t border-border pt-4">
-              <Button type="submit" variant="default" size="sm">
+            <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs shadow-2xs">
                 Save Business Profile
               </Button>
-            </CardFooter>
+            </div>
           )}
-        </Card>
+        </div>
       </form>
     </div>
   );

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { cleanSlug } from "@/lib/organizations/slug";
-import { AlertCircle, KeyRound } from "lucide-react";
+import { AlertCircle, KeyRound, ArrowRight } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -30,16 +30,22 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
+      const generatedSlug = cleanSlug(orgName);
+      if (!generatedSlug || generatedSlug.length < 2) {
+        throw new Error("Please enter a valid organisation name (minimum 2 characters).");
+      }
+
+      if (!isSupabaseConfigured) {
+        // Direct transition in demo mode
+        router.push(`/app/${generatedSlug}/overview`);
+        return;
+      }
+
       const supabase = createClient();
       if (!supabase) {
         throw new Error(
           "Supabase credentials are not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local"
         );
-      }
-
-      const generatedSlug = cleanSlug(orgName);
-      if (!generatedSlug || generatedSlug.length < 2) {
-        throw new Error("Please enter a valid organisation name (minimum 2 characters).");
       }
 
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -73,27 +79,29 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="shadow-dropdown border-border">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-xl font-bold">Create organisation</CardTitle>
-        <CardDescription>
+    <Card className="border-[#E5E5E7] bg-white rounded-2xl shadow-xs overflow-hidden">
+      <CardHeader className="space-y-1 p-6 pb-4">
+        <CardTitle className="text-xl font-bold tracking-tight text-[#0D0D0E]">Create organisation</CardTitle>
+        <CardDescription className="text-xs text-[#8E8E93]">
           Get started with your multi-tenant business workspace
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSignup}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-6">
           {!isSupabaseConfigured && (
-            <div className="rounded-2xl bg-google-yellow-subtle p-3.5 border border-google-yellow/30 text-xs text-foreground flex items-start space-x-2.5">
-              <KeyRound className="h-4 w-4 text-google-yellow-hover shrink-0 mt-0.5" />
+            <div className="rounded-xl bg-[#24180E] p-3.5 border border-[#FF7900]/25 text-xs text-white flex items-start space-x-2.5">
+              <KeyRound className="h-4 w-4 text-[#FF7900] shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold block mb-0.5">Supabase Setup Required</span>
-                Add <code className="bg-white/80 px-1 py-0.5 rounded font-mono">NEXT_PUBLIC_SUPABASE_URL</code> to <code className="bg-white/80 px-1 py-0.5 rounded font-mono">.env.local</code> to enable real account creation.
+                <span className="font-semibold text-[#FF7900] block mb-0.5">Local Development Mode</span>
+                <span className="text-[#8E8E93] leading-relaxed">
+                  Workspace creation will generate an immediate isolated tenant.
+                </span>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="rounded-2xl bg-google-red-subtle p-3.5 border border-google-red/20 text-xs text-google-red flex items-start space-x-2">
+            <div className="rounded-xl bg-rose-50 p-3.5 border border-rose-200 text-xs text-rose-700 flex items-start space-x-2">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -118,8 +126,8 @@ export default function SignupPage() {
           />
 
           {orgName && (
-            <p className="text-[11px] text-foreground-secondary">
-              Workspace URL: <span className="font-mono text-google-blue">/app/{cleanSlug(orgName)}</span>
+            <p className="text-[11px] text-[#8E8E93]">
+              Workspace URL: <span className="font-mono text-[#FF7900] font-semibold">/app/{cleanSlug(orgName)}</span>
             </p>
           )}
 
@@ -144,21 +152,21 @@ export default function SignupPage() {
             autoComplete="new-password"
           />
         </CardContent>
-        <CardFooter className="flex flex-col space-y-3">
+        <CardFooter className="flex flex-col space-y-3 p-6 pt-4">
           <Button
             type="submit"
-            className="w-full"
+            className="w-full bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl h-10 shadow-xs transition-colors flex items-center justify-center gap-2"
             isLoading={loading}
-            disabled={!isSupabaseConfigured}
           >
-            Create account & workspace
+            <span>Create Workspace</span>
+            <ArrowRight className="h-4 w-4 text-white" />
           </Button>
 
-          <p className="text-center text-xs text-foreground-secondary">
+          <p className="text-center text-xs text-[#8E8E93]">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-semibold text-google-blue hover:underline"
+              className="font-semibold text-[#FF7900] hover:text-[#E66D00] hover:underline"
             >
               Sign in
             </Link>
