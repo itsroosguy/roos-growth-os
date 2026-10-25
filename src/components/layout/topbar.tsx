@@ -151,11 +151,25 @@ export function Topbar() {
   };
 
   const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (e) {
+      // Ignore network errors on logout
+    }
+
+    document.cookie = "roos_session=; path=/; max-age=0";
+    document.cookie = "roos_user_role=; path=/; max-age=0";
+    document.cookie = "roos_user_email=; path=/; max-age=0";
+
     const supabase = createClient();
     if (supabase) {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        // Ignore
+      }
     }
-    router.push("/login");
+    window.location.href = "/login?logout=1";
   };
 
   return (

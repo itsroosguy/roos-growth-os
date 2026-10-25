@@ -1,4 +1,5 @@
 import React from "react";
+import { cookies } from "next/headers";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { TenantProvider } from "@/lib/organizations/tenant-context";
@@ -29,7 +30,15 @@ export default async function OrgDashboardLayout({
     updated_at: new Date().toISOString(),
   };
 
-  const userRole: OrganizationRole = orgSlug === "beta-logistics" ? "staff" : "owner";
+  const cookieStore = cookies();
+  const rawRole = cookieStore.get("roos_user_role")?.value;
+  const validRoles: OrganizationRole[] = ["owner", "admin", "senior_manager", "junior_manager", "staff"];
+  const userRole: OrganizationRole =
+    validRoles.includes(rawRole as OrganizationRole)
+      ? (rawRole as OrganizationRole)
+      : orgSlug === "beta-logistics"
+      ? "staff"
+      : "owner";
 
   const userOrganizations: Organization[] = [
     {
