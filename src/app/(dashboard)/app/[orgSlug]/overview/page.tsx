@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
@@ -19,6 +19,7 @@ import {
   UserPlus,
   CheckCircle2,
   Clock,
+  Globe,
   ArrowUpRight,
   ArrowDownRight,
   Plus,
@@ -40,6 +41,29 @@ import {
   User,
 } from "lucide-react";
 
+interface WorkspaceRegion {
+  id: string;
+  name: string;
+  city: string;
+  country: string;
+  flag: string;
+  timezone: string;
+  abbr: string;
+  utcOffset: string;
+}
+
+const WORKSPACE_REGIONS: WorkspaceRegion[] = [
+  { id: "in", name: "India Standard Time", city: "New Delhi / Mumbai", country: "India", flag: "🇮🇳", timezone: "Asia/Kolkata", abbr: "IST", utcOffset: "UTC+5:30" },
+  { id: "ae", name: "Gulf Standard Time", city: "Dubai / Abu Dhabi", country: "UAE", flag: "🇦🇪", timezone: "Asia/Dubai", abbr: "GST", utcOffset: "UTC+4:00" },
+  { id: "sg", name: "Singapore Time", city: "Singapore", country: "Singapore", flag: "🇸🇬", timezone: "Asia/Singapore", abbr: "SGT", utcOffset: "UTC+8:00" },
+  { id: "gb", name: "Greenwich Mean Time / BST", city: "London", country: "United Kingdom", flag: "🇬🇧", timezone: "Europe/London", abbr: "GMT/BST", utcOffset: "UTC+0/+1" },
+  { id: "de", name: "Central European Time", city: "Frankfurt / Berlin", country: "Germany", flag: "🇩🇪", timezone: "Europe/Berlin", abbr: "CET", utcOffset: "UTC+1:00" },
+  { id: "us-east", name: "Eastern Time", city: "New York", country: "United States", flag: "🇺🇸", timezone: "America/New_York", abbr: "EST", utcOffset: "UTC-5:00" },
+  { id: "us-west", name: "Pacific Time", city: "San Francisco / LA", country: "United States", flag: "🇺🇸", timezone: "America/Los_Angeles", abbr: "PST", utcOffset: "UTC-8:00" },
+  { id: "jp", name: "Japan Standard Time", city: "Tokyo", country: "Japan", flag: "🇯🇵", timezone: "Asia/Tokyo", abbr: "JST", utcOffset: "UTC+9:00" },
+  { id: "au", name: "Australian Eastern Time", city: "Sydney / Melbourne", country: "Australia", flag: "🇦🇺", timezone: "Australia/Sydney", abbr: "AEST", utcOffset: "UTC+10/+11" },
+];
+
 export default function OverviewPage() {
   const { currentOrg } = useTenant();
   const orgSlug = currentOrg.slug;
@@ -51,6 +75,29 @@ export default function OverviewPage() {
   const [dateDropdownOpen, setDateDropdownOpen] = useState(false);
   const [inboxFilter, setInboxFilter] = useState<"all" | "unread" | "mentions">("all");
   const [taskFilter, setTaskFilter] = useState<"today" | "overdue" | "upcoming">("today");
+
+  // Workspace Timezone & Live Clock State
+  const [selectedTimezone, setSelectedTimezone] = useState<string>("Asia/Kolkata");
+  const [clockTime, setClockTime] = useState<Date>(new Date());
+  const [timezoneDropdownOpen, setTimezoneDropdownOpen] = useState(false);
+
+  // Initialize and persist timezone selection in localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("roos_workspace_tz");
+      if (saved && WORKSPACE_REGIONS.some((r) => r.timezone === saved)) {
+        setSelectedTimezone(saved);
+      }
+    } catch {}
+  }, []);
+
+  // Live ticking clock (updates every 1000ms)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setClockTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Quick "New Lead" Modal State
   const [newLeadModalOpen, setNewLeadModalOpen] = useState(false);
@@ -286,25 +333,207 @@ export default function OverviewPage() {
     "wa-c-5": { agent: "Aarav Patel", activeNow: false },
   };
 
+  // Active region details and live time formatted for the selected timezone
+  const currentRegion = useMemo(() => {
+    return (
+      WORKSPACE_REGIONS.find((r) => r.timezone === selectedTimezone) ||
+      WORKSPACE_REGIONS[0]
+    );
+  }, [selectedTimezone]);
+
+  const formattedTime = useMemo(() => {
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+        timeZone: selectedTimezone,
+      }).format(clockTime);
+    } catch {
+      return clockTime.toLocaleTimeString();
+    }
+  }, [clockTime, selectedTimezone]);
+
+  const formattedDate = useMemo(() => {
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        timeZone: selectedTimezone,
+      }).format(clockTime);
+    } catch {
+      return clockTime.toLocaleDateString();
+    }
+  }, [clockTime, selectedTimezone]);
+
+  const timeGreeting = useMemo(() => {
+    try {
+      const hourStr = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        hour12: false,
+        timeZone: selectedTimezone,
+      }).format(clockTime);
+      const hour = parseInt(hourStr, 10);
+      if (hour >= 5 && hour < 12) return "Good morning";
+      if (hour >= 12 && hour < 17) return "Good afternoon";
+      return "Good evening";
+    } catch {
+      return "Good morning";
+    }
+  }, [clockTime, selectedTimezone]);
+
+  // Formatted current time for region list in dropdown
+  const getRegionLiveTime = (tz: string) => {
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: tz,
+      }).format(clockTime);
+    } catch {
+      return "--:--";
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* ===================================================================== */}
-      {/* SECTION 1: HEADER & GREETING WITH LAST LEAD ADDED MESSAGE             */}
+      {/* SECTION 1: HEADER & GREETING WITH WORKSPACE CLOCK & TIMEZONE TRACKER  */}
       {/* ===================================================================== */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#0D0D0E]">
-            Good morning, <span className="text-[#FF7900]">Praveen</span>
+            {mounted ? timeGreeting : "Good morning"},{" "}
+            <span className="text-[#FF7900]">Praveen</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-normal mt-1">
-            Here&apos;s what&apos;s happening across your sales pipeline and WhatsApp conversations today.
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5 flex-wrap">
+            <span>{mounted ? formattedDate : "Today"}</span>
+            <span>•</span>
+            <span>Workspace aligned with</span>
+            <span className="inline-flex items-center gap-1 font-medium text-[#0D0D0E] bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7]">
+              <span>{currentRegion.flag}</span>
+              <span>{currentRegion.city}</span>
+              <span className="text-[#8E8E93] font-mono text-[11px]">({currentRegion.abbr})</span>
+            </span>
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Workspace Live Clock & Region / Timezone Selector */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setTimezoneDropdownOpen(!timezoneDropdownOpen);
+                setDateDropdownOpen(false);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] hover:border-slate-300 transition-all cursor-pointer h-9.5"
+              title="Click to select workspace region & timezone"
+            >
+              <div className="flex items-center gap-1.5 text-emerald-600">
+                <Clock className="h-4 w-4 text-emerald-600" />
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+
+              <span className="font-mono font-semibold text-[#0D0D0E] text-xs sm:text-sm tracking-tight">
+                {mounted ? formattedTime : "--:--:--"}
+              </span>
+
+              <span className="text-[11px] text-[#8E8E93] font-normal hidden sm:inline-flex items-center gap-1 border-l border-[#E5E5E7] pl-2">
+                <span>{currentRegion.flag}</span>
+                <span className="font-medium text-[#0D0D0E]">{currentRegion.abbr}</span>
+              </span>
+
+              <ChevronDown className="h-3 w-3 text-[#8E8E93]" />
+            </button>
+
+            {/* Region & Timezone Dropdown Modal */}
+            {timezoneDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-30"
+                  onClick={() => setTimezoneDropdownOpen(false)}
+                />
+                <div className="absolute right-0 mt-1.5 w-80 rounded-2xl bg-white border border-[#E5E5E7] shadow-xl py-2 z-40 animate-in fade-in zoom-in-95">
+                  <div className="px-3.5 py-2 border-b border-[#F0F0F2]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Globe className="h-3.5 w-3.5 text-[#FF7900]" />
+                        <span className="text-[11px] font-semibold text-[#0D0D0E]">
+                          Workspace Region &amp; Timezone
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                        Live Tracking
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#8E8E93] font-normal mt-0.5">
+                      Syncs team operating hours, SLAs &amp; customer replies
+                    </p>
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto py-1 space-y-0.5 custom-light-scroll">
+                    {WORKSPACE_REGIONS.map((reg) => {
+                      const isSelected = reg.timezone === selectedTimezone;
+                      const regTime = mounted ? getRegionLiveTime(reg.timezone) : "--:--";
+
+                      return (
+                        <button
+                          key={reg.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedTimezone(reg.timezone);
+                            try {
+                              localStorage.setItem("roos_workspace_tz", reg.timezone);
+                            } catch {}
+                            setTimezoneDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                            isSelected
+                              ? "bg-[#FFF4EC] text-[#FF7900] font-semibold"
+                              : "text-[#0D0D0E] hover:bg-[#F7F7F8]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="text-base shrink-0">{reg.flag}</span>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-medium text-[#0D0D0E] truncate">
+                                  {reg.city}
+                                </span>
+                                <span className="text-[10px] font-mono text-[#8E8E93] font-normal">
+                                  ({reg.abbr})
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-[#8E8E93] font-normal truncate">
+                                {reg.name} • {reg.utcOffset}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0 pl-2">
+                            <span className="text-[11px] font-mono font-medium text-[#667781]">
+                              {regTime}
+                            </span>
+                            {isSelected && (
+                              <Check className="h-3.5 w-3.5 text-[#FF7900] shrink-0" />
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
           {/* Last Lead Added Message - Starts showing in days when beyond 3 days */}
           <div
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-2xs transition-all ${
+            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-2xs transition-all h-9.5 ${
               lastLeadStatus.isBeyond3Days
                 ? "bg-amber-50 text-amber-800 border-amber-200"
                 : "bg-emerald-50 text-emerald-800 border-emerald-200"
@@ -328,11 +557,15 @@ export default function OverviewPage() {
             )}
           </div>
 
+          {/* Date range dropdown */}
           <div className="relative">
             <button
               type="button"
-              onClick={() => setDateDropdownOpen(!dateDropdownOpen)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+              onClick={() => {
+                setDateDropdownOpen(!dateDropdownOpen);
+                setTimezoneDropdownOpen(false);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] transition-colors cursor-pointer h-9.5"
             >
               <Calendar className="h-4 w-4 text-[#8E8E93]" />
               <span>{selectedDateRange}</span>
@@ -372,40 +605,40 @@ export default function OverviewPage() {
 
       {/* ===================================================================== */}
       {/* SECTION 2: 12-COLUMN DASHBOARD GRID                                   */}
-      {/* LEFT 50%: 2x2 BLACK KPI BLOCKS + REALISTIC WHATSAPP INBOX             */}
+      {/* LEFT 50%: 2x2 COMPACT BLACK KPI BLOCKS + REALISTIC WHATSAPP INBOX     */}
       {/* RIGHT 50%: SALES PIPELINE (BIG NUMBERS + 30D COMPARISON) + TASKS      */}
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* =================================================================== */}
         {/* LEFT COLUMN (50% WIDTH): 2x2 BLACK CARDS + REALISTIC WHATSAPP INBOX */}
         {/* =================================================================== */}
-        <div className="lg:col-span-6 flex flex-col gap-6">
-          {/* 2x2 High-Contrast Black KPI Cards (Reduced to 50% width) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div className="lg:col-span-6 flex flex-col gap-5">
+          {/* 2x2 Compact Black KPI Cards (Reduced Size, Zero Clipping, Sleek Terminal Look) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Line 1 - Card 1: New Leads */}
-            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <Users className="h-4 w-4" />
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <Users className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
                     New Leads
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
                   <span>+24%</span>
                 </span>
               </div>
 
-              <div className="mt-3.5">
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+              <div className="mt-2.5">
+                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
                   {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
                 </div>
-                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
                   <span>from 103 last period</span>
-                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
                     <path
                       d="M1 14 Q 15 12, 25 8 T 45 6 T 59 2"
                       stroke="currentColor"
@@ -418,29 +651,29 @@ export default function OverviewPage() {
             </div>
 
             {/* Line 1 - Card 2: Pipeline Value */}
-            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <TrendingUp className="h-4 w-4" />
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <TrendingUp className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
                     Pipeline Value
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
                   <span>+18%</span>
                 </span>
               </div>
 
-              <div className="mt-3.5">
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+              <div className="mt-2.5">
+                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
                   {formatCurrency(metrics.pipelineValue || 2450000)}
                 </div>
-                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
                   <span>{leads.length || 14} active deals</span>
-                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
                     <path
                       d="M1 12 Q 15 14, 28 9 T 45 4 T 59 1"
                       stroke="currentColor"
@@ -453,29 +686,29 @@ export default function OverviewPage() {
             </div>
 
             {/* Line 2 - Card 3: WhatsApp Replies */}
-            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <MessageSquare className="h-4 w-4" />
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <MessageSquare className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
                     WhatsApp Replies
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
                   <span>+32%</span>
                 </span>
               </div>
 
-              <div className="mt-3.5">
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+              <div className="mt-2.5">
+                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
                   412
                 </div>
-                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
                   <span>avg 4m response</span>
-                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
                     <path
                       d="M1 10 Q 15 8, 30 11 T 48 3 T 59 2"
                       stroke="currentColor"
@@ -488,26 +721,26 @@ export default function OverviewPage() {
             </div>
 
             {/* Line 2 - Card 4: Follow-ups Due */}
-            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <Clock className="h-4 w-4" />
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <Clock className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
                     Follow-ups Due
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">
                   <span>{metrics.overdueFollowUps || 4} Overdue</span>
                 </span>
               </div>
 
-              <div className="mt-3.5">
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+              <div className="mt-2.5">
+                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
                   {metrics.openFollowUps || 18}
                 </div>
-                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
                   <span>requires attention</span>
                   <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                 </div>
