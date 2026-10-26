@@ -227,10 +227,10 @@ export default function OverviewPage() {
       {/* ===================================================================== */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#0D0D0E]">
             Good morning, <span className="text-[#FF7900]">Praveen</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-normal mt-1">
             Here&apos;s what&apos;s happening across your sales pipeline and WhatsApp conversations today.
           </p>
         </div>
@@ -240,7 +240,7 @@ export default function OverviewPage() {
             <button
               type="button"
               onClick={() => setDateDropdownOpen(!dateDropdownOpen)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] transition-colors cursor-pointer"
             >
               <Calendar className="h-4 w-4 text-[#8E8E93]" />
               <span>{selectedDateRange}</span>
@@ -256,7 +256,7 @@ export default function OverviewPage() {
                       setSelectedDateRange(r);
                       setDateDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-3.5 py-1.5 text-xs font-semibold ${
+                    className={`w-full text-left px-3.5 py-1.5 text-xs font-medium ${
                       selectedDateRange === r ? "bg-[#FFF4EC] text-[#FF7900]" : "text-[#0D0D0E] hover:bg-[#F7F7F8]"
                     }`}
                   >
@@ -270,9 +270,9 @@ export default function OverviewPage() {
           <Button
             size="sm"
             onClick={() => setNewLeadModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold shadow-xs text-xs sm:text-sm h-9.5 px-4 cursor-pointer"
+            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-9.5 px-4 cursor-pointer"
           >
-            <Plus className="mr-1.5 h-4 w-4 stroke-[3]" />
+            <Plus className="mr-1.5 h-4 w-4 stroke-[2.5]" />
             <span>New Lead</span>
           </Button>
         </div>
@@ -283,27 +283,27 @@ export default function OverviewPage() {
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: New Leads */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] transition-colors flex flex-col justify-between">
+        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
                 <Users className="h-4.5 w-4.5" />
               </div>
-              <span className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">
+              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
                 New Leads
               </span>
             </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2.5]" />
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
               <span>+24%</span>
             </span>
           </div>
 
           <div className="mt-4">
-            <div className="text-3xl font-black font-mono tracking-tight text-white">
+            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
               {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
             </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2">
+            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
               <span>from 103 last period</span>
               <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
                 <path
@@ -318,27 +318,27 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 2: Pipeline Value */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] transition-colors flex flex-col justify-between">
+        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
                 <TrendingUp className="h-4.5 w-4.5" />
               </div>
-              <span className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">
+              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
                 Pipeline Value
               </span>
             </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2.5]" />
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
               <span>+18%</span>
             </span>
           </div>
 
           <div className="mt-4">
-            <div className="text-3xl font-black font-mono tracking-tight text-white">
+            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
               {formatCurrency(metrics.pipelineValue || 2450000)}
             </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2">
+            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
               <span>{leads.length || 14} active deals</span>
               <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
                 <path
@@ -353,27 +353,27 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 3: WhatsApp Replies */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] transition-colors flex flex-col justify-between">
+        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
                 <MessageSquare className="h-4.5 w-4.5" />
               </div>
-              <span className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">
+              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
                 WhatsApp Replies
               </span>
             </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2.5]" />
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
               <span>+32%</span>
             </span>
           </div>
 
           <div className="mt-4">
-            <div className="text-3xl font-black font-mono tracking-tight text-white">
+            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
               412
             </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2">
+            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
               <span>avg 4m response time</span>
               <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
                 <path
@@ -388,26 +388,26 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 4: Follow-ups Due */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] transition-colors flex flex-col justify-between">
+        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
                 <Clock className="h-4.5 w-4.5" />
               </div>
-              <span className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">
+              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
                 Follow-ups Due
               </span>
             </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
               <span>{metrics.overdueFollowUps || 4} Overdue</span>
             </span>
           </div>
 
           <div className="mt-4">
-            <div className="text-3xl font-black font-mono tracking-tight text-white">
+            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
               {metrics.openFollowUps || 18}
             </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2">
+            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
               <span>requires attention today</span>
               <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
             </div>
@@ -424,13 +424,13 @@ export default function OverviewPage() {
         {/* =================================================================== */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {/* Sales Pipeline Card */}
-          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs">
+          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-4 border-b border-[#F0F0F2]">
               <div>
-                <h2 className="text-base sm:text-lg font-bold text-[#0D0D0E] tracking-tight">
+                <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E] tracking-tight">
                   Sales Pipeline
                 </h2>
-                <p className="text-xs text-[#8E8E93] font-medium">
+                <p className="text-xs text-[#8E8E93] font-normal">
                   Active deals across each sales stage
                 </p>
               </div>
@@ -439,9 +439,9 @@ export default function OverviewPage() {
                 <Button
                   size="sm"
                   onClick={() => setNewLeadModalOpen(true)}
-                  className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold text-xs h-8 px-3 cursor-pointer"
+                  className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-8 px-3 cursor-pointer"
                 >
-                  <Plus className="mr-1 h-3.5 w-3.5 stroke-[3]" />
+                  <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
                   <span>Add Lead</span>
                 </Button>
                 <Link
@@ -462,15 +462,15 @@ export default function OverviewPage() {
                   className="rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] p-3 flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
                       {ps.title}
                     </span>
-                    <span className="text-xs font-mono font-bold text-[#0D0D0E] mt-0.5 block">
+                    <span className="text-xs font-mono font-medium text-[#0D0D0E] mt-0.5 block">
                       {ps.count} deals
                     </span>
                   </div>
                   <div className="mt-3 pt-2 border-t border-[#E5E5E7]/60">
-                    <span className="text-xs sm:text-sm font-mono font-black text-[#0D0D0E]">
+                    <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E]">
                       {formatCurrency(ps.value)}
                     </span>
                   </div>
@@ -487,21 +487,21 @@ export default function OverviewPage() {
                   className="group flex items-center justify-between p-3 rounded-xl border border-[#E5E5E7] bg-white hover:border-[#FF7900] hover:bg-[#FFF4EC]/20 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded-lg bg-[#F7F7F8] group-hover:bg-[#FF7900]/10 flex items-center justify-center text-[#0D0D0E] group-hover:text-[#FF7900] font-bold text-xs shrink-0 transition-colors">
+                    <div className="h-8 w-8 rounded-lg bg-[#F7F7F8] group-hover:bg-[#FF7900]/10 flex items-center justify-center text-[#0D0D0E] group-hover:text-[#FF7900] font-semibold text-xs shrink-0 transition-colors">
                       {lead.contact_name?.charAt(0) || "L"}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs sm:text-sm font-bold text-[#0D0D0E] truncate">
+                      <p className="text-xs sm:text-sm font-medium text-[#0D0D0E] truncate">
                         {lead.title}
                       </p>
-                      <p className="text-[11px] text-[#8E8E93] font-medium truncate">
+                      <p className="text-[11px] text-[#8E8E93] font-normal truncate">
                         {lead.contact_name} • Sourced via {lead.source || "Direct"}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs sm:text-sm font-mono font-black text-[#0D0D0E]">
+                    <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E]">
                       {formatCurrency(lead.estimated_value)}
                     </span>
                     <Badge
@@ -512,7 +512,7 @@ export default function OverviewPage() {
                           ? "orangeSubtle"
                           : "secondary"
                       }
-                      className="text-[10px] font-bold uppercase"
+                      className="text-[10px] font-medium uppercase"
                     >
                       {lead.stage}
                     </Badge>
@@ -523,19 +523,19 @@ export default function OverviewPage() {
           </div>
 
           {/* Lead & Revenue Overview Dark Chart Card */}
-          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs">
+          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1F1F23]">
               <div>
-                <h2 className="text-base sm:text-lg font-bold tracking-tight text-white">
+                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
                   Lead &amp; Revenue Overview
                 </h2>
-                <p className="text-xs text-[#8E8E93] font-medium">
+                <p className="text-xs text-[#8E8E93] font-normal">
                   Monthly performance trends &amp; conversion dynamics
                 </p>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-3 text-xs font-semibold">
+                <div className="flex items-center gap-3 text-xs font-medium">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-[#FF7900]" />
                     <span className="text-[#8E8E93]">Leads</span>
@@ -546,7 +546,7 @@ export default function OverviewPage() {
                   </div>
                 </div>
 
-                <div className="text-xs font-semibold bg-[#1C1C1F] border border-[#2A2A30] text-white px-2.5 py-1 rounded-lg">
+                <div className="text-xs font-medium bg-[#1C1C1F] border border-[#2A2A30] text-white px-2.5 py-1 rounded-lg">
                   Monthly ▼
                 </div>
               </div>
@@ -602,18 +602,18 @@ export default function OverviewPage() {
                 <circle cx="450" cy="45" r="2.5" fill="#FFFFFF" />
 
                 {/* X Axis Labels */}
-                <text x="50" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="600">Jan</text>
-                <text x="150" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="600">Feb</text>
-                <text x="250" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="600">Mar</text>
-                <text x="350" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="600">Apr</text>
-                <text x="450" y="196" fill="#FF7900" fontSize="11" textAnchor="middle" fontWeight="800">May</text>
-                <text x="550" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="600">Jun</text>
+                <text x="50" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jan</text>
+                <text x="150" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Feb</text>
+                <text x="250" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Mar</text>
+                <text x="350" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Apr</text>
+                <text x="450" y="196" fill="#FF7900" fontSize="11" textAnchor="middle" fontWeight="600">May</text>
+                <text x="550" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jun</text>
               </svg>
 
               {/* Tooltip Overlay */}
               <div className="absolute top-2 left-[62%] sm:left-[68%] -translate-x-1/2 bg-[#1C1C1F] border border-[#2A2A30] rounded-xl px-3 py-1.5 shadow-xl text-center pointer-events-none">
-                <span className="text-[10px] font-bold text-[#8E8E93] uppercase block">May Peak</span>
-                <span className="text-xs font-mono font-bold text-white">
+                <span className="text-[10px] font-medium text-[#8E8E93] uppercase block">May Peak</span>
+                <span className="text-xs font-mono font-medium text-white">
                   <span className="text-[#FF7900]">124 Leads</span> • ₹4,80,000
                 </span>
               </div>
@@ -626,20 +626,20 @@ export default function OverviewPage() {
         {/* =================================================================== */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {/* WhatsApp Inbox Dark Card */}
-          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs">
+          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-3 border-b border-[#1F1F23]">
               <div>
-                <h2 className="text-base sm:text-lg font-bold tracking-tight text-white">
+                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
                   WhatsApp Inbox
                 </h2>
-                <p className="text-xs text-[#8E8E93] font-medium">
+                <p className="text-xs text-[#8E8E93] font-normal">
                   Recent customer conversations
                 </p>
               </div>
 
               <Link
                 href={`/app/${orgSlug}/inbox`}
-                className="text-xs font-bold text-[#FF7900] hover:text-[#FFA040] flex items-center gap-1 transition-colors"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#FFA040] flex items-center gap-1 transition-colors"
               >
                 <span>View All</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -651,7 +651,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setInboxFilter("all")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   inboxFilter === "all"
                     ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
                     : "text-[#8E8E93] hover:text-white"
@@ -662,7 +662,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setInboxFilter("unread")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   inboxFilter === "unread"
                     ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
                     : "text-[#8E8E93] hover:text-white"
@@ -673,7 +673,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setInboxFilter("mentions")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   inboxFilter === "mentions"
                     ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
                     : "text-[#8E8E93] hover:text-white"
@@ -693,7 +693,7 @@ export default function OverviewPage() {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="relative shrink-0">
-                      <div className="h-9 w-9 rounded-full bg-[#1C1C1F] group-hover:bg-[#2A2A30] border border-[#2A2A30] flex items-center justify-center text-white font-bold text-xs">
+                      <div className="h-9 w-9 rounded-full bg-[#1C1C1F] group-hover:bg-[#2A2A30] border border-[#2A2A30] flex items-center justify-center text-white font-medium text-xs">
                         {chat.contact_name?.charAt(0) || "W"}
                       </div>
                       <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#25D366] border-2 border-[#121214]" />
@@ -701,11 +701,11 @@ export default function OverviewPage() {
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-xs sm:text-sm font-bold text-white truncate">
+                        <p className="text-xs sm:text-sm font-medium text-white truncate">
                           {chat.contact_name || chat.contact_phone}
                         </p>
                       </div>
-                      <p className="text-[11px] text-[#8E8E93] font-medium truncate mt-0.5 max-w-[190px] sm:max-w-[240px]">
+                      <p className="text-[11px] text-[#8E8E93] font-normal truncate mt-0.5 max-w-[190px] sm:max-w-[240px]">
                         {chat.last_message_text || "Awaiting customer response"}
                       </p>
                     </div>
@@ -716,7 +716,7 @@ export default function OverviewPage() {
                       {chat.updated_at ? "2m ago" : "15m ago"}
                     </span>
                     {chat.unread_count > 0 && (
-                      <span className="h-4.5 min-w-[18px] px-1 rounded-full bg-[#FF7900] text-white text-[10px] font-mono font-black flex items-center justify-center">
+                      <span className="h-4.5 min-w-[18px] px-1 rounded-full bg-[#FF7900] text-white text-[10px] font-mono font-semibold flex items-center justify-center">
                         {chat.unread_count}
                       </span>
                     )}
@@ -727,20 +727,20 @@ export default function OverviewPage() {
           </div>
 
           {/* Tasks & Follow-ups White Card */}
-          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs">
+          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F2]">
               <div>
-                <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#0D0D0E]">
+                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#0D0D0E]">
                   Tasks &amp; Follow-ups
                 </h2>
-                <p className="text-xs text-[#8E8E93] font-medium">
+                <p className="text-xs text-[#8E8E93] font-normal">
                   Prioritised follow-ups and client actions
                 </p>
               </div>
 
               <Link
                 href={`/app/${orgSlug}/tasks`}
-                className="text-xs font-bold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 transition-colors"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 transition-colors"
               >
                 <span>View All</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -752,7 +752,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setTaskFilter("today")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   taskFilter === "today"
                     ? "bg-[#0D0D0E] text-white"
                     : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -763,7 +763,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setTaskFilter("overdue")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   taskFilter === "overdue"
                     ? "bg-[#0D0D0E] text-white"
                     : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -774,7 +774,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setTaskFilter("upcoming")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   taskFilter === "upcoming"
                     ? "bg-[#0D0D0E] text-white"
                     : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -806,14 +806,14 @@ export default function OverviewPage() {
                         }`}
                         title="Mark completed"
                       >
-                        {isDone && <Check className="h-3 w-3 stroke-[3]" />}
+                        {isDone && <Check className="h-3 w-3 stroke-[2.5]" />}
                       </button>
 
                       <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-bold text-[#0D0D0E] truncate">
+                        <p className="text-xs sm:text-sm font-medium text-[#0D0D0E] truncate">
                           {task.title}
                         </p>
-                        <p className="text-[11px] text-[#8E8E93] font-medium truncate mt-0.5">
+                        <p className="text-[11px] text-[#8E8E93] font-normal truncate mt-0.5">
                           {task.contact_name || "Lead inquiry"} • Due {formatDate(task.due_date)}
                         </p>
                       </div>
@@ -827,7 +827,7 @@ export default function OverviewPage() {
                           ? "warning"
                           : "secondary"
                       }
-                      className="text-[10px] font-bold uppercase shrink-0"
+                      className="text-[10px] font-medium uppercase shrink-0"
                     >
                       {task.priority}
                     </Badge>
@@ -861,13 +861,13 @@ export default function OverviewPage() {
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#0D0D0E]">
+              <label className="block text-xs font-medium text-[#0D0D0E]">
                 Associated Contact
               </label>
               <select
                 value={selectedContactId}
                 onChange={(e) => setSelectedContactId(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
               >
                 <option value="">-- Create or enter new contact --</option>
                 {contacts.map((c) => (
@@ -906,13 +906,13 @@ export default function OverviewPage() {
               />
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-[#0D0D0E]">
+                <label className="block text-xs font-medium text-[#0D0D0E]">
                   Initial Stage
                 </label>
                 <select
                   value={leadStage}
                   onChange={(e) => setLeadStage(e.target.value as LeadStage)}
-                  className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-bold text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                  className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
                 >
                   <option value="new">New Inquiry</option>
                   <option value="contacted">Contacted</option>
@@ -924,13 +924,13 @@ export default function OverviewPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#0D0D0E]">
+              <label className="block text-xs font-medium text-[#0D0D0E]">
                 Lead Source
               </label>
               <select
                 value={leadSource}
                 onChange={(e) => setLeadSource(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
               >
                 <option value="WhatsApp Inbound">WhatsApp Inbound</option>
                 <option value="Website Form">Website Form</option>
@@ -945,13 +945,13 @@ export default function OverviewPage() {
               type="button"
               variant="ghost"
               onClick={() => setNewLeadModalOpen(false)}
-              className="rounded-xl font-bold text-[#8E8E93]"
+              className="rounded-xl font-medium text-[#8E8E93]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold px-5"
+              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium px-5"
             >
               Create Opportunity
             </Button>

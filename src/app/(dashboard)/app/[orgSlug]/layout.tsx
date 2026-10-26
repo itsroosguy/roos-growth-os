@@ -73,7 +73,7 @@ export default async function OrgDashboardLayout({
           <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
             <Topbar />
             <main className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6 bg-[#F7F7F8]">
-              <div className="mx-auto max-w-[1580px]">{children}</div>
+              <div className="mx-auto max-w-[1580px] animate-page-enter">{children}</div>
             </main>
           </div>
         </div>

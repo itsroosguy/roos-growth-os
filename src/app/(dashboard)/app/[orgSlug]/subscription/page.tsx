@@ -130,15 +130,15 @@ export default function SubscriptionPage() {
             <Lock className="h-8 w-8" />
           </div>
           <div className="space-y-1.5">
-            <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono">
+            <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono">
               Clearance Restricted
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#0D0D0E]">
+            <h2 className="text-xl sm:text-2xl font-semibold text-[#0D0D0E]">
               Fund Transfer &amp; Billing Details Restricted
             </h2>
             <p className="text-xs sm:text-sm text-[#8E8E93] max-w-lg mx-auto leading-relaxed font-medium">
               Your active credential is{" "}
-              <strong className="text-[#0D0D0E] font-extrabold capitalize">
+              <strong className="text-[#0D0D0E] font-semibold capitalize">
                 {userRole === "senior_manager"
                   ? "Senior Manager (Operational Access)"
                   : userRole === "junior_manager"
@@ -150,7 +150,7 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="p-4 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7] max-w-md mx-auto text-left text-xs space-y-2">
-            <p className="font-bold text-[#0D0D0E] flex items-center gap-1.5">
+            <p className="font-semibold text-[#0D0D0E] flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
               Your Authorized Operational Scope:
             </p>
@@ -174,12 +174,12 @@ export default function SubscriptionPage() {
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Link href={`/app/${currentOrg.slug}/tasks`}>
-              <Button variant="outline" className="rounded-xl text-xs font-bold border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]">
+              <Button variant="outline" className="rounded-xl text-xs font-semibold border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]">
                 Go to Tasks &amp; Follow-ups
               </Button>
             </Link>
             <Link href={`/app/${currentOrg.slug}/overview`}>
-              <Button className="rounded-xl bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white text-xs font-bold">
+              <Button className="rounded-xl bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white text-xs font-semibold">
                 Return to Operational Workspace
               </Button>
             </Link>
@@ -195,13 +195,13 @@ export default function SubscriptionPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Subscription &amp; Usage
             </h1>
-            <span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-black px-2.5 py-0.5 text-emerald-700">
+            <span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-semibold px-2.5 py-0.5 text-emerald-700">
               {subscription.status}
             </span>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-2.5 py-0.5 text-[#FF7900] font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-2.5 py-0.5 text-[#FF7900] font-mono">
               Sandbox Mode
             </span>
           </div>
@@ -214,7 +214,7 @@ export default function SubscriptionPage() {
         <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
           <button
             onClick={() => setInterval("monthly")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
               interval === "monthly"
                 ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -224,14 +224,14 @@ export default function SubscriptionPage() {
           </button>
           <button
             onClick={() => setInterval("yearly")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
               interval === "yearly"
                 ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
             <span>Annual</span>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-black px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-full">
               Save ~17%
             </span>
           </button>
@@ -242,9 +242,9 @@ export default function SubscriptionPage() {
         <div className="rounded-xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between shadow-2xs">
           <div className="flex items-center space-x-2">
             <Check className="h-4 w-4 shrink-0 text-emerald-600" />
-            <span className="font-bold">{feedbackMessage}</span>
+            <span className="font-semibold">{feedbackMessage}</span>
           </div>
-          <button onClick={() => setFeedbackMessage(null)} className="font-bold underline ml-4 hover:text-emerald-950 cursor-pointer">
+          <button onClick={() => setFeedbackMessage(null)} className="font-semibold underline ml-4 hover:text-emerald-950 cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -254,23 +254,23 @@ export default function SubscriptionPage() {
       <div className="bg-white rounded-2xl border border-[#E5E5E7] p-6 shadow-2xs">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
               Current Plan
             </span>
-            <div className="text-2xl sm:text-3xl font-black text-[#0D0D0E] tracking-tight">
+            <div className="text-2xl sm:text-3xl font-semibold text-[#0D0D0E] tracking-tight">
               {currentPlanDef.name}
             </div>
-            <p className="text-xs sm:text-sm text-[#FF7900] font-black font-mono">
+            <p className="text-xs sm:text-sm text-[#FF7900] font-semibold font-mono">
               ₹{interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr} /{" "}
               {interval === "yearly" ? "year" : "month"}
             </p>
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
               Billing Cycle
             </span>
-            <div className="text-sm sm:text-base font-bold text-[#0D0D0E] capitalize flex items-center space-x-1.5">
+            <div className="text-sm sm:text-base font-semibold text-[#0D0D0E] capitalize flex items-center space-x-1.5">
               <Clock className="h-4 w-4 text-[#FF7900]" />
               <span>{subscription.billing_interval} interval</span>
             </div>
@@ -284,10 +284,10 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
               Payment Method
             </span>
-            <div className="text-sm sm:text-base font-bold text-[#0D0D0E] flex items-center space-x-1.5">
+            <div className="text-sm sm:text-base font-semibold text-[#0D0D0E] flex items-center space-x-1.5">
               <CreditCard className="h-4 w-4 text-emerald-600" />
               <span>UPI AutoPay / e-Mandate</span>
             </div>
@@ -299,14 +299,14 @@ export default function SubscriptionPage() {
           <div className="flex flex-col justify-center items-start md:items-end space-y-2">
             {subscription.cancel_at_period_end ? (
               <div className="space-y-1.5">
-                <Badge variant="warning" className="text-xs font-bold">
+                <Badge variant="warning" className="text-xs font-medium">
                   Cancels at end of period
                 </Badge>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleReactivate}
-                  className="w-full text-xs rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shadow-2xs h-9"
+                  className="w-full text-xs rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs h-9"
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
                   Reactivate Plan
@@ -317,7 +317,7 @@ export default function SubscriptionPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCancelModal(true)}
-                className="text-xs rounded-xl border-rose-200 bg-white hover:bg-rose-50 text-rose-600 font-bold shadow-2xs h-9 px-3.5 cursor-pointer"
+                className="text-xs rounded-xl border-rose-200 bg-white hover:bg-rose-50 text-rose-600 font-semibold shadow-2xs h-9 px-3.5 cursor-pointer"
               >
                 Cancel Subscription
               </Button>
@@ -330,7 +330,7 @@ export default function SubscriptionPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-base font-black text-[#0D0D0E]">
+            <h2 className="text-base font-semibold text-[#0D0D0E]">
               Usage &amp; Quota Consumption
             </h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -338,7 +338,7 @@ export default function SubscriptionPage() {
             </p>
           </div>
           {usageSummary.is_any_exceeded && (
-            <Badge variant="danger" className="text-xs font-bold">
+            <Badge variant="danger" className="text-xs font-medium">
               Quota Limit Reached
             </Badge>
           )}
@@ -358,17 +358,17 @@ export default function SubscriptionPage() {
               <div key={metric.metric_name} className="p-4 bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs">
                 <div className="flex justify-between items-start mb-2">
                   <div className="space-y-0.5">
-                    <span className="text-xs font-bold text-[#0D0D0E]">
+                    <span className="text-xs font-semibold text-[#0D0D0E]">
                       {metric.label}
                     </span>
                     {metric.admin_override_quota && (
-                      <span className="block text-[11px] text-emerald-700 font-bold">
+                      <span className="block text-[11px] text-emerald-700 font-semibold">
                         (+{metric.admin_override_quota} admin bonus)
                       </span>
                     )}
                   </div>
                   <span
-                    className="text-xs font-mono font-black text-[#0D0D0E]"
+                    className="text-xs font-mono font-semibold text-[#0D0D0E]"
                     suppressHydrationWarning
                   >
                     {mounted ? metric.current_count.toLocaleString("en-IN") : metric.current_count.toLocaleString("en-IN")} / {metric.max_quota.toLocaleString("en-IN")} {metric.unit}
@@ -384,19 +384,19 @@ export default function SubscriptionPage() {
                 </div>
 
                 <div className="flex justify-between items-center text-xs text-[#8E8E93]">
-                  <span className="font-mono font-bold text-[#0D0D0E]" suppressHydrationWarning>
+                  <span className="font-mono font-semibold text-[#0D0D0E]" suppressHydrationWarning>
                     {mounted ? metric.percentage_used : metric.percentage_used}% consumed
                   </span>
                   {isExceeded ? (
-                    <span className="text-rose-600 font-bold flex items-center text-[11px]">
+                    <span className="text-rose-600 font-semibold flex items-center text-[11px]">
                       <AlertTriangle className="h-3 w-3 mr-1 inline" /> Exceeded
                     </span>
                   ) : isWarning ? (
-                    <span className="text-amber-700 font-bold text-[11px]">
+                    <span className="text-amber-700 font-medium text-[11px]">
                       Warning (&gt;80%)
                     </span>
                   ) : (
-                    <span className="text-emerald-700 font-bold text-[11px]">Normal</span>
+                    <span className="text-emerald-700 font-medium text-[11px]">Normal</span>
                   )}
                 </div>
               </div>
@@ -408,7 +408,7 @@ export default function SubscriptionPage() {
       {/* Available Plans Grid */}
       <div>
         <div className="mb-4">
-          <h2 className="text-base font-black text-[#0D0D0E]">
+          <h2 className="text-base font-semibold text-[#0D0D0E]">
             Available Subscription Plans
           </h2>
           <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -430,7 +430,7 @@ export default function SubscriptionPage() {
               >
                 {p.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-[#FF7900] text-white text-[10px] px-3 py-0.5 rounded-full font-black uppercase shadow-2xs tracking-wider">
+                    <span className="bg-[#FF7900] text-white text-[10px] px-3 py-0.5 rounded-full font-semibold uppercase shadow-2xs tracking-wider">
                       Most Popular
                     </span>
                   </div>
@@ -439,23 +439,23 @@ export default function SubscriptionPage() {
                 <div>
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-lg font-black text-[#0D0D0E]">{p.name}</h3>
+                      <h3 className="text-lg font-semibold text-[#0D0D0E]">{p.name}</h3>
                       <p className="mt-0.5 text-xs text-[#8E8E93] font-medium">
                         {p.tagline}
                       </p>
                     </div>
                     {isCurrent && (
-                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Current
                       </span>
                     )}
                   </div>
 
                   <div className="mt-4 pb-4 border-b border-[#E5E5E7]">
-                    <span className="text-3xl font-black font-mono text-[#0D0D0E]">
+                    <span className="text-3xl font-semibold font-mono text-[#0D0D0E]">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
-                    <span className="text-xs text-[#8E8E93] font-bold ml-1.5">
+                    <span className="text-xs text-[#8E8E93] font-semibold ml-1.5">
                       / {interval === "yearly" ? "year" : "month"}
                     </span>
                     <span className="block text-[11px] text-[#8E8E93] font-medium mt-0.5">
@@ -464,7 +464,7 @@ export default function SubscriptionPage() {
                   </div>
 
                   <div className="py-4 space-y-2.5">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8E8E93] mb-1">
+                    <div className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] mb-1">
                       Entitlements &amp; Features
                     </div>
                     {p.features.map((feat) => (
@@ -478,13 +478,13 @@ export default function SubscriptionPage() {
 
                 <div className="pt-4 border-t border-[#E5E5E7]">
                   {isCurrent ? (
-                    <Button variant="outline" className="w-full text-xs font-bold h-9 border-[#E5E5E7] text-[#8E8E93] rounded-xl" disabled>
+                    <Button variant="outline" className="w-full text-xs font-semibold h-9 border-[#E5E5E7] text-[#8E8E93] rounded-xl" disabled>
                       Active Plan
                     </Button>
                   ) : (
                     <Button
                       variant={p.popular ? "default" : "outline"}
-                      className={`w-full text-xs font-bold h-9 rounded-xl cursor-pointer ${
+                      className={`w-full text-xs font-semibold h-9 rounded-xl cursor-pointer ${
                         p.popular
                           ? "bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-2xs"
                           : "border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
@@ -507,7 +507,7 @@ export default function SubscriptionPage() {
         <div className="flex items-center space-x-2 pb-4 border-b border-slate-100 mb-4">
           <TrendingUp className="h-5 w-5 text-blue-600" />
           <div>
-            <h2 className="text-base font-black text-slate-950">
+            <h2 className="text-base font-semibold text-slate-950">
               Unit Economics & Contribution Margin ({currentPlanDef.name} Plan)
             </h2>
             <p className="text-xs text-slate-600 font-normal mt-0.5">
@@ -518,24 +518,24 @@ export default function SubscriptionPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
-            <span className="text-xl font-black font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
+            <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
+            <span className="text-xl font-semibold font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">(excl. GST)</span>
           </div>
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
-            <span className="text-xl font-black font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
+            <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
+            <span className="text-xl font-semibold font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Domestic UPI/Card</span>
           </div>
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">Direct Compute</span>
-            <span className="text-xl font-black font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
+            <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Direct Compute</span>
+            <span className="text-xl font-semibold font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Server & DB compute</span>
           </div>
           <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50">
-            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
-            <span className="text-xl font-black font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
-            <span className="text-[11px] text-emerald-800 font-bold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
+            <span className="text-[11px] font-medium text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
+            <span className="text-xl font-semibold font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
+            <span className="text-[11px] text-emerald-800 font-semibold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
           </div>
         </div>
       </div>
@@ -549,8 +549,8 @@ export default function SubscriptionPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-black text-[#0D0D0E]">Overall Fund Transfers &amp; Settlements</h2>
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-mono">
+                <h2 className="text-base font-semibold text-[#0D0D0E]">Overall Fund Transfers &amp; Settlements</h2>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-mono">
                   Level 1 Admin Only
                 </span>
               </div>
@@ -560,27 +560,27 @@ export default function SubscriptionPage() {
             </div>
           </div>
           <div className="text-left sm:text-right">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#8E8E93] block">Total Settled (MTD)</span>
-            <span className="text-lg font-black font-mono text-[#0D0D0E]">₹ 24,50,000</span>
+            <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#8E8E93] block">Total Settled (MTD)</span>
+            <span className="text-lg font-semibold font-mono text-[#0D0D0E]">₹ 24,50,000</span>
           </div>
         </div>
 
         {/* Banking Summary Cards */}
         <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-[#E5E5E7] bg-[#F7F7F8]">
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Available Balance</span>
-            <span className="text-xl font-black font-mono text-emerald-600">₹ 3,12,450.00</span>
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Available Balance</span>
+            <span className="text-xl font-semibold font-mono text-emerald-600">₹ 3,12,450.00</span>
             <span className="text-[11px] text-[#8E8E93] font-medium block mt-0.5">Ready for auto-disbursement</span>
           </div>
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Linked Settlement Bank</span>
-            <span className="text-sm font-bold text-[#0D0D0E] block truncate">HDFC Corporate Bank</span>
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Linked Settlement Bank</span>
+            <span className="text-sm font-semibold text-[#0D0D0E] block truncate">HDFC Corporate Bank</span>
             <span className="text-[11px] font-mono text-[#8E8E93] font-medium block mt-0.5">A/C ••••••••8491 (RTGS/NEFT)</span>
           </div>
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">Clearance Level</span>
-            <span className="text-sm font-bold text-[#FF7900] block">Admin Full Financial Access</span>
-            <span className="text-[11px] text-rose-600 font-bold block mt-0.5">Restricted from Senior &amp; Jr Managers</span>
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Clearance Level</span>
+            <span className="text-sm font-semibold text-[#FF7900] block">Admin Full Financial Access</span>
+            <span className="text-[11px] text-rose-600 font-semibold block mt-0.5">Restricted from Senior &amp; Jr Managers</span>
           </div>
         </div>
 
@@ -589,7 +589,7 @@ export default function SubscriptionPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-medium uppercase tracking-wider text-[11px]">
                   <th className="py-2.5 px-3">Transfer Ref</th>
                   <th className="py-2.5 px-3">Gateway / Route</th>
                   <th className="py-2.5 px-3">Beneficiary Account</th>
@@ -600,36 +600,36 @@ export default function SubscriptionPage() {
               </thead>
               <tbody className="divide-y divide-[#E5E5E7] font-medium">
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-884102</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-884102</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
                   <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
-                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 1,45,000</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 1,45,000</td>
                   <td className="py-3 px-3">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
                   <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Today, 09:30 AM</td>
                 </tr>
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-883918</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-883918</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Stripe Automated Payout</td>
                   <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
-                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 2,20,000</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 2,20,000</td>
                   <td className="py-3 px-3">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
                   <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Yesterday, 14:15 PM</td>
                 </tr>
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">TRF-882045</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-882045</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
                   <td className="py-3 px-3 text-[#8E8E93] font-mono">Treasury Reserve Pool ••1024</td>
-                  <td className="py-3 px-3 font-mono font-black text-[#0D0D0E]">₹ 3,75,000</td>
+                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 3,75,000</td>
                   <td className="py-3 px-3">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
@@ -646,7 +646,7 @@ export default function SubscriptionPage() {
         <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
           <Receipt className="h-5 w-5 text-[#FF7900]" />
           <div>
-            <h2 className="text-base font-black text-[#0D0D0E]">Billing History &amp; GST Invoices</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Billing History &amp; GST Invoices</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
               Verified tax invoices and transaction records for {currentOrg.name}.
             </p>
@@ -662,7 +662,7 @@ export default function SubscriptionPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-medium uppercase tracking-wider text-[11px]">
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Invoice ID</th>
                     <th className="py-2.5 px-3">Description</th>
@@ -682,13 +682,13 @@ export default function SubscriptionPage() {
                           year: "numeric",
                         })}
                       </td>
-                      <td className="py-3 px-3 font-mono text-[#0D0D0E] font-bold">
+                      <td className="py-3 px-3 font-mono text-[#0D0D0E] font-semibold">
                         {event.provider_invoice_id || "N/A"}
                       </td>
                       <td className="py-3 px-3 text-[#0D0D0E] font-medium">
                         {event.description}
                       </td>
-                      <td className="py-3 px-3 font-mono font-bold text-[#0D0D0E]">
+                      <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">
                         ₹{(event.amount_inr_paise / 100).toLocaleString("en-IN")}
                       </td>
                       <td className="py-3 px-3 capitalize font-mono text-[#8E8E93]">
@@ -696,7 +696,7 @@ export default function SubscriptionPage() {
                       </td>
                       <td className="py-3 px-3">
                         <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                          className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded-full border ${
                             event.status === "succeeded"
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                               : "bg-rose-50 text-rose-700 border-rose-200"
@@ -709,7 +709,7 @@ export default function SubscriptionPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] font-bold rounded-xl"
+                          className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] font-semibold rounded-xl"
                           onClick={() => alert(`Downloading verified tax invoice ${event.provider_invoice_id}`)}
                         >
                           <Download className="h-3 w-3 mr-1 text-[#8E8E93]" />
@@ -731,7 +731,7 @@ export default function SubscriptionPage() {
           <div className="max-w-md w-full bg-white rounded-2xl border border-[#E5E5E7] shadow-xl p-6">
             <div className="flex items-center space-x-2 text-amber-600 mb-2">
               <AlertTriangle className="h-5 w-5" />
-              <h3 className="text-base font-black text-[#0D0D0E]">
+              <h3 className="text-base font-semibold text-[#0D0D0E]">
                 Confirm Plan Downgrade
               </h3>
             </div>
@@ -764,14 +764,14 @@ export default function SubscriptionPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setSelectedPlanForDowngrade(null)}
-                className="border-[#E5E5E7] text-[#0D0D0E] font-bold rounded-xl text-xs"
+                className="border-[#E5E5E7] text-[#0D0D0E] font-semibold rounded-xl text-xs"
               >
                 Keep Current Plan
               </Button>
               <Button
                 size="sm"
                 onClick={() => handleSimulatePayment(selectedPlanForDowngrade)}
-                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs"
+                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs"
               >
                 Confirm Downgrade
               </Button>
@@ -784,7 +784,7 @@ export default function SubscriptionPage() {
       {showCancelModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
           <div className="max-w-md w-full bg-white rounded-2xl border border-[#E5E5E7] shadow-xl p-6">
-            <h3 className="text-base font-black text-rose-600 mb-1">
+            <h3 className="text-base font-semibold text-rose-600 mb-1">
               Cancel Subscription?
             </h3>
             <p className="text-xs text-[#8E8E93] mb-4 font-medium">
@@ -807,14 +807,14 @@ export default function SubscriptionPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCancelModal(false)}
-                className="border-[#E5E5E7] text-[#0D0D0E] font-bold rounded-xl text-xs"
+                className="border-[#E5E5E7] text-[#0D0D0E] font-semibold rounded-xl text-xs"
               >
                 Keep Subscription
               </Button>
               <Button
                 size="sm"
                 onClick={handleCancelSubscription}
-                className="bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs"
+                className="bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs"
               >
                 Confirm Cancellation
               </Button>

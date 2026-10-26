@@ -596,10 +596,10 @@ function InboxContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-1">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
               WhatsApp Shared Inbox
             </h1>
-            <span className="px-3 py-1 text-xs font-bold text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 rounded-full shadow-2xs font-mono">
+            <span className="px-3 py-1 text-xs font-semibold text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 rounded-full shadow-2xs font-mono">
               Live Multi-Agent Chat
             </span>
           </div>
@@ -614,7 +614,7 @@ function InboxContent() {
             size="sm"
             variant="secondary"
             onClick={() => setSimulatorOpen(!simulatorOpen)}
-            className="h-9 px-3.5 text-xs sm:text-sm font-bold text-[#0D0D0E] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] transition-all shadow-2xs flex items-center gap-2 rounded-xl cursor-pointer"
+            className="h-9 px-3.5 text-xs sm:text-sm font-semibold text-[#0D0D0E] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] transition-all shadow-2xs flex items-center gap-2 rounded-xl cursor-pointer"
           >
             <Bot className="h-4 w-4 text-[#FF7900]" />
             <span>{simulatorOpen ? "Hide Simulator" : "Mock Webhook Simulator"}</span>
@@ -622,7 +622,7 @@ function InboxContent() {
 
           <Link
             href={`/app/${orgSlug}/whatsapp`}
-            className="h-9 px-3.5 text-xs sm:text-sm font-bold text-[#0D0D0E] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] transition-all flex items-center gap-2 shadow-2xs rounded-xl cursor-pointer"
+            className="h-9 px-3.5 text-xs sm:text-sm font-semibold text-[#0D0D0E] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] transition-all flex items-center gap-2 shadow-2xs rounded-xl cursor-pointer"
           >
             <Sparkles className="h-4 w-4 text-[#FF7900]" />
             <span>WhatsApp Settings</span>
@@ -636,7 +636,7 @@ function InboxContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bot className="h-4.5 w-4.5 text-[#FF7900]" />
-              <h3 className="text-sm font-bold text-[#0D0D0E]">
+              <h3 className="text-sm font-semibold text-[#0D0D0E]">
                 Interactive Mock Inbound Message Simulator
               </h3>
             </div>
@@ -647,18 +647,18 @@ function InboxContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs font-bold text-[#0D0D0E] block mb-1">
+              <label className="text-xs font-medium text-[#0D0D0E] block mb-1">
                 From Phone (E.164)
               </label>
               <Input
                 value={simInboundPhone}
                 onChange={(e) => setSimInboundPhone(e.target.value)}
                 placeholder="+919876543210"
-                className="h-9 text-xs font-mono font-bold bg-[#F7F7F8] border-[#E5E5E7]"
+                className="h-9 text-xs font-mono font-semibold bg-[#F7F7F8] border-[#E5E5E7]"
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-[#0D0D0E] block mb-1">
+              <label className="text-xs font-medium text-[#0D0D0E] block mb-1">
                 Sender Name
               </label>
               <Input
@@ -669,7 +669,7 @@ function InboxContent() {
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-[#0D0D0E] block mb-1">
+              <label className="text-xs font-medium text-[#0D0D0E] block mb-1">
                 Message Text
               </label>
               <div className="flex gap-2">
@@ -682,7 +682,7 @@ function InboxContent() {
                 <Button
                   size="sm"
                   onClick={handleSimulateInbound}
-                  className="h-9 text-xs font-bold bg-[#FF7900] text-white hover:bg-[#E66D00] shrink-0 shadow-xs px-3.5"
+                  className="h-9 text-xs font-semibold bg-[#FF7900] text-white hover:bg-[#E66D00] shrink-0 shadow-xs px-3.5"
                 >
                   Fire Webhook
                 </Button>
@@ -696,24 +696,24 @@ function InboxContent() {
       <div className="flex md:hidden rounded-2xl bg-[#F7F7F8] p-1 border border-[#E5E5E7] shadow-xs">
         <button
           onClick={() => setMobileTab("list")}
-          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
-            mobileTab === "list" ? "bg-[#0D0D0E] text-white shadow-sm font-extrabold" : "text-[#8E8E93]"
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all ${
+            mobileTab === "list" ? "bg-[#0D0D0E] text-white shadow-sm font-semibold" : "text-[#8E8E93]"
           }`}
         >
           Conversations ({conversations.length})
         </button>
         <button
           onClick={() => setMobileTab("chat")}
-          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
-            mobileTab === "chat" ? "bg-[#0D0D0E] text-white shadow-sm font-extrabold" : "text-[#8E8E93]"
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all ${
+            mobileTab === "chat" ? "bg-[#0D0D0E] text-white shadow-sm font-semibold" : "text-[#8E8E93]"
           }`}
         >
           Active Chat
         </button>
         <button
           onClick={() => setMobileTab("details")}
-          className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
-            mobileTab === "details" ? "bg-[#0D0D0E] text-white shadow-sm font-extrabold" : "text-[#8E8E93]"
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all ${
+            mobileTab === "details" ? "bg-[#0D0D0E] text-white shadow-sm font-semibold" : "text-[#8E8E93]"
           }`}
         >
           CRM Context
@@ -737,7 +737,7 @@ function InboxContent() {
             )}
             <span>{feedbackMessage.text}</span>
           </div>
-          <button onClick={() => setFeedbackMessage(null)} className="text-xs font-bold underline cursor-pointer">
+          <button onClick={() => setFeedbackMessage(null)} className="text-xs font-semibold underline cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -757,10 +757,10 @@ function InboxContent() {
           <div className="p-4 border-b border-[#E5E5E7] space-y-3 bg-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <h2 className="text-lg font-black text-[#0D0D0E] tracking-tight">Inbox</h2>
+                <h2 className="text-lg font-semibold text-[#0D0D0E] tracking-tight">Inbox</h2>
                 <span
                   suppressHydrationWarning
-                  className="px-2.5 py-0.5 rounded-full text-xs font-black bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-mono shadow-2xs"
+                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-mono shadow-2xs"
                 >
                   {counts.all}
                 </span>
@@ -778,16 +778,16 @@ function InboxContent() {
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               <button
                 onClick={() => { setStatusFilter("all"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-extrabold shadow-sm"
+                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-semibold shadow-sm"
                     : "bg-white hover:bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]"
                 }`}
               >
                 <span>All</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
                       ? "bg-[#FF7900]/20 text-[#FF7900]"
                       : "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7]"
@@ -798,16 +798,16 @@ function InboxContent() {
               </button>
               <button
                 onClick={() => { setAssigneeFilter("unassigned"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   assigneeFilter === "unassigned"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-extrabold shadow-sm"
+                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-semibold shadow-sm"
                     : "bg-white hover:bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]"
                 }`}
               >
                 <span>Unassigned</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     assigneeFilter === "unassigned"
                       ? "bg-[#FF7900]/20 text-[#FF7900]"
                       : "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7]"
@@ -818,16 +818,16 @@ function InboxContent() {
               </button>
               <button
                 onClick={() => { setAssigneeFilter(currentStaffUser?.id || "me"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-extrabold shadow-sm"
+                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-semibold shadow-sm"
                     : "bg-white hover:bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]"
                 }`}
               >
                 <span>Mine</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
                       ? "bg-[#FF7900]/20 text-[#FF7900]"
                       : "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7]"
@@ -838,16 +838,16 @@ function InboxContent() {
               </button>
               <button
                 onClick={() => setUnreadOnly(!unreadOnly)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   unreadOnly
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-extrabold shadow-sm"
+                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-semibold shadow-sm"
                     : "bg-white hover:bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]"
                 }`}
               >
                 <span>Unread</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     unreadOnly
                       ? "bg-[#FF7900]/20 text-[#FF7900]"
                       : "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7]"
@@ -862,16 +862,16 @@ function InboxContent() {
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => { setStatusFilter("open"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "open"
-                    ? "bg-emerald-600 text-white font-extrabold shadow-sm"
+                    ? "bg-emerald-600 text-white font-semibold shadow-sm"
                     : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200"
                 }`}
               >
                 <span>Open</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     statusFilter === "open"
                       ? "bg-white/25 text-white"
                       : "bg-emerald-100 text-emerald-900 border border-emerald-300"
@@ -882,16 +882,16 @@ function InboxContent() {
               </button>
               <button
                 onClick={() => { setStatusFilter("pending"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "pending"
-                    ? "bg-amber-600 text-white font-extrabold shadow-sm"
+                    ? "bg-amber-600 text-white font-semibold shadow-sm"
                     : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200"
                 }`}
               >
                 <span>Pending</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     statusFilter === "pending"
                       ? "bg-white/25 text-white"
                       : "bg-amber-100 text-amber-900 border border-amber-300"
@@ -902,16 +902,16 @@ function InboxContent() {
               </button>
               <button
                 onClick={() => { setStatusFilter("resolved"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                   statusFilter === "resolved"
-                    ? "bg-slate-800 text-white font-extrabold shadow-sm"
+                    ? "bg-slate-800 text-white font-semibold shadow-sm"
                     : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200"
                 }`}
               >
                 <span>Resolved</span>
                 <span
                   suppressHydrationWarning
-                  className={`px-1.5 py-0.2 rounded-full text-xs font-black font-mono ${
+                  className={`px-1.5 py-0.2 rounded-full text-xs font-semibold font-mono ${
                     statusFilter === "resolved"
                       ? "bg-white/25 text-white"
                       : "bg-slate-100 text-slate-900 border border-slate-200"
@@ -962,20 +962,20 @@ function InboxContent() {
                     <div className="flex items-start justify-between gap-2.5">
                       <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className="h-11 w-11 rounded-2xl bg-[#0D0D0E] text-white font-black flex items-center justify-center text-sm shadow-xs border-2 border-white">
+                          <div className="h-11 w-11 rounded-2xl bg-[#0D0D0E] text-white font-semibold flex items-center justify-center text-sm shadow-xs border-2 border-white">
                             {initials}
                           </div>
                           {c.unread_count > 0 && (
                             <span
                               suppressHydrationWarning
-                              className="absolute -top-1 -right-1 h-5 w-5 bg-[#FF7900] text-white rounded-full text-xs font-black flex items-center justify-center shadow-xs ring-2 ring-white font-mono"
+                              className="absolute -top-1 -right-1 h-5 w-5 bg-[#FF7900] text-white rounded-full text-xs font-semibold flex items-center justify-center shadow-xs ring-2 ring-white font-mono"
                             >
                               {c.unread_count}
                             </span>
                           )}
                         </div>
                         <div>
-                          <h3 className="text-sm sm:text-base font-bold text-[#0D0D0E] leading-tight">
+                          <h3 className="text-sm sm:text-base font-semibold text-[#0D0D0E] leading-tight">
                             {c.contact_name}
                           </h3>
                           <span className="text-xs text-[#8E8E93] font-semibold font-mono">
@@ -985,11 +985,11 @@ function InboxContent() {
                       </div>
 
                       <div className="text-right space-y-1">
-                        <span className="text-xs text-[#8E8E93] block font-bold">
+                        <span className="text-xs text-[#8E8E93] block font-semibold">
                           {formatDate(c.last_message_at)}
                         </span>
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusCfg.colorClass}`}
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusCfg.colorClass}`}
                         >
                           {statusCfg.label}
                         </span>
@@ -1003,12 +1003,12 @@ function InboxContent() {
                     <div className="mt-2.5 flex items-center justify-between text-xs text-[#8E8E93] pt-2 border-t border-[#F0F0F2]">
                       <div className="flex items-center gap-1.5 font-medium">
                         {c.assigned_to_name ? (
-                          <span className="inline-flex items-center gap-1 text-[#FF7900] font-bold">
+                          <span className="inline-flex items-center gap-1 text-[#FF7900] font-semibold">
                             <UserCheck className="h-3.5 w-3.5" />
                             {c.assigned_to_name}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-amber-700 font-bold">
+                          <span className="inline-flex items-center gap-1 text-amber-700 font-semibold">
                             <UserX className="h-3.5 w-3.5" />
                             Unassigned
                           </span>
@@ -1043,14 +1043,14 @@ function InboxContent() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3.5">
                     <div className="relative">
-                      <div className="h-12 w-12 rounded-2xl bg-[#0D0D0E] text-white font-black flex items-center justify-center text-base shadow-xs border-2 border-white">
+                      <div className="h-12 w-12 rounded-2xl bg-[#0D0D0E] text-white font-semibold flex items-center justify-center text-base shadow-xs border-2 border-white">
                         {activeConversation.contact_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
                       </div>
                       <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-500/20" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-base sm:text-lg font-black text-[#0D0D0E]">
+                        <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E]">
                           {activeConversation.contact_name}
                         </h2>
                         <Star className="h-4 w-4 text-amber-500 fill-amber-400" />
@@ -1068,7 +1068,7 @@ function InboxContent() {
                       <select
                         value={activeConversation.status}
                         onChange={(e) => handleStatusChange(e.target.value as ConversationStatus)}
-                        className="appearance-none bg-[#F7F7F8] border border-[#E5E5E7] px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-bold text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
+                        className="appearance-none bg-[#F7F7F8] border border-[#E5E5E7] px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-semibold text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
                       >
                         <option value="open">Open</option>
                         <option value="pending">Pending</option>
@@ -1082,7 +1082,7 @@ function InboxContent() {
                       <select
                         value={activeConversation.assigned_to_name || "unassigned"}
                         onChange={(e) => handleAssigneeChange(e.target.value)}
-                        className="appearance-none bg-[#F7F7F8] border border-[#E5E5E7] px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-bold text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
+                        className="appearance-none bg-[#F7F7F8] border border-[#E5E5E7] px-3 py-1.5 pr-7 rounded-full text-xs sm:text-sm font-semibold text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
                       >
                         <option value="unassigned">Assign</option>
                         {teamMembers.map((m) => (
@@ -1116,7 +1116,7 @@ function InboxContent() {
                       size="sm"
                       variant="ghost"
                       onClick={() => setMobileTab("details")}
-                      className="md:hidden text-xs font-bold text-[#FF7900]"
+                      className="md:hidden text-xs font-semibold text-[#FF7900]"
                     >
                       Context &gt;
                     </Button>
@@ -1127,15 +1127,15 @@ function InboxContent() {
               {/* 24-Hour Policy Notice */}
               {windowStatus.allowed ? (
                 <div className="bg-emerald-50 px-4 py-2 border-b border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-                  <span className="flex items-center gap-2 font-bold">
+                  <span className="flex items-center gap-2 font-semibold">
                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     Inside 24-Hour Customer Service Window ({windowStatus.hoursRemaining} hours remaining)
                   </span>
-                  <span className="text-xs text-emerald-800 font-bold">Free-text replies allowed</span>
+                  <span className="text-xs text-emerald-800 font-semibold">Free-text replies allowed</span>
                 </div>
               ) : (
                 <div className="bg-amber-50 p-2.5 px-4 border-b border-amber-200 text-xs text-amber-950 flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-bold">
+                  <div className="flex items-center gap-2 font-semibold">
                     <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
                     <span>
                       Meta 24h Customer Window Expired: Free-text blocked. Select an approved template to re-engage.
@@ -1148,7 +1148,7 @@ function InboxContent() {
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/60">
                 {/* Centered Date Separator */}
                 <div className="flex justify-center my-2">
-                  <span className="px-3.5 py-1 rounded-full text-xs font-bold text-slate-700 bg-white border border-slate-200 shadow-2xs font-mono">
+                  <span className="px-3.5 py-1 rounded-full text-xs font-semibold text-slate-700 bg-white border border-slate-200 shadow-2xs font-mono">
                     Today, 11 Oct 2026
                   </span>
                 </div>
@@ -1169,7 +1169,7 @@ function InboxContent() {
                           key={m.id}
                           className="my-3 p-4 rounded-2xl bg-[#FFFBEB] border border-amber-300 text-sm shadow-2xs space-y-1.5"
                         >
-                          <div className="flex items-center justify-between text-xs text-amber-950 font-bold mb-1">
+                          <div className="flex items-center justify-between text-xs text-amber-950 font-semibold mb-1">
                             <span className="flex items-center gap-1.5">
                               <Lock className="h-3.5 w-3.5 text-amber-600" />
                               Private Team Note • {m.sender_name || "Operations Lead"}
@@ -1205,10 +1205,10 @@ function InboxContent() {
                           </div>
 
                           <div className="max-w-[84%] rounded-2xl rounded-tr-xs bg-[#DCF8C6] text-slate-950 border border-emerald-300 p-3.5 sm:p-4 text-sm shadow-2xs space-y-1.5">
-                            <div className="flex items-center justify-between gap-3 text-xs text-emerald-950 font-bold">
+                            <div className="flex items-center justify-between gap-3 text-xs text-emerald-950 font-semibold">
                               <span>{m.sender_name || "Staff"}</span>
                               {m.is_simulated && (
-                                <span className="bg-emerald-200 px-1.5 py-0.2 rounded text-[10px] font-mono text-emerald-950 border border-emerald-400 font-bold">
+                                <span className="bg-emerald-200 px-1.5 py-0.2 rounded text-[10px] font-mono text-emerald-950 border border-emerald-400 font-semibold">
                                   [SIMULATED]
                                 </span>
                               )}
@@ -1256,8 +1256,8 @@ function InboxContent() {
                         </div>
 
                         <div className="max-w-[84%] rounded-2xl rounded-tl-xs bg-white border border-slate-200/90 p-3.5 sm:p-4 text-sm text-slate-950 shadow-2xs space-y-1.5">
-                          <div className="flex items-center justify-between gap-3 text-xs text-slate-600 font-bold">
-                            <span className="font-bold text-slate-950">
+                          <div className="flex items-center justify-between gap-3 text-xs text-slate-600 font-semibold">
+                            <span className="font-semibold text-slate-950">
                               {m.sender_name || activeConversation.contact_name}
                             </span>
                             <span>{formatDate(m.created_at)}</span>
@@ -1294,9 +1294,9 @@ function InboxContent() {
                     <button
                       type="button"
                       onClick={() => setComposerMode("message")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         composerMode === "message"
-                          ? "bg-white text-emerald-800 font-black shadow-xs border border-slate-200"
+                          ? "bg-white text-emerald-800 font-semibold shadow-xs border border-slate-200"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
@@ -1305,9 +1305,9 @@ function InboxContent() {
                     <button
                       type="button"
                       onClick={() => setComposerMode("note")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                         composerMode === "note"
-                          ? "bg-white text-amber-800 font-black shadow-xs border border-slate-200"
+                          ? "bg-white text-amber-800 font-semibold shadow-xs border border-slate-200"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
@@ -1317,7 +1317,7 @@ function InboxContent() {
                   </div>
 
                   <span className="text-[11px] text-slate-500 font-medium">
-                    Posting as <strong className="text-slate-900 font-bold">{currentStaffUser?.name || "Staff"}</strong>
+                    Posting as <strong className="text-slate-900 font-semibold">{currentStaffUser?.name || "Staff"}</strong>
                   </span>
                 </div>
 
@@ -1330,7 +1330,7 @@ function InboxContent() {
                       size="sm"
                       onClick={handleGenerateAIReply}
                       disabled={aiGenerating}
-                      className="h-8 text-xs bg-white text-[#FF7900] border-[#E5E5E7] hover:bg-[#FFF4EC] shadow-2xs font-bold"
+                      className="h-8 text-xs bg-white text-[#FF7900] border-[#E5E5E7] hover:bg-[#FFF4EC] shadow-2xs font-semibold"
                     >
                       <Sparkles className="h-3.5 w-3.5 mr-1 text-[#FF7900]" />
                       {aiGenerating ? "Generating..." : "Suggest Reply"}
@@ -1342,7 +1342,7 @@ function InboxContent() {
                       size="sm"
                       onClick={handleSummarize}
                       disabled={aiGenerating}
-                      className="h-8 text-xs text-[#0D0D0E] hover:text-[#FF7900] font-bold"
+                      className="h-8 text-xs text-[#0D0D0E] hover:text-[#FF7900] font-semibold"
                     >
                       <FileText className="h-3.5 w-3.5 mr-1" />
                       Summarise
@@ -1350,12 +1350,12 @@ function InboxContent() {
 
                     {messageInput.trim() && (
                       <div className="hidden sm:flex items-center gap-1 pl-2 border-l border-[#E5E5E7]">
-                        <span className="text-[10px] text-[#8E8E93] font-bold">Tone:</span>
+                        <span className="text-[10px] text-[#8E8E93] font-semibold">Tone:</span>
                         <button
                           type="button"
                           onClick={() => handleRewrite("shorter")}
                           disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-bold cursor-pointer"
+                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-semibold cursor-pointer"
                         >
                           Shorter
                         </button>
@@ -1363,7 +1363,7 @@ function InboxContent() {
                           type="button"
                           onClick={() => handleRewrite("friendlier")}
                           disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-bold cursor-pointer"
+                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-semibold cursor-pointer"
                         >
                           Friendlier
                         </button>
@@ -1371,7 +1371,7 @@ function InboxContent() {
                           type="button"
                           onClick={() => handleRewrite("more_professional")}
                           disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-bold cursor-pointer"
+                          className="px-2 py-0.5 rounded-lg text-[11px] bg-white border border-[#E5E5E7] hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs font-semibold cursor-pointer"
                         >
                           Professional
                         </button>
@@ -1418,7 +1418,7 @@ function InboxContent() {
                           variant="default"
                           size="sm"
                           onClick={handleInsertAISuggestion}
-                          className="h-7 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-xs font-bold"
+                          className="h-7 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-xs font-semibold"
                         >
                           <Check className="h-3.5 w-3.5 mr-1" />
                           Insert into Composer
@@ -1468,7 +1468,7 @@ function InboxContent() {
                     <form onSubmit={handleSendMessage} className="space-y-2">
                       {/* Interactive Quick-Reply Suggestion Chips */}
                       <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">
+                        <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider shrink-0">
                           ⚡ Quick:
                         </span>
                         {[
@@ -1482,7 +1482,7 @@ function InboxContent() {
                             key={chip.label}
                             type="button"
                             onClick={() => setMessageInput(chip.text)}
-                            className="px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-2xs"
+                            className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-2xs"
                           >
                             {chip.label}
                           </button>
@@ -1499,7 +1499,7 @@ function InboxContent() {
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 cursor-pointer select-none">
+                        <label className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600 cursor-pointer select-none">
                           <input
                             type="checkbox"
                             checked={autoReplyEnabled}
@@ -1511,7 +1511,7 @@ function InboxContent() {
                         <Button
                           size="sm"
                           disabled={isSending || !messageInput.trim()}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer active:scale-95 transition-all"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer active:scale-95 transition-all"
                         >
                           <Send className="h-3 w-3" />
                           <span>{isSending ? "Sending..." : "Send Message"}</span>
@@ -1522,13 +1522,13 @@ function InboxContent() {
                     /* Outside 24h window: Template Selector */
                     <form onSubmit={handleSendMessage} className="space-y-2">
                       <div className="p-3 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                        <label className="text-xs font-bold text-slate-800 block">
+                        <label className="text-xs font-medium text-slate-800 block">
                           Select Pre-Approved Meta WhatsApp Template:
                         </label>
                         <select
                           value={selectedTemplateName}
                           onChange={(e) => setSelectedTemplateName(e.target.value)}
-                          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-bold text-slate-800 focus:outline-none shadow-2xs cursor-pointer"
+                          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-semibold text-slate-800 focus:outline-none shadow-2xs cursor-pointer"
                         >
                           {MOCK_TEMPLATES.map((t) => (
                             <option key={t.id} value={t.name}>
@@ -1547,7 +1547,7 @@ function InboxContent() {
                         <Button
                           size="sm"
                           disabled={isSending}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer"
                         >
                           <Send className="h-3 w-3" />
                           <span>{isSending ? "Sending..." : "Send Approved Template"}</span>
@@ -1566,14 +1566,14 @@ function InboxContent() {
                       className="w-full rounded-2xl border border-amber-300 bg-[#FFFBEB] p-3 text-xs sm:text-sm text-amber-950 focus:outline-none focus:ring-1 focus:ring-amber-400 shadow-2xs resize-none font-medium"
                     />
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-amber-800 font-bold flex items-center gap-1">
+                      <span className="text-[11px] text-amber-800 font-semibold flex items-center gap-1">
                         <Lock className="h-3 w-3" />
                         Private note • Stored only in workspace
                       </span>
                       <Button
                         size="sm"
                         disabled={!internalNoteInput.trim()}
-                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer"
+                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold flex items-center gap-1.5 px-4 rounded-xl shadow-xs cursor-pointer"
                       >
                         <Lock className="h-3 w-3" />
                         <span>Post Internal Note</span>
@@ -1606,9 +1606,9 @@ function InboxContent() {
                   <button
                     key={tab}
                     onClick={() => setContextTab(tab)}
-                    className={`flex-1 py-2 text-center font-bold rounded-xl capitalize transition-all cursor-pointer ${
+                    className={`flex-1 py-2 text-center font-semibold rounded-xl capitalize transition-all cursor-pointer ${
                       contextTab === tab
-                        ? "bg-[#0D0D0E] text-white shadow-xs font-black"
+                        ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
                         : "text-[#8E8E93] hover:text-[#0D0D0E]"
                     }`}
                   >
@@ -1623,18 +1623,18 @@ function InboxContent() {
                   {/* Customer Profile Card */}
                   <div className="p-5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-3.5 text-center">
                     <div className="relative inline-block mx-auto">
-                      <div className="h-16 w-16 rounded-2xl bg-[#0D0D0E] text-white font-black flex items-center justify-center text-xl shadow-xs border-2 border-white">
+                      <div className="h-16 w-16 rounded-2xl bg-[#0D0D0E] text-white font-semibold flex items-center justify-center text-xl shadow-xs border-2 border-white">
                         {contact.first_name.charAt(0)}{contact.last_name?.charAt(0) || ""}
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-black text-[#0D0D0E] leading-tight">
+                      <h3 className="text-base sm:text-lg font-semibold text-[#0D0D0E] leading-tight">
                         {contact.first_name} {contact.last_name || ""}
                       </h3>
-                      <p className="text-xs sm:text-sm text-[#8E8E93] font-bold mt-0.5">
+                      <p className="text-xs sm:text-sm text-[#8E8E93] font-semibold mt-0.5">
                         {contact.company || "Enterprise Customer"}
                       </p>
-                      <p className="text-xs sm:text-sm text-[#0D0D0E] font-mono font-bold mt-0.5">
+                      <p className="text-xs sm:text-sm text-[#0D0D0E] font-mono font-semibold mt-0.5">
                         {contact.phone}
                       </p>
                     </div>
@@ -1676,7 +1676,7 @@ function InboxContent() {
                       {(contact.tags && contact.tags.length > 0 ? contact.tags : ["Fleet", "Enterprise", "Hot Lead"]).map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 rounded-full text-xs font-bold bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 shadow-2xs"
+                          className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 shadow-2xs"
                         >
                           {tag}
                         </span>
@@ -1686,7 +1686,7 @@ function InboxContent() {
                     {/* Marketing Consent */}
                     <div className="pt-1 flex items-center justify-between text-xs text-[#8E8E93] font-medium">
                       <span>Marketing Consent:</span>
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 uppercase">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 uppercase">
                         {contact.consent_status.replace("_", " ")}
                       </span>
                     </div>
@@ -1695,9 +1695,9 @@ function InboxContent() {
                   {/* Opportunity Deal Card */}
                   <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[#0D0D0E]">Sales Opportunity</span>
+                      <span className="text-sm font-semibold text-[#0D0D0E]">Sales Opportunity</span>
                       {lead ? (
-                        <Link href={`/app/${orgSlug}/leads`} className="text-xs text-[#FF7900] hover:underline flex items-center gap-0.5 font-bold">
+                        <Link href={`/app/${orgSlug}/leads`} className="text-xs text-[#FF7900] hover:underline flex items-center gap-0.5 font-semibold">
                           Pipeline <ExternalLink className="h-3 w-3" />
                         </Link>
                       ) : null}
@@ -1706,18 +1706,18 @@ function InboxContent() {
                     {lead ? (
                       <div className="space-y-2.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#0D0D0E]">{lead.title}</span>
-                          <span className="text-base font-black font-mono text-emerald-600">
+                          <span className="text-sm font-semibold text-[#0D0D0E]">{lead.title}</span>
+                          <span className="text-base font-semibold font-mono text-emerald-600">
                             {formatCurrency(lead.estimated_value)}
                           </span>
                         </div>
 
                         <div>
-                          <label className="text-xs font-bold text-[#8E8E93] block mb-1">Current Deal Stage:</label>
+                          <label className="text-xs font-medium text-[#8E8E93] block mb-1">Current Deal Stage:</label>
                           <select
                             value={lead.stage}
                             onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                            className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-1.5 text-xs sm:text-sm text-[#0D0D0E] font-bold focus:outline-none focus:border-[#FF7900] shadow-2xs cursor-pointer"
+                            className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-1.5 text-xs sm:text-sm text-[#0D0D0E] font-semibold focus:outline-none focus:border-[#FF7900] shadow-2xs cursor-pointer"
                           >
                             {LEAD_STAGES.map((s) => (
                               <option key={s.id} value={s.id}>
@@ -1730,7 +1730,7 @@ function InboxContent() {
                     ) : (
                       <div className="text-center py-2 space-y-2">
                         <p className="text-xs text-[#8E8E93] font-medium">No deal linked yet.</p>
-                        <Button size="sm" variant="secondary" onClick={() => setLeadModalOpen(true)} className="w-full text-xs font-bold text-[#FF7900] bg-[#FFF4EC] border-[#FF7900]/30 hover:bg-[#FFE8D6]">
+                        <Button size="sm" variant="secondary" onClick={() => setLeadModalOpen(true)} className="w-full text-xs font-semibold text-[#FF7900] bg-[#FFF4EC] border-[#FF7900]/30 hover:bg-[#FFE8D6]">
                           <Plus className="h-3.5 w-3.5 mr-1" /> Create Deal
                         </Button>
                       </div>
@@ -1740,10 +1740,10 @@ function InboxContent() {
                   {/* Next Follow-up Card */}
                   <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[#0D0D0E]">Next Follow-up</span>
+                      <span className="text-sm font-semibold text-[#0D0D0E]">Next Follow-up</span>
                       <button
                         onClick={() => setFollowUpModalOpen(true)}
-                        className="text-xs text-[#FF7900] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                        className="text-xs text-[#FF7900] hover:underline flex items-center gap-0.5 font-semibold cursor-pointer"
                       >
                         <Plus className="h-3.5 w-3.5" /> Add Task
                       </button>
@@ -1754,13 +1754,13 @@ function InboxContent() {
                         {contactTasks.slice(0, 2).map((t) => (
                           <div key={t.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between shadow-2xs">
                             <div>
-                              <span className="text-sm font-bold text-slate-950 block">{t.title}</span>
+                              <span className="text-sm font-semibold text-slate-950 block">{t.title}</span>
                               <span className="text-xs text-slate-600 font-medium flex items-center gap-1 mt-0.5">
                                 <Clock className="h-3.5 w-3.5 text-slate-400" />
                                 {formatDate(t.due_date)}
                               </span>
                             </div>
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase ${
                               t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30"
                             }`}>
                               {t.priority}
@@ -1779,8 +1779,8 @@ function InboxContent() {
               {contextTab === "deal" && (
                 <div className="p-5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-[#0D0D0E]">Pipeline Deal Details</span>
-                    <Button size="sm" variant="ghost" onClick={() => setLeadModalOpen(true)} className="h-7 text-xs font-bold text-[#FF7900]">
+                    <span className="text-sm font-semibold text-[#0D0D0E]">Pipeline Deal Details</span>
+                    <Button size="sm" variant="ghost" onClick={() => setLeadModalOpen(true)} className="h-7 text-xs font-semibold text-[#FF7900]">
                       <Plus className="h-3.5 w-3.5 mr-1" /> New Deal
                     </Button>
                   </div>
@@ -1788,19 +1788,19 @@ function InboxContent() {
                   {lead ? (
                     <div className="space-y-3 text-sm">
                       <div>
-                        <span className="text-[#8E8E93] text-xs font-bold">Deal Name</span>
-                        <p className="font-bold text-[#0D0D0E] text-base">{lead.title}</p>
+                        <span className="text-[#8E8E93] text-xs font-semibold">Deal Name</span>
+                        <p className="font-semibold text-[#0D0D0E] text-base">{lead.title}</p>
                       </div>
                       <div>
-                        <span className="text-[#8E8E93] text-xs font-bold">Estimated Pipeline Value</span>
-                        <p className="text-2xl font-black font-mono text-emerald-600">{formatCurrency(lead.estimated_value)}</p>
+                        <span className="text-[#8E8E93] text-xs font-semibold">Estimated Pipeline Value</span>
+                        <p className="text-2xl font-semibold font-mono text-emerald-600">{formatCurrency(lead.estimated_value)}</p>
                       </div>
                       <div>
-                        <span className="text-[#8E8E93] text-xs font-bold">Stage</span>
+                        <span className="text-[#8E8E93] text-xs font-semibold">Stage</span>
                         <select
                           value={lead.stage}
                           onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                          className="w-full mt-1 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-1.5 text-sm text-[#0D0D0E] font-bold focus:outline-none focus:border-[#FF7900] shadow-xs cursor-pointer"
+                          className="w-full mt-1 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-1.5 text-sm text-[#0D0D0E] font-semibold focus:outline-none focus:border-[#FF7900] shadow-xs cursor-pointer"
                         >
                           {LEAD_STAGES.map((s) => (
                             <option key={s.id} value={s.id}>
@@ -1811,7 +1811,7 @@ function InboxContent() {
                       </div>
                       <div className="pt-2 border-t border-[#F0F0F2] flex items-center justify-between text-xs">
                         <span className="text-[#8E8E93] font-medium">Assigned Sales Rep:</span>
-                        <span className="font-bold text-[#0D0D0E]">{lead.assigned_to_name || "Unassigned"}</span>
+                        <span className="font-semibold text-[#0D0D0E]">{lead.assigned_to_name || "Unassigned"}</span>
                       </div>
                     </div>
                   ) : (
@@ -1826,8 +1826,8 @@ function InboxContent() {
               {contextTab === "tasks" && (
                 <div className="p-5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-[#0D0D0E]">Customer Follow-ups</span>
-                    <button onClick={() => setFollowUpModalOpen(true)} className="text-xs text-[#FF7900] font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                    <span className="text-sm font-semibold text-[#0D0D0E]">Customer Follow-ups</span>
+                    <button onClick={() => setFollowUpModalOpen(true)} className="text-xs text-[#FF7900] font-semibold hover:underline flex items-center gap-1 cursor-pointer">
                       <Plus className="h-3.5 w-3.5" /> Add Task
                     </button>
                   </div>
@@ -1837,8 +1837,8 @@ function InboxContent() {
                       {contactTasks.map((t) => (
                         <div key={t.id} className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-[#0D0D0E]">{t.title}</span>
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${
+                            <span className="text-sm font-semibold text-[#0D0D0E]">{t.title}</span>
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase ${
                               t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30"
                             }`}>
                               {t.priority}
@@ -1861,7 +1861,7 @@ function InboxContent() {
               {/* View 4: Activity Tab */}
               {contextTab === "activity" && (
                 <div className="p-5 rounded-3xl bg-white/80 border border-white/90 shadow-xs space-y-4">
-                  <span className="text-sm font-bold text-slate-950 block">Activity Audit Trail</span>
+                  <span className="text-sm font-semibold text-slate-950 block">Activity Audit Trail</span>
                   <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                     {activities.length === 0 ? (
                       <span className="text-xs text-slate-500 font-medium block text-center py-6">No activities recorded yet.</span>
@@ -1869,7 +1869,7 @@ function InboxContent() {
                       activities.map((a) => (
                         <div key={a.id} className="p-3 rounded-xl bg-white border border-white/80 text-xs space-y-1 shadow-xs">
                           <div className="flex items-center justify-between text-xs text-slate-500">
-                            <span className="font-bold text-slate-900">{a.actor_name}</span>
+                            <span className="font-semibold text-slate-900">{a.actor_name}</span>
                             <span>{formatDate(a.created_at)}</span>
                           </div>
                           <p className="text-slate-700 leading-snug font-medium">{a.description}</p>

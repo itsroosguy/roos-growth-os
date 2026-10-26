@@ -260,11 +260,11 @@ export default function ContactsPage() {
           title: "Click to toggle WhatsApp consent (Opted In / Opted Out)",
           role: "button",
           className:
-            "inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full cursor-pointer hover:shadow-2xs transition-all active:scale-95 ",
+            "inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full cursor-pointer hover:shadow-2xs transition-all active:scale-95 ",
         }
       : {
           className:
-            "inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full ",
+            "inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full ",
         };
 
     switch (status) {
@@ -307,14 +307,14 @@ export default function ContactsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Contacts Directory
             </h1>
             <span
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-3 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
               suppressHydrationWarning
             >
-              <span className="font-mono font-black text-[#FF7900]">
+              <span className="font-mono font-semibold text-[#FF7900]">
                 {mounted ? filteredContacts.length : rawContacts.length}
               </span>
               <span>contacts</span>
@@ -331,7 +331,7 @@ export default function ContactsPage() {
             size="sm"
             onClick={handleExportCSV}
             disabled={filteredContacts.length === 0}
-            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shadow-2xs text-xs h-9 px-3 cursor-pointer"
+            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs text-xs h-9 px-3 cursor-pointer"
           >
             <Download className="mr-1.5 h-3.5 w-3.5 text-[#8E8E93]" />
             Export CSV
@@ -340,7 +340,7 @@ export default function ContactsPage() {
             variant="outline"
             size="sm"
             onClick={() => setImportModalOpen(true)}
-            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold shadow-2xs text-xs h-9 px-3 cursor-pointer"
+            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs text-xs h-9 px-3 cursor-pointer"
           >
             <Upload className="mr-1.5 h-3.5 w-3.5 text-[#8E8E93]" />
             Import CSV
@@ -348,7 +348,7 @@ export default function ContactsPage() {
           <Button
             size="sm"
             onClick={() => setAddModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold shadow-2xs text-xs h-9 px-3.5 cursor-pointer"
+            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold shadow-2xs text-xs h-9 px-3.5 cursor-pointer"
           >
             <Plus className="mr-1.5 h-4 w-4 stroke-[3]" />
             Add Contact
@@ -358,40 +358,40 @@ export default function ContactsPage() {
 
       {/* Stats Summary Banner */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#8E8E93]">Total Contacts</span>
-            <div className="text-2xl font-black font-mono text-[#0D0D0E] mt-1">{allContacts.length}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93]">Total Contacts</span>
+            <div className="text-2xl font-semibold font-mono text-[#0D0D0E] mt-1">{allContacts.length}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-center text-[#0D0D0E]">
             <Users className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">WhatsApp Opted-In</span>
-            <div className="text-2xl font-black font-mono text-emerald-600 mt-1">{optedInCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-700">WhatsApp Opted-In</span>
+            <div className="text-2xl font-semibold font-mono text-emerald-600 mt-1">{optedInCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
             <ShieldCheck className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Pending Consent</span>
-            <div className="text-2xl font-black font-mono text-amber-600 mt-1">{pendingCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-amber-700">Pending Consent</span>
+            <div className="text-2xl font-semibold font-mono text-amber-600 mt-1">{pendingCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
             <Clock className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">Opted Out</span>
-            <div className="text-2xl font-black font-mono text-rose-600 mt-1">{optedOutCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-rose-700">Opted Out</span>
+            <div className="text-2xl font-semibold font-mono text-rose-600 mt-1">{optedOutCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
             <ShieldAlert className="h-5 w-5" />
@@ -416,14 +416,14 @@ export default function ContactsPage() {
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto text-xs">
             {/* Consent filter */}
             <div className="flex items-center space-x-1 border border-[#E5E5E7] rounded-xl p-1 bg-[#F7F7F8] shadow-2xs">
-              <span className="px-2 text-xs font-bold text-[#8E8E93]">
+              <span className="px-2 text-xs font-semibold text-[#8E8E93]">
                 Consent:
               </span>
               {(["all", "opted_in", "pending", "opted_out"] as const).map((status) => (
                 <button
                   key={status}
                   onClick={() => setConsentFilter(status)}
-                  className={`px-3 py-1 rounded-lg capitalize text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg capitalize text-xs font-semibold transition-all cursor-pointer ${
                     consentFilter === status
                       ? "bg-[#0D0D0E] text-white shadow-2xs"
                       : "text-[#8E8E93] hover:text-[#0D0D0E] font-semibold"
@@ -448,7 +448,7 @@ export default function ContactsPage() {
             {/* Archived toggle */}
             <button
               onClick={() => setShowArchived(!showArchived)}
-              className={`h-9 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs ${
+              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
                 showArchived
                   ? "bg-[#FFF4EC] border-[#FF7900]/30 text-[#FF7900]"
                   : "border-[#E5E5E7] bg-[#F7F7F8] text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-white"
@@ -478,12 +478,12 @@ export default function ContactsPage() {
           <Table>
             <TableHeader className="bg-[#F7F7F8] border-b border-[#E5E5E7]">
               <TableRow>
-                <TableHead className="text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Contact</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Phone / WhatsApp</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Company</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Marketing Consent</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Tags</TableHead>
-                <TableHead className="text-right text-xs font-black uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Contact</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Phone / WhatsApp</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Company</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Marketing Consent</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Tags</TableHead>
+                <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -491,15 +491,15 @@ export default function ContactsPage() {
                 <TableRow key={contact.id} className={`hover:bg-[#FFF4EC]/15 transition-colors ${contact.is_archived ? "opacity-60 bg-slate-50/50" : ""}`}>
                   <TableCell>
                     <div className="flex items-center space-x-3 py-1">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0D0D0E] text-white font-black text-sm shadow-2xs">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0D0D0E] text-white font-semibold text-sm shadow-2xs">
                         {contact.first_name[0]}
                         {contact.last_name ? contact.last_name[0] : ""}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#0D0D0E] flex items-center gap-1.5">
+                        <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
                           {contact.first_name} {contact.last_name || ""}
                           {contact.is_archived && (
-                            <span className="text-[10px] font-bold py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]">
+                            <span className="text-[10px] font-medium py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]">
                               Archived
                             </span>
                           )}
@@ -513,7 +513,7 @@ export default function ContactsPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center space-x-1.5 font-mono text-xs font-bold text-[#0D0D0E]">
+                    <div className="flex items-center space-x-1.5 font-mono text-xs font-semibold text-[#0D0D0E]">
                       <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                       <span>{contact.phone}</span>
                       <button
@@ -594,7 +594,7 @@ export default function ContactsPage() {
       <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
         <form onSubmit={handleCreateContact} className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-[#0D0D0E]">Add New Contact</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#0D0D0E]">Add New Contact</DialogTitle>
             <DialogDescription className="text-xs text-[#8E8E93]">
               Create a customer record in {currentOrg.name} with marketing consent tracking.
             </DialogDescription>
@@ -657,7 +657,7 @@ export default function ContactsPage() {
 
             {/* Marketing Consent Selector */}
             <div className="rounded-xl bg-[#F7F7F8] p-3.5 border border-[#E5E5E7]">
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1.5">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1.5">
                 Meta WhatsApp Marketing Consent
               </label>
               <div className="flex gap-4 text-xs font-medium text-[#0D0D0E]">
@@ -707,7 +707,7 @@ export default function ContactsPage() {
             <Button type="button" variant="ghost" onClick={() => setAddModalOpen(false)} className="text-[#8E8E93]">
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold">
+            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold">
               Create Contact
             </Button>
           </DialogFooter>
@@ -718,7 +718,7 @@ export default function ContactsPage() {
       <Dialog open={importModalOpen} onOpenChange={setImportModalOpen}>
         <div className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-[#0D0D0E]">Import Contacts from CSV</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#0D0D0E]">Import Contacts from CSV</DialogTitle>
             <DialogDescription className="text-xs text-[#8E8E93]">
               Validate rows, detect duplicate numbers, and bulk import into {currentOrg.name}.
             </DialogDescription>
@@ -733,7 +733,7 @@ export default function ContactsPage() {
             <div className="space-y-4 my-4 text-xs">
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center text-xs">
-                  <label className="font-bold text-[#0D0D0E]">
+                  <label className="font-medium text-[#0D0D0E]">
                     Paste CSV Data or Template
                   </label>
                   <button
@@ -765,7 +765,7 @@ export default function ContactsPage() {
                   onClick={handleParseCSV}
                   disabled={!csvRawText.trim()}
                   variant="outline"
-                  className="w-full border-[#E5E5E7] font-bold"
+                  className="w-full border-[#E5E5E7] font-semibold"
                 >
                   Validate &amp; Check Duplicates
                 </Button>
@@ -774,7 +774,7 @@ export default function ContactsPage() {
               {/* Preview results */}
               {csvPreview && (
                 <div className="space-y-3 rounded-xl bg-[#F7F7F8] p-3.5 border border-[#E5E5E7] text-xs">
-                  <div className="flex justify-between font-bold text-[#0D0D0E]">
+                  <div className="flex justify-between font-semibold text-[#0D0D0E]">
                     <span>Validation Summary:</span>
                     <span className="text-emerald-700">
                       {csvPreview.validRows.length} valid rows
@@ -790,7 +790,7 @@ export default function ContactsPage() {
 
                   {csvPreview.invalidRows.length > 0 && (
                     <div className="rounded-lg bg-rose-50 p-2 border border-rose-200 text-rose-800 space-y-1">
-                      <div className="font-bold">{csvPreview.invalidRows.length} row(s) failed validation:</div>
+                      <div className="font-semibold">{csvPreview.invalidRows.length} row(s) failed validation:</div>
                       {csvPreview.invalidRows.map((inv) => (
                         <div key={inv.rowNumber} className="text-[11px]">
                           Row {inv.rowNumber}: {inv.errors.join("; ")}
@@ -811,7 +811,7 @@ export default function ContactsPage() {
               <Button
                 onClick={handleExecuteImport}
                 disabled={csvPreview.validRows.length === 0}
-                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold"
+                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold"
               >
                 Import {csvPreview.validRows.length} Contacts
               </Button>
@@ -826,11 +826,11 @@ export default function ContactsPage() {
           <div className="max-w-lg">
             <DialogHeader>
               <div className="flex items-center space-x-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0D0D0E] text-white font-black text-base shadow-2xs">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0D0D0E] text-white font-semibold text-base shadow-2xs">
                   {detailContact.first_name[0]}
                 </div>
                 <div>
-                  <DialogTitle className="text-base font-black text-[#0D0D0E]">
+                  <DialogTitle className="text-base font-semibold text-[#0D0D0E]">
                     {detailContact.first_name} {detailContact.last_name || ""}
                   </DialogTitle>
                   <DialogDescription className="text-xs text-[#8E8E93]">
@@ -844,7 +844,7 @@ export default function ContactsPage() {
               <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
                 <div>
                   <span className="text-[#8E8E93] block">Phone</span>
-                  <span className="font-bold text-[#0D0D0E] font-mono">
+                  <span className="font-semibold text-[#0D0D0E] font-mono">
                     {detailContact.phone}
                   </span>
                 </div>
@@ -868,7 +868,7 @@ export default function ContactsPage() {
 
               {detailContact.notes && (
                 <div className="p-3.5 rounded-xl bg-white border border-[#E5E5E7]">
-                  <span className="font-bold text-[#0D0D0E] block mb-1">Notes</span>
+                  <span className="font-semibold text-[#0D0D0E] block mb-1">Notes</span>
                   <p className="text-[#8E8E93] leading-relaxed">
                     {detailContact.notes}
                   </p>
@@ -877,7 +877,7 @@ export default function ContactsPage() {
 
               {/* Related Leads */}
               <div className="space-y-2">
-                <span className="font-bold text-[#0D0D0E] block">
+                <span className="font-semibold text-[#0D0D0E] block">
                   Associated Deals &amp; Leads
                 </span>
                 {crmStore
@@ -889,14 +889,14 @@ export default function ContactsPage() {
                       className="flex items-center justify-between p-2.5 rounded-xl border border-[#E5E5E7] bg-white"
                     >
                       <div>
-                        <span className="font-bold text-[#0D0D0E] block">
+                        <span className="font-semibold text-[#0D0D0E] block">
                           {lead.title}
                         </span>
-                        <span className="text-xs font-mono font-bold text-[#8E8E93]">
+                        <span className="text-xs font-mono font-semibold text-[#8E8E93]">
                           ₹{lead.estimated_value.toLocaleString("en-IN")}
                         </span>
                       </div>
-                      <Badge variant="orangeSubtle" className="uppercase text-[10px] font-bold">
+                      <Badge variant="orangeSubtle" className="uppercase text-[10px] font-medium">
                         {lead.stage}
                       </Badge>
                     </div>
@@ -906,12 +906,12 @@ export default function ContactsPage() {
 
             <DialogFooter className="flex items-center justify-between">
               <Link href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(detailContact.phone)}`}>
-                <Button variant="outline" className="text-emerald-700 font-bold border-emerald-200 hover:bg-emerald-50 flex items-center gap-1.5">
+                <Button variant="outline" className="text-emerald-700 font-semibold border-emerald-200 hover:bg-emerald-50 flex items-center gap-1.5">
                   <MessageSquare className="h-4 w-4 text-emerald-600" />
                   Chat on WhatsApp
                 </Button>
               </Link>
-              <Button onClick={() => setDetailContact(null)} className="bg-[#0D0D0E] text-white font-bold">Close</Button>
+              <Button onClick={() => setDetailContact(null)} className="bg-[#0D0D0E] text-white font-semibold">Close</Button>
             </DialogFooter>
           </div>
         </Dialog>

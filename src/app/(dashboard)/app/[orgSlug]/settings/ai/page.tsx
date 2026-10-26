@@ -70,13 +70,13 @@ export default function AISettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               AI Assistant &amp; Copilot Settings
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
               Gemini 1.5 Flash
             </span>
-            <span className="rounded-full bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold px-3 py-0.5 text-[#8E8E93] shadow-2xs font-mono">
+            <span className="rounded-full bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold px-3 py-0.5 text-[#8E8E93] shadow-2xs font-mono">
               Sandbox Mode
             </span>
           </div>
@@ -86,7 +86,7 @@ export default function AISettingsPage() {
         </div>
 
         <Link href={`/app/${currentOrg.slug}/settings/business-profile`}>
-          <Button variant="outline" size="sm" className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs">
+          <Button variant="outline" size="sm" className="text-xs font-semibold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] shadow-2xs">
             <FileText className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
             Edit Business Knowledge Profile
           </Button>
@@ -96,7 +96,7 @@ export default function AISettingsPage() {
       {saved && (
         <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center space-x-2 shadow-2xs">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-          <span className="font-bold">AI configuration and safety settings updated successfully!</span>
+          <span className="font-semibold">AI configuration and safety settings updated successfully!</span>
         </div>
       )}
 
@@ -107,11 +107,11 @@ export default function AISettingsPage() {
           <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
             <div className="flex items-center space-x-2">
               <Bot className="h-5 w-5 text-[#FF7900]" />
-              <h2 className="text-base font-black text-[#0D0D0E]">Master AI Assistance Control</h2>
+              <h2 className="text-base font-semibold text-[#0D0D0E]">Master AI Assistance Control</h2>
             </div>
             <Badge
               variant={isEnabled ? "success" : "neutral"}
-              className="text-[10px] uppercase font-bold"
+              className="text-[10px] uppercase font-medium"
             >
               {isEnabled ? "Enabled" : "Disabled"}
             </Badge>
@@ -123,7 +123,7 @@ export default function AISettingsPage() {
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
               <div>
-                <p className="text-xs font-bold text-[#0D0D0E]">
+                <p className="text-xs font-semibold text-[#0D0D0E]">
                   Enable AI Assistant for Workspace
                 </p>
                 <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">
@@ -134,7 +134,7 @@ export default function AISettingsPage() {
                 type="button"
                 variant={isEnabled ? "default" : "secondary"}
                 size="sm"
-                className={`text-xs h-8 font-bold rounded-xl cursor-pointer ${
+                className={`text-xs h-8 font-semibold rounded-xl cursor-pointer ${
                   isEnabled ? "bg-[#FF7900] hover:bg-[#E66D00] text-white" : "bg-[#E5E5E7] text-[#0D0D0E]"
                 }`}
                 onClick={() => setIsEnabled(!isEnabled)}
@@ -146,8 +146,8 @@ export default function AISettingsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
-                <span className="text-[#8E8E93] block mb-1 font-bold text-[11px] uppercase tracking-wider">Active AI Model</span>
-                <span className="font-bold text-[#0D0D0E] font-mono text-sm">
+                <span className="text-[#8E8E93] block mb-1 font-medium text-[11px] uppercase tracking-wider">Active AI Model</span>
+                <span className="font-semibold text-[#0D0D0E] font-mono text-sm">
                   Google Gemini 1.5 Flash
                 </span>
                 <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
@@ -155,8 +155,8 @@ export default function AISettingsPage() {
                 </span>
               </div>
               <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
-                <span className="text-[#8E8E93] block mb-1 font-bold text-[11px] uppercase tracking-wider">Integration Mode</span>
-                <span className="font-bold text-[#0D0D0E] font-mono text-sm">
+                <span className="text-[#8E8E93] block mb-1 font-medium text-[11px] uppercase tracking-wider">Integration Mode</span>
+                <span className="font-semibold text-[#0D0D0E] font-mono text-sm">
                   Local Sandbox / Free Tier
                 </span>
                 <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
@@ -171,7 +171,7 @@ export default function AISettingsPage() {
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
             <Sparkles className="h-5 w-5 text-[#FF7900]" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Brand Tone &amp; Response Sizing</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Brand Tone &amp; Response Sizing</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
             Guide how generated replies communicate with WhatsApp customers.
@@ -179,7 +179,7 @@ export default function AISettingsPage() {
 
           <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-2">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-2">
                 Preferred Communication Tone
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -197,11 +197,11 @@ export default function AISettingsPage() {
                     onClick={() => setTone(t.id)}
                     className={`p-3 text-left rounded-xl border text-xs transition-all cursor-pointer ${
                       tone === t.id
-                        ? "border-[#FF7900] bg-[#FFF4EC] text-[#0D0D0E] font-bold shadow-2xs"
+                        ? "border-[#FF7900] bg-[#FFF4EC] text-[#0D0D0E] font-semibold shadow-2xs"
                         : "border-[#E5E5E7] bg-[#F7F7F8] hover:bg-white text-[#8E8E93]"
                     }`}
                   >
-                    <span className="block font-bold text-[#0D0D0E]">{t.label}</span>
+                    <span className="block font-semibold text-[#0D0D0E]">{t.label}</span>
                     <span className="text-[10px] text-[#8E8E93] font-medium">{t.desc}</span>
                   </button>
                 ))}
@@ -209,7 +209,7 @@ export default function AISettingsPage() {
             </div>
 
             <div className="pt-2">
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1.5">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1.5">
                 Maximum Suggested Reply Length
               </label>
               <div className="flex items-center space-x-3">
@@ -222,7 +222,7 @@ export default function AISettingsPage() {
                   onChange={(e) => setMaxLength(Number(e.target.value))}
                   className="w-full h-1.5 bg-[#E5E5E7] rounded-lg cursor-pointer accent-[#FF7900]"
                 />
-                <span className="text-xs font-mono font-bold text-[#0D0D0E] w-20 text-right">
+                <span className="text-xs font-mono font-semibold text-[#0D0D0E] w-20 text-right">
                   {maxLength} words
                 </span>
               </div>
@@ -237,7 +237,7 @@ export default function AISettingsPage() {
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
             <Sliders className="h-5 w-5 text-[#FF7900]" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Granular Feature Permissions</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Granular Feature Permissions</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
             Toggle specific AI capabilities on or off independently.
@@ -275,14 +275,14 @@ export default function AISettingsPage() {
                 className="flex items-center justify-between p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs"
               >
                 <div>
-                  <span className="font-bold text-[#0D0D0E]">{f.title}</span>
+                  <span className="font-semibold text-[#0D0D0E]">{f.title}</span>
                   <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">{f.description}</p>
                 </div>
                 <Button
                   type="button"
                   variant={f.checked ? "outline" : "secondary"}
                   size="sm"
-                  className={`h-7 text-xs font-bold rounded-lg cursor-pointer ${
+                  className={`h-7 text-xs font-semibold rounded-lg cursor-pointer ${
                     f.checked ? "border-[#FF7900]/40 text-[#FF7900] bg-[#FFF4EC]" : "text-[#8E8E93]"
                   }`}
                   onClick={f.onChange}
@@ -296,7 +296,7 @@ export default function AISettingsPage() {
 
           {isAdmin && (
             <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs shadow-2xs">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs">
                 Save AI Configuration
               </Button>
             </div>
@@ -309,9 +309,9 @@ export default function AISettingsPage() {
         <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
           <div className="flex items-center space-x-2">
             <Zap className="h-5 w-5 text-[#FF7900]" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Token Quota &amp; Cost Tracking</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Token Quota &amp; Cost Tracking</h2>
           </div>
-          <Badge variant="neutral" className="text-xs font-mono font-bold">
+          <Badge variant="neutral" className="text-xs font-mono font-medium">
             Monthly Budget Cap
           </Badge>
         </div>
@@ -322,13 +322,13 @@ export default function AISettingsPage() {
         <div className="space-y-4 pt-2">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Total Generations</span>
-              <span className="text-xl font-black font-mono text-[#0D0D0E]">{usage.totalRequests}</span>
+              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Total Generations</span>
+              <span className="text-xl font-semibold font-mono text-[#0D0D0E]">{usage.totalRequests}</span>
               <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">This month</span>
             </div>
             <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Tokens Consumed</span>
-              <span className="text-xl font-black text-[#0D0D0E] font-mono">
+              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Tokens Consumed</span>
+              <span className="text-xl font-semibold text-[#0D0D0E] font-mono">
                 {usage.totalTokens.toLocaleString("en-IN")}
               </span>
               <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
@@ -336,15 +336,15 @@ export default function AISettingsPage() {
               </span>
             </div>
             <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Remaining Quota</span>
-              <span className="text-xl font-black text-emerald-600 font-mono">
+              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Remaining Quota</span>
+              <span className="text-xl font-semibold text-emerald-600 font-mono">
                 {usage.remainingQuota.toLocaleString("en-IN")}
               </span>
               <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">Tokens available</span>
             </div>
             <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-bold text-[11px] uppercase tracking-wider">Estimated Cost</span>
-              <span className="text-xl font-black font-mono text-[#FF7900]">
+              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Estimated Cost</span>
+              <span className="text-xl font-semibold font-mono text-[#FF7900]">
                 ₹{usage.estimatedCostInr.toFixed(4)}
               </span>
               <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
@@ -371,7 +371,7 @@ export default function AISettingsPage() {
 
           {/* Recent Generation Logs */}
           <div className="pt-2">
-            <span className="text-xs font-bold text-[#0D0D0E] block mb-2">
+            <span className="text-xs font-semibold text-[#0D0D0E] block mb-2">
               Recent AI Generation Audit Trail
             </span>
             {usage.logs.length === 0 ? (
@@ -382,7 +382,7 @@ export default function AISettingsPage() {
               <div className="overflow-x-auto rounded-xl border border-[#E5E5E7]">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-[#F7F7F8]">
-                    <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase text-[11px] tracking-wider">
+                    <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-medium uppercase text-[11px] tracking-wider">
                       <th className="py-2.5 px-3">Time</th>
                       <th className="py-2.5 px-3">Feature</th>
                       <th className="py-2.5 px-3">Tokens (In / Out)</th>
@@ -400,7 +400,7 @@ export default function AISettingsPage() {
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="py-2.5 px-3 font-bold text-[#0D0D0E] capitalize">
+                        <td className="py-2.5 px-3 font-semibold text-[#0D0D0E] capitalize">
                           {log.feature.replace("_", " ")}
                         </td>
                         <td className="py-2.5 px-3 font-mono text-[#8E8E93]">
@@ -409,7 +409,7 @@ export default function AISettingsPage() {
                         <td className="py-2.5 px-3 font-mono text-[#8E8E93]">
                           {log.latency_ms}ms
                         </td>
-                        <td className="py-2.5 px-3 font-mono font-bold text-[#0D0D0E]">
+                        <td className="py-2.5 px-3 font-mono font-semibold text-[#0D0D0E]">
                           ₹{Number(log.estimated_cost_inr).toFixed(4)}
                         </td>
                         <td className="py-2.5 px-3">

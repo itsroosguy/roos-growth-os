@@ -47,7 +47,7 @@ export default function PlatformAdminPage() {
           <Lock className="h-6 w-6" />
         </div>
         <div className="space-y-1.5">
-          <h2 className="text-xl font-bold text-[#0D0D0E] tracking-tight">Access Restricted</h2>
+          <h2 className="text-xl font-semibold text-[#0D0D0E] tracking-tight">Access Restricted</h2>
           <p className="text-xs text-[#8E8E93] leading-relaxed max-w-sm mx-auto">
             The Platform Administration console is restricted strictly to verified workspace owners and authorised Level 1 system operators. Your current role is <span className="font-semibold text-[#0D0D0E] uppercase">{userRole}</span>.
           </p>
@@ -95,7 +95,7 @@ export default function PlatformAdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#0D0D0E]">
               Platform Administration
             </h1>
             <Badge variant="orange" className="text-[11px] font-semibold">
@@ -114,7 +114,7 @@ export default function PlatformAdminPage() {
             <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
             <span className="font-medium">{feedback}</span>
           </div>
-          <button onClick={() => setFeedback(null)} className="font-bold underline ml-4 hover:text-emerald-950">
+          <button onClick={() => setFeedback(null)} className="font-semibold underline ml-4 hover:text-emerald-950">
             Dismiss
           </button>
         </div>
@@ -130,7 +130,7 @@ export default function PlatformAdminPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-bold tracking-tight text-white">{tenantData.length}</div>
+            <div className="text-2xl font-semibold tracking-tight text-white">{tenantData.length}</div>
             <div className="text-[11px] text-[#8E8E93] mt-1 flex items-center gap-1">
               <span className="text-emerald-400 font-medium">100% active</span> across fleet
             </div>
@@ -145,7 +145,7 @@ export default function PlatformAdminPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-bold tracking-tight text-white">4,850</div>
+            <div className="text-2xl font-semibold tracking-tight text-white">4,850</div>
             <div className="text-[11px] text-[#8E8E93] mt-1 flex items-center gap-1">
               <span className="text-[#FF7900] font-medium">+12.4%</span> this billing cycle
             </div>
@@ -160,7 +160,7 @@ export default function PlatformAdminPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-bold tracking-tight text-white">₹12,499</div>
+            <div className="text-2xl font-semibold tracking-tight text-white">₹12,499</div>
             <div className="text-[11px] text-[#8E8E93] mt-1 flex items-center gap-1">
               <span className="text-emerald-400 font-medium">Auto-renew</span> healthy
             </div>
@@ -175,7 +175,7 @@ export default function PlatformAdminPage() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-bold tracking-tight text-white">Operational</div>
+            <div className="text-2xl font-semibold tracking-tight text-white">Operational</div>
             <div className="text-[11px] text-[#8E8E93] mt-1 flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block"></span> 0 SLA breaches reported
             </div>
@@ -192,7 +192,7 @@ export default function PlatformAdminPage() {
                 <Building className="h-4 w-4" />
               </div>
               <div>
-                <CardTitle className="text-sm font-bold text-[#0D0D0E]">Registered Workspaces & Tenants</CardTitle>
+                <CardTitle className="text-sm font-semibold text-[#0D0D0E]">Registered Workspaces & Tenants</CardTitle>
                 <CardDescription className="text-xs text-[#8E8E93]">
                   Cross-tenant subscription health, consumption levels, and operational controls.
                 </CardDescription>
@@ -227,7 +227,7 @@ export default function PlatformAdminPage() {
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      <Badge variant="orangeSubtle" className="text-[10px] uppercase font-bold">
+                      <Badge variant="orangeSubtle" className="text-[10px] uppercase font-medium">
                         {item.plan.name}
                       </Badge>
                     </td>
@@ -287,7 +287,7 @@ export default function PlatformAdminPage() {
                       <Zap className="h-4 w-4" />
                     </div>
                     <div>
-                      <CardTitle className="text-sm font-bold text-white">
+                      <CardTitle className="text-sm font-semibold text-white">
                         Grant Quota Override
                       </CardTitle>
                       <CardDescription className="text-xs text-[#8E8E93]">

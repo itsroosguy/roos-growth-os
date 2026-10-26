@@ -188,7 +188,7 @@ export function Topbar() {
                 Search leads, contacts, conversations...
               </span>
             </div>
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded-md bg-[#F4F4F6] border border-[#E5E7EB] px-1.5 py-0.5 text-[10px] font-mono font-bold text-slate-500">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded-md bg-[#F4F4F6] border border-[#E5E7EB] px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-500">
               ⌘ K
             </kbd>
           </button>
@@ -204,10 +204,10 @@ export function Topbar() {
                 setNotificationsOpen(false);
                 setUserMenuOpen(false);
               }}
-              className="flex items-center space-x-2 rounded-xl border border-[#EAEAEA] bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-all hover:bg-[#F7F7F8] hover:border-slate-300 shadow-[0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer h-9.5"
+              className="flex items-center space-x-2 rounded-xl border border-[#EAEAEA] bg-white px-3 py-1.5 text-xs font-medium text-slate-800 transition-all hover:bg-[#F7F7F8] hover:border-slate-300 shadow-[0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer h-9.5"
             >
               <Building2 className="h-4 w-4 text-slate-500" />
-              <span className="font-bold text-slate-900 truncate max-w-[130px] sm:max-w-none">
+              <span className="font-semibold text-slate-900 truncate max-w-[130px] sm:max-w-none">
                 {currentOrg.name}
               </span>
               <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
@@ -217,7 +217,7 @@ export function Topbar() {
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setOrgDropdownOpen(false)} />
                 <div className="absolute right-0 mt-2 z-50 w-64 rounded-2xl border border-[#EAEAEA] bg-white p-2 shadow-xl animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-1.5 text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="px-3 py-1.5 text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider">
                     Workspaces
                   </div>
                   <div className="space-y-1">
@@ -229,9 +229,9 @@ export function Topbar() {
                           href={`/app/${org.slug}/overview`}
                           onClick={() => setOrgDropdownOpen(false)}
                           className={cn(
-                            "flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition-colors",
+                            "flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-colors",
                             isCurrent
-                              ? "bg-[#24180E] text-[#FF7900] font-bold"
+                              ? "bg-[#24180E] text-[#FF7900] font-semibold"
                               : "text-slate-700 hover:bg-[#F4F4F6] hover:text-slate-950"
                           )}
                         >
@@ -250,7 +250,7 @@ export function Topbar() {
                   <Link
                     href="/select-org"
                     onClick={() => setOrgDropdownOpen(false)}
-                    className="flex items-center space-x-2 rounded-xl px-3 py-2 text-xs font-bold text-[#FF7900] hover:bg-[#FF7900]/10 transition-colors"
+                    className="flex items-center space-x-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#FF7900] hover:bg-[#FF7900]/10 transition-colors"
                   >
                     <PlusCircle className="h-4 w-4" />
                     <span>Create new organisation</span>
@@ -283,9 +283,9 @@ export function Topbar() {
                 <div className="absolute right-0 mt-2 z-50 w-80 sm:w-96 rounded-2xl border border-[#EAEAEA] bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100 px-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs font-black text-slate-950">Notifications</span>
+                      <span className="text-xs font-semibold text-slate-950">Notifications</span>
                       {unreadCount > 0 && (
-                        <span className="rounded-full bg-[#FF7900] text-white text-[10px] font-bold px-1.5 py-0.2">
+                        <span className="rounded-full bg-[#FF7900] text-white text-[10px] font-medium px-1.5 py-0.2">
                           {unreadCount} new
                         </span>
                       )}
@@ -293,7 +293,7 @@ export function Topbar() {
                     {unreadCount > 0 && (
                       <button
                         onClick={markAllNotificationsAsRead}
-                        className="text-[11px] font-bold text-[#FF7900] hover:underline cursor-pointer"
+                        className="text-[11px] font-semibold text-[#FF7900] hover:underline cursor-pointer"
                       >
                         Mark all read
                       </button>
@@ -322,8 +322,8 @@ export function Topbar() {
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-950 truncate">{n.title}</span>
-                            <span className="text-[10px] text-slate-400 font-mono">{n.time}</span>
+                            <span className="text-xs font-semibold text-slate-950 truncate">{n.title}</span>
+                            <span className="text-[10px] text-slate-400 font-mono font-normal">{n.time}</span>
                           </div>
                           <p className="text-[11px] text-slate-600 mt-0.5 line-clamp-1 leading-snug font-normal">
                             {n.subtitle}
@@ -337,7 +337,7 @@ export function Topbar() {
                     <Link
                       href={`/app/${currentOrg.slug}/tasks`}
                       onClick={() => setNotificationsOpen(false)}
-                      className="text-xs font-bold text-[#FF7900] hover:underline transition-colors"
+                      className="text-xs font-semibold text-[#FF7900] hover:underline transition-colors"
                     >
                       View all tasks & updates →
                     </Link>
@@ -355,7 +355,7 @@ export function Topbar() {
                 setOrgDropdownOpen(false);
                 setNotificationsOpen(false);
               }}
-              className="flex h-9.5 w-9.5 items-center justify-center rounded-full border border-slate-300 bg-slate-900 text-white font-extrabold text-xs shadow-xs cursor-pointer hover:ring-2 hover:ring-[#FF7900]/30 transition-all overflow-hidden"
+              className="flex h-9.5 w-9.5 items-center justify-center rounded-full border border-slate-300 bg-slate-900 text-white font-semibold text-xs shadow-xs cursor-pointer hover:ring-2 hover:ring-[#FF7900]/30 transition-all overflow-hidden"
               title="User Account"
             >
               <User className="h-4.5 w-4.5 text-slate-200" />
@@ -366,9 +366,9 @@ export function Topbar() {
                 <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                 <div className="absolute right-0 mt-2 z-50 w-56 rounded-2xl border border-[#EAEAEA] bg-white p-2 shadow-2xl animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                    <p className="text-xs font-bold text-slate-950">Signed in</p>
-                    <p className="text-[11px] text-slate-500 font-mono truncate">{currentOrg.name}</p>
-                    <span className="inline-block mt-1 text-[10px] uppercase font-bold text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
+                    <p className="text-xs font-semibold text-slate-950">Signed in</p>
+                    <p className="text-[11px] text-slate-500 font-mono truncate font-normal">{currentOrg.name}</p>
+                    <span className="inline-block mt-1 text-[10px] uppercase font-semibold text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
                       {userRole.replace("_", " ")}
                     </span>
                   </div>
@@ -443,7 +443,7 @@ export function Topbar() {
                         key={quick.href}
                         href={quick.href}
                         onClick={() => setCommandPaletteOpen(false)}
-                        className="rounded-lg bg-[#F7F7F8] border border-slate-200 px-2.5 py-1 text-slate-700 font-bold hover:bg-[#24180E] hover:text-[#FF7900] hover:border-[#FF7900]/30 transition-colors"
+                        className="rounded-lg bg-[#F7F7F8] border border-slate-200 px-2.5 py-1 text-slate-700 font-medium hover:bg-[#24180E] hover:text-[#FF7900] hover:border-[#FF7900]/30 transition-colors"
                       >
                         {quick.name}
                       </Link>
@@ -455,7 +455,7 @@ export function Topbar() {
                   {/* Pages Category */}
                   {searchResults.pages.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-400 px-2 block mb-1">
+                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
                         Navigation Pages
                       </span>
                       <div className="space-y-0.5">
@@ -464,7 +464,7 @@ export function Topbar() {
                             key={page.href}
                             href={page.href}
                             onClick={() => setCommandPaletteOpen(false)}
-                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 font-semibold"
+                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 font-medium"
                           >
                             <span>{page.name}</span>
                             <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
@@ -477,7 +477,7 @@ export function Topbar() {
                   {/* Leads Category */}
                   {searchResults.leads.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-400 px-2 block mb-1">
+                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
                         Sales Deals
                       </span>
                       <div className="space-y-0.5">
@@ -489,12 +489,12 @@ export function Topbar() {
                             className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800"
                           >
                             <div>
-                              <span className="font-bold block">{lead.title}</span>
-                              <span className="text-[11px] text-slate-500">
+                              <span className="font-semibold block">{lead.title}</span>
+                              <span className="text-[11px] text-slate-500 font-normal">
                                 ₹{(lead.estimated_value || 0).toLocaleString("en-IN")} • {lead.stage}
                               </span>
                             </div>
-                            <span className="text-[10px] font-bold text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] font-medium text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
                               Lead
                             </span>
                           </Link>
@@ -506,7 +506,7 @@ export function Topbar() {
                   {/* Contacts Category */}
                   {searchResults.contacts.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-400 px-2 block mb-1">
+                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
                         Contacts
                       </span>
                       <div className="space-y-0.5">
@@ -518,12 +518,12 @@ export function Topbar() {
                             className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800"
                           >
                             <div>
-                              <span className="font-bold block">
+                              <span className="font-semibold block">
                                 {contact.first_name} {contact.last_name || ""}
                               </span>
-                              <span className="text-[11px] text-slate-500 font-mono">{contact.phone}</span>
+                              <span className="text-[11px] text-slate-500 font-mono font-normal">{contact.phone}</span>
                             </div>
-                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                               Contact
                             </span>
                           </Link>

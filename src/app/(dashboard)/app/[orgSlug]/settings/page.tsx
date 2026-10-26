@@ -22,7 +22,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-4xl pb-12">
       <div className="pb-4 border-b border-[#E5E5E7]">
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
           Organisation Settings
         </h1>
         <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
@@ -46,7 +46,7 @@ export default function SettingsPage() {
       <form onSubmit={handleSave}>
         <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
           <div className="p-5 border-b border-[#E5E5E7]">
-            <h2 className="text-base font-black text-[#0D0D0E]">Workspace Profile</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Workspace Profile</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
               Basic identifying information for this organisation.
             </p>
@@ -70,10 +70,10 @@ export default function SettingsPage() {
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#0D0D0E]">
+              <label className="block text-xs font-medium text-[#0D0D0E]">
                 Workspace URL Identifier (Slug)
               </label>
-              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs font-mono font-bold text-[#0D0D0E]">
+              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs font-mono font-semibold text-[#0D0D0E]">
                 /app/{currentOrg.slug}
               </div>
               <p className="text-[11px] text-[#8E8E93]">
@@ -84,7 +84,7 @@ export default function SettingsPage() {
 
           {isAdmin && (
             <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl shadow-2xs text-xs">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl shadow-2xs text-xs">
                 Save Changes
               </Button>
             </div>
@@ -97,7 +97,7 @@ export default function SettingsPage() {
         <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
           <Sparkles className="h-5 w-5 text-[#FF7900]" />
           <div>
-            <h2 className="text-base font-black text-[#0D0D0E]">AI Assistant &amp; Business Knowledge</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">AI Assistant &amp; Business Knowledge</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
               Configure tone, model parameters, and ground AI reply suggestions in your verified company profile.
             </p>
@@ -107,7 +107,7 @@ export default function SettingsPage() {
         <div className="p-5 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
             <div>
-              <p className="text-sm font-bold text-[#0D0D0E]">
+              <p className="text-sm font-semibold text-[#0D0D0E]">
                 AI Copilot Settings &amp; Model Controls
               </p>
               <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -118,7 +118,7 @@ export default function SettingsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
+                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
               >
                 Configure AI Settings
               </Button>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
             <div>
-              <p className="text-sm font-bold text-[#0D0D0E]">
+              <p className="text-sm font-semibold text-[#0D0D0E]">
                 Business Knowledge &amp; FAQs Profile
               </p>
               <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -138,7 +138,7 @@ export default function SettingsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
+                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
               >
                 Edit Business Profile
               </Button>
@@ -153,7 +153,7 @@ export default function SettingsPage() {
           <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
             <Building2 className="h-5 w-5 text-[#FF7900]" />
             <div>
-              <h2 className="text-base font-black text-[#0D0D0E]">Platform Administration</h2>
+              <h2 className="text-base font-semibold text-[#0D0D0E]">Platform Administration</h2>
               <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
                 Authorized operator console for multi-tenant oversight, quota overrides, and subscription health.
               </p>
@@ -163,7 +163,7 @@ export default function SettingsPage() {
           <div className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
               <div>
-                <p className="text-sm font-bold text-[#0D0D0E]">
+                <p className="text-sm font-semibold text-[#0D0D0E]">
                   Operator Management Console
                 </p>
                 <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -174,7 +174,7 @@ export default function SettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-bold text-xs rounded-xl"
+                  className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
                 >
                   Open Admin Console
                 </Button>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
         <div className="p-5 border-b border-rose-100 flex items-center space-x-2 text-rose-600">
           <AlertTriangle className="h-5 w-5 text-rose-600" />
           <div>
-            <h2 className="text-base font-black text-rose-700">Danger Zone</h2>
+            <h2 className="text-base font-semibold text-rose-700">Danger Zone</h2>
             <p className="text-xs text-rose-600 font-normal mt-0.5">
               Irreversible actions for this workspace. Only the Owner can perform these operations.
             </p>
@@ -199,7 +199,7 @@ export default function SettingsPage() {
         <div className="p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-rose-50 border border-rose-200">
             <div>
-              <p className="text-sm font-bold text-rose-950">
+              <p className="text-sm font-semibold text-rose-950">
                 Delete this organisation
               </p>
               <p className="text-xs text-rose-800 mt-0.5">
@@ -210,14 +210,14 @@ export default function SettingsPage() {
               variant="danger"
               disabled={!isOwner}
               onClick={() => alert("Deletion confirmation required in production.")}
-              className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
+              className="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl"
             >
               Delete Workspace
             </Button>
           </div>
           {!isOwner && (
             <p className="text-xs text-[#8E8E93] mt-2 font-medium">
-              You are currently signed in as <span className="font-bold uppercase text-[#0D0D0E]">{userRole}</span>. Contact the workspace Owner to request deletion.
+              You are currently signed in as <span className="font-medium uppercase text-[#0D0D0E]">{userRole}</span>. Contact the workspace Owner to request deletion.
             </p>
           )}
         </div>

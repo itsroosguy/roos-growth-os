@@ -182,8 +182,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         {/* Top Logo Header */}
         <div
           className={cn(
-            "flex items-center pb-6 pt-1",
-            collapsed ? "justify-center" : "justify-between px-2"
+            "flex items-center pb-6 pt-1 transition-all duration-300",
+            collapsed ? "flex-col gap-3 items-center" : "justify-between px-2"
           )}
         >
           <Link
@@ -193,16 +193,15 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             <RoosLogo variant="white" size="md" collapsed={collapsed} />
           </Link>
 
-          {!collapsed && (
-            <button
-              type="button"
-              onClick={toggleCollapsed}
-              className="text-[#71717A] hover:text-white transition-colors p-1 rounded-md hover:bg-[#1C1C1F] cursor-pointer"
-              title="Collapse sidebar"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            className="text-[#71717A] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-[#1C1C1F] cursor-pointer"
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
         </div>
 
         {/* Navigation list */}
@@ -220,12 +219,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center rounded-xl text-xs sm:text-[13px] font-semibold transition-all duration-150 outline-none",
+                    "flex items-center rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 outline-none",
                     collapsed
                       ? "h-10 w-10 mx-auto justify-center"
                       : "h-10 px-3 w-full",
                     isActive
-                      ? "bg-[#24180E] text-[#FF7900] border border-[#3D2513]/70 font-bold shadow-xs"
+                      ? "bg-[#24180E] text-[#FF7900] border border-[#3D2513]/70 font-semibold shadow-xs"
                       : "text-[#A1A1AA] hover:text-white hover:bg-[#18181B]"
                   )}
                   aria-label={item.title}
@@ -245,10 +244,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   {!collapsed && item.badge && (
                     <span
                       className={cn(
-                        "ml-auto text-white font-bold leading-none shrink-0",
+                        "ml-auto text-white leading-none shrink-0 font-medium",
                         item.badgeType === "number"
-                          ? "bg-[#FF7900] text-[11px] px-2 py-0.5 rounded-full"
-                          : "bg-[#FF7900] text-[10px] px-1.5 py-0.5 rounded-md uppercase font-black"
+                          ? "bg-[#FF7900] text-[11px] px-2 py-0.5 rounded-full font-semibold"
+                          : "bg-[#FF7900] text-[10px] px-1.5 py-0.5 rounded-md uppercase font-semibold"
                       )}
                     >
                       {item.badge}
@@ -256,12 +255,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   )}
                 </Link>
 
-                {/* Collapsed Tooltip */}
+                {/* Collapsed Tooltip with smooth transition */}
                 {collapsed && (
-                  <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg bg-[#18181B] text-white text-xs font-semibold shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50 flex items-center gap-2 border border-[#27272A]">
+                  <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg bg-[#18181B] text-white text-xs font-medium shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1 transition-all duration-150 z-50 flex items-center gap-2 border border-[#27272A]">
                     <span>{item.title}</span>
                     {item.badge && (
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#FF7900] text-white font-bold">
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#FF7900] text-white font-medium">
                         {item.badge}
                       </span>
                     )}
@@ -284,15 +283,15 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           title="Account clearance and settings"
         >
           <div className="flex items-center space-x-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 text-white font-black text-xs border border-white/10">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 text-white font-semibold text-xs border border-white/10">
               <User className="h-4 w-4 text-slate-300" />
             </div>
             {!collapsed && (
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-extrabold text-white truncate leading-tight">
+                <span className="text-xs font-semibold text-white truncate leading-tight">
                   {currentOrg.name}
                 </span>
-                <span className="text-[10px] font-mono font-semibold text-[#A1A1AA] truncate">
+                <span className="text-[10px] font-mono font-medium text-[#A1A1AA] truncate">
                   {roleLabel}
                 </span>
               </div>
@@ -318,8 +317,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               )}
             >
               <div className="px-3 py-2 border-b border-[#1F1F23] mb-1">
-                <p className="text-xs font-bold text-white">{currentOrg.name}</p>
-                <p className="text-[10px] text-[#A1A1AA] font-mono truncate">
+                <p className="text-xs font-semibold text-white">{currentOrg.name}</p>
+                <p className="text-[10px] text-[#A1A1AA] font-mono truncate font-normal">
                   Role: {userRole.toUpperCase()}
                 </p>
               </div>

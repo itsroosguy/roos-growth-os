@@ -108,10 +108,10 @@ export default function AutomationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Workflow Automation &amp; Triggers
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-bold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
               {workflowUsage.current_count} / {workflowUsage.max_quota} Active Workflows
             </span>
           </div>
@@ -124,7 +124,7 @@ export default function AutomationsPage() {
         <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
           <button
             onClick={() => setActiveTab("workflows")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "workflows"
                 ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -135,7 +135,7 @@ export default function AutomationsPage() {
           </button>
           <button
             onClick={() => setActiveTab("templates")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "templates"
                 ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -146,7 +146,7 @@ export default function AutomationsPage() {
           </button>
           <button
             onClick={() => setActiveTab("history")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
               activeTab === "history"
                 ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -162,9 +162,9 @@ export default function AutomationsPage() {
         <div className="rounded-2xl bg-[#FFF4EC] p-4 border border-[#FF7900]/30 text-xs text-[#0D0D0E] flex items-center justify-between shadow-2xs">
           <div className="flex items-center space-x-2">
             <Zap className="h-4 w-4 shrink-0 text-[#FF7900]" />
-            <span className="font-bold">{feedback}</span>
+            <span className="font-semibold">{feedback}</span>
           </div>
-          <button onClick={() => setFeedback(null)} className="font-bold text-[#FF7900] underline ml-4 hover:text-[#E66D00] cursor-pointer">
+          <button onClick={() => setFeedback(null)} className="font-semibold text-[#FF7900] underline ml-4 hover:text-[#E66D00] cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -176,7 +176,7 @@ export default function AutomationsPage() {
           {rules.length === 0 ? (
             <div className="p-12 text-center rounded-2xl border border-[#E5E5E7] bg-white shadow-2xs">
               <Zap className="h-9 w-9 text-[#FF7900] mx-auto mb-2" />
-              <h3 className="text-base font-black text-[#0D0D0E]">
+              <h3 className="text-base font-semibold text-[#0D0D0E]">
                 No automation rules active yet
               </h3>
               <p className="text-xs text-[#8E8E93] max-w-sm mx-auto mt-1 mb-4 font-medium">
@@ -185,7 +185,7 @@ export default function AutomationsPage() {
               <Button
                 variant="default"
                 size="sm"
-                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold shadow-xs cursor-pointer text-xs"
+                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold shadow-xs cursor-pointer text-xs"
                 onClick={() => setActiveTab("templates")}
               >
                 Browse Ready-to-Use Templates
@@ -203,16 +203,16 @@ export default function AutomationsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5 max-w-2xl">
                       <div className="flex items-center space-x-2">
-                        <span className="font-black text-[#0D0D0E] text-sm sm:text-base">
+                        <span className="font-semibold text-[#0D0D0E] text-sm sm:text-base">
                           {rule.name}
                         </span>
                         <Badge
                           variant={rule.is_active ? "success" : "neutral"}
-                          className="text-[10px] uppercase font-black"
+                          className="text-[10px] uppercase font-semibold"
                         >
                           {rule.is_active ? "Active" : "Paused"}
                         </Badge>
-                        <Badge variant="neutral" className="text-[10px] font-mono font-bold">
+                        <Badge variant="neutral" className="text-[10px] font-mono font-medium">
                           {rule.trigger_type}
                         </Badge>
                       </div>
@@ -244,7 +244,7 @@ export default function AutomationsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs h-8 font-bold border-[#E5E5E7] rounded-xl text-[#0D0D0E] hover:bg-[#F7F7F8] cursor-pointer"
+                        className="text-xs h-8 font-semibold border-[#E5E5E7] rounded-xl text-[#0D0D0E] hover:bg-[#F7F7F8] cursor-pointer"
                         onClick={() => handleTestTrigger(rule)}
                         title="Simulate trigger event"
                       >
@@ -255,7 +255,7 @@ export default function AutomationsPage() {
                       <Button
                         variant={rule.is_active ? "secondary" : "default"}
                         size="sm"
-                        className={`text-xs h-8 font-bold rounded-xl cursor-pointer ${
+                        className={`text-xs h-8 font-semibold rounded-xl cursor-pointer ${
                           rule.is_active
                             ? "bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7] hover:bg-[#E5E5E7]"
                             : "bg-[#0D0D0E] text-white hover:bg-[#1C1C1F]"
@@ -286,7 +286,7 @@ export default function AutomationsPage() {
       {activeTab === "templates" && (
         <div className="space-y-4">
           <div className="mb-2">
-            <h2 className="text-base font-black text-[#0D0D0E] tracking-tight">
+            <h2 className="text-base font-semibold text-[#0D0D0E] tracking-tight">
               Predefined Workflow Templates (Templates A–F)
             </h2>
             <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
@@ -302,15 +302,15 @@ export default function AutomationsPage() {
               >
                 <div>
                   <div className="flex justify-between items-start mb-2">
-                    <Badge variant="orangeSubtle" className="text-[10px] uppercase font-bold shadow-2xs">
+                    <Badge variant="orangeSubtle" className="text-[10px] uppercase font-medium shadow-2xs">
                       {tmpl.category.replace("_", " ")}
                     </Badge>
-                    <span className="text-[11px] font-mono text-[#8E8E93] font-bold">
+                    <span className="text-[11px] font-mono text-[#8E8E93] font-semibold">
                       {tmpl.id.toUpperCase()}
                     </span>
                   </div>
 
-                  <h3 className="font-black text-sm sm:text-base text-[#0D0D0E] mb-1">
+                  <h3 className="font-semibold text-sm sm:text-base text-[#0D0D0E] mb-1">
                     {tmpl.name}
                   </h3>
                   <p className="text-xs text-[#8E8E93] font-medium mb-3">
@@ -319,13 +319,13 @@ export default function AutomationsPage() {
 
                   <div className="space-y-2 text-xs bg-[#F7F7F8] p-3.5 rounded-xl border border-[#E5E5E7] mb-4 shadow-2xs">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#8E8E93] block">
+                      <span className="text-[10px] uppercase font-medium text-[#8E8E93] block">
                         When (Trigger):
                       </span>
-                      <span className="text-[#0D0D0E] font-bold">{tmpl.trigger_label}</span>
+                      <span className="text-[#0D0D0E] font-semibold">{tmpl.trigger_label}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-[#8E8E93] block">
+                      <span className="text-[10px] uppercase font-medium text-[#8E8E93] block">
                         Then (Actions):
                       </span>
                       <span className="text-[#8E8E93] font-medium">
@@ -338,7 +338,7 @@ export default function AutomationsPage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="w-full text-xs font-bold rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-xs cursor-pointer"
+                  className="w-full text-xs font-semibold rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-xs cursor-pointer"
                   onClick={() => handleActivateTemplate(tmpl.id)}
                 >
                   <Sparkles className="h-3.5 w-3.5 mr-1.5" />
@@ -355,12 +355,12 @@ export default function AutomationsPage() {
         <div className="rounded-2xl border border-[#E5E5E7] bg-white overflow-hidden shadow-2xs">
           <div className="p-5 border-b border-[#E5E5E7] flex items-center justify-between">
             <div>
-              <h3 className="text-base font-black text-[#0D0D0E]">Recent Execution Audit Trail</h3>
+              <h3 className="text-base font-semibold text-[#0D0D0E]">Recent Execution Audit Trail</h3>
               <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
                 Idempotent execution history and duration diagnostics for background jobs.
               </p>
             </div>
-            <Badge variant="neutral" className="text-xs font-mono font-bold">
+            <Badge variant="neutral" className="text-xs font-mono font-medium">
               {executions.length} Events Logged
             </Badge>
           </div>
@@ -372,7 +372,7 @@ export default function AutomationsPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-[#F7F7F8] border-b border-[#E5E5E7] text-[#8E8E93] font-bold uppercase font-mono text-[11px] tracking-wider">
+                  <thead className="bg-[#F7F7F8] border-b border-[#E5E5E7] text-[#8E8E93] font-medium uppercase font-mono text-[11px] tracking-wider">
                     <tr>
                       <th className="py-3 px-4">Timestamp</th>
                       <th className="py-3 px-4">Rule Name</th>
@@ -392,7 +392,7 @@ export default function AutomationsPage() {
                             second: "2-digit",
                           })}
                         </td>
-                        <td className="py-3 px-4 font-bold text-[#0D0D0E]">
+                        <td className="py-3 px-4 font-semibold text-[#0D0D0E]">
                           {exec.rule_name || "Custom Rule"}
                         </td>
                         <td className="py-3 px-4 font-mono text-[#8E8E93] text-xs">
@@ -407,12 +407,12 @@ export default function AutomationsPage() {
                                 ? "danger"
                                 : "warning"
                             }
-                            className="text-[10px] uppercase font-bold"
+                            className="text-[10px] uppercase font-medium"
                           >
                             {exec.status}
                           </Badge>
                         </td>
-                        <td className="py-3 px-4 font-mono font-bold text-[#0D0D0E] text-xs">
+                        <td className="py-3 px-4 font-mono font-semibold text-[#0D0D0E] text-xs">
                           {exec.duration_ms ? `${exec.duration_ms}ms` : "—"}
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -420,7 +420,7 @@ export default function AutomationsPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-7 text-xs font-bold text-[#FF7900] hover:text-[#E66D00]"
+                              className="h-7 text-xs font-semibold text-[#FF7900] hover:text-[#E66D00]"
                               onClick={() => handleRetryExecution(exec.id)}
                             >
                               <RotateCw className="h-3 w-3 mr-1" />

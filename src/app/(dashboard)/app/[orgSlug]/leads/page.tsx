@@ -518,12 +518,12 @@ export default function LeadsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E5E7]">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Sales Pipeline
             </h1>
             <span
               suppressHydrationWarning
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-black px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono"
             >
               {filteredLeads.length} {filteredLeads.length === 1 ? "opportunity" : "opportunities"}
             </span>
@@ -539,7 +539,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={() => setViewMode("board")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 viewMode === "board"
                   ? "bg-[#0D0D0E] text-white shadow-xs"
                   : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -552,7 +552,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={() => setViewMode("table")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 viewMode === "table"
                   ? "bg-[#0D0D0E] text-white shadow-xs"
                   : "text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -568,7 +568,7 @@ export default function LeadsPage() {
           <Button
             onClick={() => setCreateModalOpen(true)}
             size="default"
-            className="shadow-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
+            className="shadow-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
             <span>New Lead</span>
@@ -580,14 +580,14 @@ export default function LeadsPage() {
       {/* MINI COMMAND STATS BANNER                                             */}
       {/* ===================================================================== */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
               Active Pipeline
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-black font-mono text-[#0D0D0E] block mt-0.5"
+              className="text-xl sm:text-2xl font-semibold font-mono text-[#0D0D0E] block mt-0.5"
             >
               {formatCurrency(pipelineMetrics.activeValue)}
             </span>
@@ -597,14 +597,14 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
               Won Revenue
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-black font-mono text-emerald-600 block mt-0.5"
+              className="text-xl sm:text-2xl font-semibold font-mono text-emerald-600 block mt-0.5"
             >
               {formatCurrency(pipelineMetrics.wonValue)}
             </span>
@@ -614,14 +614,14 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
               Pipeline Deals
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-black font-mono text-[#0D0D0E] block mt-0.5"
+              className="text-xl sm:text-2xl font-semibold font-mono text-[#0D0D0E] block mt-0.5"
             >
               {pipelineMetrics.totalLeads}
             </span>
@@ -631,14 +631,14 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
               Win Rate
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-black font-mono text-[#FF7900] block mt-0.5"
+              className="text-xl sm:text-2xl font-semibold font-mono text-[#FF7900] block mt-0.5"
             >
               {pipelineMetrics.winRate}%
             </span>
@@ -656,7 +656,7 @@ export default function LeadsPage() {
         <button
           type="button"
           onClick={() => setQuickFilter("all")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "all"
               ? "bg-[#0D0D0E] text-white shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
@@ -668,7 +668,7 @@ export default function LeadsPage() {
         <button
           type="button"
           onClick={() => setQuickFilter("starred")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "starred"
               ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/40 shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
@@ -681,7 +681,7 @@ export default function LeadsPage() {
         <button
           type="button"
           onClick={() => setQuickFilter("high_value")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "high_value"
               ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/40 shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
@@ -695,7 +695,7 @@ export default function LeadsPage() {
         <button
           type="button"
           onClick={() => setQuickFilter("needs_action")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "needs_action"
               ? "bg-rose-600 text-white shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
@@ -709,7 +709,7 @@ export default function LeadsPage() {
         <button
           type="button"
           onClick={() => setQuickFilter("won")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "won"
               ? "bg-emerald-600 text-white shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
@@ -750,11 +750,11 @@ export default function LeadsPage() {
 
           {/* Stage Filter */}
           <div className="flex items-center gap-1.5 text-xs sm:text-sm">
-            <span className="text-[#8E8E93] font-bold hidden sm:inline">Stage:</span>
+            <span className="text-[#8E8E93] font-semibold hidden sm:inline">Stage:</span>
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
             >
               <option value="all">All Stages ({leads.length})</option>
               {STAGES.map((s) => {
@@ -771,11 +771,11 @@ export default function LeadsPage() {
           {/* Owner Filter */}
           {uniqueOwners.length > 0 && (
             <div className="flex items-center gap-1.5 text-xs sm:text-sm">
-              <span className="text-[#8E8E93] font-bold hidden sm:inline">Owner:</span>
+              <span className="text-[#8E8E93] font-semibold hidden sm:inline">Owner:</span>
               <select
                 value={ownerFilter}
                 onChange={(e) => setOwnerFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+                className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
               >
                 <option value="all">All Owners</option>
                 {uniqueOwners.map((owner) => (
@@ -797,7 +797,7 @@ export default function LeadsPage() {
               setStageFilter("all");
               setOwnerFilter("all");
             }}
-            className="text-xs sm:text-sm font-bold text-[#FF7900] hover:text-[#E66D00] transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 shadow-2xs"
+            className="text-xs sm:text-sm font-semibold text-[#FF7900] hover:text-[#E66D00] transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 shadow-2xs"
           >
             Reset Filters
           </button>
@@ -824,12 +824,12 @@ export default function LeadsPage() {
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-2">
                       <span className={`h-2.5 w-2.5 rounded-full ${stage.dotColor}`} />
-                      <span className="font-black text-xs sm:text-sm uppercase tracking-wider text-[#0D0D0E]">
+                      <span className="font-semibold text-xs sm:text-sm uppercase tracking-wider text-[#0D0D0E]">
                         {stage.title}
                       </span>
                       <span
                         suppressHydrationWarning
-                        className="px-2 py-0.5 rounded-full bg-white border border-[#E5E5E7] text-xs font-mono font-black text-[#0D0D0E] shadow-2xs"
+                        className="px-2 py-0.5 rounded-full bg-white border border-[#E5E5E7] text-xs font-mono font-semibold text-[#0D0D0E] shadow-2xs"
                       >
                         {stageLeads.length}
                       </span>
@@ -838,7 +838,7 @@ export default function LeadsPage() {
                     {stageValue > 0 && (
                       <span
                         suppressHydrationWarning
-                        className="text-xs font-mono font-black text-[#0D0D0E]"
+                        className="text-xs font-mono font-semibold text-[#0D0D0E]"
                       >
                         {formatCurrency(stageValue)}
                       </span>
@@ -883,11 +883,11 @@ export default function LeadsPage() {
                                   }`}
                                 />
                               </button>
-                              <h4 className="text-sm font-black text-[#0D0D0E] group-hover:text-[#FF7900] transition-colors line-clamp-2 leading-snug">
+                              <h4 className="text-sm font-semibold text-[#0D0D0E] group-hover:text-[#FF7900] transition-colors line-clamp-2 leading-snug">
                                 {lead.title}
                               </h4>
                             </div>
-                            <span className="shrink-0 text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7] shadow-2xs font-bold">
+                            <span className="shrink-0 text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7] shadow-2xs font-semibold">
                               {lead.source}
                             </span>
                           </div>
@@ -896,14 +896,14 @@ export default function LeadsPage() {
                           <div className="flex items-center justify-between text-xs text-[#0D0D0E] pt-0.5">
                             <div className="flex items-center gap-1.5 truncate">
                               <Building2 className="h-4 w-4 text-[#8E8E93] shrink-0" />
-                              <span className="truncate font-bold text-[#0D0D0E]">{lead.contact_name}</span>
+                              <span className="truncate font-semibold text-[#0D0D0E]">{lead.contact_name}</span>
                             </div>
 
                             {/* Direct WhatsApp Jump Link */}
                             <Link
                               href={`/app/${orgSlug}/inbox?phone=${lead.contact_phone}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="p-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors shadow-2xs shrink-0 flex items-center gap-1 text-[11px] font-bold px-2"
+                              className="p-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors shadow-2xs shrink-0 flex items-center gap-1 text-[11px] font-medium px-2"
                               title="Chat on WhatsApp"
                             >
                               <MessageSquare className="h-3 w-3" />
@@ -916,14 +916,14 @@ export default function LeadsPage() {
                             <div className="space-y-0.5">
                               <span
                                 suppressHydrationWarning
-                                className="font-mono font-black text-[#0D0D0E] text-base block"
+                                className="font-mono font-semibold text-[#0D0D0E] text-base block"
                               >
                                 {formatCurrency(lead.estimated_value)}
                               </span>
 
                               {hasFollowUp ? (
                                 <div
-                                  className={`inline-flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded-md ${
+                                  className={`inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-md ${
                                     isFollowUpOverdue
                                       ? "bg-rose-100 text-rose-800 border border-rose-300"
                                       : "bg-amber-100 text-amber-800 border border-amber-300"
@@ -944,7 +944,7 @@ export default function LeadsPage() {
                               <button
                                 type="button"
                                 onClick={(e) => handleAdvanceStage(lead, e)}
-                                className="p-1.5 px-2.5 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-bold text-xs flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
+                                className="p-1.5 px-2.5 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
                                 title="Advance to next stage"
                               >
                                 <span>Next</span>
@@ -979,13 +979,13 @@ export default function LeadsPage() {
                       aria-label="Select all deals"
                     />
                   </th>
-                  <th className="py-3.5 px-4 font-bold">Deal / Opportunity</th>
-                  <th className="py-3.5 px-4 font-bold">Contact</th>
-                  <th className="py-3.5 px-4 font-bold">Stage</th>
-                  <th className="py-3.5 px-4 font-bold text-right">Value</th>
-                  <th className="py-3.5 px-4 font-bold">Assigned Owner</th>
-                  <th className="py-3.5 px-4 font-bold">Follow-Up</th>
-                  <th className="py-3.5 px-4 font-bold text-right">Actions</th>
+                  <th className="py-3.5 px-4 font-semibold">Deal / Opportunity</th>
+                  <th className="py-3.5 px-4 font-semibold">Contact</th>
+                  <th className="py-3.5 px-4 font-semibold">Stage</th>
+                  <th className="py-3.5 px-4 font-semibold text-right">Value</th>
+                  <th className="py-3.5 px-4 font-semibold">Assigned Owner</th>
+                  <th className="py-3.5 px-4 font-semibold">Follow-Up</th>
+                  <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0F0F2]">
@@ -1021,7 +1021,7 @@ export default function LeadsPage() {
                             aria-label={`Select ${lead.title}`}
                           />
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-[#0D0D0E]">
+                        <td className="py-3.5 px-4 font-semibold text-[#0D0D0E]">
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
@@ -1048,20 +1048,20 @@ export default function LeadsPage() {
                           </div>
                         </td>
                         <td className="py-3.5 px-4 text-[#0D0D0E]">
-                          <div className="font-bold text-[#0D0D0E]">{lead.contact_name}</div>
+                          <div className="font-semibold text-[#0D0D0E]">{lead.contact_name}</div>
                           <div className="text-[11px] text-[#8E8E93] font-mono font-medium">
                             {lead.contact_phone}
                           </div>
                         </td>
                         <td className="py-3.5 px-4">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${stageConfig.pillColor}`}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${stageConfig.pillColor}`}
                           >
                             <span className={`h-1.5 w-1.5 rounded-full ${stageConfig.dotColor}`} />
                             {stageConfig.title}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-mono font-black text-[#0D0D0E] text-right text-sm">
+                        <td className="py-3.5 px-4 font-mono font-semibold text-[#0D0D0E] text-right text-sm">
                           {formatCurrency(lead.estimated_value)}
                         </td>
                         <td className="py-3.5 px-4 text-[#0D0D0E] font-semibold">
@@ -1078,7 +1078,7 @@ export default function LeadsPage() {
                               <button
                                 type="button"
                                 onClick={(e) => handleAdvanceStage(lead, e)}
-                                className="p-1.5 px-2 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-bold text-xs flex items-center gap-1 shadow-2xs cursor-pointer"
+                                className="p-1.5 px-2 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer"
                                 title="Advance Stage"
                               >
                                 <span>Next</span>
@@ -1122,7 +1122,7 @@ export default function LeadsPage() {
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#121214] text-white px-5 py-3 rounded-2xl shadow-2xl border border-[#1F1F23] flex items-center gap-4 animate-in fade-in slide-in-from-bottom-3 duration-200">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-[#FF7900] animate-pulse" />
-            <span className="font-bold text-sm font-mono text-white">
+            <span className="font-semibold text-sm font-mono text-white">
               {selectedLeadIds.size} {selectedLeadIds.size === 1 ? "deal" : "deals"} selected
             </span>
           </div>
@@ -1131,7 +1131,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={handleBulkAdvance}
-              className="px-3.5 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
             >
               <span>Advance Stage</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -1139,7 +1139,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={handleBulkWon}
-              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
             >
               <Award className="h-3.5 w-3.5" />
               <span>Mark Won</span>
@@ -1171,18 +1171,18 @@ export default function LeadsPage() {
             {/* Drawer Header */}
             <div className="p-5 border-b border-[#E5E5E7] flex items-start justify-between gap-4 bg-[#F7F7F8]">
               <div className="space-y-1.5 flex-1 min-w-0">
-                <span className="text-[11px] font-mono font-bold text-[#8E8E93] uppercase tracking-wider block">
+                <span className="text-[11px] font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
                   OPPORTUNITY OVERVIEW
                 </span>
-                <h3 className="text-xl font-black text-[#0D0D0E] leading-snug truncate">
+                <h3 className="text-xl font-semibold text-[#0D0D0E] leading-snug truncate">
                   {activeLead.title}
                 </h3>
                 <div className="flex items-center gap-2 pt-1">
-                  <span className="text-xs text-[#8E8E93] font-bold">Stage:</span>
+                  <span className="text-xs text-[#8E8E93] font-semibold">Stage:</span>
                   <select
                     value={activeLead.stage}
                     onChange={(e) => handleStageChange(activeLead, e.target.value as LeadStage)}
-                    className="px-3 py-1 rounded-xl text-xs font-black bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
+                    className="px-3 py-1 rounded-xl text-xs font-semibold bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
                   >
                     {STAGES.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -1207,7 +1207,7 @@ export default function LeadsPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("details")}
-                className={`py-3 px-3 text-xs font-bold border-b-2 transition-colors cursor-pointer ${
+                className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
                   activeTab === "details"
                     ? "border-[#FF7900] text-[#FF7900]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -1218,21 +1218,21 @@ export default function LeadsPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("tasks")}
-                className={`py-3 px-3 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+                className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "tasks"
                     ? "border-[#FF7900] text-[#FF7900]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
                 }`}
               >
                 <span>Follow-ups</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[11px] font-mono font-bold bg-[#F7F7F8] text-[#0D0D0E]">
+                <span className="px-1.5 py-0.2 rounded-full text-[11px] font-mono font-semibold bg-[#F7F7F8] text-[#0D0D0E]">
                   {activeLeadTasks.length}
                 </span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("timeline")}
-                className={`py-3 px-3 text-xs font-bold border-b-2 transition-colors cursor-pointer ${
+                className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
                   activeTab === "timeline"
                     ? "border-[#FF7900] text-[#FF7900]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -1243,7 +1243,7 @@ export default function LeadsPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("ai")}
-                className={`py-3 px-3 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+                className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "ai"
                     ? "border-[#FF7900] text-[#FF7900]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
@@ -1263,7 +1263,7 @@ export default function LeadsPage() {
                   <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center justify-between pr-2">
-                        <span className="text-[11px] font-mono text-[#8E8E93] uppercase tracking-wider block font-bold">
+                        <span className="text-[11px] font-mono text-[#8E8E93] uppercase tracking-wider block font-medium">
                           ESTIMATED DEAL VALUE
                         </span>
                         <button
@@ -1276,7 +1276,7 @@ export default function LeadsPage() {
                               setIsEditingValue(false);
                             }
                           }}
-                          className="text-xs font-bold text-[#FF7900] hover:text-[#E66D00] cursor-pointer"
+                          className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] cursor-pointer"
                         >
                           {isEditingValue ? "Cancel" : "Edit Value"}
                         </button>
@@ -1287,25 +1287,25 @@ export default function LeadsPage() {
                             type="number"
                             value={editValueInput}
                             onChange={(e) => setEditValueInput(e.target.value)}
-                            className="w-36 px-2.5 py-1 rounded-lg border border-[#FF7900] bg-white font-mono font-bold text-[#0D0D0E] text-sm focus:outline-none"
+                            className="w-36 px-2.5 py-1 rounded-lg border border-[#FF7900] bg-white font-mono font-semibold text-[#0D0D0E] text-sm focus:outline-none"
                             autoFocus
                           />
                           <button
                             type="button"
                             onClick={handleQuickUpdateValue}
-                            className="px-3 py-1 bg-[#FF7900] hover:bg-[#E66D00] text-white text-xs font-bold rounded-lg cursor-pointer"
+                            className="px-3 py-1 bg-[#FF7900] hover:bg-[#E66D00] text-white text-xs font-semibold rounded-lg cursor-pointer"
                           >
                             Save
                           </button>
                         </div>
                       ) : (
-                        <span className="text-2xl font-mono font-black text-[#0D0D0E] block mt-0.5">
+                        <span className="text-2xl font-mono font-semibold text-[#0D0D0E] block mt-0.5">
                           {formatCurrency(activeLead.estimated_value)}
                         </span>
                       )}
                     </div>
                     {!isEditingValue && (
-                      <span className="px-3 py-1 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold font-mono text-[#0D0D0E]">
+                      <span className="px-3 py-1 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold font-mono text-[#0D0D0E]">
                         {activeLead.currency}
                       </span>
                     )}
@@ -1313,17 +1313,17 @@ export default function LeadsPage() {
 
                   {/* Associated Contact */}
                   <div className="space-y-2.5">
-                    <span className="text-xs font-mono font-bold text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
                       ASSOCIATED CUSTOMER
                     </span>
                     <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="font-black text-base text-[#0D0D0E] block">
+                          <span className="font-semibold text-base text-[#0D0D0E] block">
                             {activeLead.contact_name}
                           </span>
                           <div className="flex items-center gap-2 text-xs text-[#8E8E93] mt-0.5">
-                            <span className="font-mono font-bold text-[#0D0D0E]">{activeLead.contact_phone}</span>
+                            <span className="font-mono font-semibold text-[#0D0D0E]">{activeLead.contact_phone}</span>
                             <button
                               type="button"
                               onClick={() => copyPhoneNumber(activeLead.contact_phone)}
@@ -1338,7 +1338,7 @@ export default function LeadsPage() {
                         {/* WhatsApp Inbox Jump Action */}
                         <Link
                           href={`/app/${orgSlug}/inbox?phone=${activeLead.contact_phone}`}
-                          className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all"
+                          className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition-all"
                         >
                           <MessageSquare className="h-3.5 w-3.5" />
                           <span>Open Chat</span>
@@ -1350,22 +1350,22 @@ export default function LeadsPage() {
                   {/* Key Metadata Grid */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-bold">
+                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
                         Lead Source
                       </span>
-                      <span className="font-bold text-[#0D0D0E] mt-1 block">
+                      <span className="font-semibold text-[#0D0D0E] mt-1 block">
                         {activeLead.source}
                       </span>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-bold">
+                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
                         Assigned Owner
                       </span>
                       <select
                         value={activeLead.assigned_to_name || "unassigned"}
                         onChange={(e) => handleOwnerChange(e.target.value)}
-                        className="w-full mt-1 px-2 py-1 rounded-lg text-xs font-bold bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                        className="w-full mt-1 px-2 py-1 rounded-lg text-xs font-semibold bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
                       >
                         <option value="unassigned">Unassigned</option>
                         {teamMembers.map((m) => (
@@ -1377,10 +1377,10 @@ export default function LeadsPage() {
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-bold">
+                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
                         Next Follow-Up
                       </span>
-                      <span className="font-bold text-[#0D0D0E] mt-1 block">
+                      <span className="font-semibold text-[#0D0D0E] mt-1 block">
                         {activeLead.next_follow_up_at
                           ? formatDate(activeLead.next_follow_up_at)
                           : "Not Scheduled"}
@@ -1388,10 +1388,10 @@ export default function LeadsPage() {
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-bold">
+                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
                         Created
                       </span>
-                      <span className="font-bold text-[#0D0D0E] mt-1 block">
+                      <span className="font-semibold text-[#0D0D0E] mt-1 block">
                         {formatDate(activeLead.created_at)}
                       </span>
                     </div>
@@ -1399,7 +1399,7 @@ export default function LeadsPage() {
 
                   {/* Notes */}
                   <div className="space-y-1.5">
-                    <span className="text-xs font-mono font-bold text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
                       DEAL NOTES &amp; CLIENT BRIEF
                     </span>
                     <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] text-xs sm:text-sm text-[#0D0D0E] leading-relaxed min-h-[80px] shadow-xs">
@@ -1413,13 +1413,13 @@ export default function LeadsPage() {
               {activeTab === "tasks" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
                       LINKED FOLLOW-UPS
                     </span>
                     <Button
                       size="sm"
                       onClick={() => setTaskFormOpen(!taskFormOpen)}
-                      className="h-8 text-xs font-bold bg-[#FF7900] hover:bg-[#E66D00] text-white rounded-xl"
+                      className="h-8 text-xs font-semibold bg-[#FF7900] hover:bg-[#E66D00] text-white rounded-xl"
                     >
                       <Plus className="h-3.5 w-3.5 mr-1" />
                       <span>{taskFormOpen ? "Cancel" : "Add Task"}</span>
@@ -1432,7 +1432,7 @@ export default function LeadsPage() {
                       onSubmit={handleCreateTaskForLead}
                       className="p-4 rounded-2xl bg-white border border-[#FF7900]/40 space-y-3 shadow-xs animate-in fade-in"
                     >
-                      <h4 className="text-xs font-bold text-[#0D0D0E] uppercase">
+                      <h4 className="text-xs font-medium text-[#0D0D0E] uppercase">
                         Schedule Follow-Up Task
                       </h4>
                       <Input
@@ -1444,7 +1444,7 @@ export default function LeadsPage() {
                       />
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                          <label className="text-[11px] text-[#8E8E93] font-bold block mb-1">
+                          <label className="text-[11px] text-[#8E8E93] font-medium block mb-1">
                             Due Date
                           </label>
                           <Input
@@ -1455,13 +1455,13 @@ export default function LeadsPage() {
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] text-[#8E8E93] font-bold block mb-1">
+                          <label className="text-[11px] text-[#8E8E93] font-medium block mb-1">
                             Priority
                           </label>
                           <select
                             value={newTaskPriority}
                             onChange={(e) => setNewTaskPriority(e.target.value as TaskPriority)}
-                            className="w-full h-9 px-2 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold text-[#0D0D0E]"
+                            className="w-full h-9 px-2 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E]"
                           >
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
@@ -1473,7 +1473,7 @@ export default function LeadsPage() {
                         <Button
                           type="submit"
                           size="sm"
-                          className="h-8 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl"
+                          className="h-8 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl"
                         >
                           Save Task
                         </Button>
@@ -1507,7 +1507,7 @@ export default function LeadsPage() {
                             </button>
                             <div>
                               <span
-                                className={`text-xs font-bold block ${
+                                className={`text-xs font-semibold block ${
                                   t.status === "completed"
                                     ? "line-through text-[#8E8E93]"
                                     : "text-[#0D0D0E]"
@@ -1523,7 +1523,7 @@ export default function LeadsPage() {
                           </div>
 
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase shrink-0 ${
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase shrink-0 ${
                               t.priority === "high"
                                 ? "bg-rose-50 text-rose-800 border border-rose-200"
                                 : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30"
@@ -1541,7 +1541,7 @@ export default function LeadsPage() {
               {/* TAB 3: ACTIVITY TIMELINE */}
               {activeTab === "timeline" && (
                 <div className="space-y-4">
-                  <span className="text-xs font-mono font-bold text-[#8E8E93] uppercase tracking-wider block">
+                  <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
                     EVENT TIMELINE
                   </span>
                   <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-[#E5E5E7]">
@@ -1550,7 +1550,7 @@ export default function LeadsPage() {
                         <Check className="h-3 w-3" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-[#0D0D0E]">
+                        <p className="text-xs font-semibold text-[#0D0D0E]">
                           Lead in stage &ldquo;{activeLead.stage.toUpperCase()}&rdquo;
                         </p>
                         <p className="text-[11px] text-[#8E8E93] font-mono">
@@ -1564,7 +1564,7 @@ export default function LeadsPage() {
                         <Briefcase className="h-3 w-3" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-[#0D0D0E]">
+                        <p className="text-xs font-semibold text-[#0D0D0E]">
                           Opportunity initialized via {activeLead.source}
                         </p>
                         <p className="text-[11px] text-[#8E8E93] font-mono">
@@ -1581,7 +1581,7 @@ export default function LeadsPage() {
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-[#FFF4EC]/60 border border-[#FF7900]/30 text-xs space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-black text-[#0D0D0E] flex items-center gap-1.5 text-sm">
+                      <span className="font-semibold text-[#0D0D0E] flex items-center gap-1.5 text-sm">
                         <Sparkles className="h-4 w-4 text-[#FF7900]" />
                         AI Lead Qualification
                       </span>
@@ -1590,7 +1590,7 @@ export default function LeadsPage() {
                         variant="secondary"
                         onClick={() => handleAssessLead(activeLead.id)}
                         disabled={assessingLead}
-                        className="h-7 text-xs bg-white text-[#FF7900] hover:bg-[#FFF4EC] border-[#FF7900]/30 font-bold"
+                        className="h-7 text-xs bg-white text-[#FF7900] hover:bg-[#FFF4EC] border-[#FF7900]/30 font-semibold"
                       >
                         {assessingLead ? "Analyzing..." : "Re-assess"}
                       </Button>
@@ -1604,31 +1604,31 @@ export default function LeadsPage() {
                   {activeQualification ? (
                     <div className="space-y-3">
                       <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] space-y-1 shadow-xs">
-                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-bold">
+                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
                           Classification &amp; Priority
                         </span>
                         <div className="flex items-center justify-between pt-0.5">
-                          <span className="font-black text-sm text-[#0D0D0E]">
+                          <span className="font-semibold text-sm text-[#0D0D0E]">
                             {activeQualification.leadCategory}
                           </span>
-                          <Badge variant="purple" className="text-xs uppercase font-bold">
+                          <Badge variant="purple" className="text-xs uppercase font-medium">
                             {activeQualification.suggestedPriority} priority
                           </Badge>
                         </div>
                       </div>
 
                       <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] space-y-1 shadow-xs">
-                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-bold">
+                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
                           Suggested Action
                         </span>
-                        <p className="text-xs text-[#0D0D0E] leading-relaxed font-bold pt-0.5">
+                        <p className="text-xs text-[#0D0D0E] leading-relaxed font-semibold pt-0.5">
                           {activeQualification.suggestedNextAction}
                         </p>
                       </div>
 
                       {activeQualification.explanation && (
                         <div className="p-3.5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-1">
-                          <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-bold">
+                          <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
                             Evaluation Context
                           </span>
                           <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
@@ -1644,7 +1644,7 @@ export default function LeadsPage() {
                   )}
 
                   {assessmentFeedback && (
-                    <p className="text-xs text-emerald-700 font-bold">
+                    <p className="text-xs text-emerald-700 font-semibold">
                       {assessmentFeedback}
                     </p>
                   )}
@@ -1658,7 +1658,7 @@ export default function LeadsPage() {
                 <button
                   type="button"
                   onClick={() => handleDeleteLead(activeLead.id)}
-                  className="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span>Delete</span>
@@ -1670,7 +1670,7 @@ export default function LeadsPage() {
                   <Button
                     size="sm"
                     onClick={() => handleStageChange(activeLead, "won")}
-                    className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl"
+                    className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl"
                   >
                     Mark Won
                   </Button>
@@ -1680,7 +1680,7 @@ export default function LeadsPage() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleStageChange(activeLead, "lost")}
-                    className="text-xs text-rose-600 hover:bg-rose-50 border-rose-200 font-bold rounded-xl"
+                    className="text-xs text-rose-600 hover:bg-rose-50 border-rose-200 font-semibold rounded-xl"
                   >
                     Mark Lost
                   </Button>
@@ -1704,7 +1704,7 @@ export default function LeadsPage() {
 
         <form onSubmit={handleCreateLead} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0D0D0E]">
+            <label className="text-xs font-medium text-[#0D0D0E]">
               Opportunity Title *
             </label>
             <Input
@@ -1718,14 +1718,14 @@ export default function LeadsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0D0D0E]">
+              <label className="text-xs font-medium text-[#0D0D0E]">
                 Associated Contact *
               </label>
               <select
                 required
                 value={selectedContactId}
                 onChange={(e) => setSelectedContactId(e.target.value)}
-                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
               >
                 <option value="">Select a contact...</option>
                 {contacts.map((c) => (
@@ -1737,13 +1737,13 @@ export default function LeadsPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0D0D0E]">
+              <label className="text-xs font-medium text-[#0D0D0E]">
                 Initial Pipeline Stage
               </label>
               <select
                 value={initialStage}
                 onChange={(e) => setInitialStage(e.target.value as LeadStage)}
-                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
               >
                 {STAGES.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -1756,7 +1756,7 @@ export default function LeadsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0D0D0E]">
+              <label className="text-xs font-medium text-[#0D0D0E]">
                 Estimated Deal Value (INR)
               </label>
               <Input
@@ -1765,12 +1765,12 @@ export default function LeadsPage() {
                 step="1000"
                 value={dealValue}
                 onChange={(e) => setDealValue(e.target.value)}
-                className="font-mono font-bold"
+                className="font-mono font-semibold"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0D0D0E]">
+              <label className="text-xs font-medium text-[#0D0D0E]">
                 Next Follow-Up Date
               </label>
               <Input
@@ -1782,7 +1782,7 @@ export default function LeadsPage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0D0D0E]">
+            <label className="text-xs font-medium text-[#0D0D0E]">
               Lead Notes &amp; Scope
             </label>
             <textarea
@@ -1802,7 +1802,7 @@ export default function LeadsPage() {
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold">
+            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold">
               Create Lead
             </Button>
           </DialogFooter>
@@ -1821,13 +1821,13 @@ export default function LeadsPage() {
         </DialogHeader>
 
         <div className="space-y-3 py-2">
-          <label className="text-xs font-bold text-[#0D0D0E]">
+          <label className="text-xs font-medium text-[#0D0D0E]">
             Primary Cause:
           </label>
           <select
             value={lostReasonText}
             onChange={(e) => setLostReasonText(e.target.value)}
-            className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+            className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
           >
             <option>Price too high</option>
             <option>Competitor chosen</option>
@@ -1849,7 +1849,7 @@ export default function LeadsPage() {
             type="button"
             variant="danger"
             onClick={handleConfirmLost}
-            className="font-bold"
+            className="font-semibold"
           >
             Confirm Lost
           </Button>

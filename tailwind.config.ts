@@ -78,8 +78,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          '"Plus Jakarta Sans"',
-          '"Inter"',
+          '"Google Sans"',
+          '"Google Sans Text"',
           "-apple-system",
           "BlinkMacSystemFont",
           '"Segoe UI"',
@@ -87,8 +87,8 @@ const config: Config = {
           "sans-serif",
         ],
         display: [
-          '"Outfit"',
-          '"Plus Jakarta Sans"',
+          '"Google Sans"',
+          '"Google Sans Display"',
           "-apple-system",
           "sans-serif",
         ],
@@ -100,6 +100,14 @@ const config: Config = {
           "Consolas",
           "monospace",
         ],
+      },
+      fontWeight: {
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "600",      // Strictly capped at 600 - bold (>600) never permitted
+        extrabold: "600", // Strictly capped at 600 - bold (>600) never permitted
+        black: "600",     // Strictly capped at 600 - bold (>600) never permitted
       },
       borderRadius: {
         sm: "6px",

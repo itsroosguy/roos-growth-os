@@ -81,7 +81,7 @@ export default function SignupPage() {
   return (
     <Card className="max-w-md w-full mx-auto border-[#E5E5E7] bg-white rounded-2xl shadow-xs overflow-hidden">
       <CardHeader className="space-y-1 p-6 pb-4">
-        <CardTitle className="text-xl font-bold tracking-tight text-[#0D0D0E]">Create organisation</CardTitle>
+        <CardTitle className="text-xl font-semibold tracking-tight text-[#0D0D0E]">Create organisation</CardTitle>
         <CardDescription className="text-xs text-[#8E8E93]">
           Get started with your multi-tenant business workspace
         </CardDescription>

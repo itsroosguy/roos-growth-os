@@ -85,10 +85,10 @@ export default function BusinessProfileSettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Business Knowledge &amp; Grounding Profile
             </h1>
-            <Badge variant="orangeSubtle" className="text-xs font-mono font-bold">
+            <Badge variant="orangeSubtle" className="text-xs font-mono font-medium">
               Anti-Hallucination Grounding
             </Badge>
           </div>
@@ -98,7 +98,7 @@ export default function BusinessProfileSettingsPage() {
         </div>
 
         <Link href={`/app/${currentOrg.slug}/settings/ai`}>
-          <Button variant="outline" size="sm" className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]">
+          <Button variant="outline" size="sm" className="text-xs font-semibold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]">
             Back to AI Settings
           </Button>
         </Link>
@@ -107,7 +107,7 @@ export default function BusinessProfileSettingsPage() {
       {saved && (
         <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center space-x-2 shadow-2xs">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-          <span className="font-bold">Business knowledge profile saved and active for AI grounding!</span>
+          <span className="font-semibold">Business knowledge profile saved and active for AI grounding!</span>
         </div>
       )}
 
@@ -116,7 +116,7 @@ export default function BusinessProfileSettingsPage() {
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
             <Building2 className="h-5 w-5 text-[#FF7900]" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Company Identity &amp; Services</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Company Identity &amp; Services</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
             These approved facts are injected into system prompts so the AI never invents company policies or unapproved products.
@@ -141,7 +141,7 @@ export default function BusinessProfileSettingsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
                 Company Overview &amp; Value Proposition
               </label>
               <textarea
@@ -154,7 +154,7 @@ export default function BusinessProfileSettingsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
                 Products &amp; Commercial Offerings
               </label>
               <textarea
@@ -196,7 +196,7 @@ export default function BusinessProfileSettingsPage() {
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
             <ShieldCheck className="h-5 w-5 text-emerald-600" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Pricing &amp; Commercial Policies</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Pricing &amp; Commercial Policies</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
             Strict rules: AI will ONLY quote rates and terms explicitly listed here.
@@ -204,7 +204,7 @@ export default function BusinessProfileSettingsPage() {
 
           <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
                 Pricing &amp; Subscription Terms
               </label>
               <textarea
@@ -218,7 +218,7 @@ export default function BusinessProfileSettingsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+              <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
                 Refund, Cancellation &amp; SLA Policy
               </label>
               <textarea
@@ -237,7 +237,7 @@ export default function BusinessProfileSettingsPage() {
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
             <HelpCircle className="h-5 w-5 text-[#FF7900]" />
-            <h2 className="text-base font-black text-[#0D0D0E]">Approved Frequently Asked Questions (FAQs)</h2>
+            <h2 className="text-base font-semibold text-[#0D0D0E]">Approved Frequently Asked Questions (FAQs)</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
             Direct question-answer pairs referenced when answering common customer enquiries.
@@ -251,7 +251,7 @@ export default function BusinessProfileSettingsPage() {
                   className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex justify-between items-start gap-4"
                 >
                   <div className="space-y-1 text-xs">
-                    <span className="font-bold text-[#0D0D0E] block">
+                    <span className="font-semibold text-[#0D0D0E] block">
                       Q: {faq.question}
                     </span>
                     <p className="text-[#8E8E93] font-medium">
@@ -273,7 +273,7 @@ export default function BusinessProfileSettingsPage() {
 
             {/* Add FAQ Sub-form */}
             <div className="p-4 rounded-xl border border-dashed border-[#E5E5E7] bg-[#F7F7F8] space-y-3 text-xs">
-              <span className="font-bold text-[#0D0D0E] block">
+              <span className="font-semibold text-[#0D0D0E] block">
                 Add an Approved FAQ Item
               </span>
               <Input
@@ -284,7 +284,7 @@ export default function BusinessProfileSettingsPage() {
                 className="bg-white border-[#E5E5E7] focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
               />
               <div>
-                <label className="block text-xs font-bold text-[#0D0D0E] mb-1">
+                <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
                   Approved Answer
                 </label>
                 <textarea
@@ -299,7 +299,7 @@ export default function BusinessProfileSettingsPage() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="text-xs font-bold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
+                className="text-xs font-semibold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
                 onClick={handleAddFaq}
               >
                 <Plus className="h-3.5 w-3.5 mr-1 text-[#FF7900]" />
@@ -310,7 +310,7 @@ export default function BusinessProfileSettingsPage() {
 
           {isAdmin && (
             <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs shadow-2xs">
+              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs">
                 Save Business Profile
               </Button>
             </div>

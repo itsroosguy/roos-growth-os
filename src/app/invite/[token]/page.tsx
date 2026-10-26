@@ -121,7 +121,7 @@ export default function AcceptInvitationPage() {
           <div className="h-14 w-14 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto">
             <AlertCircle className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-bold text-[#0D0D0E]">Invalid Invitation Token</h2>
+          <h2 className="text-xl font-semibold text-[#0D0D0E]">Invalid Invitation Token</h2>
           <p className="text-xs text-[#8E8E93] leading-relaxed">{error}</p>
           <div className="pt-2">
             <Link href="/login">
@@ -150,7 +150,7 @@ export default function AcceptInvitationPage() {
           <ShieldCheck className="h-3.5 w-3.5 text-[#FF7900]" />
           <span>ROOS STUDIOX VERIFIED INSTITUTIONAL CREDENTIAL</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
           Formal Workspace Appointment
         </h1>
         <p className="text-xs sm:text-sm text-[#8E8E93] max-w-lg mx-auto">
@@ -164,7 +164,7 @@ export default function AcceptInvitationPage() {
           <div className="flex items-center space-x-2">
             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-semibold text-[#0D0D0E]">
-              Verified Invitation from: <span className="text-[#FF7900] font-bold">{invite.inviter_name}</span> ({invite.inviter_email})
+              Verified Invitation from: <span className="text-[#FF7900] font-semibold">{invite.inviter_name}</span> ({invite.inviter_email})
             </span>
           </div>
           <span className="font-mono text-[10px] text-[#8E8E93] bg-white border border-[#E5E5E7] px-2 py-0.5 rounded-md">
@@ -177,9 +177,9 @@ export default function AcceptInvitationPage() {
             <div className="h-16 w-16 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-2xs">
               <CheckCircle2 className="h-9 w-9" />
             </div>
-            <h2 className="text-2xl font-bold text-[#0D0D0E]">Credential Activated!</h2>
+            <h2 className="text-2xl font-semibold text-[#0D0D0E]">Credential Activated!</h2>
             <p className="text-xs text-[#8E8E93] max-w-md mx-auto leading-relaxed">
-              Your appointment as <strong className="text-[#0D0D0E] font-bold">{roleMeta.title}</strong> has been sealed. Launching your workspace session now...
+              Your appointment as <strong className="text-[#0D0D0E] font-semibold">{roleMeta.title}</strong> has been sealed. Launching your workspace session now...
             </p>
             <div className="flex items-center justify-center text-xs font-mono text-[#FF7900] pt-2 animate-pulse">
               Redirecting to secure workspace...
@@ -201,7 +201,7 @@ export default function AcceptInvitationPage() {
               <div className="flex items-center justify-between">
                 <span
                   className={cn(
-                    "text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border tracking-wider",
+                    "text-[10px] font-medium uppercase px-2.5 py-0.5 rounded-full border tracking-wider",
                     invite.role === "admin"
                       ? "bg-[#24180E] text-[#FF7900] border-[#FF7900]/40"
                       : invite.role === "senior_manager"
@@ -217,7 +217,7 @@ export default function AcceptInvitationPage() {
               </div>
 
               <div>
-                <h2 className="text-lg font-bold text-[#0D0D0E] flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-[#0D0D0E] flex items-center gap-2">
                   {roleMeta.title}
                 </h2>
                 <p className="text-xs text-[#8E8E93] mt-1 leading-relaxed">
@@ -242,7 +242,7 @@ export default function AcceptInvitationPage() {
 
             {/* Enterprise Governance Rules Section (Builds Brand Trust) */}
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#8E8E93] flex items-center gap-1.5">
+              <h3 className="text-xs font-medium uppercase tracking-wider text-[#8E8E93] flex items-center gap-1.5">
                 <Shield className="h-3.5 w-3.5 text-[#FF7900]" />
                 Enterprise Brand Governance &amp; Trust Commitments
               </h3>
@@ -254,7 +254,7 @@ export default function AcceptInvitationPage() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-[#0D0D0E] text-[11px]">{rule.title}</span>
-                      <span className="text-[9px] font-mono font-bold text-[#FF7900] bg-white px-1.5 py-0.5 rounded border border-[#E5E5E7]">
+                      <span className="text-[9px] font-mono font-semibold text-[#FF7900] bg-white px-1.5 py-0.5 rounded border border-[#E5E5E7]">
                         {rule.code}
                       </span>
                     </div>

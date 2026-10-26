@@ -18,13 +18,13 @@ export function RoosLogo({
     return (
       <div
         className={cn(
-          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] text-white font-black tracking-tight select-none",
+          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] text-white font-semibold tracking-tight select-none",
           className
         )}
         title="ROOS STUDIOX"
       >
-        <span className="text-white text-base font-extrabold font-sans">R</span>
-        <span className="text-[#FF7900] text-base font-extrabold font-sans">X</span>
+        <span className="text-white text-base font-semibold font-sans">R</span>
+        <span className="text-[#FF7900] text-base font-semibold font-sans">X</span>
       </div>
     );
   }

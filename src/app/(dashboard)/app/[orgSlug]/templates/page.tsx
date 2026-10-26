@@ -173,10 +173,10 @@ export default function TemplatesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Message Templates
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 font-mono text-[11px] font-bold px-2.5 py-0.5 text-[#FF7900]">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 font-mono text-[11px] font-medium px-2.5 py-0.5 text-[#FF7900]">
               Meta Cloud API
             </span>
           </div>
@@ -187,7 +187,7 @@ export default function TemplatesPage() {
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/campaigns`}>
-            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-bold">
+            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-semibold">
               <Send className="h-3.5 w-3.5 text-[#FF7900]" />
               <span>Go to Campaigns</span>
             </Button>
@@ -200,7 +200,7 @@ export default function TemplatesPage() {
               setCreateSuccessMsg(null);
               setCreateModalOpen(true);
             }}
-            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-bold cursor-pointer"
+            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
             <span>New Template</span>
@@ -210,40 +210,40 @@ export default function TemplatesPage() {
 
       {/* KPI Stats Banner */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#8E8E93]">Total Templates</span>
-            <div className="text-2xl font-black font-mono text-[#0D0D0E] mt-1">{allTemplates.length}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93]">Total Templates</span>
+            <div className="text-2xl font-semibold font-mono text-[#0D0D0E] mt-1">{allTemplates.length}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-center text-[#0D0D0E]">
             <FileText className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Approved</span>
-            <div className="text-2xl font-black font-mono text-emerald-600 mt-1">{approvedCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-800">Approved</span>
+            <div className="text-2xl font-semibold font-mono text-emerald-600 mt-1">{approvedCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
             <CheckCircle2 className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800">Under Review</span>
-            <div className="text-2xl font-black font-mono text-amber-600 mt-1">{pendingCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-amber-800">Under Review</span>
+            <div className="text-2xl font-semibold font-mono text-amber-600 mt-1">{pendingCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
             <Clock className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-800">Rejected</span>
-            <div className="text-2xl font-black font-mono text-rose-600 mt-1">{rejectedCount}</div>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-rose-800">Rejected</span>
+            <div className="text-2xl font-semibold font-mono text-rose-600 mt-1">{rejectedCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
             <XCircle className="h-5 w-5" />
@@ -257,12 +257,12 @@ export default function TemplatesPage() {
           <Info className="h-4.5 w-4.5" />
         </div>
         <div className="space-y-1">
-          <p className="font-bold text-[#0D0D0E] text-xs sm:text-sm">
+          <p className="font-semibold text-[#0D0D0E] text-xs sm:text-sm">
             Official Meta WhatsApp Platform Template Policies
           </p>
           <p className="text-xs leading-relaxed text-[#8E8E93] font-medium">
             • <strong className="text-[#0D0D0E]">Pre-Approval Mandatory:</strong> Only templates with <strong className="text-emerald-700">APPROVED</strong> status can be dispatched.
-            • <strong className="text-[#0D0D0E]">Variables:</strong> Must be sequentially numbered as <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-bold">{"{{1}}"}</code>, <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-bold">{"{{2}}"}</code>.
+            • <strong className="text-[#0D0D0E]">Variables:</strong> Must be sequentially numbered as <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-semibold">{"{{1}}"}</code>, <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-semibold">{"{{2}}"}</code>.
             • <strong className="text-[#0D0D0E]">Marketing Opt-out:</strong> Marketing templates must provide explicit opt-out wording (e.g. <em>Reply STOP to opt out</em>).
           </p>
         </div>
@@ -284,7 +284,7 @@ export default function TemplatesPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as TemplateCategory | "all")}
-            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Categories</option>
             <option value="marketing">Marketing (₹0.82)</option>
@@ -295,7 +295,7 @@ export default function TemplatesPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as TemplateStatus | "all")}
-            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-bold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="APPROVED">Approved</option>
@@ -310,7 +310,7 @@ export default function TemplatesPage() {
         {templates.length === 0 ? (
           <div className="col-span-full p-12 text-center text-xs text-[#8E8E93] bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs">
             <FileText className="h-8 w-8 mx-auto mb-2 text-[#8E8E93]/60" />
-            <p className="font-bold text-[#0D0D0E] text-sm">No templates found</p>
+            <p className="font-semibold text-[#0D0D0E] text-sm">No templates found</p>
             <p className="text-xs text-[#8E8E93] mt-1">Try adjusting your search query or filters.</p>
           </div>
         ) : (
@@ -325,7 +325,7 @@ export default function TemplatesPage() {
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <h3 className="font-black text-sm text-[#0D0D0E] font-mono tracking-tight">
+                      <h3 className="font-semibold text-sm text-[#0D0D0E] font-mono tracking-tight">
                         {tpl.name}
                       </h3>
                       <div className="flex items-center gap-1.5 mt-0.5">
@@ -333,14 +333,14 @@ export default function TemplatesPage() {
                           {tpl.language}
                         </span>
                         <span className="text-[#E5E5E7]">•</span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${catCfg.color}`}>
+                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${catCfg.color}`}>
                           {catCfg.label} ({catCfg.cost})
                         </span>
                       </div>
                     </div>
 
                     <span
-                      className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                      className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border ${
                         tpl.status === "APPROVED"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                           : tpl.status === "PENDING"
@@ -354,7 +354,7 @@ export default function TemplatesPage() {
 
                   {/* Header text if present */}
                   {tpl.header_text && (
-                    <div className="text-xs font-bold text-[#0D0D0E] mb-1.5 mt-2">
+                    <div className="text-xs font-semibold text-[#0D0D0E] mb-1.5 mt-2">
                       {tpl.header_text}
                     </div>
                   )}
@@ -372,7 +372,7 @@ export default function TemplatesPage() {
                   {/* Rejection reason callout if rejected */}
                   {tpl.status === "REJECTED" && tpl.rejection_reason && (
                     <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[11px] space-y-0.5 my-2">
-                      <span className="font-bold block">Meta Rejection Feedback:</span>
+                      <span className="font-semibold block">Meta Rejection Feedback:</span>
                       <p>{tpl.rejection_reason}</p>
                     </div>
                   )}
@@ -389,7 +389,7 @@ export default function TemplatesPage() {
                     {tpl.status === "PENDING" && (
                       <button
                         onClick={() => handleSimulateApproval(tpl.id)}
-                        className="text-[11px] text-emerald-700 font-bold hover:bg-emerald-100 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+                        className="text-[11px] text-emerald-700 font-semibold hover:bg-emerald-100 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
                         title="Simulate Meta approval"
                       >
                         Approve (Mock)
@@ -398,7 +398,7 @@ export default function TemplatesPage() {
                     {tpl.status === "PENDING" && (
                       <button
                         onClick={() => handleSimulateRejection(tpl.id)}
-                        className="text-[11px] text-rose-700 font-bold hover:bg-rose-100 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 transition-colors cursor-pointer"
+                        className="text-[11px] text-rose-700 font-semibold hover:bg-rose-100 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 transition-colors cursor-pointer"
                         title="Simulate Meta rejection"
                       >
                         Reject (Mock)
@@ -409,7 +409,7 @@ export default function TemplatesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => setInspectTemplate(tpl)}
-                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl font-bold"
+                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl font-semibold"
                     >
                       <Eye className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" /> Inspect
                     </Button>
@@ -425,7 +425,7 @@ export default function TemplatesPage() {
       <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
         <form onSubmit={handleCreateTemplate} className="max-w-xl bg-white rounded-2xl p-2">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-[#0D0D0E]">Create WhatsApp Message Template</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-[#0D0D0E]">Create WhatsApp Message Template</DialogTitle>
             <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
               Define your template draft with Meta category, variables, and sample values.
             </DialogDescription>
@@ -433,7 +433,7 @@ export default function TemplatesPage() {
 
           {createSuccessMsg ? (
             <div className="my-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-3">
-              <div className="flex items-center gap-2 font-bold text-sm text-emerald-800">
+              <div className="flex items-center gap-2 font-semibold text-sm text-emerald-800">
                 <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                 Template Submitted Successfully!
               </div>
@@ -444,7 +444,7 @@ export default function TemplatesPage() {
                   setCreateSuccessMsg(null);
                   setCreateModalOpen(false);
                 }}
-                className="bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white font-bold rounded-xl text-xs"
+                className="bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white font-semibold rounded-xl text-xs"
               >
                 Close &amp; View Templates
               </Button>
@@ -453,7 +453,7 @@ export default function TemplatesPage() {
             <div className="space-y-4 my-4 text-xs">
               {validationErrors.length > 0 && (
                 <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 space-y-1">
-                  <div className="font-bold">Meta Policy Validation Failed:</div>
+                  <div className="font-semibold">Meta Policy Validation Failed:</div>
                   {validationErrors.map((err, i) => (
                     <div key={i} className="text-[11px]">• {err}</div>
                   ))}
@@ -463,7 +463,7 @@ export default function TemplatesPage() {
               {/* Template Name & Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#0D0D0E] mb-1">
+                  <label className="block font-medium text-[#0D0D0E] mb-1">
                     Template Name (lowercase &amp; underscores) *
                   </label>
                   <Input
@@ -476,13 +476,13 @@ export default function TemplatesPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#0D0D0E] mb-1">
+                  <label className="block font-medium text-[#0D0D0E] mb-1">
                     Meta Category *
                   </label>
                   <select
                     value={categoryInput}
                     onChange={(e) => setCategoryInput(e.target.value as TemplateCategory)}
-                    className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs text-[#0D0D0E] font-bold focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                    className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs text-[#0D0D0E] font-semibold focus:outline-none focus:bg-white focus:border-[#FF7900]"
                   >
                     <option value="marketing">Marketing (₹0.82 / conv)</option>
                     <option value="utility">Utility (₹0.35 / conv)</option>
@@ -493,7 +493,7 @@ export default function TemplatesPage() {
 
               {/* Header Text (Optional) */}
               <div>
-                <label className="block font-bold text-[#0D0D0E] mb-1">
+                <label className="block font-medium text-[#0D0D0E] mb-1">
                   Header Text (Optional)
                 </label>
                 <Input
@@ -507,7 +507,7 @@ export default function TemplatesPage() {
               {/* Body Content */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="font-bold text-[#0D0D0E]">
+                  <label className="font-medium text-[#0D0D0E]">
                     Body Content (use {"{{1}}"}, {"{{2}}"} for variables) *
                   </label>
                   <span className="text-[10px] text-[#8E8E93] font-mono">
@@ -526,7 +526,7 @@ export default function TemplatesPage() {
 
               {/* Footer Text (Optional) */}
               <div>
-                <label className="block font-bold text-[#0D0D0E] mb-1">
+                <label className="block font-medium text-[#0D0D0E] mb-1">
                   Footer Text (Optional)
                 </label>
                 <Input
@@ -540,7 +540,7 @@ export default function TemplatesPage() {
               {/* Sample Values for Variables */}
               {liveVariables.length > 0 && (
                 <div className="p-3.5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-2">
-                  <label className="font-bold text-[#0D0D0E] block text-xs">
+                  <label className="font-medium text-[#0D0D0E] block text-xs">
                     Sample Values for Meta Review:
                   </label>
                   <p className="text-[11px] text-[#8E8E93]">
@@ -570,12 +570,12 @@ export default function TemplatesPage() {
               {/* Live Preview Container */}
               {bodyInput.trim() && (
                 <div className="p-3.5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-1.5">
-                  <span className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wider block">
+                  <span className="text-[10px] font-medium text-[#8E8E93] uppercase tracking-wider block">
                     Live WhatsApp Bubble Preview:
                   </span>
                   <div className="bg-[#DCF8C6] border border-emerald-300 rounded-2xl p-3.5 shadow-2xs max-w-sm text-[#0D0D0E]">
                     {headerInput && (
-                      <div className="font-bold text-xs text-[#0D0D0E] mb-1">{headerInput}</div>
+                      <div className="font-semibold text-xs text-[#0D0D0E] mb-1">{headerInput}</div>
                     )}
                     <p className="text-xs text-[#0D0D0E] leading-relaxed whitespace-pre-wrap font-medium">
                       {livePreviewText}
@@ -591,10 +591,10 @@ export default function TemplatesPage() {
 
           {!createSuccessMsg && (
             <DialogFooter className="border-t border-[#E5E5E7] pt-3">
-              <Button variant="ghost" onClick={() => setCreateModalOpen(false)} className="text-[#8E8E93] hover:text-[#0D0D0E] rounded-xl text-xs font-bold">
+              <Button variant="ghost" onClick={() => setCreateModalOpen(false)} className="text-[#8E8E93] hover:text-[#0D0D0E] rounded-xl text-xs font-semibold">
                 Cancel
               </Button>
-              <Button type="submit" disabled={!nameInput.trim() || !bodyInput.trim()} className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-bold rounded-xl text-xs shadow-2xs cursor-pointer">
+              <Button type="submit" disabled={!nameInput.trim() || !bodyInput.trim()} className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer">
                 Submit for Meta Review
               </Button>
             </DialogFooter>
@@ -609,7 +609,7 @@ export default function TemplatesPage() {
             <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <DialogTitle className="font-mono text-base font-black text-[#0D0D0E]">{inspectTemplate.name}</DialogTitle>
+                  <DialogTitle className="font-mono text-base font-semibold text-[#0D0D0E]">{inspectTemplate.name}</DialogTitle>
                   <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
                     Category: {inspectTemplate.category.toUpperCase()} • Language: {inspectTemplate.language}
                   </DialogDescription>
@@ -622,7 +622,7 @@ export default function TemplatesPage() {
                       ? "warning"
                       : "danger"
                   }
-                  className="uppercase font-bold text-xs"
+                  className="uppercase font-medium text-xs"
                 >
                   {inspectTemplate.status}
                 </Badge>
@@ -631,12 +631,12 @@ export default function TemplatesPage() {
 
             <div className="space-y-4 my-4 text-xs">
               <div className="p-3.5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7]">
-                <span className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wider block mb-2">
+                <span className="text-[10px] font-medium text-[#8E8E93] uppercase tracking-wider block mb-2">
                   Rendered Preview:
                 </span>
                 <div className="bg-[#DCF8C6] border border-emerald-300 rounded-2xl p-3.5 shadow-2xs max-w-sm text-[#0D0D0E]">
                   {inspectTemplate.header_text && (
-                    <div className="font-bold text-xs text-[#0D0D0E] mb-1">
+                    <div className="font-semibold text-xs text-[#0D0D0E] mb-1">
                       {inspectTemplate.header_text}
                     </div>
                   )}
@@ -653,7 +653,7 @@ export default function TemplatesPage() {
 
               {inspectTemplate.rejection_reason && (
                 <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 space-y-1">
-                  <span className="font-bold block">Meta Rejection Feedback:</span>
+                  <span className="font-semibold block">Meta Rejection Feedback:</span>
                   <p>{inspectTemplate.rejection_reason}</p>
                 </div>
               )}
@@ -661,7 +661,7 @@ export default function TemplatesPage() {
               <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] text-[11px]">
                 <div>
                   <span className="text-[#8E8E93] block font-medium">Meta Template ID:</span>
-                  <span className="font-mono font-bold text-[#0D0D0E]">
+                  <span className="font-mono font-semibold text-[#0D0D0E]">
                     {inspectTemplate.meta_template_id || "Awaiting Approval"}
                   </span>
                 </div>
@@ -675,7 +675,7 @@ export default function TemplatesPage() {
             </div>
 
             <DialogFooter className="border-t border-[#E5E5E7] pt-3">
-              <Button onClick={() => setInspectTemplate(null)} className="bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white font-bold rounded-xl text-xs">Close</Button>
+              <Button onClick={() => setInspectTemplate(null)} className="bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white font-semibold rounded-xl text-xs">Close</Button>
             </DialogFooter>
           </div>
         </Dialog>

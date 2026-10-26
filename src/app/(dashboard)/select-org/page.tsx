@@ -71,7 +71,7 @@ export default function SelectOrgPage() {
             <span className="text-[#8E8E93]">•</span>
             <span className="text-[#8E8E93]">Multi-Tenant Isolation</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#0D0D0E]">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#0D0D0E]">
             Select Workspace
           </h1>
           <p className="mt-1 text-xs text-[#8E8E93]">
@@ -101,10 +101,10 @@ export default function SelectOrgPage() {
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h2 className="text-sm font-bold text-[#0D0D0E] group-hover:text-[#FF7900] transition-colors">
+                        <h2 className="text-sm font-semibold text-[#0D0D0E] group-hover:text-[#FF7900] transition-colors">
                           {org.name}
                         </h2>
-                        <Badge variant={roleVariant} className="text-[10px] font-bold uppercase tracking-wider">
+                        <Badge variant={roleVariant} className="text-[10px] font-medium uppercase tracking-wider">
                           {org.level}
                         </Badge>
                       </div>

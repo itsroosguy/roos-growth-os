@@ -216,7 +216,7 @@ export default function LoginPage() {
             <span>[ ROOS STUDIOX // GROWTH OS ]</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white leading-tight">
             One Platform to Streamline
             <span className="block text-slate-300 mt-1">All WhatsApp CRM &amp; Pipeline</span>
           </h2>
@@ -259,7 +259,7 @@ export default function LoginPage() {
               <RoosLogo variant="dark" size="lg" />
             </Link>
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Welcome back to ROOS!
             </h1>
             <p className="text-xs text-[#8E8E93] mt-1.5">
@@ -284,7 +284,7 @@ export default function LoginPage() {
                 setPassword("roos2026demo");
                 executeDemoLogin("admin@acmetech.io");
               }}
-              className="text-[11px] font-bold text-white bg-[#FF7900] hover:bg-[#E66D00] px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 shadow-2xs flex items-center gap-1 active:scale-95"
+              className="text-[11px] font-medium text-white bg-[#FF7900] hover:bg-[#E66D00] px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 shadow-2xs flex items-center gap-1 active:scale-95"
             >
               <span>{loading ? "Signing in..." : "1-Click Sign In"}</span>
             </button>
@@ -389,7 +389,7 @@ export default function LoginPage() {
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold tracking-tight text-[#0D0D0E]">
+                  <h3 className="text-xl font-semibold tracking-tight text-[#0D0D0E]">
                     Demo Request Dispatched!
                   </h3>
                   <p className="text-xs text-[#8E8E93] mt-2 leading-relaxed">
@@ -427,7 +427,7 @@ export default function LoginPage() {
                       <PlayCircle className="h-4.5 w-4.5 text-[#FF7900]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#0D0D0E]">Request Demo Access</h3>
+                      <h3 className="text-sm font-semibold text-[#0D0D0E]">Request Demo Access</h3>
                       <p className="text-[11px] text-[#8E8E93]">Credentials dispatched by Praveen over email</p>
                     </div>
                   </div>

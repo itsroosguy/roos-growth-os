@@ -31,7 +31,7 @@ export default function InviteIndexPage() {
           <div className="h-12 w-12 rounded-2xl bg-[#24180E] text-[#FF7900] flex items-center justify-center mx-auto border border-[#FF7900]/25">
             <KeyRound className="h-6 w-6" />
           </div>
-          <h1 className="text-xl font-bold text-[#0D0D0E] tracking-tight">Redeem Access Credential</h1>
+          <h1 className="text-xl font-semibold text-[#0D0D0E] tracking-tight">Redeem Access Credential</h1>
           <p className="text-xs text-[#8E8E93] leading-relaxed">
             Enter your invitation security token received via dispatch email to activate your workspace account.
           </p>

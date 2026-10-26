@@ -13,7 +13,7 @@ const buttonVariants = cva(
         orange:
           "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] active:scale-[0.98] font-semibold",
         orangeSubtle:
-          "bg-[rgba(255,121,0,0.12)] text-[#FF7900] hover:bg-[rgba(255,121,0,0.2)] border border-[rgba(255,121,0,0.25)] font-bold",
+          "bg-[rgba(255,121,0,0.12)] text-[#FF7900] hover:bg-[rgba(255,121,0,0.2)] border border-[rgba(255,121,0,0.25)] font-medium",
         dark:
           "bg-[#121214] text-white hover:bg-[#1A1A1E] border border-[#232326] active:scale-[0.98] font-semibold shadow-xs",
         secondary:
@@ -30,7 +30,7 @@ const buttonVariants = cva(
       size: {
         default: "h-9.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold",
         sm: "h-8 px-3 py-1 rounded-lg text-xs font-semibold",
-        lg: "h-11 px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold",
+        lg: "h-11 px-6 py-2.5 rounded-xl text-sm sm:text-base font-semibold",
         icon: "h-9 w-9 rounded-xl p-0 flex items-center justify-center",
         iconSm: "h-7.5 w-7.5 rounded-lg p-0 flex items-center justify-center",
       },
