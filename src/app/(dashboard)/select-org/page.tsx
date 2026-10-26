@@ -29,7 +29,7 @@ export default function SelectOrgPage() {
   }> = [
     {
       id: "org-1",
-      name: "Acme Technologies",
+      name: "ABC Testing Brand",
       slug: "acme-corp",
       role: "owner",
       plan: "Growth OS",
@@ -37,8 +37,8 @@ export default function SelectOrgPage() {
     },
     {
       id: "org-2",
-      name: "Beta Logistics",
-      slug: "beta-logistics",
+      name: "Sub Testing 2",
+      slug: "sub-testing-2",
       role: "senior_manager",
       plan: "Starter OS",
       level: "Level 2 Senior Manager",

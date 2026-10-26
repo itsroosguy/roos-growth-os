@@ -175,20 +175,20 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     <div
       className={cn(
         "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] transition-all duration-300 ease-in-out select-none",
-        collapsed ? "w-20 px-2.5 py-4" : "w-64 px-3.5 py-5"
+        collapsed ? "w-20 px-2.5 py-4" : "w-[276px] px-4 py-5"
       )}
     >
       <div className="flex flex-col flex-1 min-h-0">
-        {/* Top Logo Header */}
+        {/* Top Logo Header - Wide container so full brand logo & collapse chevron sit on the same line */}
         <div
           className={cn(
             "flex items-center pb-6 pt-1 transition-all duration-300",
-            collapsed ? "flex-col gap-3 items-center" : "justify-between px-2"
+            collapsed ? "flex-col gap-3 items-center" : "justify-between pl-1 pr-1"
           )}
         >
           <Link
             href={`/app/${orgSlug}/overview`}
-            className="flex items-center gap-2 outline-none focus-visible:ring-1 focus-visible:ring-[#FF7900] rounded-lg"
+            className="flex items-center gap-2 outline-none focus-visible:ring-1 focus-visible:ring-[#FF7900] rounded-lg shrink-0"
           >
             <RoosLogo variant="white" size="md" collapsed={collapsed} />
           </Link>
@@ -196,7 +196,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           <button
             type="button"
             onClick={toggleCollapsed}
-            className="text-[#71717A] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-[#1C1C1F] cursor-pointer"
+            className="text-[#71717A] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-[#1C1C1F] cursor-pointer shrink-0"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >

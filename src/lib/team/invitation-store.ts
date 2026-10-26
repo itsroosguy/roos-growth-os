@@ -63,7 +63,7 @@ class InvitationStore {
       {
         id: "inv-snr-01",
         organization_slug: acmeSlug,
-        organization_name: "Acme Technologies",
+        organization_name: "ABC Testing Brand",
         inviter_name: "Platform Administrator",
         inviter_email: "admin@acmetech.io",
         recipient_name: "Vikram Malhotra",
@@ -83,7 +83,7 @@ class InvitationStore {
       {
         id: "inv-jnr-02",
         organization_slug: acmeSlug,
-        organization_name: "Acme Technologies",
+        organization_name: "ABC Testing Brand",
         inviter_name: "Platform Administrator",
         inviter_email: "admin@acmetech.io",
         recipient_name: "Ananya Deshmukh",

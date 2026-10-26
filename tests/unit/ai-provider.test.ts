@@ -25,7 +25,7 @@ describe("AI Provider Architecture & Mock Sandbox", () => {
 
     expect(res.groundedInBusinessProfile).toBe(true);
     expect(res.detectedIntent).toBe("Pricing Enquiry");
-    expect(res.suggestionText).toContain("Acme Technologies");
+    expect(res.suggestionText).toContain("ABC Testing Brand");
     expect(res.suggestionText).toContain("₹799/mo");
     expect(res.disclaimer).toContain("Review before sending");
     expect(res.disclaimer).toContain("Does not send automatically");

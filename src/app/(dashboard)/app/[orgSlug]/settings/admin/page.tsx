@@ -221,7 +221,7 @@ export default function PlatformAdminPage() {
                 {tenantData.map((item) => (
                   <tr key={item.slug} className="hover:bg-[#F7F7F8]/60 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-[#0D0D0E]">
-                      {item.slug === "acme-corp" ? "Acme Technologies" : "Beta Logistics"}
+                      {item.slug === "acme-corp" ? "ABC Testing Brand" : "Sub Testing 2"}
                       <span className="block text-[11px] font-mono text-[#8E8E93] font-normal mt-0.5">
                         /app/{item.slug}
                       </span>

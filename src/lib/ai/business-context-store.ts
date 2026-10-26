@@ -8,11 +8,11 @@ class BusinessContextStore {
   }
 
   private seedProfiles() {
-    // 1. Acme Technologies Business Context
+    // 1. ABC Testing Brand Business Context
     this.profiles.set("acme-corp", {
       id: "bp-acme",
       organization_id: "acme-corp",
-      business_name: "Acme Technologies",
+      business_name: "ABC Testing Brand",
       description:
         "Leading B2B WhatsApp automation platform, CRM, and omnichannel messaging suite for retail, wholesale, and service businesses in India.",
       products_services:
@@ -62,7 +62,7 @@ class BusinessContextStore {
     this.profiles.set("beta-logistics", {
       id: "bp-beta",
       organization_id: "beta-logistics",
-      business_name: "Beta Logistics",
+      business_name: "Sub Testing 2",
       description:
         "National interstate freight forwarding, full truckload transport, cold-chain transport, and container drayage.",
       products_services:

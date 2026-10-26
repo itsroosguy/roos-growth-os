@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Clock,
   ArrowUpRight,
+  ArrowDownRight,
   Plus,
   AlertCircle,
   MessageSquare,
@@ -34,6 +35,9 @@ import {
   Phone,
   Sparkles,
   ExternalLink,
+  CheckCheck,
+  ShieldCheck,
+  User,
 } from "lucide-react";
 
 export default function OverviewPage() {
@@ -220,12 +224,74 @@ export default function OverviewPage() {
     ];
   }, [metrics]);
 
+  // Calculate when the last lead was added, and if beyond 3 days display in days
+  const lastLeadStatus = useMemo(() => {
+    if (!leads || leads.length === 0) {
+      return {
+        label: "Last lead added: 4 days ago",
+        isBeyond3Days: true,
+        days: 4,
+      };
+    }
+    const sorted = [...leads].sort((a, b) => {
+      const timeA = new Date(a.created_at || a.updated_at || 0).getTime();
+      const timeB = new Date(b.created_at || b.updated_at || 0).getTime();
+      return timeB - timeA;
+    });
+    const newest = sorted[0];
+    const createdDate = new Date(newest.created_at || newest.updated_at || Date.now() - 4 * 86400000);
+    const diffMs = Date.now() - createdDate.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+    if (diffDays >= 3) {
+      return {
+        label: `Last lead added: ${diffDays} days ago`,
+        isBeyond3Days: true,
+        days: diffDays,
+      };
+    } else if (diffDays === 1) {
+      return {
+        label: "Last lead added: 1 day ago",
+        isBeyond3Days: false,
+        days: 1,
+      };
+    } else if (diffDays === 2) {
+      return {
+        label: "Last lead added: 2 days ago",
+        isBeyond3Days: false,
+        days: 2,
+      };
+    } else if (diffHours > 0) {
+      return {
+        label: `Last lead added: ${diffHours}h ago`,
+        isBeyond3Days: false,
+        days: 0,
+      };
+    } else {
+      return {
+        label: "Last lead added: Today",
+        isBeyond3Days: false,
+        days: 0,
+      };
+    }
+  }, [leads]);
+
+  // Responding agent assignment map for realistic WhatsApp multi-agent inbox
+  const respondingAgents: Record<string, { agent: string; activeNow: boolean }> = {
+    "wa-c-1": { agent: "Praveen (You)", activeNow: true },
+    "wa-c-2": { agent: "Neha Gupta", activeNow: true },
+    "wa-c-3": { agent: "Rahul Verma", activeNow: false },
+    "wa-c-4": { agent: "Praveen (You)", activeNow: true },
+    "wa-c-5": { agent: "Aarav Patel", activeNow: false },
+  };
+
   return (
     <div className="space-y-6">
       {/* ===================================================================== */}
-      {/* SECTION 1: HEADER & GREETING                                          */}
+      {/* SECTION 1: HEADER & GREETING WITH LAST LEAD ADDED MESSAGE             */}
       {/* ===================================================================== */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#0D0D0E]">
             Good morning, <span className="text-[#FF7900]">Praveen</span>
@@ -235,7 +301,33 @@ export default function OverviewPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Last Lead Added Message - Starts showing in days when beyond 3 days */}
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-2xs transition-all ${
+              lastLeadStatus.isBeyond3Days
+                ? "bg-amber-50 text-amber-800 border-amber-200"
+                : "bg-emerald-50 text-emerald-800 border-emerald-200"
+            }`}
+            title={
+              lastLeadStatus.isBeyond3Days
+                ? "Warning: No new leads added in over 3 days"
+                : "Pipeline lead acquisition is active"
+            }
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${
+                lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+              }`}
+            />
+            <span>{lastLeadStatus.label}</span>
+            {lastLeadStatus.isBeyond3Days && (
+              <span className="text-[10px] font-semibold bg-amber-200/80 text-amber-900 px-1.5 py-0.2 rounded-md">
+                Alert: &gt;3d
+              </span>
+            )}
+          </div>
+
           <div className="relative">
             <button
               type="button"
@@ -270,168 +362,346 @@ export default function OverviewPage() {
           <Button
             size="sm"
             onClick={() => setNewLeadModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-9.5 px-4 cursor-pointer"
+            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-9.5 px-4 cursor-pointer flex items-center gap-1.5"
           >
-            <Plus className="mr-1.5 h-4 w-4 stroke-[2.5]" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Lead</span>
           </Button>
         </div>
       </div>
 
       {/* ===================================================================== */}
-      {/* SECTION 2: FOUR HIGH-CONTRAST BLACK KPI CARDS                         */}
-      {/* ===================================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: New Leads */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                <Users className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
-                New Leads
-              </span>
-            </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-              <span>+24%</span>
-            </span>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
-              {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
-            </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
-              <span>from 103 last period</span>
-              <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
-                <path
-                  d="M1 14 Q 15 12, 25 8 T 45 6 T 59 2"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Pipeline Value */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                <TrendingUp className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
-                Pipeline Value
-              </span>
-            </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-              <span>+18%</span>
-            </span>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
-              {formatCurrency(metrics.pipelineValue || 2450000)}
-            </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
-              <span>{leads.length || 14} active deals</span>
-              <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
-                <path
-                  d="M1 12 Q 15 14, 28 9 T 45 4 T 59 1"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: WhatsApp Replies */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                <MessageSquare className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
-                WhatsApp Replies
-              </span>
-            </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-              <span>+32%</span>
-            </span>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
-              412
-            </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
-              <span>avg 4m response time</span>
-              <svg className="h-4 w-16 text-emerald-400" viewBox="0 0 60 16" fill="none">
-                <path
-                  d="M1 10 Q 15 8, 30 11 T 48 3 T 59 2"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: Follow-ups Due */}
-        <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                <Clock className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-xs font-medium text-[#8E8E93] uppercase tracking-wider">
-                Follow-ups Due
-              </span>
-            </div>
-            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-              <span>{metrics.overdueFollowUps || 4} Overdue</span>
-            </span>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
-              {metrics.openFollowUps || 18}
-            </div>
-            <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
-              <span>requires attention today</span>
-              <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ===================================================================== */}
-      {/* SECTION 3: CORE DASHBOARD GRID (PIPELINE & INBOX & CHARTS & TASKS)     */}
+      {/* SECTION 2: 12-COLUMN DASHBOARD GRID                                   */}
+      {/* LEFT 50%: 2x2 BLACK KPI BLOCKS + REALISTIC WHATSAPP INBOX             */}
+      {/* RIGHT 50%: SALES PIPELINE (BIG NUMBERS + 30D COMPARISON) + TASKS      */}
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* =================================================================== */}
-        {/* LEFT COLUMN: SALES PIPELINE (WHITE) + REVENUE OVERVIEW (DARK)        */}
+        {/* LEFT COLUMN (50% WIDTH): 2x2 BLACK CARDS + REALISTIC WHATSAPP INBOX */}
         {/* =================================================================== */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* Sales Pipeline Card */}
+        <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* 2x2 High-Contrast Black KPI Cards (Reduced to 50% width) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* Line 1 - Card 1: New Leads */}
+            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <Users className="h-4 w-4" />
+                  </div>
+                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                    New Leads
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                  <span>+24%</span>
+                </span>
+              </div>
+
+              <div className="mt-3.5">
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+                  {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
+                </div>
+                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                  <span>from 103 last period</span>
+                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                    <path
+                      d="M1 14 Q 15 12, 25 8 T 45 6 T 59 2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Line 1 - Card 2: Pipeline Value */}
+            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <TrendingUp className="h-4 w-4" />
+                  </div>
+                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                    Pipeline Value
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                  <span>+18%</span>
+                </span>
+              </div>
+
+              <div className="mt-3.5">
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+                  {formatCurrency(metrics.pipelineValue || 2450000)}
+                </div>
+                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                  <span>{leads.length || 14} active deals</span>
+                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                    <path
+                      d="M1 12 Q 15 14, 28 9 T 45 4 T 59 1"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Line 2 - Card 3: WhatsApp Replies */}
+            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <MessageSquare className="h-4 w-4" />
+                  </div>
+                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                    WhatsApp Replies
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                  <span>+32%</span>
+                </span>
+              </div>
+
+              <div className="mt-3.5">
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+                  412
+                </div>
+                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                  <span>avg 4m response</span>
+                  <svg className="h-4 w-14 text-emerald-400" viewBox="0 0 60 16" fill="none">
+                    <path
+                      d="M1 10 Q 15 8, 30 11 T 48 3 T 59 2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Line 2 - Card 4: Follow-ups Due */}
+            <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-4.5 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8.5 w-8.5 rounded-xl bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                    <Clock className="h-4 w-4" />
+                  </div>
+                  <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                    Follow-ups Due
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-0.5 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                  <span>{metrics.overdueFollowUps || 4} Overdue</span>
+                </span>
+              </div>
+
+              <div className="mt-3.5">
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white">
+                  {metrics.openFollowUps || 18}
+                </div>
+                <div className="flex items-center justify-between text-xs text-[#8E8E93] mt-2 font-normal">
+                  <span>requires attention</span>
+                  <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* REALISTIC WHATSAPP INBOX UI (NOT BLACK - AUTHENTIC WHATSAPP WEB LOOK) */}
+          <div className="rounded-2xl bg-white border border-[#E5E5E7] shadow-xs overflow-hidden interactive-hover-card">
+            {/* WhatsApp Green Top Header */}
+            <div className="bg-[#008069] text-white px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center text-white shrink-0">
+                  <MessageSquare className="h-5 w-5 fill-current" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-semibold tracking-tight text-white">
+                      WhatsApp Inbox
+                    </h2>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-emerald-400/20 text-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                      Live Webhook
+                    </span>
+                  </div>
+                  <p className="text-xs text-emerald-100/80 font-normal">
+                    Real-time conversations &amp; assigned respondents
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href={`/app/${orgSlug}/inbox`}
+                className="text-xs font-medium text-white hover:text-emerald-100 flex items-center gap-1 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              >
+                <span>Open Inbox</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            {/* WhatsApp Filter Tabs in authentic light gray */}
+            <div className="bg-[#F0F2F5] px-4 py-2.5 border-b border-[#E5E5E7] flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setInboxFilter("all")}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    inboxFilter === "all"
+                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
+                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                  }`}
+                >
+                  All ({conversations.length || 12})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInboxFilter("unread")}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    inboxFilter === "unread"
+                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
+                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                  }`}
+                >
+                  Unread ({unreadConversations.length || 6})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInboxFilter("mentions")}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    inboxFilter === "mentions"
+                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
+                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                  }`}
+                >
+                  Active ({conversations.length ? Math.min(conversations.length, 4) : 4})
+                </button>
+              </div>
+
+              <span className="text-[11px] font-mono text-[#667781] hidden sm:inline-block">
+                E2E Encrypted
+              </span>
+            </div>
+
+            {/* Conversation rows in authentic WhatsApp Web style */}
+            <div className="divide-y divide-[#F0F2F5]">
+              {filteredConversations.slice(0, 5).map((chat, idx) => {
+                const assigned = respondingAgents[chat.id] || {
+                  agent: idx % 2 === 0 ? "Praveen (You)" : "Neha Gupta",
+                  activeNow: idx < 3,
+                };
+
+                return (
+                  <Link
+                    key={chat.id}
+                    href={`/app/${orgSlug}/inbox?conversationId=${chat.id}`}
+                    className="group flex items-center justify-between p-3.5 hover:bg-[#F5F6F6] transition-colors cursor-pointer bg-white"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* WhatsApp Contact Avatar with Online Dot */}
+                      <div className="relative shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-[#DFE5E7] text-[#54656F] flex items-center justify-center font-semibold text-sm">
+                          {chat.contact_name?.charAt(0) || "W"}
+                        </div>
+                        {assigned.activeNow && (
+                          <span
+                            className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#25D366] border-2 border-white shadow-xs"
+                            title="Contact active now"
+                          />
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-xs sm:text-sm font-semibold text-[#111B21] truncate">
+                            {chat.contact_name || chat.contact_phone}
+                          </p>
+
+                          {/* Responding Person Badge */}
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E7FCE3] text-[#008069] border border-[#008069]/20 shrink-0">
+                            <User className="h-2.5 w-2.5" />
+                            <span>Responding: {assigned.agent}</span>
+                          </span>
+
+                          {/* Active conversation indicator */}
+                          {assigned.activeNow && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200 shrink-0">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-ping" />
+                              Active conversation
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Last message with double blue ticks */}
+                        <div className="flex items-center gap-1.5 mt-1 text-xs text-[#667781] truncate">
+                          <CheckCheck className="h-3.5 w-3.5 text-[#53BDEB] shrink-0" />
+                          <span className="truncate max-w-[210px] sm:max-w-[280px]">
+                            {chat.last_message_text || "Thank you for the update! Looking forward to the proposal."}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-1.5 shrink-0 pl-2">
+                      <span className="text-[11px] font-mono text-[#667781]">
+                        {chat.updated_at ? "2m ago" : "15m ago"}
+                      </span>
+                      {chat.unread_count > 0 ? (
+                        <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-[#25D366] text-white text-[11px] font-mono font-semibold flex items-center justify-center shadow-2xs">
+                          {chat.unread_count}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-[#8E8E93] font-medium">Read</span>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* WhatsApp Bottom Bar with Fast Quick Reply hint */}
+            <div className="bg-[#FAFBFB] px-4 py-2.5 border-t border-[#E5E5E7] flex items-center justify-between text-xs text-[#667781]">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#25D366]" />
+                All 5 assigned agents active on WhatsApp Web
+              </span>
+              <Link
+                href={`/app/${orgSlug}/inbox`}
+                className="text-[#008069] hover:text-[#006A57] font-medium hover:underline flex items-center gap-1"
+              >
+                <span>View all conversations</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* =================================================================== */}
+        {/* RIGHT COLUMN (50% WIDTH): SALES PIPELINE + TASKS & FOLLOW-UPS       */}
+        {/* =================================================================== */}
+        <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* Sales Pipeline Card with BIG NUMBERS & 30-DAY PERFORMANCE COMPARISON */}
           <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-4 border-b border-[#F0F0F2]">
               <div>
-                <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E] tracking-tight">
-                  Sales Pipeline
-                </h2>
-                <p className="text-xs text-[#8E8E93] font-normal">
-                  Active deals across each sales stage
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E] tracking-tight">
+                    Sales Pipeline
+                  </h2>
+                  <Badge variant="orangeSubtle" className="text-[10px] uppercase font-semibold">
+                    Live CRM
+                  </Badge>
+                </div>
+                <p className="text-xs text-[#8E8E93] font-normal mt-0.5">
+                  Commercial deals across stages vs last 30 days performance
                 </p>
               </div>
 
@@ -454,32 +724,93 @@ export default function OverviewPage() {
               </div>
             </div>
 
-            {/* Pipeline Stage Columns */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-              {pipelineStages.map((ps) => (
-                <div
-                  key={ps.stage}
-                  className="rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] p-3 flex flex-col justify-between"
-                >
-                  <div>
-                    <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
-                      {ps.title}
-                    </span>
-                    <span className="text-xs font-mono font-medium text-[#0D0D0E] mt-0.5 block">
-                      {ps.count} deals
-                    </span>
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-[#E5E5E7]/60">
-                    <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E]">
-                      {formatCurrency(ps.value)}
-                    </span>
-                  </div>
+            {/* BIG IMPORTANT NUMBERS & 30-DAY PERFORMANCE HERO SECTION */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+              {/* Metric 1: Active Pipeline Value */}
+              <div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
+                  Active Pipeline Value
+                </span>
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">
+                  {formatCurrency(metrics.pipelineValue || 2450000)}
                 </div>
-              ))}
+                <div className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-2">
+                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                  <span>+18.4% vs last 30 days</span>
+                </div>
+              </div>
+
+              {/* Metric 2: Deals Won (30 Days) */}
+              <div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
+                  Deals Won (This Month)
+                </span>
+                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">
+                  {formatCurrency(metrics.leadsByStage.won?.value || 520000)}
+                </div>
+                <div className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-2">
+                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                  <span>+26.2% vs last 30 days</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pipeline Stage Columns with BIG NUMBERS & GREEN/RED 30-DAY COMPARISON */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
+              {pipelineStages.map((ps) => {
+                // Determine 30-day performance trend: Proposal Sent is red (sales is less), others green
+                const isProposal = ps.stage === "proposal";
+                const isPositive = !isProposal;
+                const changeText =
+                  ps.stage === "new"
+                    ? "+14.2%"
+                    : ps.stage === "qualified"
+                    ? "+9.8%"
+                    : ps.stage === "proposal"
+                    ? "-8.5%"
+                    : "+31.5%";
+
+                return (
+                  <div
+                    key={ps.stage}
+                    className="rounded-xl bg-white border border-[#E5E5E7] p-3 flex flex-col justify-between hover:border-[#FF7900]/40 transition-colors shadow-2xs"
+                  >
+                    <div>
+                      <span className="text-[10px] font-medium text-[#8E8E93] uppercase tracking-wider block truncate">
+                        {ps.title}
+                      </span>
+                      <span className="text-sm sm:text-base font-mono font-semibold text-[#0D0D0E] mt-1 block">
+                        {ps.count} deals
+                      </span>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-[#E5E5E7]">
+                      <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E] block">
+                        {formatCurrency(ps.value)}
+                      </span>
+
+                      {/* 30-Day Comparison Pill: Green if positive, RED if sales is less */}
+                      <div className="mt-1.5">
+                        {isPositive ? (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                            <ArrowUpRight className="h-2.5 w-2.5 stroke-[2.5]" />
+                            <span>{changeText} vs 30d</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
+                            <ArrowDownRight className="h-2.5 w-2.5 stroke-[2.5]" />
+                            <span>{changeText} vs 30d</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Representative Lead Items */}
-            <div className="mt-4 space-y-2.5">
+            <div className="mt-4 space-y-2">
               {leads.slice(0, 4).map((lead) => (
                 <Link
                   key={lead.id}
@@ -495,7 +826,7 @@ export default function OverviewPage() {
                         {lead.title}
                       </p>
                       <p className="text-[11px] text-[#8E8E93] font-normal truncate">
-                        {lead.contact_name} • Sourced via {lead.source || "Direct"}
+                        {lead.contact_name} • {lead.source || "Direct"}
                       </p>
                     </div>
                   </div>
@@ -522,210 +853,6 @@ export default function OverviewPage() {
             </div>
           </div>
 
-          {/* Lead & Revenue Overview Dark Chart Card */}
-          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1F1F23]">
-              <div>
-                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
-                  Lead &amp; Revenue Overview
-                </h2>
-                <p className="text-xs text-[#8E8E93] font-normal">
-                  Monthly performance trends &amp; conversion dynamics
-                </p>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-3 text-xs font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-[#FF7900]" />
-                    <span className="text-[#8E8E93]">Leads</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-white" />
-                    <span className="text-[#8E8E93]">Revenue</span>
-                  </div>
-                </div>
-
-                <div className="text-xs font-medium bg-[#1C1C1F] border border-[#2A2A30] text-white px-2.5 py-1 rounded-lg">
-                  Monthly ▼
-                </div>
-              </div>
-            </div>
-
-            {/* Glowing SVG Area & Line Chart */}
-            <div className="mt-5 relative">
-              <svg className="w-full h-48 sm:h-56" viewBox="0 0 600 200" fill="none">
-                <defs>
-                  <linearGradient id="leadAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FF7900" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="#FF7900" stopOpacity="0.0" />
-                  </linearGradient>
-                  <linearGradient id="revAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.15" />
-                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-
-                {/* Grid horizontal lines */}
-                <line x1="40" y1="30" x2="580" y2="30" stroke="#1F1F23" strokeDasharray="3 3" />
-                <line x1="40" y1="80" x2="580" y2="80" stroke="#1F1F23" strokeDasharray="3 3" />
-                <line x1="40" y1="130" x2="580" y2="130" stroke="#1F1F23" strokeDasharray="3 3" />
-                <line x1="40" y1="180" x2="580" y2="180" stroke="#1F1F23" />
-
-                {/* Revenue Line (White, smooth) */}
-                <path
-                  d="M 50 150 C 130 140, 180 120, 250 110 C 320 100, 380 75, 450 60 C 510 48, 550 45, 575 40"
-                  fill="none"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeOpacity="0.8"
-                />
-
-                {/* Leads Area Fill (ROOS Orange Gradient) */}
-                <path
-                  d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25 L 575 180 L 50 180 Z"
-                  fill="url(#leadAreaGradient)"
-                />
-
-                {/* Leads Line (ROOS Orange) */}
-                <path
-                  d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25"
-                  fill="none"
-                  stroke="#FF7900"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-
-                {/* Selected Point Marker at May (x=450, y=45) */}
-                <line x1="450" y1="20" x2="450" y2="180" stroke="#FF7900" strokeDasharray="2 2" strokeOpacity="0.6" />
-                <circle cx="450" cy="45" r="5" fill="#FF7900" />
-                <circle cx="450" cy="45" r="2.5" fill="#FFFFFF" />
-
-                {/* X Axis Labels */}
-                <text x="50" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jan</text>
-                <text x="150" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Feb</text>
-                <text x="250" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Mar</text>
-                <text x="350" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Apr</text>
-                <text x="450" y="196" fill="#FF7900" fontSize="11" textAnchor="middle" fontWeight="600">May</text>
-                <text x="550" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jun</text>
-              </svg>
-
-              {/* Tooltip Overlay */}
-              <div className="absolute top-2 left-[62%] sm:left-[68%] -translate-x-1/2 bg-[#1C1C1F] border border-[#2A2A30] rounded-xl px-3 py-1.5 shadow-xl text-center pointer-events-none">
-                <span className="text-[10px] font-medium text-[#8E8E93] uppercase block">May Peak</span>
-                <span className="text-xs font-mono font-medium text-white">
-                  <span className="text-[#FF7900]">124 Leads</span> • ₹4,80,000
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* =================================================================== */}
-        {/* RIGHT COLUMN: WHATSAPP INBOX (DARK) + TASKS & FOLLOW-UPS (WHITE)    */}
-        {/* =================================================================== */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-          {/* WhatsApp Inbox Dark Card */}
-          <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1F1F23]">
-              <div>
-                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
-                  WhatsApp Inbox
-                </h2>
-                <p className="text-xs text-[#8E8E93] font-normal">
-                  Recent customer conversations
-                </p>
-              </div>
-
-              <Link
-                href={`/app/${orgSlug}/inbox`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#FFA040] flex items-center gap-1 transition-colors"
-              >
-                <span>View All</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 pt-3 pb-2">
-              <button
-                type="button"
-                onClick={() => setInboxFilter("all")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  inboxFilter === "all"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "text-[#8E8E93] hover:text-white"
-                }`}
-              >
-                All (12)
-              </button>
-              <button
-                type="button"
-                onClick={() => setInboxFilter("unread")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  inboxFilter === "unread"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "text-[#8E8E93] hover:text-white"
-                }`}
-              >
-                Unread ({unreadConversations.length || 6})
-              </button>
-              <button
-                type="button"
-                onClick={() => setInboxFilter("mentions")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  inboxFilter === "mentions"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "text-[#8E8E93] hover:text-white"
-                }`}
-              >
-                Mentions (2)
-              </button>
-            </div>
-
-            {/* Conversation rows */}
-            <div className="space-y-1.5 mt-2">
-              {filteredConversations.slice(0, 5).map((chat) => (
-                <Link
-                  key={chat.id}
-                  href={`/app/${orgSlug}/inbox?conversationId=${chat.id}`}
-                  className="group flex items-center justify-between p-2.5 rounded-xl hover:bg-[#1C1C1F] transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative shrink-0">
-                      <div className="h-9 w-9 rounded-full bg-[#1C1C1F] group-hover:bg-[#2A2A30] border border-[#2A2A30] flex items-center justify-center text-white font-medium text-xs">
-                        {chat.contact_name?.charAt(0) || "W"}
-                      </div>
-                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#25D366] border-2 border-[#121214]" />
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-xs sm:text-sm font-medium text-white truncate">
-                          {chat.contact_name || chat.contact_phone}
-                        </p>
-                      </div>
-                      <p className="text-[11px] text-[#8E8E93] font-normal truncate mt-0.5 max-w-[190px] sm:max-w-[240px]">
-                        {chat.last_message_text || "Awaiting customer response"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <span className="text-[10px] font-mono text-[#8E8E93]">
-                      {chat.updated_at ? "2m ago" : "15m ago"}
-                    </span>
-                    {chat.unread_count > 0 && (
-                      <span className="h-4.5 min-w-[18px] px-1 rounded-full bg-[#FF7900] text-white text-[10px] font-mono font-semibold flex items-center justify-center">
-                        {chat.unread_count}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
           {/* Tasks & Follow-ups White Card */}
           <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F2]">
@@ -740,7 +867,7 @@ export default function OverviewPage() {
 
               <Link
                 href={`/app/${orgSlug}/tasks`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 transition-colors"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <span>View All</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -785,7 +912,7 @@ export default function OverviewPage() {
             </div>
 
             {/* Task list items */}
-            <div className="space-y-2.5 mt-2">
+            <div className="space-y-2 mt-2">
               {filteredTasks.slice(0, 4).map((task) => {
                 const isDone = completedTaskIds.has(task.id);
                 return (
@@ -835,6 +962,106 @@ export default function OverviewPage() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* SECTION 3: FULL-WIDTH LEAD & REVENUE OVERVIEW CHART CARD              */}
+      {/* ===================================================================== */}
+      <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1F1F23]">
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
+              Lead &amp; Revenue Overview
+            </h2>
+            <p className="text-xs text-[#8E8E93] font-normal">
+              Monthly performance trends &amp; conversion dynamics
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 text-xs font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#FF7900]" />
+                <span className="text-[#8E8E93]">Leads</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-white" />
+                <span className="text-[#8E8E93]">Revenue</span>
+              </div>
+            </div>
+
+            <div className="text-xs font-medium bg-[#1C1C1F] border border-[#2A2A30] text-white px-2.5 py-1 rounded-lg">
+              Monthly ▼
+            </div>
+          </div>
+        </div>
+
+        {/* Glowing SVG Area & Line Chart */}
+        <div className="mt-5 relative">
+          <svg className="w-full h-48 sm:h-56" viewBox="0 0 600 200" fill="none">
+            <defs>
+              <linearGradient id="leadAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#FF7900" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#FF7900" stopOpacity="0.0" />
+              </linearGradient>
+              <linearGradient id="revAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+
+            {/* Grid horizontal lines */}
+            <line x1="40" y1="30" x2="580" y2="30" stroke="#1F1F23" strokeDasharray="3 3" />
+            <line x1="40" y1="80" x2="580" y2="80" stroke="#1F1F23" strokeDasharray="3 3" />
+            <line x1="40" y1="130" x2="580" y2="130" stroke="#1F1F23" strokeDasharray="3 3" />
+            <line x1="40" y1="180" x2="580" y2="180" stroke="#1F1F23" />
+
+            {/* Revenue Line (White, smooth) */}
+            <path
+              d="M 50 150 C 130 140, 180 120, 250 110 C 320 100, 380 75, 450 60 C 510 48, 550 45, 575 40"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeOpacity="0.8"
+            />
+
+            {/* Leads Area Fill (ROOS Orange Gradient) */}
+            <path
+              d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25 L 575 180 L 50 180 Z"
+              fill="url(#leadAreaGradient)"
+            />
+
+            {/* Leads Line (ROOS Orange) */}
+            <path
+              d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25"
+              fill="none"
+              stroke="#FF7900"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+
+            {/* Selected Point Marker at May (x=450, y=45) */}
+            <line x1="450" y1="20" x2="450" y2="180" stroke="#FF7900" strokeDasharray="2 2" strokeOpacity="0.6" />
+            <circle cx="450" cy="45" r="5" fill="#FF7900" />
+            <circle cx="450" cy="45" r="2.5" fill="#FFFFFF" />
+
+            {/* X Axis Labels */}
+            <text x="50" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jan</text>
+            <text x="150" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Feb</text>
+            <text x="250" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Mar</text>
+            <text x="350" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Apr</text>
+            <text x="450" y="196" fill="#FF7900" fontSize="11" textAnchor="middle" fontWeight="600">May</text>
+            <text x="550" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jun</text>
+          </svg>
+
+          {/* Tooltip Overlay */}
+          <div className="absolute top-2 left-[62%] sm:left-[68%] -translate-x-1/2 bg-[#1C1C1F] border border-[#2A2A30] rounded-xl px-3 py-1.5 shadow-xl text-center pointer-events-none">
+            <span className="text-[10px] font-medium text-[#8E8E93] uppercase block">May Peak</span>
+            <span className="text-xs font-mono font-medium text-white">
+              <span className="text-[#FF7900]">124 Leads</span> • ₹4,80,000
+            </span>
           </div>
         </div>
       </div>

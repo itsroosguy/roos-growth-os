@@ -18,25 +18,34 @@ export function RoosLogo({
     return (
       <div
         className={cn(
-          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] text-white font-semibold tracking-tight select-none",
+          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] shadow-xs select-none p-2 group hover:border-[#FF7900]/40 transition-all",
           className
         )}
         title="ROOS STUDIOX"
       >
-        <span className="text-white text-base font-semibold font-sans">R</span>
-        <span className="text-[#FF7900] text-base font-semibold font-sans">X</span>
+        <img
+          src="/mark.png"
+          alt="ROOS STUDIOX"
+          className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,121,0,0.3)] transition-transform duration-200 group-hover:scale-105"
+          style={{
+            filter:
+              variant === "orange"
+                ? "invert(54%) sepia(91%) saturate(2333%) hue-rotate(360deg) brightness(101%) contrast(106%)"
+                : "brightness(0) invert(1)",
+          }}
+        />
       </div>
     );
   }
 
   // Exact logo dimensions (1024x123 aspect ratio ~ 8.32:1)
-  // Base website size was ~28px height, 1.3x is ~36px-40px height
+  // Adjusted for sleek horizontal alignment alongside sidebar chevron
   const heightClass =
     size === "sm"
-      ? "h-6 sm:h-7"
+      ? "h-5 sm:h-5.5"
       : size === "lg"
-      ? "h-9 sm:h-10" // ~36-40px (1.3x website scale)
-      : "h-7 sm:h-8";
+      ? "h-8 sm:h-9"
+      : "h-6 sm:h-6.5";
 
   const filterStyle =
     variant === "white"
