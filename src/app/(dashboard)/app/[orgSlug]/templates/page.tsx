@@ -174,20 +174,20 @@ export default function TemplatesPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Message Templates
+              Templates
             </h1>
             <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 font-mono text-[11px] font-medium px-2.5 py-0.5 text-[#FF7900]">
               Meta Cloud API
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Pre-approved WhatsApp templates for broadcasts, marketing campaigns, and outbound triggers outside 24h window.
+            Manage your WhatsApp message templates.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/campaigns`}>
-            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-semibold">
+            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer">
               <Send className="h-3.5 w-3.5 text-[#FF7900]" />
               <span>Go to Campaigns</span>
             </Button>
@@ -200,7 +200,7 @@ export default function TemplatesPage() {
               setCreateSuccessMsg(null);
               setCreateModalOpen(true);
             }}
-            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer"
+            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer h-9 px-3.5"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
             <span>New Template</span>
@@ -266,6 +266,58 @@ export default function TemplatesPage() {
             • <strong className="text-[#0D0D0E]">Marketing Opt-out:</strong> Marketing templates must provide explicit opt-out wording (e.g. <em>Reply STOP to opt out</em>).
           </p>
         </div>
+      </div>
+
+      {/* Horizontal Status Filter Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <button
+          type="button"
+          onClick={() => setStatusFilter("all")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "all"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>All Templates</span>
+          <span className="font-mono text-[11px] opacity-80">({allTemplates.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("APPROVED")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "APPROVED"
+              ? "bg-emerald-600 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Approved</span>
+          <span className="font-mono text-[11px] opacity-80">({approvedCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("PENDING")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "PENDING"
+              ? "bg-amber-600 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Pending Review</span>
+          <span className="font-mono text-[11px] opacity-80">({pendingCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("REJECTED")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "REJECTED"
+              ? "bg-rose-600 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Rejected</span>
+          <span className="font-mono text-[11px] opacity-80">({rejectedCount})</span>
+        </button>
       </div>
 
       {/* Search & Filter Bar */}

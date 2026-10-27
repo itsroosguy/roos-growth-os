@@ -20,6 +20,9 @@ import {
   Sparkles,
   CreditCard,
   Settings,
+  FileText,
+  Layers,
+  Building2,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -72,9 +75,9 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     });
   };
 
-  const navItems = useMemo<NavItem[]>(() => {
-    // Exact Reference Design Sidebar items
-    const allItems: NavItem[] = [
+  const mainNavItems = useMemo<NavItem[]>(() => {
+    // Exact Reference Design Main Navigation Items
+    const items: NavItem[] = [
       {
         title: "Overview",
         href: `/app/${orgSlug}/overview`,
@@ -94,7 +97,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         title: "Inbox",
         href: `/app/${orgSlug}/inbox`,
         icon: MessageSquare,
-        badge: "12",
+        badge: "3",
         badgeType: "number",
       },
       {
@@ -108,7 +111,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         icon: Zap,
       },
       {
-        title: "Tasks",
+        title: "Templates",
+        href: `/app/${orgSlug}/templates`,
+        icon: FileText,
+      },
+      {
+        title: "Tasks & Follow-ups",
         href: `/app/${orgSlug}/tasks`,
         icon: CheckSquare,
       },
@@ -122,6 +130,20 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         href: `/app/${orgSlug}/team`,
         icon: Shield,
       },
+    ];
+
+    if (isJuniorManager) {
+      return items.filter((item) =>
+        ["Overview", "Inbox", "Contacts", "Tasks & Follow-ups", "Reports"].includes(item.title)
+      );
+    }
+
+    return items;
+  }, [orgSlug, isJuniorManager]);
+
+  const configNavItems = useMemo<NavItem[]>(() => {
+    // Exact Reference Design Configuration Section
+    const items: NavItem[] = [
       {
         title: "WhatsApp Settings",
         href: `/app/${orgSlug}/whatsapp`,
@@ -131,35 +153,29 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         title: "AI Assistant",
         href: `/app/${orgSlug}/settings/ai`,
         icon: Sparkles,
-        badge: "AI",
-        badgeType: "pill",
       },
       {
-        title: "Subscription",
+        title: "Integrations",
+        href: `/app/${orgSlug}/settings/admin`,
+        icon: Layers,
+      },
+      {
+        title: "Subscription & Usage",
         href: `/app/${orgSlug}/subscription`,
         icon: CreditCard,
       },
       {
-        title: "Settings",
+        title: "Organisation Settings",
         href: `/app/${orgSlug}/settings`,
         icon: Settings,
       },
     ];
 
-    if (isJuniorManager) {
-      // Junior Manager focused execution
-      return allItems.filter((item) =>
-        ["Overview", "Inbox", "Contacts", "Tasks", "Reports"].includes(item.title)
-      );
-    }
-
+    if (isJuniorManager) return [];
     if (userRole === "senior_manager") {
-      // Senior Manager operational (no subscription / fund transfers or master settings)
-      return allItems.filter((item) => !["Subscription", "Settings"].includes(item.title));
+      return items.filter((item) => !["Subscription & Usage", "Organisation Settings"].includes(item.title));
     }
-
-    // Admin sees all
-    return allItems;
+    return items;
   }, [orgSlug, userRole, isJuniorManager]);
 
   const roleLabel =
@@ -206,7 +222,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
         {/* Navigation list */}
         <nav className="flex-1 overflow-y-auto space-y-1 pr-1 custom-dark-scroll" aria-label="Sidebar Navigation">
-          {navItems.map((item) => {
+          {mainNavItems.map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === `/app/${orgSlug}/overview`
@@ -219,20 +235,22 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 outline-none",
+                    "flex items-center text-xs sm:text-[13px] font-medium transition-all duration-150 outline-none",
                     collapsed
-                      ? "h-10 w-10 mx-auto justify-center"
-                      : "h-10 px-3 w-full",
+                      ? "h-10 w-10 mx-auto justify-center rounded-lg"
+                      : "h-9.5 px-3 w-full",
                     isActive
-                      ? "bg-[#24180E] text-[#FF7900] border border-[#3D2513]/70 font-semibold shadow-xs"
-                      : "text-[#A1A1AA] hover:text-white hover:bg-[#18181B]"
+                      ? collapsed
+                        ? "bg-[#FF7900]/15 text-[#FF7900] border-l-2 border-[#FF7900] rounded-r-lg rounded-l-none font-semibold"
+                        : "bg-[#FF7900]/15 text-[#FF7900] border-l-2 border-[#FF7900] rounded-r-xl rounded-l-none font-semibold"
+                      : "text-[#9CA3AF] hover:text-white hover:bg-[#18181B] rounded-xl"
                   )}
                   aria-label={item.title}
                 >
                   <Icon
                     className={cn(
-                      "h-4.5 w-4.5 shrink-0 transition-colors",
-                      isActive ? "text-[#FF7900]" : "text-[#A1A1AA] group-hover:text-white",
+                      "h-4 w-4 shrink-0 transition-colors",
+                      isActive ? "text-[#FF7900]" : "text-[#9CA3AF] group-hover:text-white",
                       !collapsed && "mr-3"
                     )}
                   />
@@ -269,10 +287,68 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               </div>
             );
           })}
+
+          {/* Configuration Section Divider & Label matching Reference Image */}
+          {configNavItems.length > 0 && (
+            <div className="pt-4 pb-1">
+              {!collapsed ? (
+                <div className="px-3 pb-2 text-[10px] font-semibold text-[#71717A] tracking-wider uppercase">
+                  Configuration
+                </div>
+              ) : (
+                <div className="my-2 border-t border-[#1F1F23]" />
+              )}
+
+              {configNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname.startsWith(item.href);
+
+                return (
+                  <div key={item.href} className="relative group">
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        "flex items-center text-xs sm:text-[13px] font-medium transition-all duration-150 outline-none",
+                        collapsed
+                          ? "h-10 w-10 mx-auto justify-center rounded-lg"
+                          : "h-9.5 px-3 w-full",
+                        isActive
+                          ? collapsed
+                            ? "bg-[#FF7900]/15 text-[#FF7900] border-l-2 border-[#FF7900] rounded-r-lg rounded-l-none font-semibold"
+                            : "bg-[#FF7900]/15 text-[#FF7900] border-l-2 border-[#FF7900] rounded-r-xl rounded-l-none font-semibold"
+                          : "text-[#9CA3AF] hover:text-white hover:bg-[#18181B] rounded-xl"
+                      )}
+                      aria-label={item.title}
+                    >
+                      <Icon
+                        className={cn(
+                          "h-4 w-4 shrink-0 transition-colors",
+                          isActive ? "text-[#FF7900]" : "text-[#9CA3AF] group-hover:text-white",
+                          !collapsed && "mr-3"
+                        )}
+                      />
+
+                      {!collapsed && (
+                        <span className="flex-1 truncate">{item.title}</span>
+                      )}
+                    </Link>
+
+                    {/* Collapsed Tooltip */}
+                    {collapsed && (
+                      <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 rounded-lg bg-[#18181B] text-white text-xs font-medium shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1 transition-all duration-150 z-50 border border-[#27272A]">
+                        <span>{item.title}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </nav>
       </div>
 
-      {/* Bottom Profile / Account Pill matching Reference Image */}
+      {/* Bottom Organization Pill matching Reference Image */}
       <div className="pt-3 border-t border-[#1C1C1F] relative">
         <button
           onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -280,18 +356,18 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             "flex items-center rounded-xl bg-[#121214] hover:bg-[#18181B] border border-[#232326] transition-all cursor-pointer w-full text-left outline-none",
             collapsed ? "p-2 justify-center" : "p-2.5 justify-between"
           )}
-          title="Account clearance and settings"
+          title="Switch workspace / organisation"
         >
           <div className="flex items-center space-x-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 text-white font-semibold text-xs border border-white/10">
-              <User className="h-4 w-4 text-slate-300" />
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#1F242F] text-[#FF7900] border border-white/5">
+              <Building2 className="h-4 w-4" />
             </div>
             {!collapsed && (
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-semibold text-white truncate leading-tight">
+                <span className="text-xs font-medium text-white truncate leading-tight">
                   {currentOrg.name}
                 </span>
-                <span className="text-[10px] font-mono font-medium text-[#A1A1AA] truncate">
+                <span className="text-[10px] text-[#71717A] truncate font-mono">
                   {roleLabel}
                 </span>
               </div>

@@ -216,7 +216,7 @@ export default function TasksPage() {
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Scheduled customer reminders and team assignments for {currentOrg.name}.
+            Stay on top of your commitments and client actions.
           </p>
         </div>
 
@@ -226,7 +226,7 @@ export default function TasksPage() {
           className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold shadow-2xs text-xs h-9 px-3.5 cursor-pointer"
         >
           <Plus className="mr-1.5 h-4 w-4 stroke-[3]" />
-          Schedule Follow-up
+          New Task
         </Button>
       </div>
 
@@ -308,16 +308,16 @@ export default function TasksPage() {
           <div className="flex flex-wrap items-center gap-1 border border-[#E5E5E7] rounded-xl p-1 bg-[#F7F7F8] shadow-2xs">
             {(
               [
-                { id: "today", label: "Due Today" },
-                { id: "overdue", label: "Overdue" },
-                { id: "upcoming", label: "Upcoming" },
-                { id: "completed", label: "Completed" },
-                { id: "all", label: "All Tasks" },
+                { id: "all", label: `All (${rawTasks.length})` },
+                { id: "today", label: `Today (${todayCount})` },
+                { id: "upcoming", label: `Upcoming (${upcomingCount})` },
+                { id: "overdue", label: `Overdue (${overdueCount})` },
+                { id: "completed", label: `Completed (${completedCount})` },
               ] as const
             ).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => setActiveTab(tab.id as FilterTab)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === tab.id
                     ? "bg-[#0D0D0E] text-white shadow-2xs"

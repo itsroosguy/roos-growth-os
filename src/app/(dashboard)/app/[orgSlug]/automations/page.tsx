@@ -31,6 +31,7 @@ import {
   AlertTriangle,
   History,
   Layers,
+  Plus,
 } from "lucide-react";
 
 export default function AutomationsPage() {
@@ -109,53 +110,64 @@ export default function AutomationsPage() {
         <div>
           <div className="flex items-center space-x-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Workflow Automation &amp; Triggers
+              Automations
             </h1>
             <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
-              {workflowUsage.current_count} / {workflowUsage.max_quota} Active Workflows
+              {workflowUsage.current_count} / {workflowUsage.max_quota} Active
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Automate lead assignments, follow-up reminders, and customer notifications for {currentOrg.name}.
+            Create workflows to automate your customer communication.
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
-          <button
-            onClick={() => setActiveTab("workflows")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-              activeTab === "workflows"
-                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
-                : "text-[#8E8E93] hover:text-[#0D0D0E]"
-            }`}
-          >
-            <Layers className="h-3.5 w-3.5" />
-            <span>Configured Workflows ({rules.length})</span>
-          </button>
-          <button
+        <div className="flex items-center gap-2.5">
+          <Button
+            size="sm"
             onClick={() => setActiveTab("templates")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-              activeTab === "templates"
-                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
-                : "text-[#8E8E93] hover:text-[#0D0D0E]"
-            }`}
+            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer h-9 px-3.5"
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Templates A–F</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("history")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-              activeTab === "history"
-                ? "bg-[#24180E] text-[#FF7900] shadow-xs border border-[#FF7900]/30"
-                : "text-[#8E8E93] hover:text-[#0D0D0E]"
-            }`}
-          >
-            <History className="h-3.5 w-3.5" />
-            <span>Execution Logs</span>
-          </button>
+            <Plus className="h-4 w-4 stroke-[3]" />
+            <span>New Automation</span>
+          </Button>
         </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <button
+          onClick={() => setActiveTab("workflows")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            activeTab === "workflows"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <Layers className="h-3.5 w-3.5" />
+          <span>All Workflows ({rules.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("templates")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            activeTab === "templates"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <Sparkles className="h-3.5 w-3.5 text-[#FF7900]" />
+          <span>Templates A–F</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("history")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            activeTab === "history"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <History className="h-3.5 w-3.5" />
+          <span>Execution Logs ({executions.length})</span>
+        </button>
       </div>
 
       {feedback && (
@@ -201,42 +213,43 @@ export default function AutomationsPage() {
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1.5 max-w-2xl">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-semibold text-[#0D0D0E] text-sm sm:text-base">
-                          {rule.name}
-                        </span>
-                        <Badge
-                          variant={rule.is_active ? "success" : "neutral"}
-                          className="text-[10px] uppercase font-semibold"
-                        >
-                          {rule.is_active ? "Active" : "Paused"}
-                        </Badge>
-                        <Badge variant="neutral" className="text-[10px] font-mono font-medium">
-                          {rule.trigger_type}
-                        </Badge>
+                    <div className="flex items-start gap-3.5 max-w-2xl">
+                      <div className="h-10 w-10 rounded-2xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+                        <Zap className="h-5 w-5" />
                       </div>
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-semibold text-[#0D0D0E] text-sm sm:text-base">
+                            {rule.name}
+                          </span>
+                          <Badge
+                            variant={rule.is_active ? "success" : "neutral"}
+                            className="text-[10px] uppercase font-semibold"
+                          >
+                            {rule.is_active ? "Active" : "Paused"}
+                          </Badge>
+                          <Badge variant="neutral" className="text-[10px] font-mono font-medium">
+                            {rule.trigger_type}
+                          </Badge>
+                        </div>
 
-                      <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
-                        {rule.description}
-                      </p>
+                        <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
+                          {rule.description}
+                        </p>
 
-                      <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#8E8E93] font-medium">
-                        <span>
-                          <strong className="text-[#0D0D0E]">Actions:</strong> {rule.actions.map((a) => a.type).join(" → ")}
-                        </span>
-                        <span>•</span>
-                        <span>
-                          <strong className="text-[#0D0D0E]">Runs:</strong> {rule.total_executions} ({rule.success_count} success, {rule.failure_count} fail)
-                        </span>
-                        {rule.last_executed_at && (
-                          <>
-                            <span>•</span>
-                            <span>
-                              <strong className="text-[#0D0D0E]">Last Run:</strong> {new Date(rule.last_executed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                            </span>
-                          </>
-                        )}
+                        <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#8E8E93] font-medium">
+                          <span>
+                            <strong className="text-[#0D0D0E]">Flow:</strong> {rule.actions.map((a) => a.type).join(" → ")}
+                          </span>
+                          <span>•</span>
+                          <span>
+                            <strong className="text-[#0D0D0E]">Executed:</strong> {rule.total_executions} runs
+                          </span>
+                          <span>•</span>
+                          <span className="text-emerald-600 font-semibold">
+                            {rule.total_executions > 0 ? Math.round((rule.success_count / rule.total_executions) * 100) : 100}% Success
+                          </span>
+                        </div>
                       </div>
                     </div>
 

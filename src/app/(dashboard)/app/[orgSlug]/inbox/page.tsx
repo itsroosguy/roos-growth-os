@@ -1145,10 +1145,10 @@ function InboxContent() {
               )}
 
               {/* Chronological Message History */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/60">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-[#EFEAE2]/60">
                 {/* Centered Date Separator */}
                 <div className="flex justify-center my-2">
-                  <span className="px-3.5 py-1 rounded-full text-xs font-semibold text-slate-700 bg-white border border-slate-200 shadow-2xs font-mono">
+                  <span className="px-3.5 py-1 rounded-full text-xs font-semibold text-[#8E8E93] bg-white/90 border border-[#E5E5E7] shadow-2xs font-mono">
                     Today, 11 Oct 2026
                   </span>
                 </div>
@@ -1287,17 +1287,39 @@ function InboxContent() {
 
 
               {/* Smart Dual-Mode Composer */}
-              <div className="p-3.5 border-t border-slate-200 bg-white space-y-2.5">
+              <div className="p-3.5 border-t border-[#E5E5E7] bg-white space-y-2.5">
+                {/* Quick Action Chips */}
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs">
+                  {[
+                    { label: "Pricing Details", text: "Hello! Here is our complete pricing structure and plan details for your team: ₹45,000/month." },
+                    { label: "Product Catalog", text: "Hi! You can browse our complete business automation catalog and features here." },
+                    { label: "Schedule Meeting", text: "Would you be free for a 15-minute quick walkthrough demo tomorrow afternoon?" },
+                    { label: "Follow-up", text: "Just following up on our previous conversation to see if you had any questions!" },
+                  ].map((chip) => (
+                    <button
+                      key={chip.label}
+                      type="button"
+                      onClick={() => {
+                        setComposerMode("message");
+                        setMessageInput(chip.text);
+                      }}
+                      className="px-3 py-1 rounded-full text-xs font-semibold bg-[#F7F7F8] hover:bg-[#FFF4EC] text-[#0D0D0E] hover:text-[#FF7900] border border-[#E5E5E7] hover:border-[#FF7900]/40 transition-colors whitespace-nowrap cursor-pointer shadow-2xs"
+                    >
+                      + {chip.label}
+                    </button>
+                  ))}
+                </div>
+
                 {/* Mode Selector Tabs */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
+                  <div className="flex items-center gap-1 bg-[#F7F7F8] p-0.5 rounded-xl border border-[#E5E5E7] shadow-2xs">
                     <button
                       type="button"
                       onClick={() => setComposerMode("message")}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         composerMode === "message"
-                          ? "bg-white text-emerald-800 font-semibold shadow-xs border border-slate-200"
-                          : "text-slate-600 hover:text-slate-900"
+                          ? "bg-white text-emerald-800 font-semibold shadow-xs border border-[#E5E5E7]"
+                          : "text-[#8E8E93] hover:text-[#0D0D0E]"
                       }`}
                     >
                       WhatsApp Message
@@ -1307,8 +1329,8 @@ function InboxContent() {
                       onClick={() => setComposerMode("note")}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                         composerMode === "note"
-                          ? "bg-white text-amber-800 font-semibold shadow-xs border border-slate-200"
-                          : "text-slate-600 hover:text-slate-900"
+                          ? "bg-white text-amber-800 font-semibold shadow-xs border border-[#E5E5E7]"
+                          : "text-[#8E8E93] hover:text-[#0D0D0E]"
                       }`}
                     >
                       <Lock className="h-3 w-3" />
@@ -1316,8 +1338,8 @@ function InboxContent() {
                     </button>
                   </div>
 
-                  <span className="text-[11px] text-slate-500 font-medium">
-                    Posting as <strong className="text-slate-900 font-semibold">{currentStaffUser?.name || "Staff"}</strong>
+                  <span className="text-[11px] text-[#8E8E93] font-medium">
+                    Posting as <strong className="text-[#0D0D0E] font-semibold">{currentStaffUser?.name || "Staff"}</strong>
                   </span>
                 </div>
 

@@ -25,6 +25,7 @@ import {
   Plus,
   AlertCircle,
   MessageSquare,
+  Send,
   ChevronRight,
   ChevronDown,
   ArrowRight,
@@ -324,6 +325,27 @@ export default function OverviewPage() {
     }
   }, [leads]);
 
+  // Mini interactive WhatsApp conversation state matching Reference Image
+  const [previewChatIndex, setPreviewChatIndex] = useState(0);
+  const [previewInputText, setPreviewInputText] = useState("");
+  const [previewMessages, setPreviewMessages] = useState([
+    { id: "m1", sender: "client", text: "Hi, we're interested in your fleet management solution.", time: "10:23 AM" },
+    { id: "m2", sender: "agent", text: "Great! I can share the detailed proposal with you.", time: "10:24 AM" },
+    { id: "m3", sender: "client", text: "Thanks, we will review the final proposal with our finance team and get back to you soon.", time: "10:26 AM" },
+  ]);
+
+  const handleSendPreviewMessage = (textToSend?: string) => {
+    const text = (textToSend || previewInputText).trim();
+    if (!text) return;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    setPreviewMessages((prev) => [
+      ...prev,
+      { id: `m-${Date.now()}`, sender: "agent", text, time: timeStr },
+    ]);
+    setPreviewInputText("");
+  };
+
   // Responding agent assignment map for realistic WhatsApp multi-agent inbox
   const respondingAgents: Record<string, { agent: string; activeNow: boolean }> = {
     "wa-c-1": { agent: "Praveen (You)", activeNow: true },
@@ -604,121 +626,103 @@ export default function OverviewPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* SECTION 2: EXECUTIVE COMMAND BRIEFING CONSOLE                         */}
-      {/* Replaces the fragmented KPI wall with a unified, calm 4-pillar bar    */}
+      {/* SECTION 2: 4 LIGHT METRIC CARDS (EXACT REFERENCE DESIGN)              */}
       {/* ===================================================================== */}
-      <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] shadow-xs text-white overflow-hidden">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#1F1F23]">
-          {/* Pillar 1: Pipeline Value */}
-          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                  Pipeline Value
-                </span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        {/* Card 1: New Leads */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] flex items-center justify-center text-[#FF7900]">
+                <Users className="h-4.5 w-4.5" />
               </div>
-              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-                <span>+18.4%</span>
-              </span>
+              <span className="text-xs font-medium text-[#717680]">New Leads</span>
             </div>
-
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
-                {formatCurrency(metrics.pipelineValue || 2450000)}
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+              <span>+20% acquisition</span>
+            </span>
+          </div>
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+                32
               </div>
-              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
-                <span className="text-emerald-400 font-medium">vs last 30d</span>
-                <span>•</span>
-                <span>{leads.length || 14} active deals</span>
-              </p>
+              <p className="text-[11px] text-[#8E8E93] mt-1">+20% acquisition</p>
+            </div>
+            <svg className="w-20 h-9 text-[#FF7900]" viewBox="0 0 80 36" fill="none">
+              <path d="M 0 30 Q 20 28, 40 18 T 80 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Card 2: Pipeline Value */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <TrendingUp className="h-4.5 w-4.5" />
+              </div>
+              <span className="text-xs font-medium text-[#717680]">Pipeline Value</span>
             </div>
           </div>
-
-          {/* Pillar 2: New Leads */}
-          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                  <Users className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                  New Leads
-                </span>
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+                ₹6,60,000
               </div>
-              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-                <span>+24%</span>
-              </span>
+              <p className="text-[11px] text-[#8E8E93] mt-1">from ₹5.5 lakh last period</p>
             </div>
+            <svg className="w-20 h-9 text-emerald-500" viewBox="0 0 80 36" fill="none">
+              <path d="M 0 32 Q 25 30, 45 15 T 80 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </div>
+        </div>
 
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
-                {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
+        {/* Card 3: WhatsApp Velocity */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <MessageSquare className="h-4.5 w-4.5" />
               </div>
-              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
-                <span className="text-emerald-400 font-medium">+25 acquisition</span>
-                <span>•</span>
-                <span>from 103 last period</span>
-              </p>
+              <span className="text-xs font-medium text-[#717680]">WhatsApp Velocity</span>
             </div>
           </div>
-
-          {/* Pillar 3: WhatsApp Velocity */}
-          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                  WhatsApp Velocity
-                </span>
-              </div>
-              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-                <span>+32%</span>
-              </span>
-            </div>
-
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
                 412
               </div>
-              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
-                <span className="text-emerald-400 font-medium">avg 4m response</span>
-                <span>•</span>
-                <span>{conversations.length || 12} customer threads</span>
-              </p>
+              <p className="text-[11px] text-[#8E8E93] mt-1">avg 4m response</p>
             </div>
+            <svg className="w-20 h-9 text-emerald-500" viewBox="0 0 80 36" fill="none">
+              <path d="M 0 25 Q 30 10, 50 20 T 80 8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
           </div>
+        </div>
 
-          {/* Pillar 4: Follow-ups Due */}
-          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                  <Clock className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                  Follow-ups Due
-                </span>
+        {/* Card 4: Follow-ups Due */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                <Clock className="h-4.5 w-4.5" />
               </div>
-              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                <span>{metrics.overdueFollowUps || 4} Overdue</span>
-              </span>
+              <span className="text-xs font-medium text-[#717680]">Follow-ups Due</span>
             </div>
-
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
-                {metrics.openFollowUps || 18}
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              1 Overdue
+            </span>
+          </div>
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+                3
               </div>
-              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
-                <span className="text-amber-400 font-medium">requires action today</span>
-                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse ml-0.5" />
+              <p className="text-[11px] text-amber-700 mt-1 font-medium flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                requires action today
               </p>
             </div>
           </div>
@@ -734,478 +738,364 @@ export default function OverviewPage() {
         {/* =================================================================== */}
         {/* LEFT WING (7 COLS): LIVE WHATSAPP TEAM OPERATIONS CENTER            */}
         {/* =================================================================== */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-
-          {/* REALISTIC WHATSAPP INBOX UI (NOT BLACK - AUTHENTIC WHATSAPP WEB LOOK) */}
-          <div className="rounded-2xl bg-white border border-[#E5E5E7] shadow-xs overflow-hidden interactive-hover-card">
-            {/* WhatsApp Green Top Header */}
-            <div className="bg-[#008069] text-white px-5 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center text-white shrink-0">
-                  <MessageSquare className="h-5 w-5 fill-current" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-semibold tracking-tight text-white">
-                      WhatsApp Inbox
-                    </h2>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-emerald-400/20 text-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-pulse" />
-                      Live Webhook
-                    </span>
-                  </div>
-                  <p className="text-xs text-emerald-100/80 font-normal">
-                    Real-time conversations &amp; assigned respondents
-                  </p>
-                </div>
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#EAECEF] shadow-xs overflow-hidden">
+          {/* Header */}
+          <div className="p-5 border-b border-[#F0F1F3] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <MessageSquare className="h-4.5 w-4.5" />
               </div>
-
-              <Link
-                href={`/app/${orgSlug}/inbox`}
-                className="text-xs font-medium text-white hover:text-emerald-100 flex items-center gap-1 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-              >
-                <span>Open Inbox</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-[#0D0D0E] tracking-tight">
+                    WhatsApp Conversations
+                  </h2>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                    Live
+                  </span>
+                </div>
+                <p className="text-xs text-[#8E8E93] mt-0.5">
+                  Real-time conversations &amp; assigned respondents
+                </p>
+              </div>
             </div>
 
-            {/* WhatsApp Filter Tabs in authentic light gray */}
-            <div className="bg-[#F0F2F5] px-4 py-2.5 border-b border-[#E5E5E7] flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
+            <Link
+              href={`/app/${orgSlug}/inbox`}
+              className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1"
+            >
+              <span>Open Inbox</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          {/* 2-Column Split: Conversation list + Live Message Preview */}
+          <div className="grid grid-cols-1 md:grid-cols-12 min-h-[380px]">
+            {/* Sub-col 1 (5 cols): Filter Tabs & Conversation List */}
+            <div className="md:col-span-5 border-r border-[#F0F1F3] flex flex-col">
+              {/* Filter Tabs */}
+              <div className="px-3 py-2.5 border-b border-[#F0F1F3] flex items-center gap-1 bg-[#FAFAFA]">
                 <button
                   type="button"
                   onClick={() => setInboxFilter("all")}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     inboxFilter === "all"
-                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
-                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                      : "text-[#717680] hover:text-[#0D0D0E]"
                   }`}
                 >
-                  All ({conversations.length || 12})
+                  All (7)
                 </button>
                 <button
                   type="button"
                   onClick={() => setInboxFilter("unread")}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     inboxFilter === "unread"
-                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
-                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                      : "text-[#717680] hover:text-[#0D0D0E]"
                   }`}
                 >
-                  Unread ({unreadConversations.length || 6})
+                  Unread (3)
                 </button>
                 <button
                   type="button"
                   onClick={() => setInboxFilter("mentions")}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     inboxFilter === "mentions"
-                      ? "bg-[#008069] text-white shadow-2xs font-semibold"
-                      : "text-[#54656F] hover:bg-[#E9EDEF]"
+                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                      : "text-[#717680] hover:text-[#0D0D0E]"
                   }`}
                 >
-                  Active ({conversations.length ? Math.min(conversations.length, 4) : 4})
+                  Assigned (4)
                 </button>
               </div>
 
-              <span className="text-[11px] font-mono text-[#667781] hidden sm:inline-block">
-                E2E Encrypted
-              </span>
-            </div>
-
-            {/* Conversation rows in authentic WhatsApp Web style */}
-            <div className="divide-y divide-[#F0F2F5]">
-              {filteredConversations.slice(0, 5).map((chat, idx) => {
-                const assigned = respondingAgents[chat.id] || {
-                  agent: idx % 2 === 0 ? "Praveen (You)" : "Neha Gupta",
-                  activeNow: idx < 3,
-                };
-
-                return (
-                  <Link
-                    key={chat.id}
-                    href={`/app/${orgSlug}/inbox?conversationId=${chat.id}`}
-                    className="group flex items-center justify-between p-3.5 hover:bg-[#F5F6F6] transition-colors cursor-pointer bg-white"
+              {/* Chat rows */}
+              <div className="divide-y divide-[#F0F1F3] overflow-y-auto max-h-[340px]">
+                {[
+                  { name: "Sneha Reddy", snippet: "Thanks, we will review the final proposal...", time: "2m", unread: true },
+                  { name: "Aarav Patel", snippet: "Can you provide the quotation for the...", time: "12m", unread: false },
+                  { name: "Rahul Mehta", snippet: "Do you have a time available this week?", time: "1h", unread: false },
+                  { name: "Priya Sharma", snippet: "Confirmed our team demo session for...", time: "3h", unread: false },
+                  { name: "Vikram Deshmukh", snippet: "Can we schedule a call this week?...", time: "1d", unread: false },
+                ].map((chat, idx) => (
+                  <button
+                    key={chat.name}
+                    type="button"
+                    onClick={() => setPreviewChatIndex(idx)}
+                    className={`w-full text-left p-3 flex items-start gap-2.5 transition-colors cursor-pointer ${
+                      previewChatIndex === idx ? "bg-[#FFF4EC]/30" : "hover:bg-[#F9FAFB]"
+                    }`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {/* WhatsApp Contact Avatar with Online Dot */}
-                      <div className="relative shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-[#DFE5E7] text-[#54656F] flex items-center justify-center font-semibold text-sm">
-                          {chat.contact_name?.charAt(0) || "W"}
-                        </div>
-                        {assigned.activeNow && (
-                          <span
-                            className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#25D366] border-2 border-white shadow-xs"
-                            title="Contact active now"
-                          />
-                        )}
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-xs sm:text-sm font-semibold text-[#111B21] truncate">
-                            {chat.contact_name || chat.contact_phone}
-                          </p>
-
-                          {/* Responding Person Badge */}
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E7FCE3] text-[#008069] border border-[#008069]/20 shrink-0">
-                            <User className="h-2.5 w-2.5" />
-                            <span>Responding: {assigned.agent}</span>
-                          </span>
-
-                          {/* Active conversation indicator */}
-                          {assigned.activeNow && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200 shrink-0">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-ping" />
-                              Active conversation
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Last message with double blue ticks */}
-                        <div className="flex items-center gap-1.5 mt-1 text-xs text-[#667781] truncate">
-                          <CheckCheck className="h-3.5 w-3.5 text-[#53BDEB] shrink-0" />
-                          <span className="truncate max-w-[210px] sm:max-w-[280px]">
-                            {chat.last_message_text || "Thank you for the update! Looking forward to the proposal."}
-                          </span>
-                        </div>
-                      </div>
+                    <div className="h-8 w-8 rounded-full bg-[#E5E7EB] text-[#4B5563] font-medium text-xs flex items-center justify-center shrink-0">
+                      {chat.name.charAt(0)}
                     </div>
-
-                    <div className="flex flex-col items-end gap-1.5 shrink-0 pl-2">
-                      <span className="text-[11px] font-mono text-[#667781]">
-                        {chat.updated_at ? "2m ago" : "15m ago"}
-                      </span>
-                      {chat.unread_count > 0 ? (
-                        <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-[#25D366] text-white text-[11px] font-mono font-semibold flex items-center justify-center shadow-2xs">
-                          {chat.unread_count}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-[#0D0D0E] truncate">
+                          {chat.name}
                         </span>
-                      ) : (
-                        <span className="text-[10px] text-[#8E8E93] font-medium">Read</span>
-                      )}
+                        <span className="text-[10px] text-[#8E8E93]">{chat.time}</span>
+                      </div>
+                      <p className="text-[11px] text-[#717680] truncate mt-0.5">
+                        {chat.snippet}
+                      </p>
                     </div>
-                  </Link>
-                );
-              })}
+                    {chat.unread && (
+                      <span className="h-2 w-2 rounded-full bg-[#FF7900] mt-1 shrink-0" />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* WhatsApp Bottom Bar with Fast Quick Reply hint */}
-            <div className="bg-[#FAFBFB] px-4 py-2.5 border-t border-[#E5E5E7] flex items-center justify-between text-xs text-[#667781]">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[#25D366]" />
-                All 5 assigned agents active on WhatsApp Web
-              </span>
-              <Link
-                href={`/app/${orgSlug}/inbox`}
-                className="text-[#008069] hover:text-[#006A57] font-medium hover:underline flex items-center gap-1"
-              >
-                <span>View all conversations</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
+            {/* Sub-col 2 (7 cols): Mini Live Chat Thread */}
+            <div className="md:col-span-7 flex flex-col justify-between bg-[#F7F8FA]">
+              {/* Contact Header */}
+              <div className="p-3 bg-white border-b border-[#F0F1F3] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-full bg-[#DFE5E7] text-[#54656F] flex items-center justify-center font-semibold text-xs">
+                    S
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#0D0D0E] leading-tight">Sneha Reddy</p>
+                    <p className="text-[10px] text-[#8E8E93]">+91 98765 43210</p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
+                  Active now
+                </span>
+              </div>
+
+              {/* Chat Messages */}
+              <div className="p-3 space-y-2.5 overflow-y-auto max-h-[220px]">
+                {previewMessages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex flex-col ${
+                      msg.sender === "agent" ? "items-end" : "items-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-xl px-3 py-2 text-xs shadow-2xs ${
+                        msg.sender === "agent"
+                          ? "bg-[#DCF8C6] text-[#111B21] rounded-br-none"
+                          : "bg-white text-[#111B21] border border-[#E5E5E7] rounded-bl-none"
+                      }`}
+                    >
+                      {msg.text}
+                      <span className="block text-[9px] text-[#8E8E93] text-right mt-1 font-mono">
+                        {msg.time}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Quick Reply Chips & Message Composer */}
+              <div className="p-3 bg-white border-t border-[#F0F1F3] space-y-2">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                  {["Pricing", "Proposal", "Follow-up"].map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => handleSendPreviewMessage(`I'm sharing our ${chip} details right now.`)}
+                      className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F4F4F6] text-[#717680] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={previewInputText}
+                    onChange={(e) => setPreviewInputText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendPreviewMessage()}
+                    placeholder="Type a message..."
+                    className="flex-1 bg-[#F4F4F6] border border-[#E5E7EB] rounded-xl px-3 py-1.5 text-xs text-[#0D0D0E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FF7900]"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => handleSendPreviewMessage()}
+                    className="h-8 w-8 p-0 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* =================================================================== */}
-        {/* RIGHT WING (5 COLS): SALES OPPORTUNITY ENGINE & PRIORITY ACTIONS      */}
-        {/* =================================================================== */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-          {/* Sales Pipeline Card with BIG NUMBERS & 30-DAY PERFORMANCE COMPARISON */}
-          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
-            <div className="flex items-start justify-between pb-4 border-b border-[#F0F0F2]">
+        {/* RIGHT CARD (5 COLS): SALES PROGRESSION */}
+        <div className="lg:col-span-5 bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            {/* Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-[#F0F1F3]">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E] tracking-tight">
+                  <h2 className="text-base font-semibold text-[#0D0D0E] tracking-tight">
                     Sales Progression
                   </h2>
                   <Badge variant="orangeSubtle" className="text-[10px] uppercase font-semibold">
                     Live CRM
                   </Badge>
                 </div>
-                <p className="text-xs text-[#8E8E93] font-normal mt-0.5">
-                  Commercial deals across stages vs 30d performance
-                </p>
-              </div>
-
-              <div className="flex flex-col items-end gap-1.5 shrink-0">
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    size="sm"
-                    onClick={() => setNewLeadModalOpen(true)}
-                    className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-8 px-3 cursor-pointer shadow-xs transition-all active:scale-95"
-                  >
-                    <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
-                    <span>Add Lead</span>
-                  </Button>
-                  <Link
-                    href={`/app/${orgSlug}/leads`}
-                    className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors"
-                    title="View full pipeline"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </div>
-                {/* When our last lead was added, if beyond 3 days display in days */}
-                <span
-                  className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md ${
-                    lastLeadStatus.isBeyond3Days
-                      ? "text-amber-800 bg-amber-50 border border-amber-200/80"
-                      : "text-[#8E8E93] bg-[#F7F7F8] border border-[#E5E5E7]"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-[#8E8E93]"
-                    }`}
-                  />
-                  {lastLeadStatus.label}
-                </span>
-              </div>
-            </div>
-
-            {/* BIG IMPORTANT NUMBERS & 30-DAY PERFORMANCE HERO SECTION */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
-              {/* Metric 1: Active Pipeline Value */}
-              <div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
-                  Active Pipeline Value
-                </span>
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">
-                  {formatCurrency(metrics.pipelineValue || 2450000)}
-                </div>
-                <div className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-2">
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
-                  <span>+18.4% vs last 30 days</span>
-                </div>
-              </div>
-
-              {/* Metric 2: Deals Won (30 Days) */}
-              <div>
-                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
-                  Deals Won (This Month)
-                </span>
-                <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">
-                  {formatCurrency(metrics.leadsByStage.won?.value || 520000)}
-                </div>
-                <div className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-2">
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
-                  <span>+26.2% vs last 30 days</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pipeline Stage Columns with BIG NUMBERS & GREEN/RED 30-DAY COMPARISON */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
-              {pipelineStages.map((ps) => {
-                // Determine 30-day performance trend: Proposal Sent is red (sales is less), others green
-                const isProposal = ps.stage === "proposal";
-                const isPositive = !isProposal;
-                const changeText =
-                  ps.stage === "new"
-                    ? "+14.2%"
-                    : ps.stage === "qualified"
-                    ? "+9.8%"
-                    : ps.stage === "proposal"
-                    ? "-8.5%"
-                    : "+31.5%";
-
-                return (
-                  <div
-                    key={ps.stage}
-                    className="rounded-xl bg-white border border-[#E5E5E7] p-3 flex flex-col justify-between hover:border-[#FF7900]/40 transition-colors shadow-2xs"
-                  >
-                    <div>
-                      <span className="text-[10px] font-medium text-[#8E8E93] uppercase tracking-wider block truncate">
-                        {ps.title}
-                      </span>
-                      <span className="text-sm sm:text-base font-mono font-semibold text-[#0D0D0E] mt-1 block">
-                        {ps.count} deals
-                      </span>
-                    </div>
-
-                    <div className="mt-3 pt-2 border-t border-[#E5E5E7]">
-                      <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E] block">
-                        {formatCurrency(ps.value)}
-                      </span>
-
-                      {/* 30-Day Comparison Pill: Green if positive, RED if sales is less */}
-                      <div className="mt-1.5">
-                        {isPositive ? (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                            <ArrowUpRight className="h-2.5 w-2.5 stroke-[2.5]" />
-                            <span>{changeText} vs 30d</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
-                            <ArrowDownRight className="h-2.5 w-2.5 stroke-[2.5]" />
-                            <span>{changeText} vs 30d</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Priority Opportunities List */}
-            <div className="mt-4 pt-3.5 border-t border-[#F0F0F2]">
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-xs font-semibold text-[#0D0D0E]">
-                  Priority Opportunities
-                </span>
-                <Link
-                  href={`/app/${orgSlug}/leads`}
-                  className="text-[11px] text-[#FF7900] hover:text-[#E66D00] font-medium"
-                >
-                  View all ({leads.length})
-                </Link>
-              </div>
-              <div className="space-y-2">
-                {leads.slice(0, 3).map((lead) => (
-                  <Link
-                    key={lead.id}
-                    href={`/app/${orgSlug}/leads`}
-                    className="group flex items-center justify-between p-2.5 rounded-xl border border-[#E5E5E7] bg-white hover:border-[#FF7900] hover:bg-[#FFF4EC]/20 transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="h-7 w-7 rounded-lg bg-[#F7F7F8] group-hover:bg-[#FF7900]/10 flex items-center justify-center text-[#0D0D0E] group-hover:text-[#FF7900] font-semibold text-xs shrink-0 transition-colors">
-                        {lead.contact_name?.charAt(0) || "L"}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-[#0D0D0E] truncate">
-                          {lead.title}
-                        </p>
-                        <p className="text-[10px] text-[#8E8E93] font-normal truncate">
-                          {lead.contact_name} • {lead.source || "Direct"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-xs font-mono font-semibold text-[#0D0D0E]">
-                        {formatCurrency(lead.estimated_value)}
-                      </span>
-                      <Badge
-                        variant={
-                          lead.stage === "won"
-                            ? "success"
-                            : lead.stage === "proposal"
-                            ? "orangeSubtle"
-                            : "secondary"
-                        }
-                        className="text-[9px] font-medium uppercase px-1.5 py-0.5"
-                      >
-                        {lead.stage}
-                      </Badge>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Urgent Actions & Follow-ups White Card */}
-          <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F2]">
-              <div>
-                <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#0D0D0E]">
-                  Urgent Actions &amp; Follow-ups
-                </h2>
-                <p className="text-xs text-[#8E8E93] font-normal">
-                  Prioritised follow-ups and client actions
+                <p className="text-xs text-[#8E8E93] mt-0.5">
+                  Commercial deals across stages vs 30 days performance
                 </p>
               </div>
 
               <Link
-                href={`/app/${orgSlug}/tasks`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 transition-colors cursor-pointer"
+                href={`/app/${orgSlug}/leads`}
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 shrink-0"
               >
-                <span>View All</span>
+                <span>View Pipeline</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-2 pt-3 pb-2">
-              <button
-                type="button"
-                onClick={() => setTaskFilter("today")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  taskFilter === "today"
-                    ? "bg-[#0D0D0E] text-white"
-                    : "text-[#8E8E93] hover:text-[#0D0D0E]"
-                }`}
-              >
-                Today ({taskCounts.today})
-              </button>
-              <button
-                type="button"
-                onClick={() => setTaskFilter("overdue")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  taskFilter === "overdue"
-                    ? "bg-[#0D0D0E] text-white"
-                    : "text-[#8E8E93] hover:text-[#0D0D0E]"
-                }`}
-              >
-                Overdue ({taskCounts.overdue})
-              </button>
-              <button
-                type="button"
-                onClick={() => setTaskFilter("upcoming")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  taskFilter === "upcoming"
-                    ? "bg-[#0D0D0E] text-white"
-                    : "text-[#8E8E93] hover:text-[#0D0D0E]"
-                }`}
-              >
-                Upcoming ({taskCounts.upcoming})
-              </button>
+            {/* Top Summary Figures */}
+            <div className="grid grid-cols-3 gap-2 py-4 border-b border-[#F0F1F3]">
+              <div>
+                <span className="text-[10px] font-medium text-[#8E8E93] uppercase block truncate">
+                  Commercial Pipeline
+                </span>
+                <div className="text-lg font-semibold font-mono text-[#0D0D0E] mt-0.5">
+                  ₹8.30 <span className="text-xs text-[#8E8E93] font-normal">Lakh</span>
+                </div>
+                <span className="text-[10px] font-medium text-emerald-600 block mt-0.5">+3.9%</span>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-medium text-[#8E8E93] uppercase block truncate">
+                  Proposal Sent
+                </span>
+                <div className="text-lg font-semibold font-mono text-[#0D0D0E] mt-0.5">
+                  ₹2.30 <span className="text-xs text-[#8E8E93] font-normal">Lakh</span>
+                </div>
+                <span className="text-[10px] font-medium text-[#717680] block mt-0.5">1 deal</span>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-medium text-[#8E8E93] uppercase block truncate">
+                  Deals Won
+                </span>
+                <div className="text-lg font-semibold font-mono text-[#0D0D0E] mt-0.5">
+                  1 deal
+                </div>
+                <span className="text-[10px] font-medium text-emerald-600 block mt-0.5">100% close</span>
+              </div>
             </div>
 
-            {/* Task list items */}
-            <div className="space-y-2 mt-2">
-              {filteredTasks.slice(0, 4).map((task) => {
+            {/* Curated Priority Deals matching Reference Image */}
+            <div className="mt-4 space-y-2.5">
+              {[
+                { title: "Retail Automation Contract", contact: "Rohan Patel", value: "₹66,850", stage: "QUALIFIED", badgeVariant: "purple" },
+                { title: "Multi-Store CRM Deployment", contact: "Priya Nair", value: "₹1,30,000", stage: "PROPOSAL", badgeVariant: "orangeSubtle" },
+                { title: "WhatsApp API Gateway Setup", contact: "Vikram Malhotra", value: "₹95,000", stage: "ANALYSIS", badgeVariant: "default" },
+              ].map((deal) => (
+                <Link
+                  key={deal.title}
+                  href={`/app/${orgSlug}/leads`}
+                  className="flex items-center justify-between p-3 rounded-xl border border-[#EAECEF] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20"
+                >
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-[#0D0D0E] truncate">
+                      {deal.title}
+                    </p>
+                    <p className="text-[10px] text-[#8E8E93] truncate mt-0.5">
+                      {deal.contact}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span className="text-xs font-mono font-semibold text-[#0D0D0E]">
+                      {deal.value}
+                    </span>
+                    <Badge variant={deal.badgeVariant as any} className="text-[9px] uppercase px-1.5 py-0.5">
+                      {deal.stage}
+                    </Badge>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-[#F0F1F3] mt-4 flex items-center justify-between text-xs text-[#8E8E93]">
+            <span>{lastLeadStatus.label}</span>
+            <Button
+              size="sm"
+              onClick={() => setNewLeadModalOpen(true)}
+              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-7.5 px-3 cursor-pointer"
+            >
+              <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
+              <span>Add Lead</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* SECTION 4: 3-COLUMN BOTTOM ROW (EXACT REFERENCE DESIGN)               */}
+      {/* 1. TODAY'S TASKS | 2. RECENT ACTIVITY | 3. CAMPAIGN PERFORMANCE       */}
+      {/* ===================================================================== */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Today's Tasks */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F1F3]">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#0D0D0E]">Today&apos;s Tasks</h3>
+                <span className="text-[10px] text-[#8E8E93] font-medium">({taskCounts.today})</span>
+              </div>
+              <Link
+                href={`/app/${orgSlug}/tasks`}
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00]"
+              >
+                View all →
+              </Link>
+            </div>
+
+            <div className="mt-3 space-y-2">
+              {[
+                { id: "t1", title: "Follow-up with Aarav Patel", contact: "Aarav Patel", priority: "High" },
+                { id: "t2", title: "Send proposal to Sneha Reddy", contact: "Sneha Reddy", priority: "Medium" },
+                { id: "t3", title: "Call Vikram Deshmukh", contact: "Vikram Deshmukh", priority: "Medium" },
+                { id: "t4", title: "Review automation workflow", contact: "Internal", priority: "Low" },
+              ].map((task) => {
                 const isDone = completedTaskIds.has(task.id);
                 return (
                   <div
                     key={task.id}
-                    className={`flex items-start justify-between gap-3 p-3 rounded-xl border border-[#E5E5E7] bg-white transition-all ${
-                      isDone ? "opacity-50 line-through" : "hover:border-[#FF7900]"
-                    }`}
+                    className={`flex items-center justify-between p-2.5 rounded-xl border border-[#EAECEF] bg-[#FAFAFA] transition-all ${isDone ? "opacity-40 line-through" : ""}`}
                   >
-                    <div className="flex items-start gap-3 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
                       <button
                         type="button"
                         onClick={() => handleMarkTaskCompleted(task.id)}
-                        className={`h-4.5 w-4.5 mt-0.5 rounded-md border flex items-center justify-center transition-colors shrink-0 cursor-pointer ${
-                          isDone
-                            ? "bg-emerald-600 border-emerald-600 text-white"
-                            : "border-[#8E8E93] hover:border-[#FF7900]"
+                        className={`h-4 w-4 rounded-md border flex items-center justify-center shrink-0 cursor-pointer ${
+                          isDone ? "bg-emerald-600 border-emerald-600 text-white" : "border-[#8E8E93]"
                         }`}
-                        title="Mark completed"
                       >
                         {isDone && <Check className="h-3 w-3 stroke-[2.5]" />}
                       </button>
-
-                      <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-medium text-[#0D0D0E] truncate">
-                          {task.title}
-                        </p>
-                        <p className="text-[11px] text-[#8E8E93] font-normal truncate mt-0.5">
-                          {task.contact_name || "Lead inquiry"} • Due {formatDate(task.due_date)}
-                        </p>
-                      </div>
+                      <span className="text-xs font-medium text-[#0D0D0E] truncate">
+                        {task.title}
+                      </span>
                     </div>
-
                     <Badge
                       variant={
-                        task.priority === "high"
+                        task.priority === "High"
                           ? "danger"
-                          : task.priority === "medium"
+                          : task.priority === "Medium"
                           ? "warning"
                           : "secondary"
                       }
-                      className="text-[10px] font-medium uppercase shrink-0"
+                      className="text-[9px] uppercase px-1.5 py-0.2 shrink-0"
                     >
                       {task.priority}
                     </Badge>
@@ -1215,107 +1105,95 @@ export default function OverviewPage() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ===================================================================== */}
-      {/* SECTION 3: FULL-WIDTH LEAD & REVENUE OVERVIEW CHART CARD              */}
-      {/* ===================================================================== */}
-      <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] p-5 sm:p-6 text-white shadow-xs interactive-hover-card">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1F1F23]">
+        {/* Card 2: Recent Activity */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-white">
-              Lead &amp; Revenue Overview
-            </h2>
-            <p className="text-xs text-[#8E8E93] font-normal">
-              Monthly performance trends &amp; conversion dynamics
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 text-xs font-medium">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[#FF7900]" />
-                <span className="text-[#8E8E93]">Leads</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-white" />
-                <span className="text-[#8E8E93]">Revenue</span>
-              </div>
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F1F3]">
+              <h3 className="text-sm font-semibold text-[#0D0D0E]">Recent Activity</h3>
+              <Link
+                href={`/app/${orgSlug}/leads`}
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00]"
+              >
+                View all →
+              </Link>
             </div>
 
-            <div className="text-xs font-medium bg-[#1C1C1F] border border-[#2A2A30] text-white px-2.5 py-1 rounded-lg">
-              Monthly ▼
+            <div className="mt-3 space-y-3">
+              {[
+                { title: "Rahul Mehta moved to Qualified", time: "2m ago", icon: Users, color: "text-purple-600 bg-purple-50" },
+                { title: "New lead from Website Form", time: "15m ago", icon: Plus, color: "text-[#FF7900] bg-[#FFF4EC]" },
+                { title: "Template 'Pricing 2026' sent to 120 contacts", time: "1h ago", icon: Send, color: "text-blue-600 bg-blue-50" },
+                { title: "Follow-up marked as complete", time: "2h ago", icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50" },
+                { title: "Rohan Mehta replied to your message", time: "3h ago", icon: MessageSquare, color: "text-emerald-600 bg-emerald-50" },
+              ].map((act) => {
+                const ActIcon = act.icon;
+                return (
+                  <div key={act.title} className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`h-6 w-6 rounded-lg ${act.color} flex items-center justify-center shrink-0`}>
+                        <ActIcon className="h-3 w-3" />
+                      </div>
+                      <span className="text-xs font-medium text-[#0D0D0E] truncate">
+                        {act.title}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-[#8E8E93] shrink-0 font-mono">{act.time}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Glowing SVG Area & Line Chart */}
-        <div className="mt-5 relative">
-          <svg className="w-full h-48 sm:h-56" viewBox="0 0 600 200" fill="none">
-            <defs>
-              <linearGradient id="leadAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#FF7900" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#FF7900" stopOpacity="0.0" />
-              </linearGradient>
-              <linearGradient id="revAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.15" />
-                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
+        {/* Card 3: Campaign Performance */}
+        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F1F3]">
+              <h3 className="text-sm font-semibold text-[#0D0D0E]">Campaign Performance</h3>
+              <Link
+                href={`/app/${orgSlug}/campaigns`}
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00]"
+              >
+                View all →
+              </Link>
+            </div>
 
-            {/* Grid horizontal lines */}
-            <line x1="40" y1="30" x2="580" y2="30" stroke="#1F1F23" strokeDasharray="3 3" />
-            <line x1="40" y1="80" x2="580" y2="80" stroke="#1F1F23" strokeDasharray="3 3" />
-            <line x1="40" y1="130" x2="580" y2="130" stroke="#1F1F23" strokeDasharray="3 3" />
-            <line x1="40" y1="180" x2="580" y2="180" stroke="#1F1F23" />
+            <div className="mt-3">
+              <div className="p-3 rounded-xl bg-[#FAFAFA] border border-[#EAECEF] flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#0D0D0E] block">Product Launch Campaign</span>
+                  <span className="text-[10px] text-[#8E8E93]">Audience: Customer Segment - A</span>
+                </div>
+                <Badge variant="success" className="text-[9px] uppercase px-1.5 py-0.2">
+                  Active
+                </Badge>
+              </div>
 
-            {/* Revenue Line (White, smooth) */}
-            <path
-              d="M 50 150 C 130 140, 180 120, 250 110 C 320 100, 380 75, 450 60 C 510 48, 550 45, 575 40"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeOpacity="0.8"
-            />
-
-            {/* Leads Area Fill (ROOS Orange Gradient) */}
-            <path
-              d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25 L 575 180 L 50 180 Z"
-              fill="url(#leadAreaGradient)"
-            />
-
-            {/* Leads Line (ROOS Orange) */}
-            <path
-              d="M 50 140 C 130 120, 180 135, 250 95 C 320 60, 380 85, 450 45 C 510 35, 550 40, 575 25"
-              fill="none"
-              stroke="#FF7900"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-
-            {/* Selected Point Marker at May (x=450, y=45) */}
-            <line x1="450" y1="20" x2="450" y2="180" stroke="#FF7900" strokeDasharray="2 2" strokeOpacity="0.6" />
-            <circle cx="450" cy="45" r="5" fill="#FF7900" />
-            <circle cx="450" cy="45" r="2.5" fill="#FFFFFF" />
-
-            {/* X Axis Labels */}
-            <text x="50" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jan</text>
-            <text x="150" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Feb</text>
-            <text x="250" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Mar</text>
-            <text x="350" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Apr</text>
-            <text x="450" y="196" fill="#FF7900" fontSize="11" textAnchor="middle" fontWeight="600">May</text>
-            <text x="550" y="196" fill="#8E8E93" fontSize="11" textAnchor="middle" fontWeight="500">Jun</text>
-          </svg>
-
-          {/* Tooltip Overlay */}
-          <div className="absolute top-2 left-[62%] sm:left-[68%] -translate-x-1/2 bg-[#1C1C1F] border border-[#2A2A30] rounded-xl px-3 py-1.5 shadow-xl text-center pointer-events-none">
-            <span className="text-[10px] font-medium text-[#8E8E93] uppercase block">May Peak</span>
-            <span className="text-xs font-mono font-medium text-white">
-              <span className="text-[#FF7900]">124 Leads</span> • ₹4,80,000
-            </span>
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-4 gap-2 mt-4 text-center">
+                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,248</span>
+                  <span className="text-[10px] text-[#8E8E93] uppercase">Sent</span>
+                </div>
+                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,012</span>
+                  <span className="text-[10px] text-[#8E8E93] uppercase">Delivered</span>
+                </div>
+                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">312</span>
+                  <span className="text-[10px] text-[#8E8E93] uppercase">Replied</span>
+                </div>
+                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                  <span className="text-base font-semibold font-mono text-emerald-600 block">25.2%</span>
+                  <span className="text-[10px] text-[#8E8E93] uppercase">Rate</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
 
       {/* ===================================================================== */}
       {/* QUICK "NEW LEAD" MODAL                                                */}

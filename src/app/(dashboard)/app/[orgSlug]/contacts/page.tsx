@@ -36,6 +36,9 @@ import {
   Check,
   FileSpreadsheet,
   Copy,
+  ChevronLeft,
+  ChevronRight,
+  MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { useMounted } from "@/lib/use-mounted";
@@ -52,8 +55,10 @@ export default function ContactsPage() {
   const [copiedContactId, setCopiedContactId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [consentFilter, setConsentFilter] = useState<string>("all");
+  const [tagFilter, setTagFilter] = useState<string>("all");
   const [showArchived, setShowArchived] = useState(false);
   const [sortBy, setSortBy] = useState<"name" | "date" | "company">("date");
+  const [selectedContactIds, setSelectedContactIds] = useState<Set<string>>(new Set());
 
   // Modals state
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -91,6 +96,13 @@ export default function ContactsPage() {
   const pendingCount = useMemo(() => allContacts.filter((c) => c.consent_status === "pending").length, [allContacts]);
   const optedOutCount = useMemo(() => allContacts.filter((c) => c.consent_status === "opted_out").length, [allContacts]);
 
+  // Extract unique tags for filtering
+  const uniqueTags = useMemo(() => {
+    const set = new Set<string>();
+    allContacts.forEach((c) => c.tags.forEach((t) => set.add(t)));
+    return Array.from(set);
+  }, [allContacts]);
+
   // Filter and sort contacts
   const filteredContacts = useMemo(() => {
     return rawContacts
@@ -106,7 +118,10 @@ export default function ContactsPage() {
         const matchesConsent =
           consentFilter === "all" || c.consent_status === consentFilter;
 
-        return matchesQuery && matchesConsent;
+        const matchesTag =
+          tagFilter === "all" || c.tags.includes(tagFilter);
+
+        return matchesQuery && matchesConsent && matchesTag;
       })
       .sort((a, b) => {
         if (sortBy === "name") {
@@ -120,6 +135,28 @@ export default function ContactsPage() {
   }, [rawContacts, searchQuery, consentFilter, sortBy]);
 
   // Handlers
+  const isAllContactsSelected =
+    filteredContacts.length > 0 &&
+    filteredContacts.every((c) => selectedContactIds.has(c.id));
+
+  const handleSelectAllContacts = () => {
+    if (isAllContactsSelected) {
+      setSelectedContactIds(new Set());
+    } else {
+      setSelectedContactIds(new Set(filteredContacts.map((c) => c.id)));
+    }
+  };
+
+  const toggleSelectContact = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedContactIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const handleCreateContact = (e: React.FormEvent) => {
     e.preventDefault();
     if (!firstName || !phone) return;
@@ -308,7 +345,7 @@ export default function ContactsPage() {
         <div>
           <div className="flex items-center space-x-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Contacts Directory
+              Contacts
             </h1>
             <span
               className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
@@ -321,7 +358,7 @@ export default function ContactsPage() {
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Directory, WhatsApp consent records and relationship tracking for {currentOrg.name}.
+            Your customer database and communication history.
           </p>
         </div>
 
@@ -402,37 +439,45 @@ export default function ContactsPage() {
       {/* Filter and Search Bar */}
       <div className="bg-white p-3.5 rounded-2xl border border-[#E5E5E7] shadow-xs">
         <div className="flex flex-col md:flex-row items-center gap-3 justify-between">
-          <div className="relative w-full md:w-80">
+          <div className="relative w-full md:w-72">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8E8E93]" />
             <input
               type="text"
-              placeholder="Search name, phone, email, company..."
+              placeholder="Search contacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#8E8E93] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
+              className="h-9.5 w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#8E8E93] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto text-xs">
-            {/* Consent filter */}
-            <div className="flex items-center space-x-1 border border-[#E5E5E7] rounded-xl p-1 bg-[#F7F7F8] shadow-2xs">
-              <span className="px-2 text-xs font-semibold text-[#8E8E93]">
-                Consent:
-              </span>
-              {(["all", "opted_in", "pending", "opted_out"] as const).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setConsentFilter(status)}
-                  className={`px-3 py-1 rounded-lg capitalize text-xs font-semibold transition-all cursor-pointer ${
-                    consentFilter === status
-                      ? "bg-[#0D0D0E] text-white shadow-2xs"
-                      : "text-[#8E8E93] hover:text-[#0D0D0E] font-semibold"
-                  }`}
-                >
-                  {status.replace("_", " ")}
-                </button>
-              ))}
-            </div>
+            {/* Tags Filter */}
+            {uniqueTags.length > 0 && (
+              <select
+                value={tagFilter}
+                onChange={(e) => setTagFilter(e.target.value)}
+                className="h-9 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+              >
+                <option value="all">All Tags</option>
+                {uniqueTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* Segments / Consent filter */}
+            <select
+              value={consentFilter}
+              onChange={(e) => setConsentFilter(e.target.value)}
+              className="h-9 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            >
+              <option value="all">All Segments</option>
+              <option value="opted_in">WhatsApp Opted-In</option>
+              <option value="pending">Pending Consent</option>
+              <option value="opted_out">Opted Out</option>
+            </select>
 
             {/* Sort Dropdown */}
             <select
@@ -456,6 +501,22 @@ export default function ContactsPage() {
             >
               {showArchived ? "Archived Included" : "Active Only"}
             </button>
+
+            {/* Reset Filters */}
+            {(searchQuery || consentFilter !== "all" || tagFilter !== "all" || showArchived) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setConsentFilter("all");
+                  setTagFilter("all");
+                  setShowArchived(false);
+                }}
+                className="h-9 px-3 rounded-xl text-xs font-semibold text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
+              >
+                Reset
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -478,115 +539,217 @@ export default function ContactsPage() {
           <Table>
             <TableHeader className="bg-[#F7F7F8] border-b border-[#E5E5E7]">
               <TableRow>
+                <TableHead className="py-3.5 px-4 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={isAllContactsSelected}
+                    onChange={handleSelectAllContacts}
+                    className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                    aria-label="Select all contacts"
+                  />
+                </TableHead>
                 <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Contact</TableHead>
                 <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Phone / WhatsApp</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Company</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Marketing Consent</TableHead>
                 <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Tags</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Marketing Consent</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Status</TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Owner</TableHead>
                 <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredContacts.map((contact) => (
-                <TableRow key={contact.id} className={`hover:bg-[#FFF4EC]/15 transition-colors ${contact.is_archived ? "opacity-60 bg-slate-50/50" : ""}`}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3 py-1">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0D0D0E] text-white font-semibold text-sm shadow-2xs">
-                        {contact.first_name[0]}
-                        {contact.last_name ? contact.last_name[0] : ""}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
-                          {contact.first_name} {contact.last_name || ""}
-                          {contact.is_archived && (
-                            <span className="text-[10px] font-medium py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]">
-                              Archived
-                            </span>
-                          )}
-                        </span>
-                        {contact.email && (
-                          <span className="text-xs text-[#8E8E93] font-normal">
-                            {contact.email}
+              {filteredContacts.map((contact) => {
+                const isSelected = selectedContactIds.has(contact.id);
+                return (
+                  <TableRow
+                    key={contact.id}
+                    className={`hover:bg-[#FFF4EC]/15 transition-colors cursor-pointer ${
+                      isSelected ? "bg-[#FFF4EC]/20" : ""
+                    } ${contact.is_archived ? "opacity-60 bg-slate-50/50" : ""}`}
+                    onClick={() => setDetailContact(contact)}
+                  >
+                    <TableCell className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => toggleSelectContact(contact.id, e as unknown as React.MouseEvent)}
+                        className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                        aria-label={`Select ${contact.first_name}`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-3 py-1">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-semibold text-xs shadow-2xs">
+                          {contact.first_name[0]}
+                          {contact.last_name ? contact.last_name[0] : ""}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
+                            {contact.first_name} {contact.last_name || ""}
+                            {contact.is_archived && (
+                              <span className="text-[10px] font-medium py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]">
+                                Archived
+                              </span>
+                            )}
                           </span>
+                          <span className="text-xs text-[#8E8E93] font-normal truncate max-w-[180px]">
+                            {contact.email || contact.company || "No email listed"}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-1.5 font-mono text-xs font-semibold text-[#0D0D0E]">
+                        <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                        <span>{contact.phone}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopyPhone(contact, e);
+                          }}
+                          className="p-1 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+                          title="Copy phone number"
+                        >
+                          {copiedContactId === contact.id ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {contact.tags.length > 0 ? (
+                          contact.tags.map((t) => {
+                            const lower = t.toLowerCase();
+                            const pillColor =
+                              lower.includes("client") || lower.includes("vip")
+                                ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                                : lower.includes("crm") || lower.includes("lead")
+                                ? "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30"
+                                : lower.includes("enterprise") || lower.includes("retail")
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-[#F7F7F8] text-[#0D0D0E] border-[#E5E5E7]";
+
+                            return (
+                              <span
+                                key={t}
+                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${pillColor}`}
+                              >
+                                {t}
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span className="text-[#8E8E93] text-xs font-medium">—</span>
                         )}
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-1.5 font-mono text-xs font-semibold text-[#0D0D0E]">
-                      <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                      <span>{contact.phone}</span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleCopyPhone(contact, e)}
-                        className="p-1 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
-                        title="Copy phone number"
+                    </TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      {getConsentBadge(contact.consent_status, (e) => handleToggleConsent(contact, e))}
+                    </TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        Active
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div
+                        className="h-7 w-7 rounded-full bg-[#0D0D0E] text-white flex items-center justify-center text-[10px] font-semibold shadow-2xs"
+                        title="Owner: Workspace Staff"
                       >
-                        {copiedContactId === contact.id ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs font-semibold text-[#0D0D0E]">
-                      {contact.company || "—"}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {getConsentBadge(contact.consent_status, (e) => handleToggleConsent(contact, e))}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {contact.tags.length > 0
-                        ? contact.tags.map((t) => (
-                            <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F7F7F8] text-[#0D0D0E] border border-[#E5E5E7]">
-                              {t}
-                            </span>
-                          ))
-                        : <span className="text-[#8E8E93] text-xs">—</span>}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end space-x-1">
-                      <Link
-                        href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
-                        className="p-1.5 rounded-lg text-[#8E8E93] hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                        title="Chat on WhatsApp"
-                      >
-                        <MessageSquare className="h-4 w-4 text-emerald-600" />
-                      </Link>
-                      <button
-                        onClick={() => setDetailContact(contact)}
-                        className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
-                        title="View details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleArchiveToggle(contact)}
-                        className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
-                        title={contact.is_archived ? "Unarchive" : "Archive"}
-                      >
-                        <Archive className="h-4 w-4" />
-                      </button>
-                      {isAdmin && (
-                        <button
-                          onClick={() => handleDelete(contact.id)}
-                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                          title="Delete contact"
+                        WS
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end space-x-1">
+                        <Link
+                          href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
+                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          title="Chat on WhatsApp"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <MessageSquare className="h-4 w-4 text-emerald-600" />
+                        </Link>
+                        <button
+                          onClick={() => setDetailContact(contact)}
+                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
+                          title="View details"
+                        >
+                          <Eye className="h-4 w-4" />
                         </button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <button
+                          onClick={() => handleArchiveToggle(contact)}
+                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+                          title={contact.is_archived ? "Unarchive" : "Archive"}
+                        >
+                          <Archive className="h-4 w-4" />
+                        </button>
+                        {isAdmin && (
+                          <button
+                            onClick={() => handleDelete(contact.id)}
+                            className="p-1.5 rounded-lg text-[#8E8E93] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            title="Delete contact"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
+
+          {/* Pagination Footer */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-[#E5E5E7] bg-[#FAF9F8] text-xs text-[#8E8E93]">
+            <span className="font-semibold text-[#0D0D0E]">
+              Showing 1 to {Math.min(filteredContacts.length, 10)} of {filteredContacts.length} contacts
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                className="h-8 px-2.5 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold transition-colors disabled:opacity-40 cursor-pointer shadow-2xs"
+                disabled
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                className="h-8 w-8 rounded-lg bg-[#FF7900] text-white font-semibold flex items-center justify-center shadow-2xs cursor-pointer"
+              >
+                1
+              </button>
+              <button
+                type="button"
+                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+              >
+                2
+              </button>
+              <button
+                type="button"
+                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+              >
+                3
+              </button>
+              <span className="px-1 text-[#8E8E93] font-semibold">...</span>
+              <button
+                type="button"
+                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+              >
+                {Math.max(4, Math.ceil(filteredContacts.length / 10))}
+              </button>
+              <button
+                type="button"
+                className="h-8 px-2.5 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold transition-colors cursor-pointer shadow-2xs"
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -192,8 +192,18 @@ export default function CampaignsPage() {
   }, [orgSlug, statusFilter, searchQuery, refreshKey]);
 
   // Dashboard Metrics
+  const allOrgCampaigns = useMemo(() => {
+    return campaignStore.getCampaigns(orgSlug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgSlug, refreshKey]);
+
+  const draftsCount = useMemo(() => allOrgCampaigns.filter((c) => c.status === "draft").length, [allOrgCampaigns]);
+  const scheduledCount = useMemo(() => allOrgCampaigns.filter((c) => c.status === "scheduled").length, [allOrgCampaigns]);
+  const activeCount = useMemo(() => allOrgCampaigns.filter((c) => c.status === "processing").length, [allOrgCampaigns]);
+  const completedCount = useMemo(() => allOrgCampaigns.filter((c) => c.status === "completed").length, [allOrgCampaigns]);
+
   const metrics = useMemo(() => {
-    const all = campaignStore.getCampaigns(orgSlug);
+    const all = allOrgCampaigns;
     const totalSent = all.reduce((sum, c) => sum + c.sent_count, 0);
     const totalDelivered = all.reduce((sum, c) => sum + c.delivered_count, 0);
     const totalSpent = all.reduce((sum, c) => sum + c.actual_cost, 0);
@@ -205,8 +215,7 @@ export default function CampaignsPage() {
       deliveryRate: `${deliveryRate}%`,
       totalSpent: `₹${totalSpent.toFixed(2)}`,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgSlug, refreshKey]);
+  }, [allOrgCampaigns]);
 
   // Handlers
   const handleOpenWizard = () => {
@@ -275,14 +284,14 @@ export default function CampaignsPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              WhatsApp Campaigns &amp; Broadcasts
+              Campaigns
             </h1>
             <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
               Controlled Delivery
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Execute permission-based marketing and utility WhatsApp campaigns with automated opt-out suppression and real-time Meta conversation pricing.
+            Plan, send and track your WhatsApp campaigns.
           </p>
         </div>
 
@@ -297,10 +306,10 @@ export default function CampaignsPage() {
           <Button
             size="sm"
             onClick={handleOpenWizard}
-            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer h-9 px-4"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
-            <span>Create Campaign</span>
+            <span>New Campaign</span>
           </Button>
         </div>
       </div>
@@ -362,6 +371,70 @@ export default function CampaignsPage() {
         </div>
       </div>
 
+      {/* Horizontal Filter Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <button
+          type="button"
+          onClick={() => setStatusFilter("all")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "all"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>All Campaigns</span>
+          <span className="font-mono text-[11px] opacity-80">({allOrgCampaigns.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("draft")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "draft"
+              ? "bg-[#0D0D0E] text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Drafts</span>
+          <span className="font-mono text-[11px] opacity-80">({draftsCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("scheduled")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "scheduled"
+              ? "bg-amber-600 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Scheduled</span>
+          <span className="font-mono text-[11px] opacity-80">({scheduledCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("processing")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "processing"
+              ? "bg-emerald-600 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Active</span>
+          <span className="font-mono text-[11px] opacity-80">({activeCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter("completed")}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+            statusFilter === "completed"
+              ? "bg-emerald-700 text-white shadow-xs"
+              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+          }`}
+        >
+          <span>Completed</span>
+          <span className="font-mono text-[11px] opacity-80">({completedCount})</span>
+        </button>
+      </div>
+
       {/* Search & Filter Bar */}
       <div className="p-3.5 rounded-2xl border border-[#E5E5E7] bg-white shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
@@ -374,18 +447,30 @@ export default function CampaignsPage() {
           />
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as CampaignStatus | "all")}
-          className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-4 py-2 text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
-        >
-          <option value="all">All Statuses</option>
-          <option value="completed">Completed</option>
-          <option value="scheduled">Scheduled</option>
-          <option value="processing">Sending</option>
-          <option value="paused">Paused</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as CampaignStatus | "all")}
+            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-4 py-2 text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+          >
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="processing">Sending</option>
+            <option value="paused">Paused</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+
+          {statusFilter !== "all" && (
+            <button
+              type="button"
+              onClick={() => setStatusFilter("all")}
+              className="text-xs font-semibold text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 px-3 py-2 rounded-xl hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Campaigns Table */}
@@ -420,13 +505,18 @@ export default function CampaignsPage() {
                 return (
                   <TableRow key={camp.id} className="border-b border-[#E5E5E7] hover:bg-[#F7F7F8]/80 transition-colors">
                     <TableCell>
-                      <div className="py-1">
-                        <span className="font-semibold text-sm text-[#0D0D0E] block">
-                          {camp.name}
-                        </span>
-                        <span className="text-xs text-[#8E8E93] font-medium">
-                          By {camp.created_by_name}
-                        </span>
+                      <div className="flex items-center gap-3 py-1">
+                        <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 flex items-center justify-center shrink-0 shadow-2xs">
+                          <Megaphone className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <span className="font-semibold text-sm text-[#0D0D0E] block">
+                            {camp.name}
+                          </span>
+                          <span className="text-xs text-[#8E8E93] font-medium">
+                            By {camp.created_by_name}
+                          </span>
+                        </div>
                       </div>
                     </TableCell>
 

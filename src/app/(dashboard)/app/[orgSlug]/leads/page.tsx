@@ -120,6 +120,7 @@ export default function LeadsPage() {
   const [viewMode, setViewMode] = useState<"board" | "table">("board");
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
   const [quickFilter, setQuickFilter] = useState<"all" | "starred" | "high_value" | "needs_action" | "won">("all");
 
@@ -197,6 +198,15 @@ export default function LeadsPage() {
     return Array.from(set);
   }, [leads]);
 
+  // Extract unique sources
+  const uniqueSources = useMemo(() => {
+    const set = new Set<string>();
+    leads.forEach((l) => {
+      if (l.source) set.add(l.source);
+    });
+    return Array.from(set);
+  }, [leads]);
+
   // High-level pipeline metrics for summary bar
   const pipelineMetrics = useMemo(() => {
     let totalVal = 0;
@@ -243,6 +253,7 @@ export default function LeadsPage() {
         l.contact_phone.includes(q);
 
       const matchesStage = stageFilter === "all" || l.stage === stageFilter;
+      const matchesSource = sourceFilter === "all" || l.source === sourceFilter;
       const matchesOwner = ownerFilter === "all" || l.assigned_to_name === ownerFilter;
 
       let matchesQuick = true;
@@ -256,7 +267,7 @@ export default function LeadsPage() {
         matchesQuick = l.stage === "won";
       }
 
-      return matchesQuery && matchesStage && matchesOwner && matchesQuick;
+      return matchesQuery && matchesStage && matchesSource && matchesOwner && matchesQuick;
     });
   }, [leads, searchQuery, stageFilter, ownerFilter, quickFilter, starredIds]);
 
@@ -519,17 +530,17 @@ export default function LeadsPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Sales Pipeline
+              Leads
             </h1>
             <span
               suppressHydrationWarning
               className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono"
             >
-              {filteredLeads.length} {filteredLeads.length === 1 ? "opportunity" : "opportunities"}
+              {filteredLeads.length} {filteredLeads.length === 1 ? "lead" : "leads"}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
-            Manage your commercial deals, advance pipeline stages, track WhatsApp leads &amp; follow-ups.
+            Manage and convert your leads into customers.
           </p>
         </div>
 
@@ -748,6 +759,23 @@ export default function LeadsPage() {
             )}
           </div>
 
+          {/* Source Filter */}
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <span className="text-[#8E8E93] font-semibold hidden sm:inline">Source:</span>
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+            >
+              <option value="all">All Sources</option>
+              {uniqueSources.map((src) => (
+                <option key={src} value={src}>
+                  {src}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Stage Filter */}
           <div className="flex items-center gap-1.5 text-xs sm:text-sm">
             <span className="text-[#8E8E93] font-semibold hidden sm:inline">Stage:</span>
@@ -789,12 +817,13 @@ export default function LeadsPage() {
         </div>
 
         {/* Clear Filters Indicator */}
-        {(searchQuery || stageFilter !== "all" || ownerFilter !== "all") && (
+        {(searchQuery || stageFilter !== "all" || sourceFilter !== "all" || ownerFilter !== "all") && (
           <button
             type="button"
             onClick={() => {
               setSearchQuery("");
               setStageFilter("all");
+              setSourceFilter("all");
               setOwnerFilter("all");
             }}
             className="text-xs sm:text-sm font-semibold text-[#FF7900] hover:text-[#E66D00] transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 shadow-2xs"
@@ -894,8 +923,10 @@ export default function LeadsPage() {
 
                           {/* Contact & Company */}
                           <div className="flex items-center justify-between text-xs text-[#0D0D0E] pt-0.5">
-                            <div className="flex items-center gap-1.5 truncate">
-                              <Building2 className="h-4 w-4 text-[#8E8E93] shrink-0" />
+                            <div className="flex items-center gap-2 truncate">
+                              <div className="h-5 w-5 rounded-full bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-semibold text-[10px] flex items-center justify-center shrink-0">
+                                {lead.contact_name ? lead.contact_name[0] : "L"}
+                              </div>
                               <span className="truncate font-semibold text-[#0D0D0E]">{lead.contact_name}</span>
                             </div>
 
@@ -957,6 +988,19 @@ export default function LeadsPage() {
                     })
                   )}
                 </div>
+
+                {/* Column bottom dashed + Add Lead button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInitialStage(stage.id);
+                    setCreateModalOpen(true);
+                  }}
+                  className="w-full py-2 px-3 rounded-xl border border-dashed border-[#D1D5DB] hover:border-[#FF7900] bg-white/60 hover:bg-white text-xs font-semibold text-[#8E8E93] hover:text-[#FF7900] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs group mt-1"
+                >
+                  <Plus className="h-3.5 w-3.5 group-hover:scale-110 transition-transform text-[#FF7900]" />
+                  <span>Add Lead</span>
+                </button>
               </div>
             );
           })}
