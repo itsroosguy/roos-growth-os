@@ -604,149 +604,137 @@ export default function OverviewPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* SECTION 2: 12-COLUMN DASHBOARD GRID                                   */}
-      {/* LEFT 50%: 2x2 COMPACT BLACK KPI BLOCKS + REALISTIC WHATSAPP INBOX     */}
-      {/* RIGHT 50%: SALES PIPELINE (BIG NUMBERS + 30D COMPARISON) + TASKS      */}
+      {/* SECTION 2: EXECUTIVE COMMAND BRIEFING CONSOLE                         */}
+      {/* Replaces the fragmented KPI wall with a unified, calm 4-pillar bar    */}
+      {/* ===================================================================== */}
+      <div className="rounded-2xl bg-[#121214] border border-[#1F1F23] shadow-xs text-white overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#1F1F23]">
+          {/* Pillar 1: Pipeline Value */}
+          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                  <TrendingUp className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  Pipeline Value
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span>+18.4%</span>
+              </span>
+            </div>
+
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
+                {formatCurrency(metrics.pipelineValue || 2450000)}
+              </div>
+              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
+                <span className="text-emerald-400 font-medium">vs last 30d</span>
+                <span>•</span>
+                <span>{leads.length || 14} active deals</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Pillar 2: New Leads */}
+          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                  <Users className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  New Leads
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span>+24%</span>
+              </span>
+            </div>
+
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
+                {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
+              </div>
+              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
+                <span className="text-emerald-400 font-medium">+25 acquisition</span>
+                <span>•</span>
+                <span>from 103 last period</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Pillar 3: WhatsApp Velocity */}
+          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                  <MessageSquare className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  WhatsApp Velocity
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                <ArrowUpRight className="h-3 w-3 stroke-[2]" />
+                <span>+32%</span>
+              </span>
+            </div>
+
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
+                412
+              </div>
+              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
+                <span className="text-emerald-400 font-medium">avg 4m response</span>
+                <span>•</span>
+                <span>{conversations.length || 12} customer threads</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Pillar 4: Follow-ups Due */}
+          <div className="p-4.5 sm:p-5 flex flex-col justify-between hover:bg-[#161619] transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
+                  <Clock className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+                  Follow-ups Due
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                <span>{metrics.overdueFollowUps || 4} Overdue</span>
+              </span>
+            </div>
+
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-white leading-tight">
+                {metrics.openFollowUps || 18}
+              </div>
+              <p className="text-xs text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5">
+                <span className="text-amber-400 font-medium">requires action today</span>
+                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse ml-0.5" />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* SECTION 3: CORE OPERATIONAL WINGS                                     */}
+      {/* LEFT WING (7 COLS): WHATSAPP OPERATIONS CENTER (FIRST-CLASS)          */}
+      {/* RIGHT WING (5 COLS): SALES OPPORTUNITY ENGINE & PRIORITY ACTIONS      */}
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* =================================================================== */}
-        {/* LEFT COLUMN (50% WIDTH): 2x2 BLACK CARDS + REALISTIC WHATSAPP INBOX */}
+        {/* LEFT WING (7 COLS): LIVE WHATSAPP TEAM OPERATIONS CENTER            */}
         {/* =================================================================== */}
-        <div className="lg:col-span-6 flex flex-col gap-5">
-          {/* 2x2 Compact Black KPI Cards (Reduced Size, Zero Clipping, Sleek Terminal Look) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Line 1 - Card 1: New Leads */}
-            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <Users className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                    New Leads
-                  </span>
-                </div>
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
-                  <span>+24%</span>
-                </span>
-              </div>
-
-              <div className="mt-2.5">
-                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
-                  {metrics.leadsByStage.new?.count > 0 ? metrics.leadsByStage.new.count * 32 : 128}
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
-                  <span>from 103 last period</span>
-                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
-                    <path
-                      d="M1 14 Q 15 12, 25 8 T 45 6 T 59 2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Line 1 - Card 2: Pipeline Value */}
-            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <TrendingUp className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                    Pipeline Value
-                  </span>
-                </div>
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
-                  <span>+18%</span>
-                </span>
-              </div>
-
-              <div className="mt-2.5">
-                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
-                  {formatCurrency(metrics.pipelineValue || 2450000)}
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
-                  <span>{leads.length || 14} active deals</span>
-                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
-                    <path
-                      d="M1 12 Q 15 14, 28 9 T 45 4 T 59 1"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Line 2 - Card 3: WhatsApp Replies */}
-            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <MessageSquare className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                    WhatsApp Replies
-                  </span>
-                </div>
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
-                  <ArrowUpRight className="h-2.5 w-2.5 stroke-[2]" />
-                  <span>+32%</span>
-                </span>
-              </div>
-
-              <div className="mt-2.5">
-                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
-                  412
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
-                  <span>avg 4m response</span>
-                  <svg className="h-3.5 w-12 text-emerald-400 shrink-0" viewBox="0 0 60 16" fill="none">
-                    <path
-                      d="M1 10 Q 15 8, 30 11 T 48 3 T 59 2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Line 2 - Card 4: Follow-ups Due */}
-            <div className="rounded-xl bg-[#121214] border border-[#1F1F23] p-3.5 sm:p-4 text-white shadow-xs hover:border-[#2A2A30] interactive-hover-card flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-[#FF7900]/15 flex items-center justify-center text-[#FF7900]">
-                    <Clock className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
-                    Follow-ups Due
-                  </span>
-                </div>
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">
-                  <span>{metrics.overdueFollowUps || 4} Overdue</span>
-                </span>
-              </div>
-
-              <div className="mt-2.5">
-                <div className="text-xl sm:text-2xl font-semibold font-mono tracking-tight text-white leading-tight">
-                  {metrics.openFollowUps || 18}
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#1F1F23]/80 font-normal">
-                  <span>requires attention</span>
-                  <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="lg:col-span-7 flex flex-col gap-6">
 
           {/* REALISTIC WHATSAPP INBOX UI (NOT BLACK - AUTHENTIC WHATSAPP WEB LOOK) */}
           <div className="rounded-2xl bg-white border border-[#E5E5E7] shadow-xs overflow-hidden interactive-hover-card">
@@ -918,42 +906,59 @@ export default function OverviewPage() {
         </div>
 
         {/* =================================================================== */}
-        {/* RIGHT COLUMN (50% WIDTH): SALES PIPELINE + TASKS & FOLLOW-UPS       */}
+        {/* RIGHT WING (5 COLS): SALES OPPORTUNITY ENGINE & PRIORITY ACTIONS      */}
         {/* =================================================================== */}
-        <div className="lg:col-span-6 flex flex-col gap-6">
+        <div className="lg:col-span-5 flex flex-col gap-6">
           {/* Sales Pipeline Card with BIG NUMBERS & 30-DAY PERFORMANCE COMPARISON */}
           <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
-            <div className="flex items-center justify-between pb-4 border-b border-[#F0F0F2]">
+            <div className="flex items-start justify-between pb-4 border-b border-[#F0F0F2]">
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-base sm:text-lg font-semibold text-[#0D0D0E] tracking-tight">
-                    Sales Pipeline
+                    Sales Progression
                   </h2>
                   <Badge variant="orangeSubtle" className="text-[10px] uppercase font-semibold">
                     Live CRM
                   </Badge>
                 </div>
                 <p className="text-xs text-[#8E8E93] font-normal mt-0.5">
-                  Commercial deals across stages vs last 30 days performance
+                  Commercial deals across stages vs 30d performance
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  onClick={() => setNewLeadModalOpen(true)}
-                  className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-8 px-3 cursor-pointer"
+              <div className="flex flex-col items-end gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    size="sm"
+                    onClick={() => setNewLeadModalOpen(true)}
+                    className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-8 px-3 cursor-pointer shadow-xs transition-all active:scale-95"
+                  >
+                    <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
+                    <span>Add Lead</span>
+                  </Button>
+                  <Link
+                    href={`/app/${orgSlug}/leads`}
+                    className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors"
+                    title="View full pipeline"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </div>
+                {/* When our last lead was added, if beyond 3 days display in days */}
+                <span
+                  className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md ${
+                    lastLeadStatus.isBeyond3Days
+                      ? "text-amber-800 bg-amber-50 border border-amber-200/80"
+                      : "text-[#8E8E93] bg-[#F7F7F8] border border-[#E5E5E7]"
+                  }`}
                 >
-                  <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
-                  <span>Add Lead</span>
-                </Button>
-                <Link
-                  href={`/app/${orgSlug}/leads`}
-                  className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors"
-                  title="View full pipeline"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-[#8E8E93]"
+                    }`}
+                  />
+                  {lastLeadStatus.label}
+                </span>
               </div>
             </div>
 
@@ -1042,56 +1047,69 @@ export default function OverviewPage() {
               })}
             </div>
 
-            {/* Representative Lead Items */}
-            <div className="mt-4 space-y-2">
-              {leads.slice(0, 4).map((lead) => (
+            {/* Priority Opportunities List */}
+            <div className="mt-4 pt-3.5 border-t border-[#F0F0F2]">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-xs font-semibold text-[#0D0D0E]">
+                  Priority Opportunities
+                </span>
                 <Link
-                  key={lead.id}
                   href={`/app/${orgSlug}/leads`}
-                  className="group flex items-center justify-between p-3 rounded-xl border border-[#E5E5E7] bg-white hover:border-[#FF7900] hover:bg-[#FFF4EC]/20 transition-all cursor-pointer"
+                  className="text-[11px] text-[#FF7900] hover:text-[#E66D00] font-medium"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded-lg bg-[#F7F7F8] group-hover:bg-[#FF7900]/10 flex items-center justify-center text-[#0D0D0E] group-hover:text-[#FF7900] font-semibold text-xs shrink-0 transition-colors">
-                      {lead.contact_name?.charAt(0) || "L"}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs sm:text-sm font-medium text-[#0D0D0E] truncate">
-                        {lead.title}
-                      </p>
-                      <p className="text-[11px] text-[#8E8E93] font-normal truncate">
-                        {lead.contact_name} • {lead.source || "Direct"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs sm:text-sm font-mono font-semibold text-[#0D0D0E]">
-                      {formatCurrency(lead.estimated_value)}
-                    </span>
-                    <Badge
-                      variant={
-                        lead.stage === "won"
-                          ? "success"
-                          : lead.stage === "proposal"
-                          ? "orangeSubtle"
-                          : "secondary"
-                      }
-                      className="text-[10px] font-medium uppercase"
-                    >
-                      {lead.stage}
-                    </Badge>
-                  </div>
+                  View all ({leads.length})
                 </Link>
-              ))}
+              </div>
+              <div className="space-y-2">
+                {leads.slice(0, 3).map((lead) => (
+                  <Link
+                    key={lead.id}
+                    href={`/app/${orgSlug}/leads`}
+                    className="group flex items-center justify-between p-2.5 rounded-xl border border-[#E5E5E7] bg-white hover:border-[#FF7900] hover:bg-[#FFF4EC]/20 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="h-7 w-7 rounded-lg bg-[#F7F7F8] group-hover:bg-[#FF7900]/10 flex items-center justify-center text-[#0D0D0E] group-hover:text-[#FF7900] font-semibold text-xs shrink-0 transition-colors">
+                        {lead.contact_name?.charAt(0) || "L"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-[#0D0D0E] truncate">
+                          {lead.title}
+                        </p>
+                        <p className="text-[10px] text-[#8E8E93] font-normal truncate">
+                          {lead.contact_name} • {lead.source || "Direct"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-mono font-semibold text-[#0D0D0E]">
+                        {formatCurrency(lead.estimated_value)}
+                      </span>
+                      <Badge
+                        variant={
+                          lead.stage === "won"
+                            ? "success"
+                            : lead.stage === "proposal"
+                            ? "orangeSubtle"
+                            : "secondary"
+                        }
+                        className="text-[9px] font-medium uppercase px-1.5 py-0.5"
+                      >
+                        {lead.stage}
+                      </Badge>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Tasks & Follow-ups White Card */}
+          {/* Urgent Actions & Follow-ups White Card */}
           <div className="rounded-2xl bg-white border border-[#E5E5E7] p-5 sm:p-6 shadow-xs interactive-hover-card">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F2]">
               <div>
                 <h2 className="text-base sm:text-lg font-semibold tracking-tight text-[#0D0D0E]">
-                  Tasks &amp; Follow-ups
+                  Urgent Actions &amp; Follow-ups
                 </h2>
                 <p className="text-xs text-[#8E8E93] font-normal">
                   Prioritised follow-ups and client actions
