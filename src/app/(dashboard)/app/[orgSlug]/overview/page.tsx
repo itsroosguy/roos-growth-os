@@ -425,21 +425,14 @@ export default function OverviewPage() {
       {/* ===================================================================== */}
       {/* SECTION 1: HEADER & GREETING WITH WORKSPACE CLOCK & TIMEZONE TRACKER  */}
       {/* ===================================================================== */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-1">
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#0D0D0E]">
-            {mounted ? timeGreeting : "Good morning"},{" "}
+            {mounted ? timeGreeting : "Good afternoon"},{" "}
             <span className="text-[#FF7900]">Praveen</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-normal mt-1 flex items-center gap-1.5 flex-wrap">
-            <span>{mounted ? formattedDate : "Today"}</span>
-            <span>•</span>
-            <span>Workspace aligned with</span>
-            <span className="inline-flex items-center gap-1 font-medium text-[#0D0D0E] bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7]">
-              <span>{currentRegion.flag}</span>
-              <span>{currentRegion.city}</span>
-              <span className="text-[#8E8E93] font-mono text-[11px]">({currentRegion.abbr})</span>
-            </span>
+          <p className="text-xs sm:text-sm text-[#8E8E93] font-normal mt-1">
+            Here&apos;s what&apos;s happening with your business today.
           </p>
         </div>
 
@@ -550,32 +543,6 @@ export default function OverviewPage() {
                   </div>
                 </div>
               </>
-            )}
-          </div>
-
-          {/* Last Lead Added Message - Starts showing in days when beyond 3 days */}
-          <div
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-2xs transition-all h-9.5 ${
-              lastLeadStatus.isBeyond3Days
-                ? "bg-amber-50 text-amber-800 border-amber-200"
-                : "bg-emerald-50 text-emerald-800 border-emerald-200"
-            }`}
-            title={
-              lastLeadStatus.isBeyond3Days
-                ? "Warning: No new leads added in over 3 days"
-                : "Pipeline lead acquisition is active"
-            }
-          >
-            <span
-              className={`h-2 w-2 rounded-full ${
-                lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
-              }`}
-            />
-            <span>{lastLeadStatus.label}</span>
-            {lastLeadStatus.isBeyond3Days && (
-              <span className="text-[10px] font-semibold bg-amber-200/80 text-amber-900 px-1.5 py-0.2 rounded-md">
-                Alert: &gt;3d
-              </span>
             )}
           </div>
 
@@ -734,13 +701,13 @@ export default function OverviewPage() {
       {/* LEFT WING (7 COLS): WHATSAPP OPERATIONS CENTER (FIRST-CLASS)          */}
       {/* RIGHT WING (5 COLS): SALES OPPORTUNITY ENGINE & PRIORITY ACTIONS      */}
       {/* ===================================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* =================================================================== */}
         {/* LEFT WING (7 COLS): LIVE WHATSAPP TEAM OPERATIONS CENTER            */}
         {/* =================================================================== */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#EAECEF] shadow-xs overflow-hidden">
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#EAECEF] shadow-xs overflow-hidden flex flex-col justify-between">
           {/* Header */}
-          <div className="p-5 border-b border-[#F0F1F3] flex items-center justify-between">
+          <div className="p-5 border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <MessageSquare className="h-4.5 w-4.5" />
@@ -771,89 +738,95 @@ export default function OverviewPage() {
           </div>
 
           {/* 2-Column Split: Conversation list + Live Message Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-12 min-h-[380px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 flex-1 min-h-[460px]">
             {/* Sub-col 1 (5 cols): Filter Tabs & Conversation List */}
-            <div className="md:col-span-5 border-r border-[#F0F1F3] flex flex-col">
-              {/* Filter Tabs */}
-              <div className="px-3 py-2.5 border-b border-[#F0F1F3] flex items-center gap-1 bg-[#FAFAFA]">
-                <button
-                  type="button"
-                  onClick={() => setInboxFilter("all")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    inboxFilter === "all"
-                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
-                      : "text-[#717680] hover:text-[#0D0D0E]"
-                  }`}
-                >
-                  All (7)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInboxFilter("unread")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    inboxFilter === "unread"
-                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
-                      : "text-[#717680] hover:text-[#0D0D0E]"
-                  }`}
-                >
-                  Unread (3)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInboxFilter("mentions")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    inboxFilter === "mentions"
-                      ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
-                      : "text-[#717680] hover:text-[#0D0D0E]"
-                  }`}
-                >
-                  Assigned (4)
-                </button>
-              </div>
-
-              {/* Chat rows */}
-              <div className="divide-y divide-[#F0F1F3] overflow-y-auto max-h-[340px]">
-                {[
-                  { name: "Sneha Reddy", snippet: "Thanks, we will review the final proposal...", time: "2m", unread: true },
-                  { name: "Aarav Patel", snippet: "Can you provide the quotation for the...", time: "12m", unread: false },
-                  { name: "Rahul Mehta", snippet: "Do you have a time available this week?", time: "1h", unread: false },
-                  { name: "Priya Sharma", snippet: "Confirmed our team demo session for...", time: "3h", unread: false },
-                  { name: "Vikram Deshmukh", snippet: "Can we schedule a call this week?...", time: "1d", unread: false },
-                ].map((chat, idx) => (
+            <div className="md:col-span-5 border-r border-[#F0F1F3] flex flex-col justify-between bg-white">
+              <div>
+                {/* Filter Tabs */}
+                <div className="px-3 py-2.5 border-b border-[#F0F1F3] flex items-center gap-1 bg-[#FAFAFA]">
                   <button
-                    key={chat.name}
                     type="button"
-                    onClick={() => setPreviewChatIndex(idx)}
-                    className={`w-full text-left p-3 flex items-start gap-2.5 transition-colors cursor-pointer ${
-                      previewChatIndex === idx ? "bg-[#FFF4EC]/30" : "hover:bg-[#F9FAFB]"
+                    onClick={() => setInboxFilter("all")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      inboxFilter === "all"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                        : "text-[#717680] hover:text-[#0D0D0E]"
                     }`}
                   >
-                    <div className="h-8 w-8 rounded-full bg-[#E5E7EB] text-[#4B5563] font-medium text-xs flex items-center justify-center shrink-0">
-                      {chat.name.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-[#0D0D0E] truncate">
-                          {chat.name}
-                        </span>
-                        <span className="text-[10px] text-[#8E8E93]">{chat.time}</span>
-                      </div>
-                      <p className="text-[11px] text-[#717680] truncate mt-0.5">
-                        {chat.snippet}
-                      </p>
-                    </div>
-                    {chat.unread && (
-                      <span className="h-2 w-2 rounded-full bg-[#FF7900] mt-1 shrink-0" />
-                    )}
+                    All (7)
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setInboxFilter("unread")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      inboxFilter === "unread"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                        : "text-[#717680] hover:text-[#0D0D0E]"
+                    }`}
+                  >
+                    Unread (3)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInboxFilter("mentions")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      inboxFilter === "mentions"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold"
+                        : "text-[#717680] hover:text-[#0D0D0E]"
+                    }`}
+                  >
+                    Assigned (4)
+                  </button>
+                </div>
+
+                {/* Chat rows */}
+                <div className="divide-y divide-[#F0F1F3] overflow-y-auto max-h-[400px] custom-light-scroll">
+                  {[
+                    { name: "Sneha Reddy", snippet: "Thanks, we will review the final proposal with our finance team...", time: "2m", unread: true, agent: "Praveen (You)" },
+                    { name: "Aarav Patel", snippet: "Can you provide the quotation for the retail automation...", time: "12m", unread: true, agent: "Neha Gupta" },
+                    { name: "Rahul Mehta", snippet: "Do you have a time available this week for a walkthrough?", time: "1h", unread: false, agent: "Rahul Verma" },
+                    { name: "Priya Sharma", snippet: "Confirmed our team demo session for Thursday afternoon.", time: "3h", unread: false, agent: "Praveen (You)" },
+                    { name: "Vikram Deshmukh", snippet: "Can we schedule a call this week? Looking for CRM...", time: "1d", unread: false, agent: "Aarav Patel" },
+                  ].map((chat, idx) => (
+                    <button
+                      key={chat.name}
+                      type="button"
+                      onClick={() => setPreviewChatIndex(idx)}
+                      className={`w-full text-left p-3 flex items-start gap-2.5 transition-colors cursor-pointer ${
+                        previewChatIndex === idx ? "bg-[#FFF4EC]/40 border-l-2 border-[#FF7900]" : "hover:bg-[#F9FAFB]"
+                      }`}
+                    >
+                      <div className="h-8 w-8 rounded-full bg-[#E5E7EB] text-[#4B5563] font-medium text-xs flex items-center justify-center shrink-0">
+                        {chat.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-[#0D0D0E] truncate">
+                            {chat.name}
+                          </span>
+                          <span className="text-[10px] text-[#8E8E93] shrink-0 font-mono">{chat.time}</span>
+                        </div>
+                        <p className="text-[11px] text-[#717680] truncate mt-0.5">
+                          {chat.snippet}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-1 text-[9px] text-[#8E8E93]">
+                          <span>Resp:</span>
+                          <span className="font-medium text-[#0D0D0E] truncate">{chat.agent}</span>
+                        </div>
+                      </div>
+                      {chat.unread && (
+                        <span className="h-2 w-2 rounded-full bg-[#FF7900] mt-1 shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Sub-col 2 (7 cols): Mini Live Chat Thread */}
-            <div className="md:col-span-7 flex flex-col justify-between bg-[#F7F8FA]">
+            {/* Sub-col 2 (7 cols): Mini Live Chat Thread with WhatsApp styling */}
+            <div className="md:col-span-7 flex flex-col justify-between bg-[#F8F9FA]">
               {/* Contact Header */}
-              <div className="p-3 bg-white border-b border-[#F0F1F3] flex items-center justify-between">
+              <div className="p-3 bg-white border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
                   <div className="h-7 w-7 rounded-full bg-[#DFE5E7] text-[#54656F] flex items-center justify-center font-semibold text-xs">
                     S
@@ -863,14 +836,26 @@ export default function OverviewPage() {
                     <p className="text-[10px] text-[#8E8E93]">+91 98765 43210</p>
                   </div>
                 </div>
-                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
-                  Active now
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-[#8E8E93] hidden sm:inline">
+                    Assigned: <strong className="font-medium text-[#0D0D0E]">Praveen (You)</strong>
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
+                    Active now
+                  </span>
+                </div>
               </div>
 
               {/* Chat Messages */}
-              <div className="p-3 space-y-2.5 overflow-y-auto max-h-[220px]">
+              <div
+                className="p-3.5 space-y-3 overflow-y-auto flex-1 min-h-[260px] custom-light-scroll"
+                style={{
+                  backgroundColor: "#EFEAE2",
+                  backgroundImage: "radial-gradient(#d4cdc3 0.75px, transparent 0.75px)",
+                  backgroundSize: "16px 16px",
+                }}
+              >
                 {previewMessages.map((msg) => (
                   <div
                     key={msg.id}
@@ -879,30 +864,33 @@ export default function OverviewPage() {
                     }`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-xl px-3 py-2 text-xs shadow-2xs ${
+                      className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs shadow-xs ${
                         msg.sender === "agent"
-                          ? "bg-[#DCF8C6] text-[#111B21] rounded-br-none"
-                          : "bg-white text-[#111B21] border border-[#E5E5E7] rounded-bl-none"
+                          ? "bg-[#DCF8C6] text-[#111B21] rounded-tr-none border border-[#C6E6B0]"
+                          : "bg-white text-[#111B21] border border-[#E5E5E7] rounded-tl-none"
                       }`}
                     >
-                      {msg.text}
-                      <span className="block text-[9px] text-[#8E8E93] text-right mt-1 font-mono">
-                        {msg.time}
-                      </span>
+                      <p className="leading-relaxed">{msg.text}</p>
+                      <div className="flex items-center justify-end gap-1 mt-1 text-[9px] text-[#8E8E93] font-mono">
+                        <span>{msg.time}</span>
+                        {msg.sender === "agent" && (
+                          <CheckCheck className="h-3 w-3 text-[#53BDEB]" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Quick Reply Chips & Message Composer */}
-              <div className="p-3 bg-white border-t border-[#F0F1F3] space-y-2">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                  {["Pricing", "Proposal", "Follow-up"].map((chip) => (
+              <div className="p-3 bg-white border-t border-[#F0F1F3] space-y-2 shrink-0">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 custom-light-scroll">
+                  {["+ Pricing Details", "+ Proposal PDF", "+ Schedule Demo", "+ Follow-up"].map((chip) => (
                     <button
                       key={chip}
                       type="button"
-                      onClick={() => handleSendPreviewMessage(`I'm sharing our ${chip} details right now.`)}
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F4F4F6] text-[#717680] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer"
+                      onClick={() => handleSendPreviewMessage(`I'm sharing our ${chip.replace("+ ", "")} right now.`)}
+                      className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F6] text-[#717680] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer"
                     >
                       {chip}
                     </button>
@@ -916,12 +904,12 @@ export default function OverviewPage() {
                     onChange={(e) => setPreviewInputText(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSendPreviewMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 bg-[#F4F4F6] border border-[#E5E7EB] rounded-xl px-3 py-1.5 text-xs text-[#0D0D0E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FF7900]"
+                    className="flex-1 bg-[#F4F4F6] border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs text-[#0D0D0E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FF7900]"
                   />
                   <Button
                     size="sm"
                     onClick={() => handleSendPreviewMessage()}
-                    className="h-8 w-8 p-0 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center justify-center shrink-0 cursor-pointer"
+                    className="h-8.5 w-8.5 p-0 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs"
                   >
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -1002,7 +990,7 @@ export default function OverviewPage() {
                 <Link
                   key={deal.title}
                   href={`/app/${orgSlug}/leads`}
-                  className="flex items-center justify-between p-3 rounded-xl border border-[#EAECEF] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#EAECEF] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20"
                 >
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-[#0D0D0E] truncate">
@@ -1026,11 +1014,23 @@ export default function OverviewPage() {
           </div>
 
           <div className="pt-4 border-t border-[#F0F1F3] mt-4 flex items-center justify-between text-xs text-[#8E8E93]">
-            <span>{lastLeadStatus.label}</span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`h-2 w-2 rounded-full ${
+                  lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+                }`}
+              />
+              <span className="font-medium text-[#0D0D0E]">{lastLeadStatus.label}</span>
+              {lastLeadStatus.isBeyond3Days && (
+                <span className="text-[10px] font-semibold bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-md">
+                  Alert: &gt;3d
+                </span>
+              )}
+            </div>
             <Button
               size="sm"
               onClick={() => setNewLeadModalOpen(true)}
-              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-7.5 px-3 cursor-pointer"
+              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-7.5 px-3 cursor-pointer shadow-2xs"
             >
               <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
               <span>Add Lead</span>
@@ -1043,7 +1043,7 @@ export default function OverviewPage() {
       {/* SECTION 4: 3-COLUMN BOTTOM ROW (EXACT REFERENCE DESIGN)               */}
       {/* 1. TODAY'S TASKS | 2. RECENT ACTIVITY | 3. CAMPAIGN PERFORMANCE       */}
       {/* ===================================================================== */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Today's Tasks */}
         <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
           <div>
@@ -1159,7 +1159,7 @@ export default function OverviewPage() {
               </Link>
             </div>
 
-            <div className="mt-3">
+            <div className="mt-3 space-y-3">
               <div className="p-3 rounded-xl bg-[#FAFAFA] border border-[#EAECEF] flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-[#0D0D0E] block">Product Launch Campaign</span>
@@ -1171,22 +1171,33 @@ export default function OverviewPage() {
               </div>
 
               {/* Metrics Grid */}
-              <div className="grid grid-cols-4 gap-2 mt-4 text-center">
-                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
                   <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,248</span>
-                  <span className="text-[10px] text-[#8E8E93] uppercase">Sent</span>
+                  <span className="text-[9px] text-[#8E8E93] uppercase font-medium">Sent</span>
                 </div>
-                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
                   <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,012</span>
-                  <span className="text-[10px] text-[#8E8E93] uppercase">Delivered</span>
+                  <span className="text-[9px] text-[#8E8E93] uppercase font-medium">Delivered</span>
                 </div>
-                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
                   <span className="text-base font-semibold font-mono text-[#0D0D0E] block">312</span>
-                  <span className="text-[10px] text-[#8E8E93] uppercase">Replied</span>
+                  <span className="text-[9px] text-[#8E8E93] uppercase font-medium">Replied</span>
                 </div>
-                <div className="p-2 rounded-xl bg-[#F7F8FA]">
+                <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
                   <span className="text-base font-semibold font-mono text-emerald-600 block">25.2%</span>
-                  <span className="text-[10px] text-[#8E8E93] uppercase">Rate</span>
+                  <span className="text-[9px] text-[#8E8E93] uppercase font-medium">Rate</span>
+                </div>
+              </div>
+
+              {/* Progress Bar & Performance Highlights */}
+              <div className="pt-2 space-y-1.5 text-xs">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#717680]">Delivery Success</span>
+                  <span className="font-mono font-medium text-[#0D0D0E]">81.1%</span>
+                </div>
+                <div className="h-1.5 w-full bg-[#F0F1F3] rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: "81.1%" }} />
                 </div>
               </div>
             </div>
