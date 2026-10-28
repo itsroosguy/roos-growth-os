@@ -243,7 +243,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           },
           {
             id: "inbox",
-            title: "Shared Inbox",
+            title: "WhatsApp",
             href: `/app/${orgSlug}/inbox`,
             icon: MessageSquare,
             badge: "3",

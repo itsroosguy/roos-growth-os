@@ -904,7 +904,7 @@ export default function InboxPage() {
     <Suspense
       fallback={
         <div className="h-[calc(100vh-130px)] flex items-center justify-center text-[13px] text-[#6A707C]">
-          Loading Shared Inbox...
+          Loading WhatsApp...
         </div>
       }
     >

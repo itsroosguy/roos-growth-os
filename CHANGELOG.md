@@ -23,6 +23,7 @@ All notable architectural, visual, and experiential changes to the Roos StudioX 
   - Fixed ~900px height overflow: 42px rows, 24px category gaps, collapsed configuration group by default, hidden scrollbar with edge fades.
   - Eradicated stray "R / B" glyph artifact next to official logo by removing duplicate adjacent HTML text spans.
   - Active nav item: 36px rounded-square chip in module's hue tint with duotone icon and 3px sliding Flame bar.
+  - Renamed "Shared Inbox" navigation module to **"WhatsApp"** across the sidebar, topbar breadcrumbs, command palette (`⌘K`), loading screens, and cross-module link buttons.
   - Elevated topbar to 56px with breadcrumbs, command palette search, and Indian currency results.
 - **Overview Re-architected (5-Row Bento)**:
   - Row 0: Time-aware real greeting ("Good evening, Praveen. Rahul Mehta has been waiting 2 hours.") + period selector + single Flame CTA ("New opportunity").

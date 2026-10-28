@@ -54,7 +54,7 @@ export function Topbar() {
   // Derive route title and breadcrumb from pathname
   const currentBreadcrumb = useMemo(() => {
     if (pathname.includes("/overview")) return { section: "Workspace", page: "Overview" };
-    if (pathname.includes("/inbox")) return { section: "Workspace", page: "Shared Inbox" };
+    if (pathname.includes("/inbox")) return { section: "Workspace", page: "WhatsApp" };
     if (pathname.includes("/leads")) return { section: "Workspace", page: "Sales Pipeline" };
     if (pathname.includes("/contacts")) return { section: "Workspace", page: "Contacts" };
     if (pathname.includes("/campaigns")) return { section: "Engagement", page: "Broadcasts" };
@@ -144,7 +144,7 @@ export function Topbar() {
         contacts: [],
         pages: [
           { name: "Overview", href: `/app/${currentOrg.slug}/overview`, icon: Sparkles },
-          { name: "Shared Inbox", href: `/app/${currentOrg.slug}/inbox`, icon: MessageSquare },
+          { name: "WhatsApp", href: `/app/${currentOrg.slug}/inbox`, icon: MessageSquare },
           { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads`, icon: Filter },
           { name: "Contacts", href: `/app/${currentOrg.slug}/contacts`, icon: Users },
           { name: "Broadcasts", href: `/app/${currentOrg.slug}/campaigns`, icon: Send },
@@ -174,7 +174,7 @@ export function Topbar() {
 
     const allPages = [
       { name: "Overview", href: `/app/${currentOrg.slug}/overview` },
-      { name: "Shared Inbox", href: `/app/${currentOrg.slug}/inbox` },
+      { name: "WhatsApp", href: `/app/${currentOrg.slug}/inbox` },
       { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads` },
       { name: "Contacts", href: `/app/${currentOrg.slug}/contacts` },
       { name: "Broadcasts", href: `/app/${currentOrg.slug}/campaigns` },

@@ -349,7 +349,7 @@ export default function ContactsPage() {
               href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(selectedContact?.phone || "")}`}
             >
               <Button variant="primary" size="sm">
-                Open in Shared Inbox
+                Open in WhatsApp
               </Button>
             </Link>
             <Button
