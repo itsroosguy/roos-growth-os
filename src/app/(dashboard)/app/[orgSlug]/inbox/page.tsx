@@ -3,26 +3,23 @@
 import React, { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTenant } from "@/lib/organizations/tenant-context";
-import { whatsappStore, ConversationFilters } from "@/lib/whatsapp/whatsapp-store";
+import { whatsappStore } from "@/lib/whatsapp/whatsapp-store";
 import { crmStore } from "@/lib/crm/crm-store";
 import { teamStore, TeamMember } from "@/lib/team/team-store";
 import {
   WhatsAppConversation,
   WhatsAppMessage,
   ConversationStatus,
-  ConversationActivity,
 } from "@/lib/whatsapp/types";
 import { MOCK_TEMPLATES } from "@/lib/whatsapp/mock-provider";
-import { LeadStage, TaskPriority } from "@/types/crm";
+import { LeadStage, TaskPriority, Task } from "@/types/crm";
 import { aiService } from "@/lib/ai/ai-service";
 import { ReplySuggestionResult, ConversationSummaryResult } from "@/lib/ai/types";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { useMounted } from "@/lib/use-mounted";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/empty-state";
+import { StatusPill } from "@/components/ui/status-pill";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import {
   MessageSquare,
@@ -30,98 +27,47 @@ import {
   Check,
   CheckCheck,
   Clock,
-  AlertTriangle,
   User,
   Phone,
   Building2,
   Sparkles,
   Bot,
   FileText,
-  Wand2,
   Copy,
   Search,
   Filter,
-  UserCheck,
-  UserX,
   Lock,
-  ArrowRight,
   Plus,
   Calendar,
-  CheckCircle2,
   AlertCircle,
-  HelpCircle,
   TrendingUp,
   Tag,
-  Mail,
-  RefreshCw,
-  ExternalLink,
-  Star,
-  MoreVertical,
-  Paperclip,
-  Smile,
-  ChevronDown,
+  ChevronRight,
   CheckSquare,
-  Activity as ActivityIcon,
-  PhoneCall,
+  PanelRightClose,
+  PanelRightOpen,
+  ArrowRight,
+  ShieldCheck,
+  Paperclip,
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/components/ui/toast-context";
 
-const STATUS_CONFIG: Record<
-  ConversationStatus,
-  { label: string; badgeVariant: "default" | "success" | "warning" | "danger" | "neutral"; colorClass: string }
-> = {
-  open: { label: "Open", badgeVariant: "success", colorClass: "text-emerald-700 bg-emerald-50 border-emerald-200" },
-  pending: { label: "Pending", badgeVariant: "warning", colorClass: "text-amber-700 bg-amber-50 border-amber-200" },
-  resolved: { label: "Resolved", badgeVariant: "neutral", colorClass: "text-slate-600 bg-slate-50 border-slate-200" },
-  closed: { label: "Closed", badgeVariant: "neutral", colorClass: "text-slate-600 bg-slate-50 border-slate-200" },
-  snoozed: { label: "Snoozed", badgeVariant: "warning", colorClass: "text-amber-700 bg-amber-50 border-amber-200" },
-};
-
-const LEAD_STAGES: Array<{ id: LeadStage; title: string }> = [
-  { id: "new", title: "New" },
-  { id: "contacted", title: "Contacted" },
-  { id: "qualified", title: "Qualified" },
-  { id: "proposal", title: "Proposal" },
-  { id: "won", title: "Won" },
-  { id: "lost", title: "Lost" },
-];
-
 function InboxContent() {
-  const { currentOrg, userRole, isAdmin } = useTenant();
+  const { currentOrg, userRole } = useTenant();
   const orgSlug = currentOrg.slug;
   const mounted = useMounted();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const contactIdParam = searchParams.get("contactId");
   const phoneParam = searchParams.get("phone");
+  const convParam = searchParams.get("c");
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeConversationId, setActiveConversationId] = useState<string>("conv-102");
-  const [autoReplyEnabled, setAutoReplyEnabled] = useState(true);
-  const [messageReactions, setMessageReactions] = useState<Record<string, string[]>>({});
-
-  const handleAddReaction = (messageId: string, emoji: string) => {
-    setMessageReactions((prev) => {
-      const existing = prev[messageId] || [];
-      if (existing.includes(emoji)) {
-        return { ...prev, [messageId]: existing.filter((e) => e !== emoji) };
-      }
-      return { ...prev, [messageId]: [...existing, emoji] };
-    });
-  };
-
-  // Filters state
-  const [statusFilter, setStatusFilter] = useState<ConversationStatus | "all">("all");
-  const [assigneeFilter, setAssigneeFilter] = useState<string>("all");
-  const [unreadOnly, setUnreadOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Mobile layout tab switcher: "list" | "chat" | "details"
-  const [mobileTab, setMobileTab] = useState<"list" | "chat" | "details">("list");
-
-  // Right panel context tab switcher: "contact" | "deal" | "tasks" | "activity"
-  const [contextTab, setContextTab] = useState<"contact" | "deal" | "tasks" | "activity">("contact");
+  const [filterTab, setFilterTab] = useState<"all" | "unread" | "mine">("all");
+  const [rightPanelOpen, setRightPanelOpen] = useState(true);
 
   // Composer mode: "message" (WhatsApp outbound) | "note" (Private internal team note)
   const [composerMode, setComposerMode] = useState<"message" | "note">("message");
@@ -129,7 +75,6 @@ function InboxContent() {
   const [internalNoteInput, setInternalNoteInput] = useState("");
   const [selectedTemplateName, setSelectedTemplateName] = useState(MOCK_TEMPLATES[0].name);
   const [isSending, setIsSending] = useState(false);
-  const [feedbackMessage, setFeedbackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // CRM inline action modals
   const [leadModalOpen, setLeadModalOpen] = useState(false);
@@ -146,18 +91,11 @@ function InboxContent() {
   });
   const [newFollowUpPriority, setNewFollowUpPriority] = useState<TaskPriority>("medium");
 
-  // Mock Inbound Simulator state
-  const [simulatorOpen, setSimulatorOpen] = useState(false);
-  const [simInboundPhone, setSimInboundPhone] = useState("+919876543210");
-  const [simInboundName, setSimInboundName] = useState("Aarav Patel");
-  const [simInboundText, setSimInboundText] = useState("Hi! What are your pricing plans for WhatsApp CRM?");
-
   // AI Assistant Copilot state
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState<ReplySuggestionResult | null>(null);
   const [aiSummaryOpen, setAiSummaryOpen] = useState(false);
   const [aiSummary, setAiSummary] = useState<ConversationSummaryResult | null>(null);
-  const [aiError, setAiError] = useState<string | null>(null);
 
   // Team members list
   const teamMembers = useMemo(() => {
@@ -165,210 +103,119 @@ function InboxContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgSlug, refreshKey]);
 
-  // Current staff user mock identity (for attribution)
+  // Current staff user mock identity
   const currentStaffUser = useMemo(() => {
     if (userRole === "owner") return teamMembers.find((m) => m.role === "owner") || teamMembers[0];
     if (userRole === "admin") return teamMembers.find((m) => m.role === "admin") || teamMembers[0];
     return teamMembers.find((m) => m.role === "staff") || teamMembers[0];
   }, [teamMembers, userRole]);
 
-  // Sync URL search params to select or create conversation for targeted contact
+  // Sync URL search params
   useEffect(() => {
-    if (contactIdParam) {
+    if (convParam) {
+      setActiveConversationId(convParam);
+    } else if (contactIdParam) {
       try {
         const conv = whatsappStore.getOrCreateConversationForContact(orgSlug, contactIdParam);
-        if (conv) {
-          setActiveConversationId(conv.id);
-          setMobileTab("chat");
-        }
-      } catch (err) {
-        console.error("Could not find or create conversation for contact:", err);
-      }
+        if (conv) setActiveConversationId(conv.id);
+      } catch (err) {}
     } else if (phoneParam) {
       const allConvs = whatsappStore.getConversations(orgSlug);
       const match = allConvs.find((c) => c.contact_phone === phoneParam);
-      if (match) {
-        setActiveConversationId(match.id);
-        setMobileTab("chat");
-      }
+      if (match) setActiveConversationId(match.id);
     }
-  }, [contactIdParam, phoneParam, orgSlug]);
+  }, [convParam, contactIdParam, phoneParam, orgSlug]);
+
+  // All conversations from store
+  const allConversations = useMemo(() => {
+    return whatsappStore.getConversations(orgSlug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgSlug, refreshKey]);
 
   // Filtered conversations
-  const conversations = useMemo(() => {
-    return whatsappStore.getFilteredConversations(orgSlug, {
-      status: statusFilter,
-      assigneeId: assigneeFilter,
-      currentUserId: currentStaffUser?.id,
-      unreadOnly,
-      search: searchQuery,
+  const filteredConversations = useMemo(() => {
+    return allConversations.filter((c) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        c.contact_name.toLowerCase().includes(q) ||
+        c.contact_phone.includes(q) ||
+        (c.last_message_text || "").toLowerCase().includes(q);
+
+      if (!matchesSearch) return false;
+
+      if (filterTab === "unread") return c.unread_count > 0;
+      if (filterTab === "mine") return c.assigned_to_user_id === currentStaffUser?.id;
+      return true;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgSlug, statusFilter, assigneeFilter, currentStaffUser?.id, unreadOnly, searchQuery, refreshKey]);
+  }, [allConversations, searchQuery, filterTab, currentStaffUser]);
 
-  // Active conversation
+  // Counts for tabs
+  const tabCounts = useMemo(() => {
+    const unread = allConversations.filter((c) => c.unread_count > 0).length;
+    const mine = allConversations.filter((c) => c.assigned_to_user_id === currentStaffUser?.id).length;
+    return { all: allConversations.length, unread, mine };
+  }, [allConversations, currentStaffUser]);
+
+  // Active conversation object
   const activeConversation = useMemo(() => {
-    if (!activeConversationId && conversations.length > 0) {
-      return conversations[0];
-    }
-    const found = conversations.find((c) => c.id === activeConversationId);
-    if (found) return found;
-    // Fall back to looking in all conversations
-    const anyInOrg = whatsappStore.getConversationById(orgSlug, activeConversationId);
-    return anyInOrg || conversations[0] || null;
-  }, [conversations, activeConversationId, orgSlug]);
+    return (
+      allConversations.find((c) => c.id === activeConversationId) ||
+      allConversations[0] ||
+      null
+    );
+  }, [allConversations, activeConversationId]);
 
-  // Messages in active conversation
+  // Messages of active conversation (1 argument)
   const messages = useMemo(() => {
     if (!activeConversation) return [];
     return whatsappStore.getMessages(activeConversation.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConversation, refreshKey]);
 
-  // Activities for active conversation
-  const activities = useMemo(() => {
-    if (!activeConversation) return [];
-    return whatsappStore.getConversationActivities(activeConversation.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeConversation, refreshKey]);
-
-  // 24-hour customer window calculation
-  const windowStatus = useMemo(() => {
-    if (!activeConversation) return { allowed: false, hoursRemaining: 0 };
-    return whatsappStore.isWithin24HourWindow(activeConversation);
-  }, [activeConversation]);
-
-  // Associated contact details
+  // Associated Contact & CRM Lead
   const contact = useMemo(() => {
     if (!activeConversation) return null;
     return crmStore.getContactById(orgSlug, activeConversation.contact_id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConversation, orgSlug, refreshKey]);
 
-  // Associated lead details
   const lead = useMemo(() => {
-    if (!activeConversation) return null;
-    if (activeConversation.lead_id) {
-      return crmStore.getLeadById(orgSlug, activeConversation.lead_id);
-    }
-    // Check if there is any lead associated with this contact
-    const contactLeads = crmStore.getLeads(orgSlug).filter((l) => l.contact_id === activeConversation.contact_id);
-    return contactLeads[0] || null;
+    if (!activeConversation?.lead_id) return null;
+    return crmStore.getLeadById(orgSlug, activeConversation.lead_id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConversation, orgSlug, refreshKey]);
 
-  // All org leads for linking dropdown
-  const orgLeads = useMemo(() => {
-    return crmStore.getLeads(orgSlug);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgSlug, refreshKey]);
-
-  // Tasks for this contact/lead
   const contactTasks = useMemo(() => {
-    if (!activeConversation) return [];
-    return crmStore.getTasks(orgSlug).filter((t) => t.contact_id === activeConversation.contact_id);
+    if (!contact) return [];
+    return crmStore.getTasks(orgSlug).filter((t: Task) => t.contact_id === contact.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeConversation, orgSlug, refreshKey]);
+  }, [contact, orgSlug, refreshKey]);
 
-  // Status counts for header chips
-  const counts = useMemo(() => {
-    const all = whatsappStore.getConversations(orgSlug);
-    return {
-      all: all.length,
-      open: all.filter((c) => c.status === "open").length,
-      pending: all.filter((c) => c.status === "pending").length,
-      resolved: all.filter((c) => c.status === "resolved").length,
-      unassigned: all.filter((c) => !c.assigned_to_user_id && !c.assigned_to_name).length,
-      unread: all.filter((c) => c.unread_count > 0).length,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgSlug, refreshKey]);
+  // 24h Meta Customer Service Window Check
+  const windowStatus = useMemo(() => {
+    if (!activeConversation) return { allowed: true, hoursRemaining: 24 };
+    return whatsappStore.isWithin24HourWindow(activeConversation);
+  }, [activeConversation]);
 
-  // Handlers
-  const handleSelectConversation = (conv: WhatsAppConversation) => {
-    setActiveConversationId(conv.id);
-    setMobileTab("chat");
-    setFeedbackMessage(null);
-    // Auto mark as read when opened
-    if (conv.unread_count > 0) {
-      whatsappStore.markConversationRead(orgSlug, conv.id);
-      setRefreshKey((k) => k + 1);
-    }
-  };
+  // Send WhatsApp Message
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!activeConversation || isSending) return;
 
-  const handleStatusChange = (newStatus: ConversationStatus) => {
-    if (!activeConversation) return;
-    const staffName = currentStaffUser?.name || "Staff Member";
-    whatsappStore.updateConversationStatus(orgSlug, activeConversation.id, newStatus, staffName);
-    setFeedbackMessage({ type: "success", text: `Conversation status updated to ${newStatus.toUpperCase()}` });
-    setRefreshKey((k) => k + 1);
-  };
-
-  const handleAssigneeChange = (memberId: string) => {
-    if (!activeConversation) return;
-    const staffName = currentStaffUser?.name || "Staff Member";
-    if (memberId === "unassigned") {
-      whatsappStore.assignConversation(orgSlug, activeConversation.id, { userId: null, name: null }, staffName);
-      setFeedbackMessage({ type: "success", text: "Conversation left unassigned" });
-    } else {
-      const targetMember = teamMembers.find((m) => m.id === memberId);
-      if (targetMember) {
-        whatsappStore.assignConversation(
-          orgSlug,
-          activeConversation.id,
-          { userId: targetMember.id, name: targetMember.name },
-          staffName
-        );
-        setFeedbackMessage({ type: "success", text: `Assigned conversation to ${targetMember.name}` });
-      }
-    }
-    setRefreshKey((k) => k + 1);
-  };
-
-  const handleToggleRead = () => {
-    if (!activeConversation) return;
-    if (activeConversation.unread_count > 0) {
-      whatsappStore.markConversationRead(orgSlug, activeConversation.id);
-    } else {
-      whatsappStore.markConversationUnread(orgSlug, activeConversation.id);
-    }
-    setRefreshKey((k) => k + 1);
-  };
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeConversation) return;
-    setFeedbackMessage(null);
-
-    if (composerMode === "note") {
-      // Internal Note dispatch (Strictly local, NEVER sent to customer)
-      if (!internalNoteInput.trim()) return;
-      whatsappStore.addInternalNote(
-        orgSlug,
-        activeConversation.id,
-        internalNoteInput.trim(),
-        currentStaffUser?.name || "Staff Member",
-        currentStaffUser?.id
-      );
-      setInternalNoteInput("");
-      setFeedbackMessage({ type: "success", text: "Internal team note posted (hidden from customer)" });
-      toast("Private Note Posted 🔒", { message: "Saved to internal activity log", type: "success" });
-      setRefreshKey((k) => k + 1);
-      return;
-    }
-
-    // Outbound WhatsApp dispatch
     if (windowStatus.allowed && !messageInput.trim()) return;
 
     setIsSending(true);
+    const staffName = currentStaffUser?.name || "Staff Member";
+    const staffUserId = currentStaffUser?.id;
 
     const payload = windowStatus.allowed
       ? {
           toPhone: activeConversation.contact_phone,
           type: "text" as const,
           text: messageInput.trim(),
-          staffName: currentStaffUser?.name || "Staff Member",
-          staffUserId: currentStaffUser?.id,
+          staffName,
+          staffUserId,
         }
       : {
           toPhone: activeConversation.contact_phone,
@@ -378,73 +225,63 @@ function InboxContent() {
             "1": activeConversation.contact_name,
             "2": currentOrg.name,
           },
-          staffName: currentStaffUser?.name || "Staff Member",
-          staffUserId: currentStaffUser?.id,
+          staffName,
+          staffUserId,
         };
 
-    const result = await whatsappStore.sendOutboundMessage(orgSlug, activeConversation.id, payload);
-    setIsSending(false);
-
-    if (!result.success) {
-      setFeedbackMessage({ type: "error", text: result.errorMessage || "Message dispatch failed." });
-      toast("Dispatch Failed", { message: result.errorMessage || "Could not send message", type: "error" });
-    } else {
-      setMessageInput("");
-      setFeedbackMessage({
-        type: "success",
-        text: result.isSimulated
-          ? "Simulated message dispatched [MOCK MODE]"
-          : "Message sent via official Meta Cloud API",
-      });
-      toast("Message Dispatched! 🚀", {
-        message: `Sent to ${activeConversation.contact_name}`,
-        type: "success",
-      });
-      setRefreshKey((k) => k + 1);
-
-      // Auto-reply simulation for interactive demo experience
-      if (autoReplyEnabled && windowStatus.allowed) {
-        const contactName = activeConversation.contact_name;
-        const contactPhone = activeConversation.contact_phone;
-
-        const dynamicReplies = [
-          "Thank you for the quick response! That sounds great, let's schedule a call.",
-          "Received! I will review this with our procurement team and get back to you shortly.",
-          "Perfect, thanks for confirming! Could you also share the commercial terms?",
-          "Thanks! Could you please send over the invoice link so we can process it today?",
-          "Got it! That answers my question perfectly. Thank you!"
-        ];
-        const randomReply = dynamicReplies[Math.floor(Math.random() * dynamicReplies.length)];
-
-        setTimeout(() => {
-          whatsappStore.processInboundMessage(orgSlug, {
-            externalMessageId: `mock_wamid_auto_${Date.now()}`,
-            fromPhone: contactPhone,
-            senderName: contactName,
-            body: randomReply,
-            isSimulated: true,
-          });
-          setRefreshKey((k) => k + 1);
-          toast("Customer Replied on WhatsApp", {
-            message: `${contactName}: "${randomReply.slice(0, 42)}..."`,
-            type: "info",
-          });
-        }, 1800);
+    try {
+      const res = await whatsappStore.sendOutboundMessage(orgSlug, activeConversation.id, payload);
+      setIsSending(false);
+      if (res.success) {
+        setMessageInput("");
+        setRefreshKey((k) => k + 1);
+        toast("Message delivered via Meta API", { type: "success" });
+      } else {
+        toast(res.errorMessage || "Message dispatch failed", { type: "error" });
       }
+    } catch (err: unknown) {
+      setIsSending(false);
+      toast("Could not deliver message", { type: "error" });
     }
   };
 
+  // Send Internal Team Note
+  const handleSendNote = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!activeConversation || !internalNoteInput.trim() || isSending) return;
+
+    setIsSending(true);
+    const staffName = currentStaffUser?.name || "Staff Member";
+    const staffUserId = currentStaffUser?.id;
+
+    try {
+      whatsappStore.addInternalNote(
+        orgSlug,
+        activeConversation.id,
+        internalNoteInput.trim(),
+        staffName,
+        staffUserId
+      );
+      setInternalNoteInput("");
+      setRefreshKey((k) => k + 1);
+      toast("Internal team note recorded", { type: "success" });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // AI Reply Generation
   const handleGenerateAIReply = async () => {
-    if (!activeConversation) return;
+    if (!activeConversation || aiGenerating) return;
     setAiGenerating(true);
-    setAiError(null);
+
     try {
       const activeMsgs = whatsappStore.getMessages(activeConversation.id);
       const lastCustMsg =
         [...activeMsgs].reverse().find((m) => m.sender_type === "customer")?.body ||
         "Hello! I am interested in your services.";
 
-      const res = await aiService.generateReplySuggestion({
+      const result = await aiService.generateReplySuggestion({
         orgSlug,
         customerName: activeConversation.contact_name,
         incomingMessage: lastCustMsg,
@@ -453,39 +290,22 @@ function InboxContent() {
           text: m.body,
         })),
       });
-      setAiSuggestion(res);
-    } catch (err: any) {
-      setAiError(err?.message || "Failed to generate AI suggestion");
-      setTimeout(() => setAiError(null), 4000);
+      setAiSuggestion(result);
+    } catch (err) {
+      toast("Could not generate AI draft", { type: "error" });
     } finally {
       setAiGenerating(false);
     }
   };
 
-  const handleRewrite = async (style: "shorter" | "friendlier" | "more_professional") => {
-    if (!messageInput.trim()) return;
-    setAiGenerating(true);
-    try {
-      const res = await aiService.rewriteDraft({
-        orgSlug,
-        draftText: messageInput,
-        targetStyle: style,
-      });
-      setMessageInput(res.rewrittenText);
-    } catch (err: any) {
-      setAiError(err?.message || "Draft rewrite failed");
-      setTimeout(() => setAiError(null), 4000);
-    } finally {
-      setAiGenerating(false);
-    }
-  };
-
+  // AI Thread Summary
   const handleSummarize = async () => {
-    if (!activeConversation) return;
+    if (!activeConversation || aiGenerating) return;
     setAiGenerating(true);
+
     try {
       const activeMsgs = whatsappStore.getMessages(activeConversation.id);
-      const res = await aiService.summarizeConversation({
+      const result = await aiService.summarizeConversation({
         orgSlug,
         customerName: activeConversation.contact_name,
         messages: activeMsgs.map((m) => ({
@@ -494,1492 +314,694 @@ function InboxContent() {
           timestamp: m.created_at,
         })),
       });
-      setAiSummary(res);
+      setAiSummary(result);
       setAiSummaryOpen(true);
-    } catch (err: any) {
-      setAiError(err?.message || "Summary generation failed");
-      setTimeout(() => setAiError(null), 4000);
+    } catch (err) {
+      toast("Could not summarize thread", { type: "error" });
     } finally {
       setAiGenerating(false);
     }
   };
 
-  const handleInsertAISuggestion = () => {
-    if (!aiSuggestion) return;
-    setMessageInput(aiSuggestion.suggestionText);
-    setAiSuggestion(null);
-  };
-
-  const handleSimulateInbound = () => {
-    if (!simInboundText.trim()) return;
-
-    const mockId = `mock_wamid_sim_${Date.now()}`;
-    const result = whatsappStore.processInboundMessage(orgSlug, {
-      externalMessageId: mockId,
-      fromPhone: simInboundPhone,
-      senderName: simInboundName,
-      body: simInboundText.trim(),
-      isSimulated: true,
-    });
-
-    if (result.duplicate) {
-      alert("Simulated duplicate detected: rejected by idempotency filter.");
-    } else {
-      setFeedbackMessage({ type: "success", text: `Inbound inquiry simulated from ${simInboundName}` });
-      setRefreshKey((k) => k + 1);
-    }
-  };
-
-  const handleLinkLead = (leadId: string) => {
-    if (!activeConversation) return;
-    const staffName = currentStaffUser?.name || "Staff Member";
-    whatsappStore.linkConversationLead(orgSlug, activeConversation.id, leadId === "none" ? null : leadId, staffName);
-    setFeedbackMessage({ type: "success", text: "Conversation lead association updated" });
-    setRefreshKey((k) => k + 1);
-  };
-
+  // Create CRM Lead Modal Submit
   const handleCreateLead = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeConversation || !contact || !newLeadTitle.trim()) return;
+    if (!activeConversation || !newLeadTitle.trim()) return;
 
     const created = crmStore.createLead(orgSlug, {
-      contact_id: contact.id,
-      contact_name: `${contact.first_name} ${contact.last_name || ""}`.trim(),
-      contact_phone: contact.phone,
       title: newLeadTitle.trim(),
+      contact_id: activeConversation.contact_id,
+      contact_name: activeConversation.contact_name,
+      contact_phone: activeConversation.contact_phone,
       stage: newLeadStage,
-      estimated_value: parseFloat(newLeadValue) || 0,
+      estimated_value: parseFloat(newLeadValue) || 50000,
       currency: "INR",
       source: "WhatsApp Shared Inbox",
     });
 
-    const staffName = currentStaffUser?.name || "Staff Member";
-    whatsappStore.linkConversationLead(orgSlug, activeConversation.id, created.id, staffName);
+    whatsappStore.linkConversationLead(orgSlug, activeConversation.id, created.id, currentStaffUser?.name || "Staff");
     setLeadModalOpen(false);
     setNewLeadTitle("");
-    setFeedbackMessage({ type: "success", text: `New deal "${created.title}" created & linked` });
     setRefreshKey((k) => k + 1);
+    toast("Commercial lead created and linked to conversation", { type: "success" });
   };
 
-  const handleUpdateLeadStage = (newStage: LeadStage) => {
-    if (!lead) return;
-    crmStore.updateLeadStage(orgSlug, lead.id, newStage);
-    setFeedbackMessage({ type: "success", text: `Deal stage updated to ${newStage.toUpperCase()}` });
-    setRefreshKey((k) => k + 1);
-  };
-
+  // Create Follow-up Task Modal Submit
   const handleCreateFollowUp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeConversation || !contact || !newFollowUpTitle.trim()) return;
+    if (!activeConversation || !newFollowUpTitle.trim()) return;
 
     crmStore.createTask(orgSlug, {
-      contact_id: contact.id,
-      contact_name: `${contact.first_name} ${contact.last_name || ""}`.trim(),
+      contact_id: activeConversation.contact_id,
+      contact_name: activeConversation.contact_name,
       lead_id: lead?.id,
       lead_title: lead?.title,
-      assigned_to_name: currentStaffUser?.name || "Staff Member",
+      assigned_to_name: currentStaffUser?.name || "Staff",
       title: newFollowUpTitle.trim(),
-      description: "Scheduled via WhatsApp Shared Inbox",
+      description: "Scheduled from WhatsApp Shared Inbox thread",
       due_date: new Date(newFollowUpDate).toISOString(),
       priority: newFollowUpPriority,
       status: "todo",
     });
 
     setFollowUpModalOpen(false);
-    setFeedbackMessage({ type: "success", text: `Follow-up scheduled for ${newFollowUpDate}` });
     setRefreshKey((k) => k + 1);
+    toast("Follow-up task scheduled", { type: "success" });
   };
 
   return (
-    <div className="space-y-4">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="type-heading text-xl font-medium tracking-tight text-slate-900">
-              WhatsApp Shared Inbox
-            </h1>
-            <span className="px-2.5 py-0.5 text-xs font-medium text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/20 rounded-full font-mono">
-              Multi-Agent Live
-            </span>
-          </div>
-          <p className="type-supporting text-xs text-[#717680] mt-0.5">
-            Real-time customer communication, shared WhatsApp inbox, private internal notes & CRM sync.
-          </p>
-        </div>
-
-        {/* Quick Actions & Status */}
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setSimulatorOpen(!simulatorOpen)}
-            className="h-8.5 px-3 text-xs font-medium text-slate-800 bg-white border border-[#E5E7EB] hover:bg-[#F8F9FA] transition-all flex items-center gap-1.5 rounded-lg cursor-pointer shadow-2xs"
-          >
-            <Bot className="h-3.5 w-3.5 text-[#FF7900]" />
-            <span>{simulatorOpen ? "Hide Simulator" : "Webhook Simulator"}</span>
-          </Button>
-
-          <Link
-            href={`/app/${orgSlug}/whatsapp`}
-            className="h-8.5 px-3 text-xs font-medium text-slate-800 bg-white border border-[#E5E7EB] hover:bg-[#F8F9FA] transition-all flex items-center gap-1.5 rounded-lg cursor-pointer shadow-2xs"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#FF7900]" />
-            <span>WhatsApp Settings</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Simulator Tray (Collapsible) */}
-      {simulatorOpen && (
-        <div className="p-4 bg-white border border-[#E5E7EB] rounded-xl shadow-2xs space-y-3 animate-page-enter">
+    // Full-bleed viewport height frame breaking out of page padding (Defect 16 fix)
+    <div className="-m-4 sm:-m-5 md:-m-6 h-[calc(100vh-52px)] flex bg-white overflow-hidden select-none">
+      {/* ===================================================================== */}
+      {/* PANE 1: CONVERSATION LIST (320px)                                     */}
+      {/* ===================================================================== */}
+      <div className="w-full sm:w-[320px] shrink-0 border-r border-[#E4E4E7] flex flex-col bg-white overflow-hidden">
+        {/* Pane 1 Header: Search & Filter Tabs */}
+        <div className="p-3 border-b border-[#E4E4E7] space-y-2.5 bg-white shrink-0">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-[#FF7900]" />
-              <h3 className="text-xs font-medium text-slate-900">
-                Interactive Mock Inbound Message Simulator
-              </h3>
-            </div>
-            <span className="text-[11px] text-[#717680] font-normal">
-              Zero-cost testing • Simulates incoming customer webhooks without Meta credentials
-            </span>
+            <h2 className="type-title text-[#0D0D0E] font-medium tracking-tight">
+              Inbox
+            </h2>
+            <StatusPill variant="neutral" size="sm">
+              {tabCounts.all} active
+            </StatusPill>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <label className="text-xs font-normal text-slate-600 block mb-1">
-                From Phone (E.164)
-              </label>
-              <Input
-                value={simInboundPhone}
-                onChange={(e) => setSimInboundPhone(e.target.value)}
-                placeholder="+919876543210"
-                className="h-8.5 text-xs font-mono font-medium bg-[#F8F9FA] border-[#E5E7EB]"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-normal text-slate-600 block mb-1">
-                Sender Name
-              </label>
-              <Input
-                value={simInboundName}
-                onChange={(e) => setSimInboundName(e.target.value)}
-                placeholder="Aarav Patel"
-                className="h-8.5 text-xs font-medium bg-[#F8F9FA] border-[#E5E7EB]"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-normal text-slate-600 block mb-1">
-                Message Text
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  value={simInboundText}
-                  onChange={(e) => setSimInboundText(e.target.value)}
-                  placeholder="Inquiry text..."
-                  className="h-8.5 text-xs flex-1 bg-[#F8F9FA] border-[#E5E7EB]"
-                />
-                <Button
-                  size="sm"
-                  onClick={handleSimulateInbound}
-                  className="h-8.5 text-xs font-medium bg-[#FF7900] text-white hover:bg-[#E66D00] shrink-0 px-3 rounded-lg"
-                >
-                  Fire Webhook
-                </Button>
-              </div>
-            </div>
+          {/* Search Input */}
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#717680]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search conversations..."
+              className="w-full h-8 pl-8 pr-3 text-xs bg-[#FAF9F6] border border-[#E4E4E7] rounded-lg text-[#0D0D0E] placeholder:text-[#717680] outline-none focus:border-[#FF7A1A]"
+            />
+          </div>
+
+          {/* Filter Tabs: All, Unread, Mine */}
+          <div className="grid grid-cols-3 gap-1 p-0.5 rounded-lg bg-[#FAF9F6] border border-[#E4E4E7] text-xs">
+            <button
+              type="button"
+              onClick={() => setFilterTab("all")}
+              className={`py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
+                filterTab === "all"
+                  ? "bg-white text-[#0D0D0E] shadow-2xs border border-[#E4E4E7]"
+                  : "text-[#717680] hover:text-[#0D0D0E]"
+              }`}
+            >
+              All ({tabCounts.all})
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterTab("unread")}
+              className={`py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
+                filterTab === "unread"
+                  ? "bg-white text-[#0D0D0E] shadow-2xs border border-[#E4E4E7]"
+                  : "text-[#717680] hover:text-[#0D0D0E]"
+              }`}
+            >
+              Unread ({tabCounts.unread})
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterTab("mine")}
+              className={`py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
+                filterTab === "mine"
+                  ? "bg-white text-[#0D0D0E] shadow-2xs border border-[#E4E4E7]"
+                  : "text-[#717680] hover:text-[#0D0D0E]"
+              }`}
+            >
+              Mine ({tabCounts.mine})
+            </button>
           </div>
         </div>
-      )}
 
-      {/* Mobile & Tablet View Switcher (< 1280px) */}
-      <div className="flex xl:hidden rounded-lg bg-[#F8F9FA] p-1 border border-[#E5E7EB] shadow-2xs">
-        <button
-          onClick={() => setMobileTab("list")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${
-            mobileTab === "list" ? "bg-slate-900 text-white shadow-2xs" : "text-[#717680] hover:text-slate-900"
-          }`}
-        >
-          Conversations ({conversations.length})
-        </button>
-        <button
-          onClick={() => setMobileTab("chat")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${
-            mobileTab === "chat" ? "bg-slate-900 text-white shadow-2xs" : "text-[#717680] hover:text-slate-900"
-          }`}
-        >
-          Active Thread
-        </button>
-        <button
-          onClick={() => setMobileTab("details")}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${
-            mobileTab === "details" ? "bg-slate-900 text-white shadow-2xs" : "text-[#717680] hover:text-slate-900"
-          }`}
-        >
-          CRM Context
-        </button>
+        {/* Conversation List (Clean 2-line cards - Defect 18 fix) */}
+        <div className="flex-1 overflow-y-auto divide-y divide-[#E4E4E7] custom-light-scroll">
+          {filteredConversations.map((conv) => {
+            const isSelected = conv.id === activeConversation?.id;
+            const isUnread = conv.unread_count > 0;
+
+            return (
+              <button
+                key={conv.id}
+                type="button"
+                onClick={() => setActiveConversationId(conv.id)}
+                className={`w-full text-left p-3 transition-colors duration-140 cursor-pointer block ${
+                  isSelected
+                    ? "bg-[#FFF4EC]/40 border-l-2 border-[#FF7A1A]"
+                    : "hover:bg-[#FAF9F6]"
+                }`}
+              >
+                {/* Line 1: Name + Timestamp */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`text-xs truncate ${isSelected || isUnread ? "font-medium text-[#0D0D0E]" : "text-[#525866]"}`}>
+                    {conv.contact_name}
+                  </span>
+                  <span className="text-[10px] text-[#717680] shrink-0">
+                    {conv.last_message_at ? formatDate(conv.last_message_at) : ""}
+                  </span>
+                </div>
+
+                {/* Line 2: Message preview + Unread chip */}
+                <div className="flex items-center justify-between gap-2 mt-1">
+                  <p className="text-[11px] text-[#717680] truncate font-normal">
+                    {conv.last_message_text || "No messages yet"}
+                  </p>
+                  {isUnread && (
+                    <span className="h-4 min-w-[16px] px-1 rounded-full bg-[#FF7A1A] text-white text-[9px] font-medium flex items-center justify-center shrink-0">
+                      {conv.unread_count}
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+
+          {filteredConversations.length === 0 && (
+            <div className="p-6 text-center text-xs text-[#717680]">
+              No conversations found in this view.
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Feedback Banner */}
-      {feedbackMessage && (
-        <div
-          className={`p-3 rounded-lg text-xs font-medium flex items-center justify-between border ${
-            feedbackMessage.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-900"
-              : "bg-rose-50 border-rose-200 text-rose-900"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {feedbackMessage.type === "success" ? (
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-            ) : (
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
-            )}
-            <span>{feedbackMessage.text}</span>
-          </div>
-          <button onClick={() => setFeedbackMessage(null)} className="text-xs font-medium underline cursor-pointer">
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Main 3-Column Responsive Inbox Frame (>= 1280px side-by-side, < 1280px stack-and-navigate) */}
-      <div className="rounded-xl border border-[#E5E7EB] bg-white shadow-2xs overflow-hidden flex flex-col xl:flex-row min-h-[720px] h-[calc(100vh-130px)]">
-        {/* ==================================================================== */}
-        {/* LEFT PANEL: Conversation List (Hairline divider, search, filters) */}
-        {/* ==================================================================== */}
-        <div
-          className={`w-full xl:w-[320px] 2xl:w-[350px] shrink-0 border-r border-[#E5E7EB] flex-col bg-[#FAFAFA] overflow-hidden ${
-            mobileTab !== "list" ? "hidden xl:flex" : "flex"
-          }`}
-        >
-          {/* Search & Filter Header */}
-          <div className="p-3.5 border-b border-[#E5E7EB] space-y-2.5 bg-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-medium text-slate-900">Conversations</h2>
-                <span
-                  suppressHydrationWarning
-                  className="px-2 py-0.2 rounded-full text-[11px] font-medium bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/20 font-mono"
-                >
-                  {counts.all}
-                </span>
-              </div>
-              <button
-                onClick={() => { setStatusFilter("all"); setAssigneeFilter("all"); setUnreadOnly(false); setSearchQuery(""); }}
-                className="p-1 rounded-md hover:bg-[#F8F9FA] text-[#717680] hover:text-slate-900 transition-colors border border-transparent hover:border-[#E5E7EB] cursor-pointer"
-                title="Reset filters"
-              >
-                <Filter className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            {/* Row 1 Filter Pills */}
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-0.5">
-              <button
-                onClick={() => { setStatusFilter("all"); setAssigneeFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
-                  statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "bg-white hover:bg-[#F8F9FA] text-[#717680] border border-[#E5E7EB]"
-                }`}
-              >
-                <span>All</span>
-                <span
-                  suppressHydrationWarning
-                  className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                    statusFilter === "all" && assigneeFilter === "all" && !unreadOnly
-                      ? "bg-[#FF7900]/20 text-[#FF7900]"
-                      : "bg-[#F8F9FA] text-slate-700"
-                  }`}
-                >
-                  {counts.all}
-                </span>
-              </button>
-              <button
-                onClick={() => { setAssigneeFilter("unassigned"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
-                  assigneeFilter === "unassigned"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "bg-white hover:bg-[#F8F9FA] text-[#717680] border border-[#E5E7EB]"
-                }`}
-              >
-                <span>Unassigned</span>
-                <span
-                  suppressHydrationWarning
-                  className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                    assigneeFilter === "unassigned"
-                      ? "bg-[#FF7900]/20 text-[#FF7900]"
-                      : "bg-[#F8F9FA] text-slate-700"
-                  }`}
-                >
-                  {counts.unassigned}
-                </span>
-              </button>
-              <button
-                onClick={() => { setAssigneeFilter(currentStaffUser?.id || "me"); setStatusFilter("all"); setUnreadOnly(false); }}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
-                  assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "bg-white hover:bg-[#F8F9FA] text-[#717680] border border-[#E5E7EB]"
-                }`}
-              >
-                <span>Mine</span>
-                <span
-                  suppressHydrationWarning
-                  className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                    assigneeFilter === currentStaffUser?.id || assigneeFilter === "me"
-                      ? "bg-[#FF7900]/20 text-[#FF7900]"
-                      : "bg-[#F8F9FA] text-slate-700"
-                  }`}
-                >
-                  {Math.max(0, counts.all - counts.unassigned)}
-                </span>
-              </button>
-              <button
-                onClick={() => setUnreadOnly(!unreadOnly)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
-                  unreadOnly
-                    ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30"
-                    : "bg-white hover:bg-[#F8F9FA] text-[#717680] border border-[#E5E7EB]"
-                }`}
-              >
-                <span>Unread</span>
-                <span
-                  suppressHydrationWarning
-                  className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                    unreadOnly
-                      ? "bg-[#FF7900]/20 text-[#FF7900]"
-                      : "bg-[#F8F9FA] text-slate-700"
-                  }`}
-                >
-                  {counts.unread}
-                </span>
-              </button>
-            </div>
-
-            {/* Search Input */}
-            <div className="relative pt-0.5">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search name, phone, message..."
-                className="pl-8 h-8 text-xs bg-[#F8F9FA] border-[#E5E7EB] focus:bg-white focus:border-[#FF7900] rounded-lg text-slate-900 font-normal"
-              />
-            </div>
-          </div>
-
-          {/* Conversation Cards Scroll List */}
-          <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[#FAFAFA]">
-            {conversations.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#717680]">
-                <MessageSquare className="h-6 w-6 mx-auto mb-2 text-slate-400" />
-                <p className="font-medium text-slate-900">No conversations match</p>
-                <p className="text-[11px] mt-1 text-[#717680]">Try adjusting your filters or search terms.</p>
-              </div>
-            ) : (
-              conversations.map((c) => {
-                const isActive = activeConversation?.id === c.id;
-                const statusCfg = STATUS_CONFIG[c.status] || STATUS_CONFIG.open;
-                const initials = c.contact_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => handleSelectConversation(c)}
-                    className={`p-3 rounded-lg cursor-pointer transition-all border ${
-                      isActive
-                        ? "bg-white border-[#FF7900] shadow-2xs border-l-3 border-l-[#FF7900]"
-                        : "bg-white hover:bg-[#F8F9FA] border-[#E5E7EB]"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="relative shrink-0">
-                          <div className="h-9 w-9 rounded-lg bg-slate-900 text-white font-medium flex items-center justify-center text-xs">
-                            {initials}
-                          </div>
-                          {c.unread_count > 0 && (
-                            <span
-                              suppressHydrationWarning
-                              className="absolute -top-1 -right-1 h-4 w-4 bg-[#FF7900] text-white rounded-full text-[10px] font-medium flex items-center justify-center ring-2 ring-white font-mono"
-                            >
-                              {c.unread_count}
-                            </span>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="text-xs font-medium text-slate-900 truncate leading-tight">
-                            {c.contact_name}
-                          </h3>
-                          <span className="text-[11px] text-[#717680] font-normal font-mono block truncate">
-                            {c.contact_phone}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="text-right shrink-0 space-y-1">
-                        <span className="text-[10px] text-[#717680] block font-mono">
-                          {formatDate(c.last_message_at)}
-                        </span>
-                        <span
-                          className={`inline-block px-1.5 py-0.2 rounded text-[10px] font-medium border ${statusCfg.colorClass}`}
-                        >
-                          {statusCfg.label}
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="mt-1.5 text-xs text-slate-600 line-clamp-1 leading-snug font-normal">
-                      {c.last_message_text}
-                    </p>
-
-                    <div className="mt-2 flex items-center justify-between text-[11px] text-[#717680] pt-1.5 border-t border-[#F1F3F5]">
-                      <div className="flex items-center gap-1 font-normal">
-                        {c.assigned_to_name ? (
-                          <span className="inline-flex items-center gap-1 text-[#FF7900] font-medium">
-                            <UserCheck className="h-3 w-3" />
-                            {c.assigned_to_name}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-amber-700 font-normal">
-                            <UserX className="h-3 w-3" />
-                            Unassigned
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1 text-slate-700 font-normal text-[10px]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span>WhatsApp</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        {/* ==================================================================== */}
-        {/* CENTER PANEL: Active Conversation & Smart Composer */}
-        {/* ==================================================================== */}
-        <div
-          className={`flex-1 min-w-0 flex-col bg-white xl:border-r border-[#E5E7EB] overflow-hidden ${
-            mobileTab !== "chat" ? "hidden xl:flex" : "flex"
-          }`}
-        >
-          {activeConversation ? (
-            <>
-              {/* Conversation Header */}
-              <div className="p-3 border-b border-[#E5E7EB] bg-white space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    {/* Back button on < 1280px */}
-                    <button
-                      type="button"
-                      onClick={() => setMobileTab("list")}
-                      className="xl:hidden p-1.5 rounded-md text-[#717680] hover:text-slate-900 hover:bg-[#F8F9FA] border border-[#E5E7EB] cursor-pointer"
-                      title="Back to inbox list"
-                      aria-label="Back to inbox list"
-                    >
-                      <ArrowRight className="h-4 w-4 rotate-180" />
-                    </button>
-
-                    <div className="relative shrink-0">
-                      <div className="h-9 w-9 rounded-lg bg-slate-900 text-white font-medium flex items-center justify-center text-xs">
-                        {activeConversation.contact_name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                      </div>
-                      <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <h2 className="text-sm font-medium text-slate-900 truncate">
-                          {activeConversation.contact_name}
-                        </h2>
-                        <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-400 shrink-0" />
-                      </div>
-                      <span className="text-[11px] text-[#717680] font-normal font-mono truncate block">
-                        {contact?.company ? `${contact.company} • ` : ""}{activeConversation.contact_phone}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Header Actions */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {/* Status Dropdown Pill */}
-                    <div className="relative">
-                      <select
-                        value={activeConversation.status}
-                        onChange={(e) => handleStatusChange(e.target.value as ConversationStatus)}
-                        className="appearance-none bg-[#F8F9FA] border border-[#E5E7EB] px-2.5 py-1 pr-6 rounded-md text-xs font-medium text-slate-800 shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
-                      >
-                        <option value="open">Open</option>
-                        <option value="pending">Pending</option>
-                        <option value="resolved">Resolved</option>
-                      </select>
-                      <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-slate-400 pointer-events-none" />
-                    </div>
-
-                    {/* Assignee Dropdown Pill */}
-                    <div className="relative">
-                      <select
-                        value={activeConversation.assigned_to_name || "unassigned"}
-                        onChange={(e) => handleAssigneeChange(e.target.value)}
-                        className="appearance-none bg-[#F8F9FA] border border-[#E5E7EB] px-2.5 py-1 pr-6 rounded-md text-xs font-medium text-slate-800 shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
-                      >
-                        <option value="unassigned">Assign</option>
-                        {teamMembers.map((m) => (
-                          <option key={m.id} value={m.id}>
-                            {m.name}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-slate-400 pointer-events-none" />
-                    </div>
-
-                    {/* Phone Call Button */}
-                    <button
-                      onClick={() => setFeedbackMessage({ type: "success", text: `Calling ${activeConversation.contact_phone}...` })}
-                      className="p-1.5 rounded-md bg-[#F8F9FA] hover:bg-[#E5E7EB] text-slate-700 border border-[#E5E7EB] transition-colors cursor-pointer"
-                      title="Call Contact"
-                    >
-                      <PhoneCall className="h-3.5 w-3.5 text-[#FF7900]" />
-                    </button>
-
-                    {/* Toggle Read */}
-                    <button
-                      onClick={handleToggleRead}
-                      className="p-1.5 rounded-md bg-[#F8F9FA] hover:bg-[#E5E7EB] text-slate-700 border border-[#E5E7EB] transition-colors cursor-pointer"
-                      title={activeConversation.unread_count > 0 ? "Mark as Read" : "Mark as Unread"}
-                    >
-                      <Mail className="h-3.5 w-3.5" />
-                    </button>
-
-                    {/* View Context button on < 1280px */}
-                    <button
-                      onClick={() => setMobileTab("details")}
-                      className="xl:hidden px-2.5 py-1 rounded-md text-xs font-medium bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 cursor-pointer"
-                    >
-                      Context &gt;
-                    </button>
-                  </div>
+      {/* ===================================================================== */}
+      {/* PANE 2: ACTIVE THREAD & PINNED COMPOSER (flex-1)                      */}
+      {/* ===================================================================== */}
+      <div className="flex-1 flex flex-col min-w-0 bg-[#FAF9F6] overflow-hidden">
+        {activeConversation ? (
+          <>
+            {/* Thread Header */}
+            <div className="h-13 px-4 bg-white border-b border-[#E4E4E7] flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="h-7 w-7 rounded-full bg-[#FAF9F6] border border-[#E4E4E7] text-[#0D0D0E] font-medium text-xs flex items-center justify-center shrink-0">
+                  {activeConversation.contact_name?.charAt(0) || "C"}
                 </div>
-              </div>
-
-              {/* 24-Hour Policy Notice */}
-              {windowStatus.allowed ? (
-                <div className="bg-emerald-50 px-3 py-1.5 border-b border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-medium">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    24h Customer Service Window ({windowStatus.hoursRemaining}h remaining)
-                  </span>
-                  <span className="text-[11px] text-emerald-700 font-normal">Free-text active</span>
-                </div>
-              ) : (
-                <div className="bg-amber-50 px-3 py-1.5 border-b border-amber-200 text-xs text-amber-950 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                    <span>
-                      24h Meta Window Expired: Select an approved template to re-engage.
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-[#0D0D0E] truncate">
+                      {activeConversation.contact_name}
+                    </span>
+                    <span className="text-[11px] text-[#717680] font-normal truncate hidden sm:inline">
+                      {activeConversation.contact_phone}
                     </span>
                   </div>
                 </div>
-              )}
-
-              {/* Chronological Message History (WhatsApp Realistic Chat Surface) */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#EFEAE2]/50">
-                {/* Centered Date Separator */}
-                <div className="flex justify-center my-1">
-                  <span className="px-3 py-0.5 rounded-md text-[11px] font-normal text-[#717680] bg-white border border-[#E5E7EB] shadow-2xs font-mono">
-                    Today, 11 Oct 2026
-                  </span>
-                </div>
-
-                {messages.length === 0 ? (
-                  <div className="text-center py-12 text-slate-500 text-xs font-normal">
-                    No messages yet in this conversation.
-                  </div>
-                ) : (
-                  messages.map((m) => {
-                    const isStaff = m.sender_type === "staff";
-                    const isInternal = m.is_internal || m.sender_type === "internal_note";
-
-                    // 1. Internal Private Note rendering
-                    if (isInternal) {
-                      return (
-                        <div
-                          key={m.id}
-                          className="my-2 p-3 rounded-lg bg-[#FFFBEB] border border-amber-300 text-xs shadow-2xs space-y-1"
-                        >
-                          <div className="flex items-center justify-between text-[11px] text-amber-900 font-medium">
-                            <span className="flex items-center gap-1">
-                              <Lock className="h-3 w-3 text-amber-600" />
-                              Private Team Note • {m.sender_name || "Operations Lead"}
-                            </span>
-                            <span className="text-amber-700 font-mono text-[10px]">{formatDate(m.created_at)}</span>
-                          </div>
-                          <p className="text-amber-950 leading-relaxed whitespace-pre-wrap font-normal text-xs sm:text-sm">
-                            {m.body}
-                          </p>
-                          <span className="text-[10px] text-amber-700 font-normal block pt-1 border-t border-amber-200">
-                            Visible only to workspace team • Never sent to WhatsApp customer
-                          </span>
-                        </div>
-                      );
-                    }
-
-                    // 2. Outbound Staff WhatsApp Message
-                    if (isStaff) {
-                      return (
-                        <div key={m.id} className="group flex flex-col items-end relative">
-                          {/* Emoji reaction picker on hover */}
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-white border border-slate-200 px-1.5 py-0.2 rounded-full shadow-2xs mb-1 z-10">
-                            {["👍", "❤️", "🔥", "🙏"].map((emoji) => (
-                              <button
-                                key={emoji}
-                                type="button"
-                                onClick={() => handleAddReaction(m.id, emoji)}
-                                className="text-xs hover:scale-110 transition-transform cursor-pointer p-0.5"
-                              >
-                                {emoji}
-                              </button>
-                            ))}
-                          </div>
-
-                          <div className="max-w-[85%] sm:max-w-[75%] rounded-lg rounded-tr-xs bg-[#DCF8C6] text-slate-900 border border-emerald-300/60 p-2.5 sm:p-3 text-xs sm:text-sm shadow-2xs space-y-1">
-                            <div className="flex items-center justify-between gap-2 text-[10px] text-emerald-900 font-medium">
-                              <span>{m.sender_name || "Staff"}</span>
-                              {m.is_simulated && (
-                                <span className="bg-emerald-200/80 px-1 rounded text-[9px] font-mono text-emerald-900">
-                                  SIMULATED
-                                </span>
-                              )}
-                            </div>
-                            <p className="leading-relaxed whitespace-pre-wrap text-slate-900 text-xs sm:text-sm font-normal">{m.body}</p>
-                            <div className="flex items-center justify-end gap-1 pt-0.5 text-[10px] text-emerald-800 font-mono">
-                              <span>{formatDate(m.created_at)}</span>
-                              <CheckCheck className="h-3.5 w-3.5 text-[#53bdeb]" />
-                            </div>
-                          </div>
-
-                          {/* Reaction badge pills */}
-                          {messageReactions[m.id]?.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1 justify-end">
-                              {messageReactions[m.id].map((emoji, idx) => (
-                                <span
-                                  key={idx}
-                                  onClick={() => handleAddReaction(m.id, emoji)}
-                                  className="inline-flex items-center px-1.5 py-0.2 rounded-full text-xs bg-white border border-slate-200 shadow-2xs cursor-pointer hover:scale-110 transition-transform"
-                                >
-                                  {emoji}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    // 3. Inbound Customer Message
-                    return (
-                      <div key={m.id} className="group flex flex-col items-start relative">
-                        {/* Emoji reaction picker on hover */}
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-white border border-slate-200 px-1.5 py-0.2 rounded-full shadow-2xs mb-1 z-10">
-                          {["👍", "❤️", "🔥", "🙏"].map((emoji) => (
-                            <button
-                              key={emoji}
-                              type="button"
-                              onClick={() => handleAddReaction(m.id, emoji)}
-                              className="text-xs hover:scale-110 transition-transform cursor-pointer p-0.5"
-                            >
-                              {emoji}
-                            </button>
-                          ))}
-                        </div>
-
-                        <div className="max-w-[85%] sm:max-w-[75%] rounded-lg rounded-tl-xs bg-white border border-slate-200 p-2.5 sm:p-3 text-xs sm:text-sm text-slate-900 shadow-2xs space-y-1">
-                          <div className="flex items-center justify-between gap-2 text-[10px] text-[#717680] font-medium">
-                            <span className="font-medium text-slate-900">
-                              {m.sender_name || activeConversation.contact_name}
-                            </span>
-                            <span className="font-mono">{formatDate(m.created_at)}</span>
-                          </div>
-                          <p className="leading-relaxed whitespace-pre-wrap text-slate-900 text-xs sm:text-sm font-normal">{m.body}</p>
-                        </div>
-
-                        {/* Reaction badge pills */}
-                        {messageReactions[m.id]?.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {messageReactions[m.id].map((emoji, idx) => (
-                              <span
-                                key={idx}
-                                onClick={() => handleAddReaction(m.id, emoji)}
-                                className="inline-flex items-center px-1.5 py-0.2 rounded-full text-xs bg-white border border-slate-200 shadow-2xs cursor-pointer hover:scale-110 transition-transform"
-                              >
-                                {emoji}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
               </div>
 
-              {/* Smart Dual-Mode Composer */}
-              <div className="p-3 border-t border-[#E5E7EB] bg-white space-y-2">
-                {/* Quick Action Chips */}
-                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 text-xs">
-                  {[
-                    { label: "Pricing Details", text: "Hello! Here is our complete pricing structure and plan details for your team: ₹45,000/month." },
-                    { label: "Product Catalog", text: "Hi! You can browse our complete business automation catalog and features here." },
-                    { label: "Schedule Meeting", text: "Would you be free for a 15-minute quick walkthrough demo tomorrow afternoon?" },
-                    { label: "Follow-up", text: "Just following up on our previous conversation to see if you had any questions!" },
-                  ].map((chip) => (
-                    <button
-                      key={chip.label}
-                      type="button"
-                      onClick={() => {
-                        setComposerMode("message");
-                        setMessageInput(chip.text);
-                      }}
-                      className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F8F9FA] hover:bg-[#FFF4EC] text-slate-700 hover:text-[#FF7900] border border-[#E5E7EB] hover:border-[#FF7900]/30 transition-colors whitespace-nowrap cursor-pointer"
-                    >
-                      + {chip.label}
-                    </button>
-                  ))}
-                </div>
+              {/* Thread Action Controls */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Meta 24h Window Indicator (Defect 20 fix) */}
+                <StatusPill
+                  variant={windowStatus.allowed ? "success" : "warning"}
+                  size="sm"
+                  dot
+                  className="hidden md:inline-flex"
+                >
+                  {windowStatus.allowed ? `24h Window (${windowStatus.hoursRemaining}h)` : "Template Required"}
+                </StatusPill>
 
-                {/* Mode Selector Tabs */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 bg-[#F8F9FA] p-0.5 rounded-lg border border-[#E5E7EB]">
-                    <button
-                      type="button"
-                      onClick={() => setComposerMode("message")}
-                      className={`px-2.5 py-1 rounded text-xs font-medium transition-all cursor-pointer ${
-                        composerMode === "message"
-                          ? "bg-white text-emerald-800 shadow-2xs border border-[#E5E7EB]"
-                          : "text-[#717680] hover:text-slate-900"
-                      }`}
-                    >
-                      WhatsApp Message
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setComposerMode("note")}
-                      className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition-all cursor-pointer ${
-                        composerMode === "note"
-                          ? "bg-white text-amber-800 shadow-2xs border border-[#E5E7EB]"
-                          : "text-[#717680] hover:text-slate-900"
-                      }`}
-                    >
-                      <Lock className="h-3 w-3" />
-                      Internal Note
-                    </button>
-                  </div>
-
-                  <span className="text-[11px] text-[#717680] font-normal">
-                    Posting as <span className="text-slate-900 font-medium">{currentStaffUser?.name || "Staff"}</span>
-                  </span>
-                </div>
-
-                {/* AI Copilot Toolbar */}
-                <div className="flex flex-wrap items-center justify-between gap-1.5 p-2 rounded-lg bg-[#F8F9FA] border border-[#E5E7EB] text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleGenerateAIReply}
-                      disabled={aiGenerating}
-                      className="h-7 text-xs bg-white text-[#FF7900] border-[#E5E7EB] hover:bg-[#FFF4EC] font-medium"
-                    >
-                      <Sparkles className="h-3 w-3 mr-1 text-[#FF7900]" />
-                      {aiGenerating ? "Generating..." : "Suggest Reply"}
-                    </Button>
-
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleSummarize}
-                      disabled={aiGenerating}
-                      className="h-7 text-xs text-slate-700 hover:text-[#FF7900] font-medium"
-                    >
-                      <FileText className="h-3 w-3 mr-1" />
-                      Summarise
-                    </Button>
-
-                    {messageInput.trim() && (
-                      <div className="hidden sm:flex items-center gap-1 pl-2 border-l border-[#E5E7EB]">
-                        <span className="text-[10px] text-[#717680] font-medium">Tone:</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRewrite("shorter")}
-                          disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded text-[11px] bg-white border border-[#E5E7EB] hover:bg-[#F8F9FA] text-slate-700 font-normal cursor-pointer"
-                        >
-                          Shorter
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRewrite("friendlier")}
-                          disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded text-[11px] bg-white border border-[#E5E7EB] hover:bg-[#F8F9FA] text-slate-700 font-normal cursor-pointer"
-                        >
-                          Friendlier
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRewrite("more_professional")}
-                          disabled={aiGenerating}
-                          className="px-2 py-0.5 rounded text-[11px] bg-white border border-[#E5E7EB] hover:bg-[#F8F9FA] text-slate-700 font-normal cursor-pointer"
-                        >
-                          Professional
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <span className="text-[10px] text-[#717680] font-normal">
-                    Grounded AI Copilot
-                  </span>
-                </div>
-
-                {aiError && (
-                  <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-normal">
-                    {aiError}
-                  </div>
+                {/* Create Deal Button */}
+                {!lead && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setNewLeadTitle(`${activeConversation.contact_name} - Retainer`);
+                      setLeadModalOpen(true);
+                    }}
+                    className="h-7 text-[11px] px-2.5"
+                  >
+                    <Plus className="h-3 w-3 mr-1" />
+                    <span>Create Deal</span>
+                  </Button>
                 )}
 
-                {/* AI Suggestion Review Card */}
-                {aiSuggestion && (
-                  <div className="p-3 rounded-lg bg-[#FFF4EC] border border-[#FF7900]/30 space-y-2 text-xs animate-page-enter">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium bg-[#FF7900] text-white px-2 py-0.5 rounded">
-                          AI Draft Suggestion
-                        </span>
-                        <span className="text-[10px] font-medium text-[#FF7900] font-mono">
-                          {aiSuggestion.detectedIntent}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-[#717680]">
-                        Review before sending
-                      </span>
-                    </div>
+                {/* Follow-up Task Button */}
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setFollowUpModalOpen(true)}
+                  className="h-7 text-[11px] px-2.5 hidden sm:inline-flex"
+                >
+                  <Calendar className="h-3 w-3 mr-1" />
+                  <span>Follow-up</span>
+                </Button>
 
-                    <div className="p-2.5 rounded-md bg-white border border-[#E5E7EB] text-slate-900 text-xs leading-relaxed font-normal">
-                      {aiSuggestion.suggestionText}
-                    </div>
+                {/* AI Summary Button */}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleSummarize}
+                  disabled={aiGenerating}
+                  className="h-7 text-[11px] px-2 text-[#717680] hover:text-[#0D0D0E]"
+                  title="Summarize thread with AI"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-[#FF7A1A]" />
+                </Button>
 
-                    <div className="flex items-center justify-between pt-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <Button
-                          type="button"
-                          variant="default"
-                          size="sm"
-                          onClick={handleInsertAISuggestion}
-                          className="h-7 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium"
-                        >
-                          <Check className="h-3 w-3 mr-1" />
-                          Insert into Composer
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigator.clipboard.writeText(aiSuggestion.suggestionText)}
-                          className="h-7 text-xs bg-white font-normal"
-                        >
-                          <Copy className="h-3 w-3 mr-1" />
-                          Copy
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleGenerateAIReply}
-                          className="h-7 text-xs text-slate-600 font-normal"
-                        >
-                          <RefreshCw className="h-3 w-3 mr-1" />
-                          Regenerate
-                        </Button>
-                      </div>
-
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setAiSuggestion(null)}
-                        className="h-7 text-xs text-slate-500 hover:text-slate-800 font-normal"
-                      >
-                        Discard
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* WhatsApp Outbound Form */}
-                {composerMode === "message" ? (
-                  contact?.consent_status === "opted_out" ? (
-                    <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-normal">
-                      Customer has opted out of WhatsApp communication. Messaging is disabled by Meta policy.
-                    </div>
-                  ) : windowStatus.allowed ? (
-                    <form onSubmit={handleSendMessage} className="space-y-2">
-                      {/* Quick-Reply Suggestion Chips */}
-                      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-                        <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider shrink-0">
-                          ⚡ Quick:
-                        </span>
-                        {[
-                          { label: "💰 Pricing", text: "Hello! Here are our business packages starting from ₹15,000/mo. Would you like a detailed proposal breakdown?" },
-                          { label: "📅 Schedule Demo", text: "I'd love to walk you through a live walkthrough. Are you available for a 15-minute call today at 4 PM?" },
-                          { label: "✅ Confirm Order", text: "Thank you for confirming! Your order has been registered and our team is initiating the onboarding process." },
-                          { label: "💳 Payment Link", text: "Here is your secure checkout link: https://pay.roosstudiox.com/invoice-8921. Let me know once completed!" },
-                          { label: "📍 Office Location", text: "Our office is located at Cyber Hub, Sector 24, Gurugram. We are open Mon-Fri from 9:30 AM to 6:30 PM." },
-                        ].map((chip) => (
-                          <button
-                            key={chip.label}
-                            type="button"
-                            onClick={() => setMessageInput(chip.text)}
-                            className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#F8F9FA] hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-[#E5E7EB] hover:border-emerald-300 transition-all cursor-pointer whitespace-nowrap active:scale-95"
-                          >
-                            {chip.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="relative">
-                        <textarea
-                          rows={2}
-                          value={messageInput}
-                          onChange={(e) => setMessageInput(e.target.value)}
-                          placeholder="Type reply to customer on WhatsApp..."
-                          className="w-full rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] p-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white resize-none font-normal"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-1.5 text-[11px] font-normal text-slate-600 cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={autoReplyEnabled}
-                            onChange={(e) => setAutoReplyEnabled(e.target.checked)}
-                            className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer h-3.5 w-3.5"
-                          />
-                          <span>Simulate Customer Reply</span>
-                        </label>
-                        <Button
-                          size="sm"
-                          disabled={isSending || !messageInput.trim()}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium flex items-center gap-1.5 px-3.5 rounded-lg cursor-pointer active:scale-98 transition-all"
-                        >
-                          <Send className="h-3 w-3" />
-                          <span>{isSending ? "Sending..." : "Send Message"}</span>
-                        </Button>
-                      </div>
-                    </form>
+                {/* Toggle Context Drawer */}
+                <button
+                  type="button"
+                  onClick={() => setRightPanelOpen(!rightPanelOpen)}
+                  className="p-1.5 rounded-lg text-[#717680] hover:text-[#0D0D0E] hover:bg-[#FAF9F6] transition-colors cursor-pointer border border-[#E4E4E7]"
+                  title={rightPanelOpen ? "Hide Contact Details" : "Show Contact Details"}
+                >
+                  {rightPanelOpen ? (
+                    <PanelRightClose className="h-3.5 w-3.5" />
                   ) : (
-                    /* Outside 24h window: Template Selector */
-                    <form onSubmit={handleSendMessage} className="space-y-2">
-                      <div className="p-2.5 rounded-lg bg-white border border-[#E5E7EB] space-y-1.5">
-                        <label className="text-xs font-medium text-slate-800 block">
-                          Select Pre-Approved Meta WhatsApp Template:
-                        </label>
-                        <select
-                          value={selectedTemplateName}
-                          onChange={(e) => setSelectedTemplateName(e.target.value)}
-                          className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] p-1.5 text-xs font-medium text-slate-800 focus:outline-none cursor-pointer"
-                        >
-                          {MOCK_TEMPLATES.map((t) => (
-                            <option key={t.id} value={t.name}>
-                              {t.name} ({t.category.toUpperCase()})
-                            </option>
-                          ))}
-                        </select>
-                        <div className="p-2 rounded-md bg-[#F8F9FA] border border-[#E5E7EB] text-xs text-slate-700 font-normal leading-relaxed">
-                          {MOCK_TEMPLATES.find((t) => t.name === selectedTemplateName)?.body_content
-                            .replace("{{1}}", activeConversation.contact_name)
-                            .replace("{{2}}", currentOrg.name)}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-end">
-                        <Button
-                          size="sm"
-                          disabled={isSending}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium flex items-center gap-1.5 px-3.5 rounded-lg cursor-pointer"
-                        >
-                          <Send className="h-3 w-3" />
-                          <span>{isSending ? "Sending..." : "Send Approved Template"}</span>
-                        </Button>
-                      </div>
-                    </form>
-                  )
-                ) : (
-                  /* Internal Team Note Form */
-                  <form onSubmit={handleSendMessage} className="space-y-2">
-                    <textarea
-                      rows={2}
-                      value={internalNoteInput}
-                      onChange={(e) => setInternalNoteInput(e.target.value)}
-                      placeholder="Write a private note for your workspace team (never sent to customer)..."
-                      className="w-full rounded-lg border border-amber-300 bg-[#FFFBEB] p-2.5 text-xs sm:text-sm text-amber-950 focus:outline-none focus:ring-1 focus:ring-amber-400 resize-none font-normal"
-                    />
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-amber-800 font-medium flex items-center gap-1">
-                        <Lock className="h-3 w-3" />
-                        Private note • Stored only in workspace
-                      </span>
-                      <Button
-                        size="sm"
-                        disabled={!internalNoteInput.trim()}
-                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium flex items-center gap-1.5 px-3.5 rounded-lg cursor-pointer"
-                      >
-                        <Lock className="h-3 w-3" />
-                        <span>Post Internal Note</span>
-                      </Button>
-                    </div>
-                  </form>
-                )}
+                    <PanelRightOpen className="h-3.5 w-3.5" />
+                  )}
+                </button>
               </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center p-8 text-center text-xs text-slate-400 font-normal">
-              Select a conversation to start messaging.
             </div>
-          )}
-        </div>
 
-        {/* ==================================================================== */}
-        {/* RIGHT PANEL: Contact Context & CRM Synchronization */}
-        {/* ==================================================================== */}
-        <div
-          className={`w-full xl:w-[320px] 2xl:w-[350px] shrink-0 flex-col bg-[#FAFAFA] overflow-y-auto p-3.5 space-y-3 ${
-            mobileTab !== "details" ? "hidden xl:flex" : "flex"
-          }`}
-        >
-          {activeConversation && contact ? (
-            <>
-              {/* Back to Chat button on < 1280px */}
-              <button
-                type="button"
-                onClick={() => setMobileTab("chat")}
-                className="xl:hidden w-full flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium text-slate-700 bg-white border border-[#E5E7EB] cursor-pointer"
-              >
-                <ArrowRight className="h-3.5 w-3.5 rotate-180" />
-                <span>Back to Active Thread</span>
-              </button>
+            {/* Scrollable Message Thread (Grouped bubbles - Defect 19 fix) */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-light-scroll">
+              {/* Meta 24h Slim Status Strip (Defect 20 fix) */}
+              <div className="py-1 px-3 rounded-lg bg-white border border-[#E4E4E7] text-[11px] text-[#717680] flex items-center justify-between shadow-2xs">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span>
+                    Meta WhatsApp Business API session active • End-to-end encrypted
+                  </span>
+                </div>
+                <span className="text-[10px] text-[#717680]">
+                  {windowStatus.hoursRemaining}h window remaining
+                </span>
+              </div>
 
-              {/* Segmented Top Tabs */}
-              <div className="flex items-center rounded-lg bg-[#F1F3F5] p-0.5 border border-[#E5E7EB] text-xs">
-                {(["contact", "deal", "tasks", "activity"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setContextTab(tab)}
-                    className={`flex-1 py-1 text-center font-medium rounded capitalize transition-all cursor-pointer ${
-                      contextTab === tab
-                        ? "bg-white text-slate-900 shadow-2xs"
-                        : "text-[#717680] hover:text-slate-900"
+              {messages.map((msg) => {
+                const isInbound = msg.sender_type === "customer";
+                const isInternalNote = msg.sender_type === "internal_note" || msg.sender_type === "system";
+
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex flex-col ${
+                      isInternalNote
+                        ? "items-center"
+                        : isInbound
+                        ? "items-start"
+                        : "items-end"
                     }`}
                   >
-                    {tab}
+                    {isInternalNote ? (
+                      /* Internal Team Note Bubble */
+                      <div className="max-w-[85%] rounded-xl px-3.5 py-2 bg-[#FEF9C3]/80 border border-[#FEF08A] text-[#713F12] text-xs shadow-2xs space-y-1">
+                        <div className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-amber-800">
+                          <Lock className="h-2.5 w-2.5" />
+                          <span>Internal Note ({msg.sender_name || "Team Member"})</span>
+                        </div>
+                        <p className="leading-relaxed font-normal">{msg.body}</p>
+                        <span className="text-[10px] text-amber-700/80 block text-right">
+                          {formatDate(msg.created_at)}
+                        </span>
+                      </div>
+                    ) : (
+                      /* Outbound or Inbound Chat Bubble */
+                      <div
+                        className={`max-w-[78%] rounded-xl px-3.5 py-2.5 text-xs shadow-2xs ${
+                          isInbound
+                            ? "bg-white text-[#0D0D0E] border border-[#E4E4E7] rounded-tl-xs"
+                            : "bg-[#DCF8C6] text-[#0D0D0E] border border-[#C6E6B0] rounded-tr-xs"
+                        }`}
+                      >
+                        <p className="leading-relaxed font-normal whitespace-pre-wrap">{msg.body}</p>
+                        <div className="flex items-center justify-end gap-1 mt-1 text-[10px] text-[#717680]">
+                          <span>{formatDate(msg.created_at)}</span>
+                          {!isInbound && (
+                            <CheckCheck className="h-3 w-3 text-emerald-600" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {messages.length === 0 && (
+                <div className="py-12 text-center text-xs text-[#717680]">
+                  No messages in this conversation yet. Send the first message below.
+                </div>
+              )}
+            </div>
+
+            {/* AI Draft Suggestion Box (If generated) */}
+            {aiSuggestion && (
+              <div className="mx-4 mb-2 p-3 rounded-lg bg-[#FFF4EC] border border-[#FFD8BF] space-y-2 text-xs shadow-2xs animate-reveal">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3 text-[#FF7A1A]" />
+                    <span className="font-medium text-[#FF7A1A]">AI Draft Recommendation</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAiSuggestion(null)}
+                    className="text-[11px] text-[#717680] hover:text-[#0D0D0E]"
+                  >
+                    Dismiss
                   </button>
-                ))}
+                </div>
+                <p className="p-2 bg-white rounded border border-[#FFD8BF] text-[#0D0D0E] leading-relaxed">
+                  {aiSuggestion.suggestionText}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={() => {
+                      setMessageInput(aiSuggestion.suggestionText);
+                      setAiSuggestion(null);
+                    }}
+                    className="h-6.5 text-[11px] px-2.5"
+                  >
+                    Insert into Composer
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* PINNED BOTTOM COMPOSER (Defect 16 & 17 fix) */}
+            <div className="shrink-0 p-3 bg-white border-t border-[#E4E4E7] space-y-2">
+              {/* Mode Tabs: WhatsApp Reply vs Internal Note */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setComposerMode("message")}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                      composerMode === "message"
+                        ? "bg-[#0D0D0E] text-white"
+                        : "text-[#717680] hover:text-[#0D0D0E]"
+                    }`}
+                  >
+                    WhatsApp Reply
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setComposerMode("note")}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
+                      composerMode === "note"
+                        ? "bg-amber-100 text-amber-900 border border-amber-300"
+                        : "text-[#717680] hover:text-[#0D0D0E]"
+                    }`}
+                  >
+                    <Lock className="h-3 w-3" />
+                    <span>Internal Note</span>
+                  </button>
+                </div>
+
+                {composerMode === "message" && (
+                  <button
+                    type="button"
+                    onClick={handleGenerateAIReply}
+                    disabled={aiGenerating}
+                    className="text-[11px] text-[#FF7A1A] hover:text-[#FF8833] font-medium flex items-center gap-1 cursor-pointer"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    <span>{aiGenerating ? "Drafting..." : "Suggest Reply"}</span>
+                  </button>
+                )}
               </div>
 
-              {/* View 1: Contact (Default) */}
-              {contextTab === "contact" && (
-                <>
-                  {/* Customer Profile Card */}
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-2.5 text-center">
-                    <div className="relative inline-block mx-auto">
-                      <div className="h-12 w-12 rounded-xl bg-slate-900 text-white font-medium flex items-center justify-center text-base">
-                        {contact.first_name.charAt(0)}{contact.last_name?.charAt(0) || ""}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-slate-900 leading-tight">
-                        {contact.first_name} {contact.last_name || ""}
-                      </h3>
-                      <p className="text-xs text-[#717680] font-normal mt-0.5">
-                        {contact.company || "Enterprise Customer"}
-                      </p>
-                      <p className="text-xs text-slate-700 font-mono font-normal mt-0.5">
-                        {contact.phone}
-                      </p>
-                    </div>
+              {/* Text Input Area */}
+              {composerMode === "message" ? (
+                <form onSubmit={handleSendMessage} className="space-y-2">
+                  <textarea
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    placeholder="Type a WhatsApp reply... (Enter to send, Shift+Enter for new line)"
+                    rows={2}
+                    className="w-full p-2.5 text-xs bg-[#FAF9F6] border border-[#E4E4E7] rounded-lg text-[#0D0D0E] placeholder:text-[#717680] outline-none focus:border-[#FF7A1A] resize-none"
+                  />
 
-                    {/* Quick Action Buttons */}
-                    <div className="flex items-center justify-center gap-1.5 pt-0.5">
-                      <button
-                        onClick={() => {
-                          setMobileTab("chat");
-                          setComposerMode("message");
-                        }}
-                        className="h-8 w-8 rounded-lg bg-[#F8F9FA] hover:bg-[#E5E7EB] text-[#FF7900] border border-[#E5E7EB] flex items-center justify-center transition-colors cursor-pointer"
-                        title="Chat"
-                      >
-                        <MessageSquare className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setFeedbackMessage({ type: "success", text: `Calling ${contact.phone}...` })}
-                        className="h-8 w-8 rounded-lg bg-[#F8F9FA] hover:bg-[#E5E7EB] text-emerald-600 border border-[#E5E7EB] flex items-center justify-center transition-colors cursor-pointer"
-                        title="Call"
-                      >
-                        <Phone className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => { if (contact.email) window.open(`mailto:${contact.email}`); }}
-                        className="h-8 w-8 rounded-lg bg-[#F8F9FA] hover:bg-[#E5E7EB] text-slate-700 border border-[#E5E7EB] flex items-center justify-center transition-colors cursor-pointer"
-                        title="Email"
-                      >
-                        <Mail className="h-3.5 w-3.5" />
-                      </button>
-                      <Link
-                        href={`/app/${orgSlug}/contacts`}
-                        className="h-8 w-8 rounded-lg bg-[#F8F9FA] hover:bg-[#E5E7EB] text-[#717680] border border-[#E5E7EB] flex items-center justify-center transition-colors cursor-pointer"
-                        title="View in CRM"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Link>
-                    </div>
-
-                    {/* Tag Chips */}
-                    <div className="flex flex-wrap items-center justify-center gap-1 pt-1.5 border-t border-[#F1F3F5]">
-                      {(contact.tags && contact.tags.length > 0 ? contact.tags : ["Fleet", "Enterprise", "Hot Lead"]).map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/20"
+                  <div className="flex items-center justify-between">
+                    {/* Quick Reply Chips */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto custom-light-scroll pb-0.5">
+                      {["Schedule Demo", "Pricing Retainer", "Confirm Meeting"].map((chip) => (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => setMessageInput(`Hi! Sharing details regarding our ${chip} right away.`)}
+                          className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#FAF9F6] text-[#525866] border border-[#E4E4E7] hover:bg-[#FFF4EC] hover:text-[#FF7A1A] transition-colors shrink-0 cursor-pointer"
                         >
-                          {tag}
-                        </span>
+                          + {chip}
+                        </button>
                       ))}
                     </div>
 
-                    {/* Marketing Consent */}
-                    <div className="pt-0.5 flex items-center justify-between text-[11px] text-[#717680] font-normal">
-                      <span>Marketing Consent:</span>
-                      <span className="px-2 py-0.2 rounded text-[10px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 uppercase">
-                        {contact.consent_status.replace("_", " ")}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Opportunity Deal Card */}
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-900">Sales Opportunity</span>
-                      {lead ? (
-                        <Link href={`/app/${orgSlug}/leads`} className="text-[11px] text-[#FF7900] hover:underline flex items-center gap-0.5 font-medium">
-                          Pipeline <ExternalLink className="h-3 w-3" />
-                        </Link>
-                      ) : null}
-                    </div>
-
-                    {lead ? (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-slate-900 truncate">{lead.title}</span>
-                          <span className="text-sm font-medium font-mono text-emerald-600">
-                            {formatCurrency(lead.estimated_value)}
-                          </span>
-                        </div>
-
-                        <div>
-                          <label className="text-[10px] font-normal text-[#717680] block mb-1">Current Deal Stage:</label>
-                          <select
-                            value={lead.stage}
-                            onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                            className="w-full rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-2.5 py-1 text-xs text-slate-900 font-medium focus:outline-none focus:border-[#FF7900] cursor-pointer"
-                          >
-                            {LEAD_STAGES.map((s) => (
-                              <option key={s.id} value={s.id}>
-                                {s.title}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-2 space-y-1.5">
-                        <p className="text-xs text-[#717680] font-normal">No deal linked yet.</p>
-                        <Button size="sm" variant="secondary" onClick={() => setLeadModalOpen(true)} className="w-full text-xs font-medium text-[#FF7900] bg-[#FFF4EC] border-[#FF7900]/20 hover:bg-[#FFE8D6]">
-                          <Plus className="h-3 w-3 mr-1" /> Create Deal
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Next Follow-up Card */}
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-900">Next Follow-up</span>
-                      <button
-                        onClick={() => setFollowUpModalOpen(true)}
-                        className="text-[11px] text-[#FF7900] hover:underline flex items-center gap-0.5 font-medium cursor-pointer"
-                      >
-                        <Plus className="h-3 w-3" /> Add Task
-                      </button>
-                    </div>
-
-                    {contactTasks.length > 0 ? (
-                      <div className="space-y-1.5">
-                        {contactTasks.slice(0, 2).map((t) => (
-                          <div key={t.id} className="p-2.5 rounded-lg bg-[#F8F9FA] border border-[#E5E7EB] flex items-center justify-between">
-                            <div>
-                              <span className="text-xs font-medium text-slate-900 block truncate">{t.title}</span>
-                              <span className="text-[11px] text-[#717680] font-normal flex items-center gap-1 mt-0.5 font-mono">
-                                <Clock className="h-3 w-3 text-slate-400" />
-                                {formatDate(t.due_date)}
-                              </span>
-                            </div>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-medium uppercase ${
-                              t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/20"
-                            }`}>
-                              {t.priority}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-slate-400 font-normal text-center py-1">No scheduled follow-ups.</p>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {/* View 2: Deal Tab */}
-              {contextTab === "deal" && (
-                <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-900">Pipeline Deal Details</span>
-                    <Button size="sm" variant="ghost" onClick={() => setLeadModalOpen(true)} className="h-6 text-xs font-medium text-[#FF7900]">
-                      <Plus className="h-3 w-3 mr-1" /> New Deal
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="sm"
+                      isLoading={isSending}
+                      disabled={!messageInput.trim()}
+                      className="h-7.5 px-3 text-xs"
+                    >
+                      <Send className="h-3 w-3 mr-1" />
+                      <span>Send</span>
                     </Button>
                   </div>
+                </form>
+              ) : (
+                <form onSubmit={handleSendNote} className="space-y-2">
+                  <textarea
+                    value={internalNoteInput}
+                    onChange={(e) => setInternalNoteInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendNote();
+                      }
+                    }}
+                    placeholder="Add an internal team note... (Visible only to workspace members)"
+                    rows={2}
+                    className="w-full p-2.5 text-xs bg-[#FEF9C3]/40 border border-[#FEF08A] rounded-lg text-[#713F12] placeholder:text-amber-800/60 outline-none focus:border-amber-400 resize-none"
+                  />
 
-                  {lead ? (
-                    <div className="space-y-2.5 text-xs">
-                      <div>
-                        <span className="text-[#717680] text-[11px] font-normal">Deal Name</span>
-                        <p className="font-medium text-slate-900 text-sm">{lead.title}</p>
-                      </div>
-                      <div>
-                        <span className="text-[#717680] text-[11px] font-normal">Estimated Pipeline Value</span>
-                        <p className="text-lg font-medium font-mono text-emerald-600">{formatCurrency(lead.estimated_value)}</p>
-                      </div>
-                      <div>
-                        <span className="text-[#717680] text-[11px] font-normal">Stage</span>
-                        <select
-                          value={lead.stage}
-                          onChange={(e) => handleUpdateLeadStage(e.target.value as LeadStage)}
-                          className="w-full mt-1 rounded-md border border-[#E5E7EB] bg-[#F8F9FA] px-2.5 py-1 text-xs text-slate-900 font-medium focus:outline-none focus:border-[#FF7900] cursor-pointer"
-                        >
-                          {LEAD_STAGES.map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.title}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="pt-1.5 border-t border-[#F1F3F5] flex items-center justify-between text-[11px]">
-                        <span className="text-[#717680] font-normal">Assigned Sales Rep:</span>
-                        <span className="font-medium text-slate-900">{lead.assigned_to_name || "Unassigned"}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-6 text-xs text-[#717680] font-normal">
-                      No deal linked to this conversation yet.
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* View 3: Tasks Tab */}
-              {contextTab === "tasks" && (
-                <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-900">Customer Follow-ups</span>
-                    <button onClick={() => setFollowUpModalOpen(true)} className="text-[11px] text-[#FF7900] font-medium hover:underline flex items-center gap-1 cursor-pointer">
-                      <Plus className="h-3 w-3" /> Add Task
-                    </button>
+                  <div className="flex items-center justify-end">
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="sm"
+                      isLoading={isSending}
+                      disabled={!internalNoteInput.trim()}
+                      className="h-7.5 px-3 text-xs bg-amber-500 hover:bg-amber-600 text-white border-transparent"
+                    >
+                      <Lock className="h-3 w-3 mr-1" />
+                      <span>Save Note</span>
+                    </Button>
                   </div>
-
-                  {contactTasks.length > 0 ? (
-                    <div className="space-y-2">
-                      {contactTasks.map((t) => (
-                        <div key={t.id} className="p-2.5 rounded-lg bg-[#F8F9FA] border border-[#E5E7EB] space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-900">{t.title}</span>
-                            <span className={`px-2 py-0.2 rounded text-[10px] font-medium uppercase ${
-                              t.priority === "high" ? "bg-rose-50 text-rose-800 border border-rose-200" : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/20"
-                            }`}>
-                              {t.priority}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-[#717680] font-normal flex items-center gap-1 mt-0.5 font-mono">
-                            <Clock className="h-3 w-3 text-[#717680]" /> Due {formatDate(t.due_date)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-6 text-xs text-slate-400 font-normal">
-                      No tasks scheduled for this customer.
-                    </div>
-                  )}
-                </div>
+                </form>
               )}
-
-              {/* View 4: Activity Tab */}
-              {contextTab === "activity" && (
-                <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-2xs space-y-3">
-                  <span className="text-xs font-medium text-slate-900 block">Activity Audit Trail</span>
-                  <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
-                    {activities.length === 0 ? (
-                      <span className="text-xs text-slate-400 font-normal block text-center py-6">No activities recorded yet.</span>
-                    ) : (
-                      activities.map((a) => (
-                        <div key={a.id} className="p-2 rounded-lg bg-[#F8F9FA] border border-[#E5E7EB] text-xs space-y-0.5">
-                          <div className="flex items-center justify-between text-[10px] text-[#717680]">
-                            <span className="font-medium text-slate-900">{a.actor_name}</span>
-                            <span className="font-mono">{formatDate(a.created_at)}</span>
-                          </div>
-                          <p className="text-slate-700 leading-snug font-normal text-xs">{a.description}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-8 text-xs text-slate-400 font-normal">
-              Select a conversation to inspect CRM context.
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-xs text-[#717680]">
+            Select a conversation to start messaging.
+          </div>
+        )}
       </div>
 
-      {/* Modal: Create Lead from Inbox */}
+      {/* ===================================================================== */}
+      {/* PANE 3: CONTACT CONTEXT & CRM DRAWER (320px)                          */}
+      {/* ===================================================================== */}
+      {rightPanelOpen && activeConversation && (
+        <div className="hidden xl:flex w-[320px] 2xl:w-[340px] shrink-0 border-l border-[#E4E4E7] flex-col bg-white overflow-y-auto custom-light-scroll select-none">
+          {/* Header */}
+          <div className="p-3.5 border-b border-[#E4E4E7] flex items-center justify-between shrink-0">
+            <span className="type-eyebrow text-[#717680]">Contact Context</span>
+            <span className="text-[10px] text-[#717680]">CRM Synced</span>
+          </div>
+
+          <div className="p-4 space-y-5">
+            {/* Contact Profile Summary */}
+            <div className="text-center space-y-2">
+              <div className="h-12 w-12 rounded-full bg-[#FAF9F6] border border-[#E4E4E7] text-[#0D0D0E] font-medium text-sm flex items-center justify-center mx-auto">
+                {activeConversation.contact_name?.charAt(0) || "C"}
+              </div>
+              <div>
+                <h3 className="text-xs font-medium text-[#0D0D0E]">
+                  {activeConversation.contact_name}
+                </h3>
+                <p className="text-[11px] text-[#717680] mt-0.5">
+                  {activeConversation.contact_phone}
+                </p>
+                {contact?.company && (
+                  <p className="text-[11px] text-[#0D0D0E] font-medium mt-0.5">
+                    {contact.company}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Associated Deal Section */}
+            <div className="space-y-2 pt-2 border-t border-[#E4E4E7]">
+              <div className="flex items-center justify-between">
+                <span className="type-eyebrow text-[#717680]">Commercial Deal</span>
+                {lead && (
+                  <StatusPill variant="neutral" size="sm">
+                    {lead.stage.toUpperCase()}
+                  </StatusPill>
+                )}
+              </div>
+
+              {lead ? (
+                <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#E4E4E7] space-y-1">
+                  <p className="text-xs font-medium text-[#0D0D0E]">{lead.title}</p>
+                  <p className="text-xs font-medium text-emerald-600">
+                    {formatCurrency(lead.estimated_value)}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-[11px] text-[#717680]">
+                  No commercial deal linked to this conversation.
+                </p>
+              )}
+            </div>
+
+            {/* Follow-up Tasks */}
+            <div className="space-y-2 pt-2 border-t border-[#E4E4E7]">
+              <div className="flex items-center justify-between">
+                <span className="type-eyebrow text-[#717680]">Scheduled Tasks</span>
+                <span className="text-[10px] text-[#717680]">{contactTasks.length} total</span>
+              </div>
+
+              <div className="space-y-1.5">
+                {contactTasks.map((t: Task) => (
+                  <div
+                    key={t.id}
+                    className="p-2 rounded bg-[#FAF9F6] border border-[#E4E4E7] text-xs space-y-0.5"
+                  >
+                    <span className="font-medium text-[#0D0D0E] block truncate">{t.title}</span>
+                    <span className="text-[10px] text-[#717680] block">
+                      Due: {formatDate(t.due_date)}
+                    </span>
+                  </div>
+                ))}
+                {contactTasks.length === 0 && (
+                  <p className="text-[11px] text-[#717680]">No tasks scheduled.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="space-y-2 pt-2 border-t border-[#E4E4E7]">
+              <span className="type-eyebrow text-[#717680]">Tags</span>
+              <div className="flex flex-wrap gap-1">
+                {(contact?.tags || ["Inbound Lead", "WhatsApp"]).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] px-2 py-0.5 rounded-full bg-[#FAF9F6] border border-[#E4E4E7] text-[#525866]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Lead Modal */}
       <Dialog open={leadModalOpen} onOpenChange={setLeadModalOpen}>
-        <form onSubmit={handleCreateLead}>
+        <form onSubmit={handleCreateLead} className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Create Deal from Conversation</DialogTitle>
-            <DialogDescription>
-              Link a new sales deal for {activeConversation?.contact_name} directly to your pipeline.
+            <DialogTitle className="text-sm font-medium text-[#0D0D0E]">
+              Create Deal for {activeConversation?.contact_name}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#717680]">
+              Convert this active customer discussion into a tracked sales opportunity.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3 my-4 text-xs">
-            <div>
-              <label className="block font-medium text-foreground-secondary mb-1">
-                Deal Title *
-              </label>
-              <Input
-                value={newLeadTitle}
-                onChange={(e) => setNewLeadTitle(e.target.value)}
-                placeholder="e.g. Retail POS WhatsApp Integration"
-                required
-                className="text-xs"
-              />
-            </div>
-
+          <div className="space-y-3.5 my-4 text-xs">
+            <Input
+              label="Deal Title *"
+              value={newLeadTitle}
+              onChange={(e) => setNewLeadTitle(e.target.value)}
+              required
+              className="bg-[#FAF9F6] border-[#E4E4E7] text-xs"
+            />
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-medium text-foreground-secondary mb-1">
-                  Estimated Value (₹)
-                </label>
-                <Input
-                  type="number"
-                  value={newLeadValue}
-                  onChange={(e) => setNewLeadValue(e.target.value)}
-                  placeholder="50000"
-                  className="text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block font-medium text-foreground-secondary mb-1">
-                  Initial Stage
-                </label>
+              <Input
+                label="Estimated Value (INR)"
+                type="number"
+                value={newLeadValue}
+                onChange={(e) => setNewLeadValue(e.target.value)}
+                className="bg-[#FAF9F6] border-[#E4E4E7] text-xs"
+              />
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-[#0D0D0E]">Stage</label>
                 <select
                   value={newLeadStage}
                   onChange={(e) => setNewLeadStage(e.target.value as LeadStage)}
-                  className="w-full rounded-xl border border-border bg-white px-3 py-2 text-xs text-foreground"
+                  className="w-full h-8.5 px-2.5 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] text-xs text-[#0D0D0E]"
                 >
-                  {LEAD_STAGES.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.title}
-                    </option>
-                  ))}
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="qualified">Qualified</option>
+                  <option value="proposal">Proposal</option>
+                  <option value="won">Won</option>
                 </select>
               </div>
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setLeadModalOpen(false)}>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setLeadModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!newLeadTitle.trim()}>
-              Create & Link Deal
+            <Button type="submit" variant="primary" size="sm">
+              Create Deal
             </Button>
           </DialogFooter>
         </form>
       </Dialog>
 
-      {/* Modal: Schedule Follow-up Task */}
+      {/* Follow-up Task Modal */}
       <Dialog open={followUpModalOpen} onOpenChange={setFollowUpModalOpen}>
-        <form onSubmit={handleCreateFollowUp}>
+        <form onSubmit={handleCreateFollowUp} className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Schedule Customer Follow-up</DialogTitle>
-            <DialogDescription>
-              Create a follow-up task for {activeConversation?.contact_name}.
+            <DialogTitle className="text-sm font-medium text-[#0D0D0E]">
+              Schedule Follow-up Task
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#717680]">
+              Create an operational reminder linked to this client thread.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3 my-4 text-xs">
-            <div>
-              <label className="block font-medium text-foreground-secondary mb-1">
-                Task Title *
-              </label>
-              <Input
-                value={newFollowUpTitle}
-                onChange={(e) => setNewFollowUpTitle(e.target.value)}
-                placeholder="Follow up on pricing proposal"
-                required
-                className="text-xs"
-              />
-            </div>
-
+          <div className="space-y-3.5 my-4 text-xs">
+            <Input
+              label="Task Title *"
+              value={newFollowUpTitle}
+              onChange={(e) => setNewFollowUpTitle(e.target.value)}
+              required
+              className="bg-[#FAF9F6] border-[#E4E4E7] text-xs"
+            />
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-medium text-foreground-secondary mb-1">
-                  Due Date
-                </label>
-                <Input
-                  type="date"
-                  value={newFollowUpDate}
-                  onChange={(e) => setNewFollowUpDate(e.target.value)}
-                  required
-                  className="text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block font-medium text-foreground-secondary mb-1">
-                  Priority
-                </label>
+              <Input
+                label="Due Date"
+                type="date"
+                value={newFollowUpDate}
+                onChange={(e) => setNewFollowUpDate(e.target.value)}
+                className="bg-[#FAF9F6] border-[#E4E4E7] text-xs"
+              />
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-[#0D0D0E]">Priority</label>
                 <select
                   value={newFollowUpPriority}
                   onChange={(e) => setNewFollowUpPriority(e.target.value as TaskPriority)}
-                  className="w-full rounded-xl border border-border bg-white px-3 py-2 text-xs text-foreground"
+                  className="w-full h-8.5 px-2.5 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] text-xs text-[#0D0D0E]"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -1990,78 +1012,50 @@ function InboxContent() {
           </div>
 
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setFollowUpModalOpen(false)}>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setFollowUpModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!newFollowUpTitle.trim()}>
+            <Button type="submit" variant="primary" size="sm">
               Schedule Task
             </Button>
           </DialogFooter>
         </form>
       </Dialog>
 
-      {/* AI Conversation Summary Dialog */}
+      {/* AI Summary Modal */}
       <Dialog open={aiSummaryOpen} onOpenChange={setAiSummaryOpen}>
-        <div className="space-y-4">
+        <div className="max-w-md p-1 space-y-3">
           <DialogHeader>
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-google-blue" />
-              <DialogTitle>AI Conversation Summary</DialogTitle>
-            </div>
-            <DialogDescription>
-              Structured highlights and detected intent for {activeConversation?.contact_name}.
+            <DialogTitle className="text-sm font-medium text-[#0D0D0E] flex items-center gap-1.5">
+              <Sparkles className="h-4 w-4 text-[#FF7A1A]" />
+              <span>Thread Executive Summary</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#717680]">
+              AI synthesized overview of discussion key points and recommended next actions.
             </DialogDescription>
           </DialogHeader>
 
           {aiSummary && (
-            <div className="space-y-3.5 text-xs">
-              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border">
-                <span className="font-semibold text-foreground block mb-1">
-                  Executive Summary
-                </span>
-                <p className="text-foreground-secondary leading-relaxed">
-                  {aiSummary.summary}
-                </p>
+            <div className="space-y-2 text-xs">
+              <div className="p-3 bg-[#FAF9F6] rounded-lg border border-[#E4E4E7] leading-relaxed">
+                {aiSummary.summary}
               </div>
-
-              <div className="p-3 rounded-xl bg-surface-blue/30 border border-google-blue/20">
-                <span className="font-semibold text-google-blue block mb-1">
-                  Primary Customer Intent
-                </span>
-                <p className="text-foreground font-medium">
-                  {aiSummary.mainIntent}
-                </p>
-              </div>
-
-              {aiSummary.unansweredQuestions.length > 0 && (
-                <div className="p-3 rounded-xl bg-google-yellow-subtle border border-google-yellow/20">
-                  <span className="font-semibold text-google-yellow-hover block mb-1">
-                    Unanswered Customer Questions:
-                  </span>
-                  <ul className="list-disc pl-4 space-y-0.5 text-foreground">
-                    {aiSummary.unansweredQuestions.map((q, i) => (
-                      <li key={i}>{q}</li>
+              {aiSummary.suggestedNextSteps && aiSummary.suggestedNextSteps.length > 0 && (
+                <div className="space-y-1">
+                  <span className="type-eyebrow text-[#717680]">Suggested Next Steps:</span>
+                  <ul className="list-disc pl-4 space-y-0.5 text-[#0D0D0E]">
+                    {aiSummary.suggestedNextSteps.map((item: string, idx: number) => (
+                      <li key={idx}>{item}</li>
                     ))}
                   </ul>
                 </div>
               )}
-
-              <div>
-                <span className="font-semibold text-foreground block mb-1">
-                  Recommended Next Steps:
-                </span>
-                <ul className="list-disc pl-4 space-y-1 text-foreground-secondary">
-                  {aiSummary.suggestedNextSteps.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ul>
-              </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="default" size="sm" onClick={() => setAiSummaryOpen(false)}>
-              Done
+            <Button variant="secondary" size="sm" onClick={() => setAiSummaryOpen(false)}>
+              Close
             </Button>
           </DialogFooter>
         </div>
@@ -2074,8 +1068,8 @@ export default function InboxPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-64 items-center justify-center text-xs text-foreground-secondary">
-          Loading shared WhatsApp inbox...
+        <div className="h-[calc(100vh-130px)] flex items-center justify-center text-xs text-[#717680]">
+          Loading Shared Inbox...
         </div>
       }
     >
