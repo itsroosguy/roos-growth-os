@@ -281,6 +281,21 @@
   will-change: transform, opacity;
 }
 
+/* Slide-over Drawer GPU Animation */
+@keyframes emil-drawer-slide {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-drawer-slide {
+  animation: emil-drawer-slide 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform;
+}
+
 /* Tactile Physics-Based Spring Button / Tap */
 .interactive-tap-btn,
 .interactive-tap-spring {

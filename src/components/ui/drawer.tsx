@@ -62,7 +62,7 @@ export function Drawer({
       {/* Slide-over panel */}
       <div
         className={cn(
-          "relative z-50 flex h-full w-full flex-col bg-white border-l border-[#E4E1D8] shadow-overlay animate-reveal",
+          "relative z-50 flex h-full w-full flex-col bg-white border-l border-[#E4E1D8] shadow-overlay animate-drawer-slide",
           widthClasses,
           className
         )}
