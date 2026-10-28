@@ -18,7 +18,7 @@ export function RoosLogo({
     return (
       <div
         className={cn(
-          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] shadow-xs select-none p-2 group hover:border-[#FF7A1A]/40 transition-all",
+          "flex items-center justify-center h-10 w-10 rounded-[14px] bg-[#121214] border border-[#27272A] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] select-none p-2 group hover:border-[#FF5A1F]/50 transition-all cursor-pointer",
           className
         )}
         title="ROOS STUDIOX"
@@ -26,7 +26,7 @@ export function RoosLogo({
         <img
           src="/mark.png"
           alt="ROOS STUDIOX"
-          className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,121,0,0.3)] transition-transform duration-200 group-hover:scale-105"
+          className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,90,31,0.35)] transition-transform duration-200 group-hover:scale-110"
           style={{
             filter:
               variant === "orange"
@@ -39,13 +39,13 @@ export function RoosLogo({
   }
 
   // Exact logo dimensions (1024x123 aspect ratio ~ 8.32:1)
-  // Adjusted for sleek horizontal alignment alongside sidebar chevron
+  // Adjusted for sleek horizontal alignment with generous breathing room alongside sidebar chevron
   const heightClass =
     size === "sm"
-      ? "h-5 sm:h-5.5"
+      ? "h-4"
       : size === "lg"
-      ? "h-8 sm:h-9"
-      : "h-6 sm:h-6.5";
+      ? "h-7 sm:h-8"
+      : "h-[18px] sm:h-[19px]";
 
   const filterStyle =
     variant === "white"

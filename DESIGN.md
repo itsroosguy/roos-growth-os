@@ -96,7 +96,7 @@ The typography scale is fluid, rooted at `clamp(16px, 0.35vw + 11.5px, 18px)` us
 The sidebar is an inset floating dark panel (`#0B0D12`):
 - Margin: `p-3` outer padding ensures canvas background (`#F7F5F0`) visibly flows around all four edges.
 - Radius: `rounded-[24px]` with top inner highlight (`border-t border-white/10`).
-- Brand Header: Roos StudioX official logo rendered clean without redundant adjacent HTML text spans.
+- Brand Header: Roos StudioX official logo rendered clean without redundant adjacent HTML text spans. Size scaled down to 18-19px height in expanded mode (~50px clearance from `<` collapse toggle); dynamically switches to login screen emblem squircle (`/mark.png`, `14px` radius, `#121214` surface, pure white inverted silhouette) when collapsed, with floating expand chevron on border seam.
 - Active Item: Module hue tint chip (`bg-[hue]/15`), duotone icon in module hue, and 3px sliding Flame accent bar.
 - Height Budget: 42px item rows, 24px category spacing, Configuration sub-section collapsed by default. Zero screen overflow.
 - Bottom Pinned Card: User avatar with deterministic color assignment, name, workspace, role chip, and sandbox controls.

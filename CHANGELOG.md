@@ -16,6 +16,10 @@ All notable architectural, visual, and experiential changes to the Roos StudioX 
   - Added Indian currency grouping helper `formatINR` (e.g. `₹4,20,000`).
 - **Shell & Navigation Rebuilt**:
   - Replaced edge-to-edge sidebar with **inset floating dark panel** (`rounded-[24px]`, `p-3` margin letting warm canvas visibly flow around all four edges, `0 12px 36px -8px rgba(11,13,18,0.35)` shadow, top inner highlight).
+  - **Proportionate Logo & Dynamic State Switch**:
+    - Reduced expanded `ROOS STUDIOX` logo height from `h-6 sm:h-6.5` (~26px) to `h-[18px] sm:h-[19px]`, providing ~50px of breathing room from the `<` collapse chevron.
+    - Added dynamic logo switching on collapse: minimized 76px rail centers the login screen emblem squircle (`/mark.png`, `14px` radius, `#121214` surface, `brightness(0) invert(1)` pure white mark, subtle flame glow) with interactive hover micro-scaling.
+    - Floating expand toggle chevron (`>`) unclipped on right border seam (`-right-3`) with circular dark pill and hover flame accent.
   - Fixed ~900px height overflow: 42px rows, 24px category gaps, collapsed configuration group by default, hidden scrollbar with edge fades.
   - Eradicated stray "R / B" glyph artifact next to official logo by removing duplicate adjacent HTML text spans.
   - Active nav item: 36px rounded-square chip in module's hue tint with duotone icon and 3px sliding Flame bar.

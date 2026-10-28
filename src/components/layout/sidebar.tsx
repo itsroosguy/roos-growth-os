@@ -486,30 +486,43 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col bg-[#0B0D12] text-[#F4F5F7] select-none transition-all duration-320 ease-expo-out",
+        "flex h-full flex-col bg-[#0B0D12] text-[#F4F5F7] select-none transition-all duration-320 ease-expo-out rounded-[24px]",
         collapsed ? "w-[76px]" : "w-[272px]"
       )}
     >
       {/* 1. TOP LOGO BLOCK (68px) - Clean, untouched logo, zero stray text glyphs */}
-      <div className="flex h-[68px] shrink-0 items-center justify-between px-4 border-b border-[#1B1F29]/60">
+      <div
+        className={cn(
+          "flex h-[68px] shrink-0 items-center border-b border-[#1B1F29]/60 rounded-t-[24px]",
+          collapsed ? "justify-center px-2 relative" : "justify-between px-4"
+        )}
+      >
         <Link
           href={`/app/${orgSlug}/overview`}
-          className="flex items-center gap-2 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px]"
+          className={cn(
+            "flex items-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px] hover:opacity-90 transition-opacity",
+            collapsed && "justify-center"
+          )}
           title="ROOS STUDIOX"
         >
-          <RoosLogo size={collapsed ? "sm" : "md"} className="shrink-0" />
+          <RoosLogo collapsed={collapsed} size={collapsed ? "sm" : "md"} className="shrink-0" />
         </Link>
 
         {/* Collapse Toggle Button */}
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="hidden lg:flex h-7 w-7 items-center justify-center rounded-[8px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-colors duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]"
+          className={cn(
+            "hidden lg:flex items-center justify-center rounded-[8px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] cursor-pointer",
+            collapsed
+              ? "absolute -right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-[#1B1F29] border border-[#2E3545] shadow-md z-30 hover:bg-[#FF5A1F] hover:border-[#FF5A1F] hover:text-white"
+              : "h-7 w-7"
+          )}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5" />
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
@@ -744,7 +757,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       )}
 
       {/* 4. PINNED BOTTOM USER ACCOUNT & COLLAPSED SANDBOX */}
-      <div className="shrink-0 p-3 border-t border-[#1B1F29]/60 space-y-2">
+      <div className="shrink-0 p-3 border-t border-[#1B1F29]/60 space-y-2 rounded-b-[24px]">
         {/* Collapsible Sandbox Simulation Controller */}
         <div>
           <button
@@ -896,7 +909,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       <aside className="hidden lg:flex flex-col shrink-0 p-3 h-screen sticky top-0 z-30">
         <div
           className={cn(
-            "flex flex-col h-[calc(100vh-24px)] rounded-[24px] bg-[#0B0D12] text-[#F4F5F7] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_12px_36px_-8px_rgba(11,13,18,0.35)] select-none transition-all duration-320 ease-expo-out overflow-hidden relative",
+            "flex flex-col h-[calc(100vh-24px)] rounded-[24px] bg-[#0B0D12] text-[#F4F5F7] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_12px_36px_-8px_rgba(11,13,18,0.35)] select-none transition-all duration-320 ease-expo-out overflow-visible relative",
             collapsed ? "w-[76px]" : "w-[272px]"
           )}
         >
