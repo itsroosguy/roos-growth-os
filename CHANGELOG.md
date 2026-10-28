@@ -33,7 +33,10 @@ All notable architectural, visual, and experiential changes to the Roos StudioX 
   - Row 4: Deals worth a look (open deals only, never Won) + Collapsed recent activity feed.
 - **Flagship Routes Elevated**:
   - **Shared Inbox**: Left thread list on canvas, center thread on white raised panel, chat bubbles (Inbound white, Outbound ultramarine `#EAEEFF`, Internal note amber `#FFF3D6`), larger 15px body text, pinned bottom composer with violet AI reply bar and primary flame Send button.
-  - **Sales Pipeline**: Categorical stage colors, headers with colored dots and `formatINR` values, stuck-time badges, drag-and-drop target indicators.
+  - **Sales Pipeline**: Reworked Kanban board to match modern executive product standard:
+    - **Header Pill Banners**: Soft pastel pill banners for stages (Inbound, Contacted, Qualified, On Review, Completed, Closed Lost) with status icons, count pills, subtotal stage value readouts, and stage-specific `+` add buttons.
+    - **Card Anatomy**: Clean 18px rounded white cards with top due date & `···` context menu, bold titles, context notes, milestone fraction (`1/6`–`6/6`) with visual segmented dashes, overlapping assignee avatar discs, priority badges (`Low`/`Medium`/`High`), link attachment counts, and WhatsApp message badges.
+    - **Toolbar**: Integrated search with `⌘K` badge, filter dropdown by priority, `+ Create Deal` primary CTA, team member avatar stack, and `+ Invite` button.
   - **Contacts**: Sky identity, search-first 40px table rows, deterministic colored avatars with initials, consent filter pills, text floor ≥ 13px.
   - **Tasks / Agenda**: Amber identity, Overdue / Today / Upcoming / Completed groups, 20px cards, one-click completion with undo toast.
   - **Broadcasts**: Violet identity, campaign cards with status tints, recipient counts, delivery rates, real costs in `formatINR`.

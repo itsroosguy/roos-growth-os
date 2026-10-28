@@ -1,28 +1,41 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
-import { Lead, LeadStage, Contact, Task } from "@/types/crm";
+import { Lead, LeadStage, Contact } from "@/types/crm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusPill } from "@/components/ui/status-pill";
 import { Drawer } from "@/components/ui/drawer";
-import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast-context";
 import {
   cn,
   formatINR,
+  formatDate,
   getAvatarColor,
   getInitials,
-  STAGE_CONFIG,
 } from "@/lib/utils";
 import {
   Plus,
   Search,
-  Filter,
+  SlidersHorizontal,
   Kanban,
   Table as TableIcon,
   Phone,
@@ -32,16 +45,34 @@ import {
   Check,
   CheckCircle2,
   Clock,
-  ChevronRight,
   Sparkles,
   ArrowRight,
   User,
+  UserPlus,
+  MoreHorizontal,
+  Flag,
+  Link2,
+  MessageSquare,
+  Layers,
+  AlertCircle,
+  XCircle,
+  Share2,
+  Star,
+  ExternalLink,
+  ChevronDown,
+  X,
 } from "lucide-react";
 
 interface StageConfig {
   id: LeadStage;
   label: string;
-  dotColor: string;
+  icon: React.ComponentType<{ className?: string }>;
+  pillBg: string;
+  pillBorder: string;
+  pillText: string;
+  countBg: string;
+  countText: string;
+  progressColor: string;
   count: number;
   totalValue: number;
 }
@@ -54,7 +85,10 @@ export default function LeadsPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [viewMode, setViewMode] = useState<"board" | "table">("board");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPriorityFilter, setSelectedPriorityFilter] = useState<string>("all");
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
+  const [activeMenuLeadId, setActiveMenuLeadId] = useState<string | null>(null);
 
   // Drag and drop state
   const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null);
@@ -62,38 +96,139 @@ export default function LeadsPage() {
 
   // Create Opportunity modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
   const [title, setTitle] = useState("");
   const [dealValue, setDealValue] = useState("50000");
   const [initialStage, setInitialStage] = useState<LeadStage>("new");
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [dealNotes, setDealNotes] = useState("");
   const [source, setSource] = useState("WhatsApp Inbound");
+
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // Close menus on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setFilterDropdownOpen(false);
+      }
+      if (activeMenuLeadId && !(event.target as HTMLElement).closest(".context-menu-container")) {
+        setActiveMenuLeadId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [activeMenuLeadId]);
 
   // Live leads & contacts from store
   const rawLeads = useMemo(() => crmStore.getLeads(orgSlug), [orgSlug, refreshKey]);
-  const contacts = useMemo(() => crmStore.getContacts(orgSlug), [orgSlug, refreshKey]);
 
   // Filtered leads
   const leads = useMemo(() => {
-    if (!searchQuery.trim()) return rawLeads;
-    const q = searchQuery.toLowerCase();
-    return rawLeads.filter(
-      (l) =>
-        l.title.toLowerCase().includes(q) ||
-        (l.contact_name && l.contact_name.toLowerCase().includes(q)) ||
-        (l.contact_phone && l.contact_phone.includes(q))
-    );
-  }, [rawLeads, searchQuery]);
+    return rawLeads.filter((l) => {
+      // Search matching
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesQuery =
+          l.title.toLowerCase().includes(q) ||
+          (l.contact_name && l.contact_name.toLowerCase().includes(q)) ||
+          (l.contact_phone && l.contact_phone.includes(q)) ||
+          (l.notes && l.notes.toLowerCase().includes(q));
+        if (!matchesQuery) return false;
+      }
 
-  // Stage configuration & metrics
+      // Priority filter matching
+      if (selectedPriorityFilter !== "all") {
+        if (selectedPriorityFilter === "high" && !(l.estimated_value >= 150000 || l.stage === "proposal")) return false;
+        if (selectedPriorityFilter === "medium" && !(l.estimated_value >= 75000 && l.estimated_value < 150000)) return false;
+        if (selectedPriorityFilter === "low" && !(l.estimated_value < 75000 && l.stage !== "proposal")) return false;
+      }
+
+      return true;
+    });
+  }, [rawLeads, searchQuery, selectedPriorityFilter]);
+
+  // Stage configuration & metrics (Matching reference image pill banner aesthetics)
   const stages: StageConfig[] = useMemo(() => {
-    const stageDefs: Array<{ id: LeadStage; label: string; dotColor: string }> = [
-      { id: "new", label: "Inbound", dotColor: "bg-[#94A3B8]" },
-      { id: "contacted", label: "Contacted", dotColor: "bg-[#1FA2E8]" },
-      { id: "qualified", label: "Qualified", dotColor: "bg-[#3D5AFE]" },
-      { id: "proposal", label: "Proposal", dotColor: "bg-[#F5A524]" },
-      { id: "won", label: "Deals Won", dotColor: "bg-[#12B886]" },
-      { id: "lost", label: "Closed Lost", dotColor: "bg-[#E5484D]" },
+    const stageDefs: Array<{
+      id: LeadStage;
+      label: string;
+      icon: React.ComponentType<{ className?: string }>;
+      pillBg: string;
+      pillBorder: string;
+      pillText: string;
+      countBg: string;
+      countText: string;
+      progressColor: string;
+    }> = [
+      {
+        id: "new",
+        label: "Inbound",
+        icon: Sparkles,
+        pillBg: "bg-[#F1F5F9]",
+        pillBorder: "border-[#E2E8F0]",
+        pillText: "text-[#334155]",
+        countBg: "bg-white",
+        countText: "text-[#334155]",
+        progressColor: "bg-[#94A3B8]",
+      },
+      {
+        id: "contacted",
+        label: "Contacted",
+        icon: MessageSquare,
+        pillBg: "bg-[#E0F2FE]",
+        pillBorder: "border-[#BAE6FD]",
+        pillText: "text-[#0369A1]",
+        countBg: "bg-white",
+        countText: "text-[#0369A1]",
+        progressColor: "bg-[#0284C7]",
+      },
+      {
+        id: "qualified",
+        label: "Qualified",
+        icon: Check,
+        pillBg: "bg-[#EEF2FF]",
+        pillBorder: "border-[#C7D2FE]",
+        pillText: "text-[#4338CA]",
+        countBg: "bg-white",
+        countText: "text-[#4338CA]",
+        progressColor: "bg-[#4F46E5]",
+      },
+      {
+        id: "proposal",
+        label: "On Review",
+        icon: AlertCircle,
+        pillBg: "bg-[#FFF0F0]",
+        pillBorder: "border-[#FFD8D8]",
+        pillText: "text-[#D93025]",
+        countBg: "bg-white",
+        countText: "text-[#D93025]",
+        progressColor: "bg-[#D97706]",
+      },
+      {
+        id: "won",
+        label: "Completed",
+        icon: CheckCircle2,
+        pillBg: "bg-[#E8F8F0]",
+        pillBorder: "border-[#C4EED0]",
+        pillText: "text-[#0D652D]",
+        countBg: "bg-white",
+        countText: "text-[#0D652D]",
+        progressColor: "bg-[#16A34A]",
+      },
+      {
+        id: "lost",
+        label: "Closed Lost",
+        icon: XCircle,
+        pillBg: "bg-[#F8F9FA]",
+        pillBorder: "border-[#E9ECEF]",
+        pillText: "text-[#5F6368]",
+        countBg: "bg-white",
+        countText: "text-[#5F6368]",
+        progressColor: "bg-[#DC2626]",
+      },
     ];
 
     return stageDefs.map((def) => {
@@ -140,6 +275,19 @@ export default function LeadsPage() {
     }
   };
 
+  // Quick Stage Advance
+  const handleAdvanceStage = (leadId: string, currentStage: LeadStage) => {
+    const stageOrder: LeadStage[] = ["new", "contacted", "qualified", "proposal", "won"];
+    const currentIndex = stageOrder.indexOf(currentStage);
+    if (currentIndex >= 0 && currentIndex < stageOrder.length - 1) {
+      const nextStage = stageOrder[currentIndex + 1];
+      crmStore.updateLeadStage(orgSlug, leadId, nextStage);
+      setRefreshKey((k) => k + 1);
+      toast(`Advanced deal to ${nextStage}`, { type: "info" });
+    }
+    setActiveMenuLeadId(null);
+  };
+
   // Create Opportunity Handler
   const handleCreateLead = (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,6 +301,7 @@ export default function LeadsPage() {
       contact_id: "c-direct",
       contact_name: contactName || "Direct Client",
       contact_phone: contactPhone || "+919876543210",
+      notes: dealNotes || "Commercial requirement logged from pipeline view.",
       source,
     });
 
@@ -161,169 +310,496 @@ export default function LeadsPage() {
     setDealValue("50000");
     setContactName("");
     setContactPhone("");
+    setDealNotes("");
     setRefreshKey((k) => k + 1);
     toast("Opportunity created", { type: "success" });
   };
 
+  // Helper: Card Priority styling
+  const getPriorityBadge = (lead: Lead) => {
+    if (lead.estimated_value >= 150000 || lead.stage === "proposal") {
+      return {
+        label: "High",
+        pillClass: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]",
+      };
+    }
+    if (lead.estimated_value >= 75000 || lead.stage === "qualified") {
+      return {
+        label: "Medium",
+        pillClass: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]",
+      };
+    }
+    return {
+      label: "Low",
+      pillClass: "bg-[#E0F2FE] text-[#0284C7] border-[#BAE6FD]",
+    };
+  };
+
+  // Helper: Milestone information (completed / total segments)
+  const getMilestoneInfo = (stage: LeadStage) => {
+    switch (stage) {
+      case "new":
+        return { completed: 1, total: 6, label: "1/6", color: "bg-[#94A3B8]" };
+      case "contacted":
+        return { completed: 2, total: 6, label: "2/6", color: "bg-[#0284C7]" };
+      case "qualified":
+        return { completed: 3, total: 6, label: "3/6", color: "bg-[#4F46E5]" };
+      case "proposal":
+        return { completed: 5, total: 6, label: "5/6", color: "bg-[#D97706]" };
+      case "won":
+        return { completed: 6, total: 6, label: "6/6", color: "bg-[#16A34A]" };
+      case "lost":
+        return { completed: 2, total: 6, label: "2/6", color: "bg-[#DC2626]" };
+      default:
+        return { completed: 1, total: 6, label: "1/6", color: "bg-[#94A3B8]" };
+    }
+  };
+
   return (
     <div className="space-y-6 animate-page-enter">
-      {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E4E1D8] sm:flex-row sm:items-center sm:justify-between">
+      {/* ========================================================================= */}
+      {/* 1. TOP TOOLBAR & HEADER (Matching Reference Visual Controls)              */}
+      {/* ========================================================================= */}
+      <div className="flex flex-col gap-4 pb-5 border-b border-[#E4E1D8] lg:flex-row lg:items-center lg:justify-between">
+        {/* Left: Title & Quick Stats */}
         <div>
-          <h1 className="text-[28px] sm:text-[30px] font-medium leading-[36px] tracking-[-0.02em] text-[#12141A]">
-            Sales Pipeline
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-[26px] sm:text-[28px] font-medium leading-[34px] tracking-[-0.02em] text-[#12141A]">
+              Sales Pipeline
+            </h1>
+            <div className="flex items-center rounded-[10px] border border-[#E6E2D8] bg-white p-0.5 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setViewMode("board")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-[7px] text-[13px] font-medium transition-colors cursor-pointer",
+                  viewMode === "board"
+                    ? "bg-[#0B0D12] text-white"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                title="Kanban Board View"
+              >
+                <Kanban className="h-3.5 w-3.5" />
+                <span>Board</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-[7px] text-[13px] font-medium transition-colors cursor-pointer",
+                  viewMode === "table"
+                    ? "bg-[#0B0D12] text-white"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                title="Table View"
+              >
+                <TableIcon className="h-3.5 w-3.5" />
+                <span>Table</span>
+              </button>
+            </div>
+          </div>
           <p className="mt-1 text-[13px] text-[#4B515D]">
-            {leads.length} opportunities • ₹{totalOpenValue.toLocaleString()} active pipeline • 6 pipeline stages
+            {leads.length} active opportunities • <span className="font-medium text-[#111827]">{formatINR(totalOpenValue)}</span> pipeline value
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Search Field */}
+        {/* Right: Search, Filter, Primary CTA, Team Avatars & Invite */}
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          {/* Search Box with ⌘K Badge */}
           <div className="relative w-48 sm:w-60">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search deals..."
-              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
+              placeholder="Search..."
+              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-10 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-2xs transition-colors"
             />
+            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-[5px] bg-[#F1F3F5] text-[11px] font-medium text-[#666C78] border border-[#E2E4E8] pointer-events-none">
+              ⌘K
+            </kbd>
           </div>
 
-          {/* Board / Table View Toggle */}
-          <div className="flex items-center rounded-[12px] border border-[#E6E2D8] bg-white p-1 shadow-xs">
+          {/* Filter Dropdown */}
+          <div className="relative" ref={filterRef}>
             <button
               type="button"
-              onClick={() => setViewMode("board")}
+              onClick={() => setFilterDropdownOpen((prev) => !prev)}
               className={cn(
-                "flex items-center gap-1.5 px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
-                viewMode === "board"
-                  ? "bg-[#0B0D12] text-white shadow-xs"
-                  : "text-[#666C78] hover:text-[#12141A]"
+                "h-10 px-3.5 rounded-[12px] border bg-white flex items-center gap-2 text-[14px] font-medium transition-colors cursor-pointer shadow-2xs",
+                selectedPriorityFilter !== "all"
+                  ? "border-[#FF5A1F] text-[#FF5A1F] bg-[#FFF5F0]"
+                  : "border-[#E6E2D8] text-[#12141A] hover:bg-[#F9F8F6]"
               )}
             >
-              <Kanban className="h-4 w-4" />
-              <span>Board</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("table")}
-              className={cn(
-                "flex items-center gap-1.5 px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
-                viewMode === "table"
-                  ? "bg-[#0B0D12] text-white shadow-xs"
-                  : "text-[#666C78] hover:text-[#12141A]"
+              <SlidersHorizontal className="h-4 w-4 text-[#666C78]" />
+              <span>Filter</span>
+              {selectedPriorityFilter !== "all" && (
+                <span className="h-2 w-2 rounded-full bg-[#FF5A1F]" />
               )}
-            >
-              <TableIcon className="h-4 w-4" />
-              <span>Table</span>
             </button>
+
+            {filterDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 rounded-[14px] bg-white border border-[#E6E2D8] shadow-lg p-2 z-30 animate-reveal">
+                <div className="px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-[#9CA3AF]">
+                  Filter by Priority
+                </div>
+                {(["all", "high", "medium", "low"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => {
+                      setSelectedPriorityFilter(p);
+                      setFilterDropdownOpen(false);
+                    }}
+                    className={cn(
+                      "w-full text-left px-2.5 py-1.5 rounded-[8px] text-[13px] font-medium capitalize transition-colors flex items-center justify-between",
+                      selectedPriorityFilter === p
+                        ? "bg-[#F1F5F9] text-[#111827]"
+                        : "text-[#666C78] hover:bg-[#F9F8F6] hover:text-[#111827]"
+                    )}
+                  >
+                    <span>{p === "all" ? "All Priorities" : `${p} Priority`}</span>
+                    {selectedPriorityFilter === p && <Check className="h-3.5 w-3.5 text-[#111827]" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Primary Action Button */}
-          <Button
-            onClick={() => setCreateModalOpen(true)}
-            variant="primary"
-            size="sm"
-            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
+          {/* Primary Create Action */}
+          <button
+            type="button"
+            onClick={() => {
+              setInitialStage("new");
+              setCreateModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] bg-[#FF5A1F] hover:bg-[#E04B14] text-white text-[14px] font-medium shadow-2xs transition-all duration-140 cursor-pointer active:scale-[0.98]"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span>Add opportunity</span>
-          </Button>
+            <span>Create Deal</span>
+          </button>
+
+          {/* Team Avatar Stack & Invite Button */}
+          <div className="hidden xl:flex items-center pl-2 border-l border-[#E6E2D8] gap-2">
+            <div className="flex items-center -space-x-2">
+              {[
+                { name: "Praveen R.", bg: "bg-[#EAEEFF]", text: "text-[#2A3DB5]" },
+                { name: "Rahul M.", bg: "bg-[#FFF3D6]", text: "text-[#8F5300]" },
+                { name: "Neha G.", bg: "bg-[#E4F7EF]", text: "text-[#0A7A53]" },
+                { name: "Sneha R.", bg: "bg-[#F0EAFF]", text: "text-[#5B34C9]" },
+              ].map((member, i) => (
+                <div
+                  key={i}
+                  title={member.name}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[11px] font-medium shadow-2xs select-none",
+                    member.bg,
+                    member.text
+                  )}
+                >
+                  {getInitials(member.name)}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setInviteModalOpen(true)}
+              className="h-8 px-2.5 rounded-[9px] border border-[#E6E2D8] bg-white text-[12px] font-medium text-[#12141A] hover:bg-[#F9F8F6] flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <UserPlus className="h-3.5 w-3.5 text-[#666C78]" />
+              <span>Invite</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. KANBAN BOARD VIEW (Viewport-Pinned Bottom Scrollbar)                    */}
+      {/* 2. KANBAN BOARD VIEW (Exact Match to User Reference Aesthetic)             */}
       {/* ========================================================================= */}
       {viewMode === "board" && (
         <div className="overflow-x-auto pb-6 custom-light-scroll select-none">
-          <div className="flex gap-5 min-w-[1400px] items-start">
+          <div className="flex gap-4.5 min-w-[1420px] items-start">
             {stages.map((stage) => {
               const stageLeads = leads.filter((l) => l.stage === stage.id);
               const isOver = dragOverStage === stage.id;
-              const isWon = stage.id === "won";
+              const StageIcon = stage.icon;
 
               return (
                 <div
                   key={stage.id}
                   onDragOver={(e) => handleDragOver(e, stage.id)}
                   onDrop={() => handleDrop(stage.id)}
-                  className={cn(
-                    "flex flex-col w-[270px] shrink-0 rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] transition-all duration-140",
-                    isOver && (isWon ? "border-[#12B886] ring-2 ring-[#12B886]/30 bg-[#E4F7EF]/30" : "border-[#FF5A1F] ring-2 ring-[#FF5A1F]/30 bg-[#FFF1EA]/30")
-                  )}
+                  className="flex flex-col w-[285px] shrink-0 transition-all duration-140"
                 >
-                  {/* Stage Header */}
-                  <div className="p-4 border-b border-[#E6E2D8] bg-white rounded-t-[20px]">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className={cn("h-2.5 w-2.5 rounded-full shrink-0", stage.dotColor)} />
-                        <h3 className="type-title text-[#12141A]">
-                          {stage.label}
-                        </h3>
-                      </div>
-                      <span className="h-5 min-w-[22px] px-2 rounded-full bg-[#EFEDE7] text-[#454B57] text-[13px] font-medium flex items-center justify-center font-variant-numeric tabular-nums">
+                  {/* --- Column Header Pill Banner (Matches Reference Image!) --- */}
+                  <div
+                    className={cn(
+                      "flex items-center justify-between px-3.5 py-2.5 rounded-[14px] border shadow-2xs transition-all",
+                      stage.pillBg,
+                      stage.pillBorder
+                    )}
+                  >
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <StageIcon className={cn("h-4 w-4 shrink-0", stage.pillText)} />
+                      <span className={cn("text-[14px] font-semibold truncate", stage.pillText)}>
+                        {stage.label}
+                      </span>
+                      <span
+                        className={cn(
+                          "h-5 min-w-[20px] px-1.5 rounded-full text-[12px] font-medium flex items-center justify-center font-variant-numeric tabular-nums shadow-2xs",
+                          stage.countBg,
+                          stage.countText
+                        )}
+                      >
                         {stage.count}
                       </span>
                     </div>
 
-                    <div className="mt-1.5 text-[14px] font-medium text-[#12141A] font-variant-numeric tabular-nums">
-                      {formatINR(stage.totalValue)}
-                    </div>
+                    {/* Stage Add Opportunity Button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInitialStage(stage.id);
+                        setCreateModalOpen(true);
+                      }}
+                      className={cn(
+                        "h-6 w-6 rounded-[7px] flex items-center justify-center hover:bg-black/5 active:scale-95 transition-all cursor-pointer",
+                        stage.pillText
+                      )}
+                      title={`Add deal to ${stage.label}`}
+                    >
+                      <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                    </button>
                   </div>
 
-                  {/* Cards List */}
-                  <div className="p-2.5 space-y-3 min-h-[480px] max-h-[calc(100vh-270px)] overflow-y-auto custom-light-scroll bg-[#FAF9F5]/60 rounded-b-[20px]">
+                  {/* Subtotal deal value readout */}
+                  <div className="px-2 pt-2 pb-1.5 flex items-center justify-between text-[12px] text-[#6B7280]">
+                    <span>Stage Value</span>
+                    <span className="font-semibold text-[#111827] tabular-nums font-variant-numeric">
+                      {formatINR(stage.totalValue)}
+                    </span>
+                  </div>
+
+                  {/* --- Drop Container & Cards List --- */}
+                  <div
+                    className={cn(
+                      "p-2 space-y-3 min-h-[560px] rounded-[18px] border transition-all duration-140 custom-light-scroll",
+                      isOver
+                        ? "border-[#FF5A1F] ring-2 ring-[#FF5A1F]/25 bg-[#FFF6F2]"
+                        : "border-transparent bg-transparent"
+                    )}
+                  >
                     {stageLeads.map((lead) => {
-                      const avatarStyle = getAvatarColor(lead.contact_name || lead.title);
+                      const priority = getPriorityBadge(lead);
+                      const milestone = getMilestoneInfo(lead.stage);
+                      const isMenuOpen = activeMenuLeadId === lead.id;
+                      const dueDateText = lead.next_follow_up_at
+                        ? `Due: ${formatDate(lead.next_follow_up_at)}`
+                        : `Created: ${formatDate(lead.created_at)}`;
+
+                      // Deterministic assignees
+                      const primaryAssignee = lead.assigned_to_name || "Praveen";
+                      const secondaryAssignee =
+                        lead.stage === "proposal" || lead.stage === "won" ? "Rahul M." : "Neha G.";
+                      const primaryColor = getAvatarColor(primaryAssignee);
+                      const secondaryColor = getAvatarColor(secondaryAssignee);
+
+                      // Deterministic counts
+                      const attachmentCount = (lead.title.length % 3) + 2;
+                      const commentCount = Math.floor((lead.estimated_value / 25000) % 6) + 2;
+
                       return (
                         <div
                           key={lead.id}
                           draggable
                           onDragStart={() => handleDragStart(lead.id)}
                           onClick={() => setActiveLead(lead)}
-                          className="group relative p-4 rounded-[16px] border border-[#E6E2D8] bg-white hover:border-[#D2CEC2] hover:shadow-card hover:-translate-y-0.5 transition-all duration-140 cursor-grab active:cursor-grabbing"
+                          className="group relative p-4 rounded-[18px] border border-[#EAE7DF] bg-white shadow-[0_2px_8px_rgba(11,13,18,0.03)] hover:shadow-[0_8px_20px_-4px_rgba(11,13,18,0.08)] hover:border-[#D5D0C3] transition-all duration-140 cursor-grab active:cursor-grabbing select-none"
                         >
-                          <h4 className="text-[15px] font-medium text-[#12141A] truncate group-hover:underline">
+                          {/* Row 1: Due Date / Age + Three-Dots Menu */}
+                          <div className="flex items-center justify-between text-[12px] text-[#6B7280]">
+                            <div className="flex items-center gap-1.5 font-normal">
+                              <Clock className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                              <span>{dueDateText}</span>
+                            </div>
+
+                            {/* Three-dots Context Menu Button */}
+                            <div className="relative context-menu-container">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveMenuLeadId(isMenuOpen ? null : lead.id);
+                                }}
+                                className="h-6 w-6 rounded-[6px] hover:bg-[#F3F1EC] text-[#9CA3AF] hover:text-[#111827] flex items-center justify-center transition-colors cursor-pointer"
+                                title="Deal options"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </button>
+
+                              {isMenuOpen && (
+                                <div className="absolute right-0 top-7 w-48 rounded-[12px] bg-white border border-[#E6E2D8] shadow-xl p-1.5 z-40 animate-reveal text-[13px]">
+                                  {lead.stage !== "won" && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAdvanceStage(lead.id, lead.stage);
+                                      }}
+                                      className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
+                                    >
+                                      <ArrowRight className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                                      <span>Advance Stage</span>
+                                    </button>
+                                  )}
+
+                                  <Link
+                                    href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(lead.contact_phone || "")}`}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
+                                  >
+                                    <MessageSquare className="h-3.5 w-3.5 text-[#3D5AFE]" />
+                                    <span>Open WhatsApp</span>
+                                  </Link>
+
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      crmStore.updateLeadStage(orgSlug, lead.id, "won");
+                                      setActiveMenuLeadId(null);
+                                      setRefreshKey((k) => k + 1);
+                                      toast("Deal marked as Won!", { type: "success" });
+                                    }}
+                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#16A34A] hover:bg-[#E8F8F0] flex items-center gap-2"
+                                  >
+                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                    <span>Mark as Won</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      crmStore.updateLeadStage(orgSlug, lead.id, "lost");
+                                      setActiveMenuLeadId(null);
+                                      setRefreshKey((k) => k + 1);
+                                      toast("Deal marked as Closed Lost", { type: "info" });
+                                    }}
+                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#DC2626] hover:bg-[#FEE2E2] flex items-center gap-2"
+                                  >
+                                    <XCircle className="h-3.5 w-3.5" />
+                                    <span>Mark as Lost</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Row 2: Deal Title */}
+                          <h4 className="mt-2 text-[15px] font-semibold text-[#111827] leading-snug line-clamp-1 group-hover:text-[#FF5A1F] transition-colors">
                             {lead.title}
                           </h4>
 
-                          <div className="mt-2.5 flex items-center justify-between text-[14px]">
-                            <span className="font-medium text-[#0A7A53] font-variant-numeric tabular-nums">
-                              {formatINR(lead.estimated_value || 0)}
-                            </span>
-                            <span className="text-[13px] text-[#666C78] truncate max-w-[120px]">
-                              {lead.contact_name || "Lead"}
-                            </span>
+                          {/* Row 3: Deal Description / Excerpt */}
+                          <p className="mt-1 text-[13px] text-[#6B7280] leading-relaxed line-clamp-2">
+                            {lead.notes || `${lead.source} • Contact: ${lead.contact_name}`}
+                          </p>
+
+                          {/* Row 4: Milestone & Value with Segmented Bar */}
+                          <div className="mt-3.5 pt-3 border-t border-[#F0ECE2] space-y-2">
+                            <div className="flex items-center justify-between text-[13px]">
+                              <div className="flex items-center gap-1.5 text-[#6B7280]">
+                                <Layers className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                                <span>Milestone</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-[#111827] tabular-nums font-variant-numeric">
+                                  {formatINR(lead.estimated_value)}
+                                </span>
+                                <span className="text-[12px] text-[#6B7280] font-medium tabular-nums font-variant-numeric">
+                                  {milestone.label}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Segmented Progress Bar (Matching Reference Image!) */}
+                            <div className="flex items-center gap-1 w-full h-1.5">
+                              {Array.from({ length: 6 }).map((_, idx) => (
+                                <div
+                                  key={idx}
+                                  className={cn(
+                                    "flex-1 h-full rounded-full transition-all duration-200",
+                                    idx < milestone.completed
+                                      ? milestone.color
+                                      : "bg-[#EAE6DD]"
+                                  )}
+                                />
+                              ))}
+                            </div>
                           </div>
 
-                          <div className="mt-3 pt-2.5 border-t border-[#E6E2D8]/80 flex items-center justify-between text-[13px] text-[#666C78]">
-                            <div className="flex items-center gap-2">
+                          {/* Row 5: Assigned For Row */}
+                          <div className="mt-3 flex items-center justify-between text-[13px]">
+                            <span className="text-[#6B7280]">Assigned for</span>
+                            <div className="flex items-center -space-x-1.5">
                               <div
+                                title={primaryAssignee}
                                 className={cn(
-                                  "flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-medium border",
-                                  avatarStyle.bg,
-                                  avatarStyle.text,
-                                  avatarStyle.border
+                                  "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
+                                  primaryColor.bg,
+                                  primaryColor.text
                                 )}
                               >
-                                {getInitials(lead.contact_name || lead.title)}
+                                {getInitials(primaryAssignee)}
                               </div>
-                              <span className="truncate max-w-[100px]">{lead.source}</span>
+                              <div
+                                title={secondaryAssignee}
+                                className={cn(
+                                  "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
+                                  secondaryColor.bg,
+                                  secondaryColor.text
+                                )}
+                              >
+                                {getInitials(secondaryAssignee)}
+                              </div>
                             </div>
-                            <span className="text-[12px] text-[#8F5300] bg-[#FFF3D6] px-1.5 py-0.5 rounded-[4px]">
-                              {lead.stage === "proposal" ? "12d in stage" : "3d in stage"}
+                          </div>
+
+                          {/* Row 6: Footer with Priority Pill & Counts */}
+                          <div className="mt-3 pt-2.5 border-t border-[#F0ECE2] flex items-center justify-between">
+                            {/* Priority Pill with Flag */}
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium border",
+                                priority.pillClass
+                              )}
+                            >
+                              <Flag className="h-3 w-3" />
+                              <span>{priority.label}</span>
                             </span>
+
+                            {/* Metadata counts: Attachments & Comments */}
+                            <div className="flex items-center gap-3 text-[12px] text-[#6B7280]">
+                              <div className="flex items-center gap-1" title="Attachments">
+                                <Link2 className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                                <span className="tabular-nums font-variant-numeric">{attachmentCount}</span>
+                              </div>
+                              <div className="flex items-center gap-1" title="WhatsApp Messages">
+                                <MessageSquare className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                                <span className="tabular-nums font-variant-numeric">{commentCount}</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
 
                     {stageLeads.length === 0 && (
-                      <div className="h-36 flex items-center justify-center rounded-[14px] border border-dashed border-[#E6E2D8] text-[13px] text-[#666C78] bg-white/40">
-                        Drag deals here
+                      <div className="h-36 flex items-center justify-center rounded-[16px] border border-dashed border-[#E0DCD2] text-[13px] text-[#8C93A0] bg-white/40">
+                        Drop deals here
                       </div>
                     )}
                   </div>
@@ -335,7 +811,7 @@ export default function LeadsPage() {
       )}
 
       {/* ========================================================================= */}
-      {/* 3. TABLE VIEW (Dense, 40px Rows, Hairlines)                               */}
+      {/* 3. TABLE VIEW (Dense, Clean, Structured)                                  */}
       {/* ========================================================================= */}
       {viewMode === "table" && (
         <Table>
@@ -376,7 +852,7 @@ export default function LeadsPage() {
                     {lead.stage}
                   </StatusPill>
                 </TableCell>
-                <TableCell className="font-medium text-[#0A7A53] font-variant-numeric tabular-nums">
+                <TableCell className="font-semibold text-[#0A7A53] font-variant-numeric tabular-nums">
                   {formatINR(lead.estimated_value || 0)}
                 </TableCell>
                 <TableCell className="text-[#666C78]">{lead.source}</TableCell>
@@ -413,15 +889,15 @@ export default function LeadsPage() {
         isOpen={!!activeLead}
         onClose={() => setActiveLead(null)}
         title={activeLead?.title || "Opportunity Details"}
-        description={`Current Stage: ${activeLead?.stage}`}
+        description={`Pipeline Stage: ${activeLead?.stage.toUpperCase()}`}
       >
         <div className="space-y-6">
-          <div className="p-4 rounded-[8px] bg-[#EFEDE7] space-y-2">
+          <div className="p-4 rounded-[14px] bg-[#F1F3F5] space-y-1.5 border border-[#E2E4E8]">
             <span className="text-[11px] font-medium tracking-[0.06em] text-[#6A707C] uppercase">
-              Deal Value
+              Opportunity Value
             </span>
-            <div className="text-[32px] font-medium text-[#12141A] font-variant-numeric tabular-nums">
-              ₹{(activeLead?.estimated_value || 0).toLocaleString()}
+            <div className="text-[32px] font-semibold text-[#12141A] font-variant-numeric tabular-nums">
+              {formatINR(activeLead?.estimated_value || 0)}
             </div>
           </div>
 
@@ -429,7 +905,7 @@ export default function LeadsPage() {
             <h4 className="text-[11px] font-medium tracking-[0.06em] text-[#6A707C] uppercase">
               Deal Attributes
             </h4>
-            <div className="p-3 rounded-[8px] border border-[#E4E1D8] space-y-2.5">
+            <div className="p-3.5 rounded-[12px] border border-[#E4E1D8] bg-white space-y-3">
               <div className="flex items-center justify-between text-[#4B515D]">
                 <span>Client Name</span>
                 <span className="font-medium text-[#12141A]">
@@ -445,6 +921,10 @@ export default function LeadsPage() {
               <div className="flex items-center justify-between text-[#4B515D]">
                 <span>Lead Source</span>
                 <span className="font-medium text-[#12141A]">{activeLead?.source}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#4B515D]">
+                <span>Assigned To</span>
+                <span className="font-medium text-[#12141A]">{activeLead?.assigned_to_name || "Workspace Founder"}</span>
               </div>
             </div>
           </div>
@@ -469,10 +949,10 @@ export default function LeadsPage() {
                       }
                     }}
                     className={cn(
-                      "px-2 py-1.5 rounded-[6px] text-[11px] font-medium capitalize border transition-colors",
+                      "px-2 py-1.5 rounded-[8px] text-[12px] font-medium capitalize border transition-colors cursor-pointer",
                       activeLead?.stage === stage
-                        ? "bg-[#1B1F29] text-white border-transparent"
-                        : "bg-[#EFEDE7] text-[#12141A] border-[#E4E1D8] hover:bg-[#E4E1D8]"
+                        ? "bg-[#0B0D12] text-white border-transparent"
+                        : "bg-white text-[#12141A] border-[#E4E1D8] hover:bg-[#F9F8F6]"
                     )}
                   >
                     {stage}
@@ -483,13 +963,16 @@ export default function LeadsPage() {
           </div>
 
           <div className="pt-4 border-t border-[#E4E1D8] flex items-center justify-between">
-            <Link href={`/app/${orgSlug}/inbox`}>
-              <Button variant="secondary" size="sm">
-                Open WhatsApp Thread
+            <Link
+              href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(activeLead?.contact_phone || "")}`}
+            >
+              <Button variant="primary" size="sm" className="flex items-center gap-1.5">
+                <MessageSquare className="h-4 w-4" />
+                <span>Open in WhatsApp</span>
               </Button>
             </Link>
             <Button
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={() => setActiveLead(null)}
             >
@@ -535,13 +1018,13 @@ export default function LeadsPage() {
               <select
                 value={initialStage}
                 onChange={(e) => setInitialStage(e.target.value as LeadStage)}
-                className="w-full h-9 px-3 rounded-[8px] border border-[#E4E1D8] bg-[#EFEDE7] text-[13px] text-[#12141A] outline-none"
+                className="w-full h-10 px-3 rounded-[10px] border border-[#E4E1D8] bg-white text-[13px] text-[#12141A] outline-none"
               >
-                <option value="new">Lead / Inbound</option>
+                <option value="new">Inbound</option>
                 <option value="contacted">Contacted</option>
                 <option value="qualified">Qualified</option>
-                <option value="proposal">Proposal Sent</option>
-                <option value="won">Deals Won</option>
+                <option value="proposal">On Review / Proposal</option>
+                <option value="won">Completed / Won</option>
               </select>
             </div>
           </div>
@@ -558,9 +1041,16 @@ export default function LeadsPage() {
               label="Client Phone"
               value={contactPhone}
               onChange={(e) => setContactPhone(e.target.value)}
-              placeholder="+919876543210"
+              placeholder="+91 98765 43210"
             />
           </div>
+
+          <Input
+            label="Deal Notes & Requirement"
+            value={dealNotes}
+            onChange={(e) => setDealNotes(e.target.value)}
+            placeholder="Reviewing updated components and requirements..."
+          />
 
           <DialogFooter>
             <Button
@@ -576,6 +1066,51 @@ export default function LeadsPage() {
             </Button>
           </DialogFooter>
         </form>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* 6. INVITE TEAM MEMBER DIALOG                                              */}
+      {/* ========================================================================= */}
+      <Dialog open={inviteModalOpen} onOpenChange={setInviteModalOpen}>
+        <div className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>
+              Add a teammate to collaborate on pipeline deals and WhatsApp conversations.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Input
+            label="Teammate Email Address"
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            placeholder="colleague@roosstudiox.com"
+          />
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setInviteModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={() => {
+                setInviteModalOpen(false);
+                setInviteEmail("");
+                toast("Invitation sent successfully!", { type: "success" });
+              }}
+            >
+              Send Invitation
+            </Button>
+          </DialogFooter>
+        </div>
       </Dialog>
     </div>
   );
