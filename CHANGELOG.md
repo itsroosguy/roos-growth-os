@@ -22,7 +22,7 @@ All notable architectural, visual, and experiential changes to the Roos StudioX 
   - Elevated topbar to 56px with breadcrumbs, command palette search, and Indian currency results.
 - **Overview Re-architected (5-Row Bento)**:
   - Row 0: Time-aware real greeting ("Good evening, Praveen. Rahul Mehta has been waiting 2 hours.") + period selector + single Flame CTA ("New opportunity").
-  - Row 1: Today strip with 4 interactive 72px chips in module hues (Waiting [ultramarine], Due today [amber], Overdue [rose/emerald], In proposal [emerald]). Filters queue below on click.
+  - Row 1: Today strip with 4 interactive 72px chips in obsidian black (`#0B0D12`) with semantic signal hierarchy: Red for negative (Overdue), Green for positive (In proposal), and Orange for operational states (Waiting on you, Due today). Filters queue below on click.
   - Row 2: Left 7-col Next Best Action card (avatar, waiting timer, real inbound message, violet AI reply preview, Flame CTA, actions) + Right 5-col Revenue Hero (ink surface, 28px radius, flame glow, 5rem metric with AnimatedNumber, proportional stage bar from real open stage values, Won shown separately below in emerald).
   - Row 3: Up next queue + Coming up follow-ups with one-click completion & undo toast.
   - Row 4: Deals worth a look (open deals only, never Won) + Collapsed recent activity feed.

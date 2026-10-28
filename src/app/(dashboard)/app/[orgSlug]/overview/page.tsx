@@ -516,104 +516,106 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 1: TODAY STRIP (4 LARGE 72px INTERACTIVE CHIPS IN MODULE HUES)         */}
+      {/* ROW 1: TODAY STRIP (BLACK BACKGROUND, RED NEGATIVE, GREEN POSITIVE, ORANGE OTHERS) */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {/* Chip 1: Waiting on you (Ultramarine) */}
+        {/* Chip 1: Waiting on you (Orange) */}
         <button
           type="button"
           onClick={() => setTodayFilter((f) => (f === "waiting" ? "all" : "waiting"))}
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer",
+            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
             todayFilter === "waiting"
-              ? "bg-[#EAEEFF] border-[#3D5AFE] shadow-[0_2px_12px_rgba(61,90,254,0.18)]"
-              : "bg-white border-[#E6E2D8] hover:border-[#3D5AFE]/50 shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+              ? "border-[#FF7A1A] ring-1 ring-[#FF7A1A]/40 shadow-[0_4px_20px_rgba(255,122,26,0.22)]"
+              : "border-white/10 hover:border-[#FF7A1A]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
           )}
         >
           <div className="min-w-0">
-            <span className="type-eyebrow text-[#3D5AFE]">Waiting on you</span>
-            <p className="type-small text-[#454B57] truncate mt-0.5">
+            <span className="type-eyebrow text-[#FF7A1A]">Waiting on you</span>
+            <p className="type-small text-[#8E95A3] truncate mt-0.5">
               Unanswered conversations
             </p>
           </div>
-          <span className="type-metric text-[#3D5AFE] ml-3 shrink-0">
+          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0">
             {unreadConversations.length}
           </span>
         </button>
 
-        {/* Chip 2: Due today (Amber) */}
+        {/* Chip 2: Due today (Orange) */}
         <button
           type="button"
           onClick={() => setTodayFilter((f) => (f === "due_today" ? "all" : "due_today"))}
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer",
+            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
             todayFilter === "due_today"
-              ? "bg-[#FFF3D6] border-[#F5A524] shadow-[0_2px_12px_rgba(245,165,36,0.18)]"
-              : "bg-white border-[#E6E2D8] hover:border-[#F5A524]/50 shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+              ? "border-[#FF7A1A] ring-1 ring-[#FF7A1A]/40 shadow-[0_4px_20px_rgba(255,122,26,0.22)]"
+              : "border-white/10 hover:border-[#FF7A1A]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
           )}
         >
           <div className="min-w-0">
-            <span className="type-eyebrow text-[#8F5300]">Due today</span>
-            <p className="type-small text-[#454B57] truncate mt-0.5">Follow-ups & SLAs</p>
+            <span className="type-eyebrow text-[#FF7A1A]">Due today</span>
+            <p className="type-small text-[#8E95A3] truncate mt-0.5">Follow-ups & SLAs</p>
           </div>
-          <span className="type-metric text-[#8F5300] ml-3 shrink-0">
+          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0">
             {todayTasks.length}
           </span>
         </button>
 
-        {/* Chip 3: Overdue (Rose if > 0, else calm Emerald "On track") */}
+        {/* Chip 3: Overdue (Red if > 0, else calm Green "On track") */}
         <button
           type="button"
           onClick={() => setTodayFilter((f) => (f === "overdue" ? "all" : "overdue"))}
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer",
+            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
             overdueTasks.length > 0
               ? todayFilter === "overdue"
-                ? "bg-[#FFE9EA] border-[#E5484D] shadow-[0_2px_12px_rgba(229,72,77,0.18)]"
-                : "bg-white border-[#E6E2D8] hover:border-[#E5484D]/50 shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
-              : "bg-white border-[#E6E2D8] hover:border-[#12B886]/50 shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+                ? "border-[#EF4444] ring-1 ring-[#EF4444]/40 shadow-[0_4px_20px_rgba(239,68,68,0.22)]"
+                : "border-white/10 hover:border-[#EF4444]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+              : todayFilter === "overdue"
+              ? "border-[#10B981] ring-1 ring-[#10B981]/40 shadow-[0_4px_20px_rgba(16,185,129,0.22)]"
+              : "border-white/10 hover:border-[#10B981]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
           )}
         >
           <div className="min-w-0">
             <span
               className={cn(
                 "type-eyebrow",
-                overdueTasks.length > 0 ? "text-[#B42336]" : "text-[#0A7A53]"
+                overdueTasks.length > 0 ? "text-[#EF4444]" : "text-[#10B981]"
               )}
             >
               {overdueTasks.length > 0 ? "Overdue" : "SLA Status"}
             </span>
-            <p className="type-small text-[#454B57] truncate mt-0.5">
+            <p className="type-small text-[#8E95A3] truncate mt-0.5">
               {overdueTasks.length > 0 ? "Needs immediate action" : "All SLAs on track"}
             </p>
           </div>
           {overdueTasks.length > 0 ? (
-            <span className="type-metric text-[#B42336] ml-3 shrink-0">
+            <span className="type-metric text-[#EF4444] ml-3 shrink-0">
               {overdueTasks.length}
             </span>
           ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E4F7EF] text-[#0A7A53] ml-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#10B981]/20 text-[#10B981] ml-3">
               <Check className="h-5 w-5" />
             </div>
           )}
         </button>
 
-        {/* Chip 4: In proposal (Emerald) */}
+        {/* Chip 4: In proposal (Green) */}
         <button
           type="button"
           onClick={() => setTodayFilter((f) => (f === "proposal" ? "all" : "proposal"))}
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer",
+            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
             todayFilter === "proposal"
-              ? "bg-[#E4F7EF] border-[#12B886] shadow-[0_2px_12px_rgba(18,184,134,0.18)]"
-              : "bg-white border-[#E6E2D8] hover:border-[#12B886]/50 shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+              ? "border-[#10B981] ring-1 ring-[#10B981]/40 shadow-[0_4px_20px_rgba(16,185,129,0.22)]"
+              : "border-white/10 hover:border-[#10B981]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
           )}
         >
           <div className="min-w-0">
-            <span className="type-eyebrow text-[#0A7A53]">In proposal</span>
-            <p className="type-small text-[#454B57] truncate mt-0.5">Active negotiations</p>
+            <span className="type-eyebrow text-[#10B981]">In proposal</span>
+            <p className="type-small text-[#8E95A3] truncate mt-0.5">Active negotiations</p>
           </div>
-          <span className="type-metric text-[#0A7A53] ml-3 shrink-0">
+          <span className="type-metric text-[#10B981] ml-3 shrink-0">
             {proposalDeals.length}
           </span>
         </button>
