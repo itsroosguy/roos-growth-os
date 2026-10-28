@@ -4,35 +4,35 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF7900]/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
+  "inline-flex items-center justify-center font-medium transition-all duration-140 ease-spring active:scale-[0.97] will-change-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF7900]/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] active:scale-[0.98] font-semibold",
+          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] font-medium",
         orange:
-          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] active:scale-[0.98] font-semibold",
+          "bg-[#FF7900] text-white shadow-xs hover:bg-[#E66D00] font-medium",
         orangeSubtle:
           "bg-[rgba(255,121,0,0.12)] text-[#FF7900] hover:bg-[rgba(255,121,0,0.2)] border border-[rgba(255,121,0,0.25)] font-medium",
         dark:
-          "bg-[#121214] text-white hover:bg-[#1A1A1E] border border-[#232326] active:scale-[0.98] font-semibold shadow-xs",
+          "bg-[#121214] text-white hover:bg-[#1A1A1E] border border-[#232326] font-medium shadow-xs",
         secondary:
-          "bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-950 border border-slate-200/80 active:scale-[0.98] font-medium",
+          "bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-950 border border-slate-200/80 font-medium",
         outline:
-          "border border-[#E5E7EB] bg-white text-slate-800 hover:bg-[#F7F7F8] hover:border-slate-300 hover:text-slate-950 active:scale-[0.98] shadow-2xs font-semibold",
+          "border border-[#E5E7EB] bg-white text-slate-800 hover:bg-[#F8F9FA] hover:border-slate-300 hover:text-slate-950 shadow-2xs font-medium",
         ghost:
           "text-slate-600 hover:bg-slate-100 hover:text-slate-950 active:bg-slate-200 font-medium",
         danger:
-          "bg-rose-600 text-white hover:bg-rose-700 active:scale-[0.98] shadow-xs font-semibold",
+          "bg-rose-600 text-white hover:bg-rose-700 shadow-xs font-medium",
         dangerGhost:
           "text-rose-600 hover:bg-rose-50 active:bg-rose-100 font-medium",
       },
       size: {
-        default: "h-9.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold",
-        sm: "h-8 px-3 py-1 rounded-lg text-xs font-semibold",
-        lg: "h-11 px-6 py-2.5 rounded-xl text-sm sm:text-base font-semibold",
-        icon: "h-9 w-9 rounded-xl p-0 flex items-center justify-center",
-        iconSm: "h-7.5 w-7.5 rounded-lg p-0 flex items-center justify-center",
+        default: "h-9 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium",
+        sm: "h-8 px-2.5 py-1 rounded-md text-xs font-medium",
+        lg: "h-10 px-5 py-2 rounded-lg text-sm font-medium",
+        icon: "h-8.5 w-8.5 rounded-lg p-0 flex items-center justify-center",
+        iconSm: "h-7 w-7 rounded-md p-0 flex items-center justify-center",
       },
     },
     defaultVariants: {

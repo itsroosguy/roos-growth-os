@@ -69,14 +69,22 @@ async function runAudit() {
     'about:blank'
   ]);
 
-  // Give Chrome a moment to open CDP port
-  await new Promise(r => setTimeout(r, 1200));
+  // Give Chrome a moment to open CDP port with retry loop
+  let pages = null;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      await new Promise(r => setTimeout(r, 600));
+      pages = await getJson(`http://127.0.0.1:${port}/json/list`);
+      if (pages && pages.length > 0) break;
+    } catch (e) {
+      // Retry
+    }
+  }
 
   let totalViolations = 0;
   const auditReport = [];
 
   try {
-    const pages = await getJson(`http://127.0.0.1:${port}/json/list`);
     if (!pages || pages.length === 0) {
       throw new Error('No Chrome pages available on CDP port.');
     }

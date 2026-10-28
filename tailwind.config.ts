@@ -127,12 +127,19 @@ const config: Config = {
         orange: "0 4px 14px 0 rgba(255, 122, 26, 0.20)",
       },
       transitionTimingFunction: {
-        DEFAULT: "cubic-bezier(0.2, 0, 0, 1)",
+        DEFAULT: "cubic-bezier(0.16, 1, 0.3, 1)",
+        "expo-out": "cubic-bezier(0.16, 1, 0.3, 1)", // Emil Kowalski deceleration curve for entrances
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)", // Emil Kowalski physics-based spring curve for clicks & micro-interactions
       },
       transitionDuration: {
-        fast: "120ms",
-        base: "200ms",
-        smooth: "320ms",
+        140: "140ms",
+        160: "160ms",
+        180: "180ms",
+        200: "200ms",
+        220: "220ms",
+        fast: "140ms",
+        base: "180ms",
+        smooth: "220ms",
       },
     },
   },

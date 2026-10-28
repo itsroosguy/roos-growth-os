@@ -254,7 +254,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] select-none transition-[width] duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
+        "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] select-none transition-[width] duration-180 ease-expo-out will-change-[width]",
         collapsed ? "w-[68px] px-2 py-4" : "w-[248px] px-3.5 py-4"
       )}
     >
@@ -262,13 +262,13 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         {/* Top Header - Logo & Collapse Button */}
         <div
           className={cn(
-            "flex items-center pb-4 pt-1 transition-all duration-200 border-b border-[#18181C] mb-4",
+            "flex items-center pb-4 pt-1 transition-all duration-180 ease-expo-out border-b border-[#18181C] mb-4",
             collapsed ? "flex-col gap-3 items-center justify-center" : "justify-between px-1"
           )}
         >
           <Link
             href={`/app/${orgSlug}/overview`}
-            className="flex items-center outline-none focus-visible:ring-1 focus-visible:ring-[#FF7900] rounded-lg shrink-0"
+            className="flex items-center outline-none focus-visible:ring-1 focus-visible:ring-[#FF7900] rounded-lg shrink-0 transition-transform duration-140 ease-spring active:scale-95 will-change-transform"
             title="Roos StudioX"
           >
             <RoosLogo variant="white" size="md" collapsed={collapsed} />
@@ -277,7 +277,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           <button
             type="button"
             onClick={toggleCollapsed}
-            className="text-[#717680] hover:text-white transition-colors p-1.5 rounded-md hover:bg-[#18181C] cursor-pointer shrink-0"
+            className="text-[#717680] hover:text-white transition-all duration-140 ease-spring active:scale-90 will-change-transform p-1.5 rounded-md hover:bg-[#18181C] cursor-pointer shrink-0"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -318,7 +318,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         onMouseEnter={(e) => handleMouseEnterItem(e, item)}
                         onMouseLeave={handleMouseLeaveItem}
                         className={cn(
-                          "group relative flex items-center rounded-lg text-[13px] font-medium transition-all duration-120 outline-none",
+                          "group relative flex items-center rounded-lg text-[13px] font-medium transition-all duration-140 ease-expo-out active:scale-[0.985] will-change-transform outline-none",
                           collapsed
                             ? "h-9 w-9 mx-auto justify-center"
                             : "h-9 px-2.5 w-full",
@@ -385,8 +385,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       {/* Floating Tooltip in Collapsed Mode */}
       {collapsed && hoveredItem && (
         <div
-          className="pointer-events-none fixed left-[74px] z-50 flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-[#141417] text-white border border-[#27272E] shadow-xl text-xs font-medium whitespace-nowrap"
-          style={{ top: `${hoveredItem.top}px`, transform: "translateY(-50%)" }}
+          className="pointer-events-none fixed left-[74px] z-50 flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-[#141417] text-white border border-[#27272E] shadow-xl text-xs font-medium whitespace-nowrap will-change-transform animate-reveal"
+          style={{ top: `${hoveredItem.top}px`, transform: "translate3d(0, -50%, 0)" }}
         >
           <span>{hoveredItem.title}</span>
           {hoveredItem.badge && (
