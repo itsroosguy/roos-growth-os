@@ -3,60 +3,80 @@
 @tailwind utilities;
 
 /* ========================================================================= */
-/* GOOGLE SANS PRIMARY FONT SYSTEM                                           */
+/* GOOGLE SANS PRIMARY FONT SYSTEM (Self-Hosted Local + Strict Fallback)    */
 /* ========================================================================= */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/google-sans.woff2') format('woff2-variations'),
+       url('/fonts/google-sans.woff2') format('woff2'),
+       local('Google Sans'), local('Google Sans Regular'), local('GoogleSans-Regular');
+}
+
 @font-face {
   font-family: 'Google Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('Google Sans'), local('Google Sans Regular'), local('GoogleSans-Regular'),
-       url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2');
+  src: url('/fonts/google-sans.woff2') format('woff2'),
+       local('Google Sans Regular'), local('GoogleSans-Regular');
 }
+
 @font-face {
   font-family: 'Google Sans';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: local('Google Sans Medium'), local('GoogleSans-Medium'),
-       url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2');
+  src: url('/fonts/google-sans.woff2') format('woff2'),
+       local('Google Sans Medium'), local('GoogleSans-Medium');
 }
+
 @font-face {
   font-family: 'Google Sans';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: local('Google Sans SemiBold'), local('GoogleSans-SemiBold'),
-       url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2');
+  src: url('/fonts/google-sans.woff2') format('woff2'),
+       local('Google Sans SemiBold'), local('GoogleSans-SemiBold');
 }
 
 @layer base {
   :root {
-    /* Roos StudioX Growth OS — Elite Minimal SaaS Palette */
-    --background: #F7F7F8; /* Clean Warm Neutral Canvas */
-    --foreground: #0F172A; /* High-contrast Charcoal */
-    --foreground-secondary: #64748B; /* Neutral Muted Gray */
-    --foreground-muted: #94A3B8; /* Slate Supporting */
-    --surface: #FFFFFF; /* Pure White Elevated Surface */
-    --surface-subtle: #F4F4F6;
-    --surface-muted: #F7F7F8;
-    --surface-hover: #F1F1F4;
-    --border: #E5E7EB; /* Subtle Border */
+    /* Roos StudioX Business OS — Restrained Calm Light Theme */
+    --background: #F7F7F8;
+    --canvas: #F7F7F8;
+    --foreground: #0F172A;
+    --foreground-secondary: #475569;
+    --foreground-muted: #94A3B8;
+    
+    --surface: #FFFFFF;
+    --surface-subtle: #F8F9FA;
+    --surface-muted: #F1F3F5;
+    --surface-hover: #F1F3F5;
+    
+    --border: #E5E7EB;
     --border-strong: #D1D5DB;
+    --border-subtle: #F3F4F6;
 
-    /* ROOS Identity Orange */
+    /* ROOS Identity Orange — Reserved strictly for primary action & active state */
     --roos-orange: #FF7900;
     --roos-orange-hover: #E66D00;
-    --roos-orange-subtle: rgba(255, 121, 0, 0.12);
+    --roos-orange-subtle: rgba(255, 121, 0, 0.08);
 
-    /* Dark Surfaces */
+    /* Dark App Shell Surfaces (Sidebar & Shell Chrome) */
     --dark-bg: #0D0D0E;
     --dark-card: #121214;
+    --dark-elevated: #161619;
+    --dark-hover: #18181C;
     --dark-border: #1F1F23;
   }
 
+  /* Universal typographic constraint & synthetic resets */
   * {
     border-color: var(--border);
+    font-synthesis: none !important;
     font-style: normal !important; /* Strict: Never italic anywhere */
   }
 
@@ -72,20 +92,20 @@
     font-family: "Google Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     line-height: 1.5;
     letter-spacing: -0.01em;
     font-weight: 400;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: "Google Sans", sans-serif;
-    letter-spacing: -0.02em;
-    font-weight: 600;
+  /* Strict Reset: Prevent default browser bold / italic inheritance */
+  b, strong, th, h1, h2, h3, h4, h5, h6, label {
+    font-style: normal !important;
+    font-weight: inherit;
   }
 
-  b, strong, th {
-    font-weight: 600;
+  em, i, cite, dfn, var, address {
+    font-style: normal !important;
   }
 
   /* Strict Typography Caps: Max weight 600, no synthetic bold */
@@ -110,7 +130,8 @@
   }
 
   code, pre, .font-mono {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-feature-settings: "tnum" 1;
   }
 
   /* Respect reduced motion preferences */
@@ -126,10 +147,137 @@
   }
 }
 
+/* ========================================================================= */
+/* 8-LEVEL CALIBRATED GOOGLE SANS TYPOGRAPHY SCALE                            */
+/* ========================================================================= */
+
+.type-display {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.75rem; /* 28px */
+  line-height: 2.125rem; /* 34px */
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.type-heading {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.625rem; /* 26px */
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.type-metric {
+  font-family: "Google Sans", sans-serif;
+  font-size: 2rem; /* 32px */
+  line-height: 2.375rem; /* 38px */
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.type-primary {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.375rem; /* 22px */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.type-body {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.375rem; /* 22px */
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+
+.type-supporting {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.type-meta {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.type-utility {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.6875rem; /* 11px */
+  line-height: 0.875rem; /* 14px */
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ========================================================================= */
+/* MOTION TOKENS & PURPOSEFUL TRANSITIONS (120ms, 200ms, 320ms)              */
+/* ========================================================================= */
+
+.transition-motion-fast {
+  transition: all 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.transition-motion-base {
+  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.transition-motion-smooth {
+  transition: all 320ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: page-enter 180ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+/* Subtle, sophisticated interactive hover states */
+.interactive-hover-row {
+  transition: background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+              border-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.interactive-hover-card {
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+              border-color 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.interactive-hover-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+.interactive-tap-btn {
+  transition: transform 120ms cubic-bezier(0.2, 0, 0, 1),
+              background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+              border-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.interactive-tap-btn:active {
+  transform: scale(0.98);
+}
+
 /* Polished Minimalist Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -137,12 +285,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #E2E8F0;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #CBD5E1;
 }
 
 /* Crisp Text Selection */
@@ -155,230 +303,3 @@
   background-color: #FF7900;
   color: #FFFFFF;
 }
-
-/* ========================================================================= */
-/* ROOS STUDIOX GLASSMORPHISM SYSTEM (Atmospheric & Translucent Surfaces)    */
-/* ========================================================================= */
-
-.atmospheric-canvas {
-  background-color: #F8FAFC;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(216, 226, 254, 0.60) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(224, 231, 255, 0.65) 0px, transparent 50%),
-    radial-gradient(at 50% 25%, rgba(238, 242, 255, 0.50) 0px, transparent 55%),
-    radial-gradient(at 15% 85%, rgba(254, 243, 199, 0.40) 0px, transparent 45%),
-    radial-gradient(at 85% 80%, rgba(224, 231, 255, 0.55) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(254, 226, 226, 0.30) 0px, transparent 45%);
-  background-attachment: fixed;
-  background-size: 100% 100%;
-}
-
-.glass-panel {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 10px 35px -5px rgba(15, 23, 42, 0.04), 0 2px 6px 0 rgba(15, 23, 42, 0.02), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
-}
-
-.glass-panel-subtle {
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 6px 20px -3px rgba(15, 23, 42, 0.03);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 1);
-}
-
-.glass-dock {
-  background: rgba(255, 255, 255, 0.70);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.80);
-  box-shadow: 0 14px 44px -8px rgba(15, 23, 42, 0.08), 0 2px 8px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
-}
-
-.glass-pill {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-}
-
-.glass-input {
-  background: rgba(255, 255, 255, 0.70);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
-}
-
-.glass-input:focus {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: #2563EB;
-}
-
-/* ========================================================================= */
-/* INTERACTIVE ELEMENTS & MICRO-INTERACTIONS                                 */
-/* ========================================================================= */
-
-.interactive-card {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.interactive-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
-  border-color: #93C5FD;
-}
-.interactive-card:active {
-  transform: scale(0.995);
-}
-
-.interactive-btn {
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.interactive-btn:hover {
-  transform: translateY(-1px);
-}
-.interactive-btn:active {
-  transform: scale(0.96);
-}
-
-.interactive-pill {
-  transition: all 0.15s ease;
-}
-.interactive-pill:hover {
-  transform: translateY(-1px);
-}
-.interactive-pill:active {
-  transform: scale(0.95);
-}
-
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.1);
-  }
-}
-
-.pulse-dot {
-  animation: pulse-subtle 2s infinite ease-in-out;
-}
-
-/* ========================================================================= */
-/* ROOS STUDIOX PRELOADER & CELESTIAL ORBIT ANIMATIONS                       */
-/* ========================================================================= */
-
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spin-slow-reverse {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes float-subtle {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes preloader-glow {
-  0%, 100% {
-    opacity: 0.45;
-    transform: scale(0.96);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.08);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 16s linear infinite;
-}
-
-.animate-spin-slow-reverse {
-  animation: spin-slow-reverse 24s linear infinite;
-}
-
-.animate-float {
-  animation: float-subtle 4s ease-in-out infinite;
-}
-
-.animate-preloader-glow {
-  animation: preloader-glow 3.5s ease-in-out infinite;
-}
-
-/* ========================================================================= */
-/* MOTION DESIGN TOKENS & PAGE TRANSITIONS                                   */
-/* ========================================================================= */
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-enter {
-  animation: page-enter 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Subtle, sophisticated interactive hover states */
-.interactive-hover-row {
-  transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.interactive-hover-card {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.interactive-hover-card:hover {
-  transform: translateY(-1.5px);
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-}
-
-.interactive-tap-btn {
-  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.15s ease,
-              border-color 0.15s ease,
-              box-shadow 0.15s ease;
-}
-.interactive-tap-btn:active {
-  transform: scale(0.97);
-}
-
-
-

@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Building2,
   ChevronDown,
@@ -15,19 +13,13 @@ import {
   Check,
   User,
   Search,
-  Smartphone,
   Bell,
   X,
   MessageSquare,
   Users,
   CheckSquare,
   Sparkles,
-  Zap,
   ArrowRight,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  Calendar,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -174,29 +166,29 @@ export function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-[#EAEAEA] bg-white px-4 sm:px-6 select-none">
-        {/* Global Search Input (Matching Reference Image) */}
-        <div className="relative w-72 sm:w-80 md:w-96 pl-10 md:pl-0">
+      <header className="sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b border-[#E5E7EB] bg-white px-4 sm:px-6 select-none">
+        {/* Global Search Input */}
+        <div className="relative w-64 sm:w-80 md:w-96 pl-10 lg:pl-0">
           <button
             type="button"
             onClick={() => setCommandPaletteOpen(true)}
-            className="flex w-full items-center justify-between rounded-xl border border-[#EAEAEA] bg-transparent px-3.5 py-2 text-xs sm:text-sm text-slate-500 hover:border-slate-300 hover:text-slate-800 transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer"
+            className="flex w-full items-center justify-between rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-1.5 text-xs text-slate-500 hover:border-[#D1D5DB] hover:bg-white hover:text-slate-800 transition-colors shadow-2xs cursor-pointer"
           >
-            <div className="flex items-center space-x-2.5 truncate">
-              <Search className="h-4 w-4 text-[#9CA3AF] shrink-0" />
-              <span className="truncate text-slate-400 font-normal">
-                Search leads, contacts, conversations...
+            <div className="flex items-center space-x-2 truncate">
+              <Search className="h-3.5 w-3.5 text-[#717680] shrink-0" />
+              <span className="truncate text-[#94A3B8] font-normal text-xs">
+                Search leads, contacts, threads...
               </span>
             </div>
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded-md bg-[#F4F4F6] border border-[#E5E7EB] px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-500">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-white border border-[#E5E7EB] px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-500">
               ⌘ K
             </kbd>
           </button>
         </div>
 
         {/* Right Section Controls */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Organization Switcher (Matching Reference Image) */}
+        <div className="flex items-center space-x-2 sm:space-x-2.5">
+          {/* Organization Switcher */}
           <div className="relative">
             <button
               onClick={() => {
@@ -204,23 +196,23 @@ export function Topbar() {
                 setNotificationsOpen(false);
                 setUserMenuOpen(false);
               }}
-              className="flex items-center space-x-2 rounded-xl border border-[#EAEAEA] bg-white px-3 py-1.5 text-xs font-medium text-slate-800 transition-all hover:bg-[#F7F7F8] hover:border-slate-300 shadow-[0_1px_2px_rgba(0,0,0,0.02)] cursor-pointer h-9.5"
+              className="flex items-center space-x-2 rounded-lg border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-medium text-slate-800 transition-all hover:bg-[#F8F9FA] hover:border-[#D1D5DB] shadow-2xs cursor-pointer h-8.5"
             >
-              <Building2 className="h-4 w-4 text-slate-500" />
-              <span className="font-semibold text-slate-900 truncate max-w-[130px] sm:max-w-none">
+              <Building2 className="h-3.5 w-3.5 text-[#717680]" />
+              <span className="font-medium text-slate-900 truncate max-w-[130px] sm:max-w-none">
                 {currentOrg.name}
               </span>
-              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              <ChevronDown className="h-3 w-3 text-slate-400" />
             </button>
 
             {orgDropdownOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setOrgDropdownOpen(false)} />
-                <div className="absolute right-0 mt-2 z-50 w-64 rounded-2xl border border-[#EAEAEA] bg-white p-2 shadow-xl animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-1.5 text-[10px] font-mono font-medium text-slate-400 uppercase tracking-wider">
+                <div className="absolute right-0 mt-1.5 z-50 w-60 rounded-xl border border-[#E5E7EB] bg-white p-1.5 shadow-dropdown animate-page-enter">
+                  <div className="px-2.5 py-1 type-utility text-[#717680]">
                     Workspaces
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {organizations.map((org) => {
                       const isCurrent = org.id === currentOrg.id;
                       return (
@@ -229,30 +221,30 @@ export function Topbar() {
                           href={`/app/${org.slug}/overview`}
                           onClick={() => setOrgDropdownOpen(false)}
                           className={cn(
-                            "flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-colors",
+                            "flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
                             isCurrent
-                              ? "bg-[#24180E] text-[#FF7900] font-semibold"
-                              : "text-slate-700 hover:bg-[#F4F4F6] hover:text-slate-950"
+                              ? "bg-[#FFF9F5] text-[#FF7900] border border-[#FF7900]/20"
+                              : "text-slate-700 hover:bg-[#F8F9FA] hover:text-slate-950"
                           )}
                         >
                           <div className="flex items-center space-x-2 truncate">
-                            <Building2 className="h-4 w-4" />
+                            <Building2 className="h-3.5 w-3.5" />
                             <span className="truncate">{org.name}</span>
                           </div>
-                          {isCurrent && <Check className="h-4 w-4 text-[#FF7900] shrink-0" />}
+                          {isCurrent && <Check className="h-3.5 w-3.5 text-[#FF7900] shrink-0" />}
                         </Link>
                       );
                     })}
                   </div>
 
-                  <div className="my-1.5 border-t border-slate-100" />
+                  <div className="my-1 border-t border-[#E5E7EB]" />
 
                   <Link
                     href="/select-org"
                     onClick={() => setOrgDropdownOpen(false)}
-                    className="flex items-center space-x-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#FF7900] hover:bg-[#FF7900]/10 transition-colors"
+                    className="flex items-center space-x-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#FF7900] hover:bg-[#FF7900]/10 transition-colors"
                   >
-                    <PlusCircle className="h-4 w-4" />
+                    <PlusCircle className="h-3.5 w-3.5" />
                     <span>Create new organisation</span>
                   </Link>
                 </div>
@@ -260,7 +252,7 @@ export function Topbar() {
             )}
           </div>
 
-          {/* Notifications Bell with Orange Indicator Dot */}
+          {/* Notifications Bell */}
           <div className="relative">
             <button
               onClick={() => {
@@ -268,22 +260,22 @@ export function Topbar() {
                 setOrgDropdownOpen(false);
                 setUserMenuOpen(false);
               }}
-              className="relative flex h-9.5 w-9.5 items-center justify-center rounded-xl border border-[#EAEAEA] bg-white text-slate-600 hover:bg-[#F7F7F8] hover:text-slate-900 transition-colors cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+              className="relative flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-slate-600 hover:bg-[#F8F9FA] hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
               aria-label="Notifications"
             >
-              <Bell className="h-4.5 w-4.5" />
+              <Bell className="h-4 w-4 text-[#717680]" />
               {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#FF7900] ring-2 ring-white animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-[#FF7900] ring-2 ring-white" />
               )}
             </button>
 
             {notificationsOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setNotificationsOpen(false)} />
-                <div className="absolute right-0 mt-2 z-50 w-80 sm:w-96 rounded-2xl border border-[#EAEAEA] bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 space-y-2">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 px-1">
+                <div className="absolute right-0 mt-1.5 z-50 w-80 sm:w-92 rounded-xl border border-[#E5E7EB] bg-white p-2.5 shadow-dropdown animate-page-enter space-y-2">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-[#E5E7EB] px-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs font-semibold text-slate-950">Notifications</span>
+                      <span className="text-xs font-medium text-slate-900">Notifications</span>
                       {unreadCount > 0 && (
                         <span className="rounded-full bg-[#FF7900] text-white text-[10px] font-medium px-1.5 py-0.2">
                           {unreadCount} new
@@ -293,36 +285,36 @@ export function Topbar() {
                     {unreadCount > 0 && (
                       <button
                         onClick={markAllNotificationsAsRead}
-                        className="text-[11px] font-semibold text-[#FF7900] hover:underline cursor-pointer"
+                        className="text-[11px] font-medium text-[#FF7900] hover:underline cursor-pointer"
                       >
                         Mark all read
                       </button>
                     )}
                   </div>
 
-                  <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1">
+                  <div className="max-h-72 overflow-y-auto space-y-1 pr-1">
                     {notifications.map((n) => (
                       <Link
                         key={n.id}
                         href={n.href}
                         onClick={() => setNotificationsOpen(false)}
                         className={cn(
-                          "flex items-start space-x-2.5 rounded-xl p-2.5 transition-colors border",
+                          "flex items-start space-x-2.5 rounded-lg p-2 transition-colors border",
                           n.read
-                            ? "bg-white border-transparent hover:bg-slate-50"
+                            ? "bg-white border-transparent hover:bg-[#F8F9FA]"
                             : "bg-[#FFF9F5] border-[#FF7900]/20 hover:bg-[#FFF5ED]"
                         )}
                       >
-                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200">
-                          {n.type === "inbox" && <MessageSquare className="h-3.5 w-3.5 text-emerald-600" />}
-                          {n.type === "task" && <CheckSquare className="h-3.5 w-3.5 text-amber-600" />}
-                          {n.type === "lead" && <Users className="h-3.5 w-3.5 text-blue-600" />}
-                          {n.type === "system" && <Sparkles className="h-3.5 w-3.5 text-purple-600" />}
+                        <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white border border-slate-200">
+                          {n.type === "inbox" && <MessageSquare className="h-3 w-3 text-emerald-600" />}
+                          {n.type === "task" && <CheckSquare className="h-3 w-3 text-amber-600" />}
+                          {n.type === "lead" && <Users className="h-3 w-3 text-blue-600" />}
+                          {n.type === "system" && <Sparkles className="h-3 w-3 text-purple-600" />}
                         </div>
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-slate-950 truncate">{n.title}</span>
+                            <span className="text-xs font-medium text-slate-900 truncate">{n.title}</span>
                             <span className="text-[10px] text-slate-400 font-mono font-normal">{n.time}</span>
                           </div>
                           <p className="text-[11px] text-slate-600 mt-0.5 line-clamp-1 leading-snug font-normal">
@@ -333,11 +325,11 @@ export function Topbar() {
                     ))}
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 text-center">
+                  <div className="pt-1.5 border-t border-[#E5E7EB] text-center">
                     <Link
                       href={`/app/${currentOrg.slug}/tasks`}
                       onClick={() => setNotificationsOpen(false)}
-                      className="text-xs font-semibold text-[#FF7900] hover:underline transition-colors"
+                      className="text-xs font-medium text-[#FF7900] hover:underline transition-colors"
                     >
                       View all tasks & updates →
                     </Link>
@@ -347,7 +339,7 @@ export function Topbar() {
             )}
           </div>
 
-          {/* User Profile Avatar with dropdown (Matching Reference Image) */}
+          {/* User Profile Avatar with dropdown */}
           <div className="relative">
             <button
               onClick={() => {
@@ -355,20 +347,20 @@ export function Topbar() {
                 setOrgDropdownOpen(false);
                 setNotificationsOpen(false);
               }}
-              className="flex h-9.5 w-9.5 items-center justify-center rounded-full border border-slate-300 bg-slate-900 text-white font-semibold text-xs shadow-xs cursor-pointer hover:ring-2 hover:ring-[#FF7900]/30 transition-all overflow-hidden"
+              className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-slate-300 bg-slate-900 text-white font-medium text-xs shadow-2xs cursor-pointer hover:ring-2 hover:ring-[#FF7900]/30 transition-all overflow-hidden"
               title="User Account"
             >
-              <User className="h-4.5 w-4.5 text-slate-200" />
+              <User className="h-4 w-4 text-slate-200" />
             </button>
 
             {userMenuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                <div className="absolute right-0 mt-2 z-50 w-56 rounded-2xl border border-[#EAEAEA] bg-white p-2 shadow-2xl animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                    <p className="text-xs font-semibold text-slate-950">Signed in</p>
+                <div className="absolute right-0 mt-1.5 z-50 w-52 rounded-xl border border-[#E5E7EB] bg-white p-1.5 shadow-dropdown animate-page-enter">
+                  <div className="px-2.5 py-2 border-b border-[#E5E7EB] mb-1">
+                    <p className="text-xs font-medium text-slate-900">Signed in</p>
                     <p className="text-[11px] text-slate-500 font-mono truncate font-normal">{currentOrg.name}</p>
-                    <span className="inline-block mt-1 text-[10px] uppercase font-semibold text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
+                    <span className="inline-block mt-1 text-[10px] uppercase font-medium text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
                       {userRole.replace("_", " ")}
                     </span>
                   </div>
@@ -376,19 +368,19 @@ export function Topbar() {
                   <Link
                     href={`/app/${currentOrg.slug}/settings`}
                     onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-semibold"
+                    className="flex items-center px-2.5 py-1.5 text-xs text-slate-700 hover:bg-[#F8F9FA] rounded-lg transition-colors font-medium"
                   >
-                    <User className="mr-2 h-4 w-4 text-slate-400" />
+                    <User className="mr-2 h-3.5 w-3.5 text-slate-400" />
                     Account Settings
                   </Link>
 
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-[#E5E7EB]" />
 
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-semibold cursor-pointer"
+                    className="w-full flex items-center px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-medium cursor-pointer"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-3.5 w-3.5" />
                     Sign out
                   </button>
                 </div>
@@ -400,144 +392,158 @@ export function Topbar() {
 
       {/* Interactive Command Palette Modal (Cmd+K / Ctrl+K) */}
       {commandPaletteOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-slate-950/50 backdrop-blur-xs animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-slate-950/40 backdrop-blur-xs animate-in fade-in duration-120">
           <div
             className="fixed inset-0"
             onClick={() => setCommandPaletteOpen(false)}
           />
 
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-150">
+          <div className="relative w-full max-w-xl bg-white rounded-xl border border-[#E5E7EB] shadow-floating overflow-hidden z-10 animate-page-enter">
             {/* Search Input Bar */}
-            <div className="flex items-center px-4 py-3.5 border-b border-slate-200">
-              <Search className="h-5 w-5 text-[#FF7900] mr-3 shrink-0" />
+            <div className="flex items-center px-3.5 py-3 border-b border-[#E5E7EB]">
+              <Search className="h-4 w-4 text-[#FF7900] mr-2.5 shrink-0" />
               <input
                 ref={searchInputRef}
                 value={commandSearch}
                 onChange={(e) => setCommandSearch(e.target.value)}
                 placeholder="Type a command or search leads, contacts, pages..."
-                className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
+                className="w-full text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
               />
               <button
+                type="button"
                 onClick={() => setCommandPaletteOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer"
+                className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
+                aria-label="Close command palette"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Results Area */}
-            <div className="max-h-96 overflow-y-auto p-3 space-y-4 text-xs">
-              {!commandSearch.trim() ? (
-                <div className="py-6 text-center text-slate-400 space-y-2">
-                  <p className="font-semibold text-slate-600">Quick Navigation</p>
-                  <div className="flex flex-wrap justify-center gap-1.5 max-w-md mx-auto pt-1">
-                    {[
-                      { name: "Overview", href: `/app/${currentOrg.slug}/overview` },
-                      { name: "Pipeline", href: `/app/${currentOrg.slug}/leads` },
-                      { name: "Inbox", href: `/app/${currentOrg.slug}/inbox` },
-                      { name: "Tasks", href: `/app/${currentOrg.slug}/tasks` },
-                      { name: "Campaigns", href: `/app/${currentOrg.slug}/campaigns` },
-                      { name: "Team", href: `/app/${currentOrg.slug}/team` },
-                    ].map((quick) => (
-                      <Link
-                        key={quick.href}
-                        href={quick.href}
-                        onClick={() => setCommandPaletteOpen(false)}
-                        className="rounded-lg bg-[#F7F7F8] border border-slate-200 px-2.5 py-1 text-slate-700 font-medium hover:bg-[#24180E] hover:text-[#FF7900] hover:border-[#FF7900]/30 transition-colors"
-                      >
-                        {quick.name}
-                      </Link>
-                    ))}
+            <div className="max-h-80 overflow-y-auto p-2 space-y-3">
+              {/* If no search typed, show quick shortcuts */}
+              {!commandSearch.trim() && (
+                <div className="space-y-1">
+                  <div className="px-2.5 py-1 type-utility text-[#717680]">
+                    Quick Jumps
                   </div>
+                  {[
+                    { name: "Overview Dashboard", href: `/app/${currentOrg.slug}/overview`, icon: Building2 },
+                    { name: "WhatsApp Shared Inbox", href: `/app/${currentOrg.slug}/inbox`, icon: MessageSquare },
+                    { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads`, icon: Users },
+                    { name: "Tasks & Follow-ups", href: `/app/${currentOrg.slug}/tasks`, icon: CheckSquare },
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setCommandPaletteOpen(false)}
+                        className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-[#F8F9FA] hover:text-slate-950 transition-colors group cursor-pointer"
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <Icon className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#FF7900]" />
+                          <span>{item.name}</span>
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-slate-300 group-hover:text-slate-600" />
+                      </Link>
+                    );
+                  })}
                 </div>
-              ) : (
-                <>
-                  {/* Pages Category */}
-                  {searchResults.pages.length > 0 && (
-                    <div>
-                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
-                        Navigation Pages
-                      </span>
-                      <div className="space-y-0.5">
-                        {searchResults.pages.map((page) => (
-                          <Link
-                            key={page.href}
-                            href={page.href}
-                            onClick={() => setCommandPaletteOpen(false)}
-                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 font-medium"
-                          >
-                            <span>{page.name}</span>
-                            <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Leads Category */}
-                  {searchResults.leads.length > 0 && (
-                    <div>
-                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
-                        Sales Deals
-                      </span>
-                      <div className="space-y-0.5">
-                        {searchResults.leads.map((lead) => (
-                          <Link
-                            key={lead.id}
-                            href={`/app/${currentOrg.slug}/leads`}
-                            onClick={() => setCommandPaletteOpen(false)}
-                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800"
-                          >
-                            <div>
-                              <span className="font-semibold block">{lead.title}</span>
-                              <span className="text-[11px] text-slate-500 font-normal">
-                                ₹{(lead.estimated_value || 0).toLocaleString("en-IN")} • {lead.stage}
-                              </span>
-                            </div>
-                            <span className="text-[10px] font-medium text-[#FF7900] bg-[#FF7900]/10 px-2 py-0.5 rounded-full">
-                              Lead
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Contacts Category */}
-                  {searchResults.contacts.length > 0 && (
-                    <div>
-                      <span className="text-[10px] font-mono font-medium uppercase text-slate-400 px-2 block mb-1">
-                        Contacts
-                      </span>
-                      <div className="space-y-0.5">
-                        {searchResults.contacts.map((contact) => (
-                          <Link
-                            key={contact.id}
-                            href={`/app/${currentOrg.slug}/contacts`}
-                            onClick={() => setCommandPaletteOpen(false)}
-                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-800"
-                          >
-                            <div>
-                              <span className="font-semibold block">
-                                {contact.first_name} {contact.last_name || ""}
-                              </span>
-                              <span className="text-[11px] text-slate-500 font-mono font-normal">{contact.phone}</span>
-                            </div>
-                            <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                              Contact
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
               )}
+
+              {/* Matching Leads */}
+              {searchResults.leads.length > 0 && (
+                <div className="space-y-1">
+                  <div className="px-2.5 py-1 type-utility text-[#717680]">
+                    Leads ({searchResults.leads.length})
+                  </div>
+                  {searchResults.leads.map((l) => (
+                    <Link
+                      key={l.id}
+                      href={`/app/${currentOrg.slug}/leads?leadId=${l.id}`}
+                      onClick={() => setCommandPaletteOpen(false)}
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-[#F8F9FA] hover:text-slate-950 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center space-x-2 truncate">
+                        <Users className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                        <span className="font-medium text-slate-900 truncate">{l.title}</span>
+                        {l.contact_name && (
+                          <span className="text-[11px] text-slate-400 truncate">({l.contact_name})</span>
+                        )}
+                      </div>
+                      <span className="font-mono text-[11px] text-emerald-600 font-medium shrink-0">
+                        ₹{(l.estimated_value || 0).toLocaleString()}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Matching Contacts */}
+              {searchResults.contacts.length > 0 && (
+                <div className="space-y-1">
+                  <div className="px-2.5 py-1 type-utility text-[#717680]">
+                    Contacts ({searchResults.contacts.length})
+                  </div>
+                  {searchResults.contacts.map((c) => (
+                    <Link
+                      key={c.id}
+                      href={`/app/${currentOrg.slug}/contacts?contactId=${c.id}`}
+                      onClick={() => setCommandPaletteOpen(false)}
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-[#F8F9FA] hover:text-slate-950 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center space-x-2 truncate">
+                        <div className="h-5 w-5 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center text-[10px] font-medium shrink-0">
+                          {c.first_name[0]}
+                        </div>
+                        <span className="font-medium text-slate-900 truncate">
+                          {c.first_name} {c.last_name || ""}
+                        </span>
+                      </div>
+                      <span className="font-mono text-[11px] text-slate-400 font-normal">
+                        {c.phone}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Matching Pages */}
+              {searchResults.pages.length > 0 && (
+                <div className="space-y-1">
+                  <div className="px-2.5 py-1 type-utility text-[#717680]">
+                    Pages ({searchResults.pages.length})
+                  </div>
+                  {searchResults.pages.map((p) => (
+                    <Link
+                      key={p.href}
+                      href={p.href}
+                      onClick={() => setCommandPaletteOpen(false)}
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-[#F8F9FA] hover:text-slate-950 transition-colors cursor-pointer"
+                    >
+                      <span className="font-medium text-slate-900">{p.name}</span>
+                      <span className="text-[10px] text-slate-400 font-mono">Jump</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Empty Search State */}
+              {commandSearch.trim() &&
+                searchResults.leads.length === 0 &&
+                searchResults.contacts.length === 0 &&
+                searchResults.pages.length === 0 && (
+                  <div className="p-6 text-center text-xs text-slate-400 font-medium">
+                    No results found for &quot;{commandSearch}&quot;
+                  </div>
+                )}
             </div>
 
-            <div className="bg-slate-50 px-4 py-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            {/* Footer Hints */}
+            <div className="bg-[#F8F9FA] px-3.5 py-2 border-t border-[#E5E7EB] flex items-center justify-between text-[11px] text-slate-400 font-mono">
               <span>Navigate with arrow keys</span>
-              <span>ESC to dismiss</span>
+              <span>ESC to close</span>
             </div>
           </div>
         </div>

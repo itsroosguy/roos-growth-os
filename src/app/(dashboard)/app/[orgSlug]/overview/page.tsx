@@ -428,7 +428,7 @@ export default function OverviewPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-1">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
+            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#0D0D0E]">
               {mounted ? timeGreeting : "Good afternoon"},{" "}
               <span className="text-[#FF7900]">Praveen</span>
             </h1>
@@ -459,7 +459,7 @@ export default function OverviewPage() {
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               </div>
 
-              <span className="font-mono font-semibold text-[#0D0D0E] text-xs sm:text-sm tracking-tight">
+              <span className="font-mono font-medium text-[#0D0D0E] text-xs sm:text-sm tracking-tight">
                 {mounted ? formattedTime : "--:--:--"}
               </span>
 
@@ -483,7 +483,7 @@ export default function OverviewPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <Globe className="h-3.5 w-3.5 text-[#FF7900]" />
-                        <span className="text-[11px] font-semibold text-[#0D0D0E]">
+                        <span className="text-[11px] font-medium text-[#0D0D0E]">
                           Workspace Region &amp; Timezone
                         </span>
                       </div>
@@ -514,7 +514,7 @@ export default function OverviewPage() {
                           }}
                           className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition-colors cursor-pointer ${
                             isSelected
-                              ? "bg-[#FFF4EC] text-[#FF7900] font-semibold"
+                              ? "bg-[#FFF4EC] text-[#FF7900] font-medium"
                               : "text-[#0D0D0E] hover:bg-[#F7F7F8]"
                           }`}
                         >
@@ -603,13 +603,13 @@ export default function OverviewPage() {
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* Card 1: New Leads */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] flex items-center justify-center text-[#FF7900]">
                 <Users className="h-4.5 w-4.5" />
               </div>
-              <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider">New Leads</span>
+              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">New Leads</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               <ArrowUpRight className="h-3 w-3 stroke-[2]" />
@@ -618,7 +618,7 @@ export default function OverviewPage() {
           </div>
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
                 32
               </div>
               <p className="text-xs text-[#525866] mt-1 font-normal">+20% acquisition vs last month</p>
@@ -630,13 +630,13 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 2: Pipeline Value */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                 <TrendingUp className="h-4.5 w-4.5" />
               </div>
-              <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider">Pipeline Value</span>
+              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">Pipeline Value</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               <ArrowUpRight className="h-3 w-3 stroke-[2]" />
@@ -645,7 +645,7 @@ export default function OverviewPage() {
           </div>
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
                 ₹6,60,000
               </div>
               <p className="text-xs text-[#525866] mt-1 font-normal">from ₹5.5 lakh last period</p>
@@ -657,13 +657,13 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 3: WhatsApp Velocity */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                 <MessageSquare className="h-4.5 w-4.5" />
               </div>
-              <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider">WhatsApp Velocity</span>
+              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">WhatsApp Velocity</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               <span>98% Delivered</span>
@@ -671,7 +671,7 @@ export default function OverviewPage() {
           </div>
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
                 412
               </div>
               <p className="text-xs text-[#525866] mt-1 font-normal">avg 4m response time</p>
@@ -683,13 +683,13 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 4: Follow-ups Due */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                 <Clock className="h-4.5 w-4.5" />
               </div>
-              <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider">Follow-ups Due</span>
+              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">Follow-ups Due</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
               1 Overdue
@@ -697,7 +697,7 @@ export default function OverviewPage() {
           </div>
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-semibold font-mono tracking-tight text-[#0D0D0E]">
+              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
                 3
               </div>
               <p className="text-xs text-amber-700 mt-1 font-medium flex items-center gap-1">
@@ -718,7 +718,7 @@ export default function OverviewPage() {
         {/* =================================================================== */}
         {/* LEFT WING (7 COLS): LIVE WHATSAPP TEAM OPERATIONS CENTER            */}
         {/* =================================================================== */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#EAECEF] shadow-xs overflow-hidden flex flex-col justify-between">
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden flex flex-col justify-between">
           {/* Header */}
           <div className="p-5 border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
@@ -727,10 +727,10 @@ export default function OverviewPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-semibold text-[#0D0D0E] tracking-tight">
+                  <h2 className="text-base font-medium text-[#0D0D0E] tracking-tight">
                     WhatsApp Conversations
                   </h2>
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-pulse" />
                     Live Sync
                   </span>
@@ -743,7 +743,7 @@ export default function OverviewPage() {
 
             <Link
               href={`/app/${orgSlug}/inbox`}
-              className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+              className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
             >
               <span>Open Inbox</span>
               <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -762,7 +762,7 @@ export default function OverviewPage() {
                     onClick={() => setInboxFilter("all")}
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                       inboxFilter === "all"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold border border-[#E5E7EB]"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
                         : "text-[#525866] hover:text-[#0D0D0E]"
                     }`}
                   >
@@ -773,7 +773,7 @@ export default function OverviewPage() {
                     onClick={() => setInboxFilter("unread")}
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                       inboxFilter === "unread"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold border border-[#E5E7EB]"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
                         : "text-[#525866] hover:text-[#0D0D0E]"
                     }`}
                   >
@@ -784,7 +784,7 @@ export default function OverviewPage() {
                     onClick={() => setInboxFilter("mentions")}
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                       inboxFilter === "mentions"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-semibold border border-[#E5E7EB]"
+                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
                         : "text-[#525866] hover:text-[#0D0D0E]"
                     }`}
                   >
@@ -809,12 +809,12 @@ export default function OverviewPage() {
                         previewChatIndex === idx ? "bg-[#FFF4EC]/40 border-l-2 border-[#FF7900]" : "hover:bg-[#F9FAFB]"
                       }`}
                     >
-                      <div className="h-8.5 w-8.5 rounded-full bg-[#E5E7EB] text-[#374151] font-semibold text-xs flex items-center justify-center shrink-0 border border-white shadow-2xs">
+                      <div className="h-8.5 w-8.5 rounded-full bg-[#E5E7EB] text-[#374151] font-medium text-xs flex items-center justify-center shrink-0 border border-white shadow-2xs">
                         {chat.name.charAt(0)}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-[13px] font-semibold text-[#0D0D0E] truncate">
+                          <span className="text-[13px] font-medium text-[#0D0D0E] truncate">
                             {chat.name}
                           </span>
                           <span className="text-[10px] text-[#717680] shrink-0 font-mono">{chat.time}</span>
@@ -824,7 +824,7 @@ export default function OverviewPage() {
                         </p>
                         <div className="flex items-center gap-1.5 mt-1.5 text-[10px]">
                           <span className="text-[#8E8E93]">Resp:</span>
-                          <span className="font-medium text-[#0D0D0E] bg-[#F4F4F6] px-1.5 py-0.2 rounded border border-[#E5E5E7] truncate">
+                          <span className="font-medium text-[#0D0D0E] bg-[#F4F4F6] px-1.5 py-0.2 rounded border border-[#E5E7EB] truncate">
                             {chat.agent}
                           </span>
                         </div>
@@ -843,17 +843,17 @@ export default function OverviewPage() {
               {/* Contact Header */}
               <div className="p-3.5 bg-white border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-full bg-[#DFE5E7] text-[#334155] flex items-center justify-center font-semibold text-xs border border-white shadow-2xs">
+                  <div className="h-8 w-8 rounded-full bg-[#DFE5E7] text-[#334155] flex items-center justify-center font-medium text-xs border border-white shadow-2xs">
                     S
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-[#0D0D0E] leading-tight">Sneha Reddy</p>
+                    <p className="text-xs font-medium text-[#0D0D0E] leading-tight">Sneha Reddy</p>
                     <p className="text-[10px] text-[#717680] font-mono">+91 98765 43210</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-[#525866] hidden sm:inline">
-                    Assigned: <strong className="font-semibold text-[#0D0D0E]">Praveen (You)</strong>
+                    Assigned: <strong className="font-medium text-[#0D0D0E]">Praveen (You)</strong>
                   </span>
                   <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
@@ -882,7 +882,7 @@ export default function OverviewPage() {
                       className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs shadow-xs ${
                         msg.sender === "agent"
                           ? "bg-[#DCF8C6] text-[#111827] rounded-tr-none border border-[#C6E6B0]"
-                          : "bg-white text-[#111827] border border-[#E5E5E7] rounded-tl-none"
+                          : "bg-white text-[#111827] border border-[#E5E7EB] rounded-tl-none"
                       }`}
                     >
                       <p className="leading-relaxed font-normal">{msg.text}</p>
@@ -905,7 +905,7 @@ export default function OverviewPage() {
                       key={chip}
                       type="button"
                       onClick={() => handleSendPreviewMessage(`I'm sharing our ${chip.replace("+ ", "")} right now.`)}
-                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F6] text-[#525866] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer border border-[#EAECEF]"
+                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F6] text-[#525866] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer border border-[#E5E7EB]"
                     >
                       {chip}
                     </button>
@@ -935,16 +935,16 @@ export default function OverviewPage() {
         </div>
 
         {/* RIGHT CARD (5 COLS): SALES PROGRESSION */}
-        <div className="lg:col-span-5 bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
           <div>
             {/* Header */}
             <div className="flex items-start justify-between pb-4 border-b border-[#F0F1F3]">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-semibold text-[#0D0D0E] tracking-tight">
+                  <h2 className="text-base font-medium text-[#0D0D0E] tracking-tight">
                     Sales Progression
                   </h2>
-                  <Badge variant="orangeSubtle" className="text-[10px] uppercase font-semibold">
+                  <Badge variant="orangeSubtle" className="text-[10px] uppercase font-medium">
                     Live CRM
                   </Badge>
                 </div>
@@ -955,7 +955,7 @@ export default function OverviewPage() {
 
               <Link
                 href={`/app/${orgSlug}/leads`}
-                className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 shrink-0 group"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 shrink-0 group"
               >
                 <span>View Pipeline</span>
                 <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -965,33 +965,33 @@ export default function OverviewPage() {
             {/* Top Summary Figures */}
             <div className="grid grid-cols-3 gap-2 py-4 border-b border-[#F0F1F3]">
               <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-semibold text-[#717680] uppercase tracking-wider block truncate">
+                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
                   Commercial Pipeline
                 </span>
-                <div className="text-xl font-semibold font-mono text-[#0D0D0E] mt-1">
+                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
                   ₹8.30 <span className="text-xs text-[#717680] font-normal">Lakh</span>
                 </div>
-                <span className="text-xs font-semibold text-emerald-600 block mt-0.5">+3.9%</span>
+                <span className="text-xs font-medium text-emerald-600 block mt-0.5">+3.9%</span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-semibold text-[#717680] uppercase tracking-wider block truncate">
+                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
                   Proposal Sent
                 </span>
-                <div className="text-xl font-semibold font-mono text-[#0D0D0E] mt-1">
+                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
                   ₹2.30 <span className="text-xs text-[#717680] font-normal">Lakh</span>
                 </div>
                 <span className="text-xs font-medium text-[#717680] block mt-0.5">1 deal</span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-semibold text-[#717680] uppercase tracking-wider block truncate">
+                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
                   Deals Won
                 </span>
-                <div className="text-xl font-semibold font-mono text-[#0D0D0E] mt-1">
+                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
                   1 deal
                 </div>
-                <span className="text-xs font-semibold text-emerald-600 block mt-0.5">100% close</span>
+                <span className="text-xs font-medium text-emerald-600 block mt-0.5">100% close</span>
               </div>
             </div>
 
@@ -1005,10 +1005,10 @@ export default function OverviewPage() {
                 <Link
                   key={deal.title}
                   href={`/app/${orgSlug}/leads`}
-                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#EAECEF] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20 shadow-2xs"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#E5E7EB] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20 shadow-2xs"
                 >
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-[#0D0D0E] truncate">
+                    <p className="text-[13px] font-medium text-[#0D0D0E] truncate">
                       {deal.title}
                     </p>
                     <p className="text-xs text-[#525866] truncate mt-0.5 font-normal">
@@ -1016,7 +1016,7 @@ export default function OverviewPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2.5 shrink-0">
-                    <span className="text-xs font-mono font-semibold text-[#0D0D0E]">
+                    <span className="text-xs font-mono font-medium text-[#0D0D0E]">
                       {deal.value}
                     </span>
                     <Badge variant={deal.badgeVariant as any} className="text-[9px] uppercase px-1.5 py-0.5">
@@ -1037,7 +1037,7 @@ export default function OverviewPage() {
               />
               <span className="font-medium text-[#0D0D0E]">{lastLeadStatus.label}</span>
               {lastLeadStatus.isBeyond3Days && (
-                <span className="text-[10px] font-semibold bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-md">
+                <span className="text-[10px] font-medium bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-md">
                   Alert: &gt;3d
                 </span>
               )}
@@ -1060,18 +1060,18 @@ export default function OverviewPage() {
       {/* ===================================================================== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
         {/* Card 1: Today's Tasks */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold text-[#0D0D0E]">Today&apos;s Tasks</h3>
-                <span className="text-[11px] font-semibold text-[#525866] bg-[#F4F4F6] px-2 py-0.5 rounded-full border border-[#E5E5E7]">
+                <h3 className="text-base font-medium text-[#0D0D0E]">Today&apos;s Tasks</h3>
+                <span className="text-[11px] font-medium text-[#525866] bg-[#F4F4F6] px-2 py-0.5 rounded-full border border-[#E5E7EB]">
                   {taskCounts.today}
                 </span>
               </div>
               <Link
                 href={`/app/${orgSlug}/tasks`}
-                className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
               >
                 <span>View all</span>
                 <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1089,7 +1089,7 @@ export default function OverviewPage() {
                 return (
                   <div
                     key={task.id}
-                    className={`flex items-center justify-between p-3 rounded-xl border border-[#EAECEF] bg-[#FAFAFA] transition-all hover:bg-white hover:border-[#FF7900]/40 shadow-2xs ${isDone ? "opacity-40 line-through" : ""}`}
+                    className={`flex items-center justify-between p-3 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] transition-all hover:bg-white hover:border-[#FF7900]/40 shadow-2xs ${isDone ? "opacity-40 line-through" : ""}`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <button
@@ -1102,7 +1102,7 @@ export default function OverviewPage() {
                         {isDone && <Check className="h-3.5 w-3.5 stroke-[2.5]" />}
                       </button>
                       <div className="min-w-0">
-                        <span className="text-xs font-semibold text-[#0D0D0E] truncate block">
+                        <span className="text-xs font-medium text-[#0D0D0E] truncate block">
                           {task.title}
                         </span>
                         <span className="text-[10px] text-[#525866] truncate block">
@@ -1118,7 +1118,7 @@ export default function OverviewPage() {
                           ? "warning"
                           : "secondary"
                       }
-                      className="text-[9px] uppercase px-1.5 py-0.2 shrink-0 font-semibold"
+                      className="text-[9px] uppercase px-1.5 py-0.2 shrink-0 font-medium"
                     >
                       {task.priority}
                     </Badge>
@@ -1130,13 +1130,13 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 2: Recent Activity */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
-              <h3 className="text-base font-semibold text-[#0D0D0E]">Recent Activity</h3>
+              <h3 className="text-base font-medium text-[#0D0D0E]">Recent Activity</h3>
               <Link
                 href={`/app/${orgSlug}/leads`}
-                className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
               >
                 <span>View all</span>
                 <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1171,13 +1171,13 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 3: Campaign Performance */}
-        <div className="bg-white rounded-2xl border border-[#EAECEF] p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
-              <h3 className="text-base font-semibold text-[#0D0D0E]">Campaign Performance</h3>
+              <h3 className="text-base font-medium text-[#0D0D0E]">Campaign Performance</h3>
               <Link
                 href={`/app/${orgSlug}/campaigns`}
-                className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
               >
                 <span>View all</span>
                 <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1185,12 +1185,12 @@ export default function OverviewPage() {
             </div>
 
             <div className="mt-3.5 space-y-3.5">
-              <div className="p-3.5 rounded-xl bg-[#FAFAFA] border border-[#EAECEF] flex items-center justify-between shadow-2xs">
+              <div className="p-3.5 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] flex items-center justify-between shadow-2xs">
                 <div>
-                  <span className="text-xs font-semibold text-[#0D0D0E] block">Product Launch Campaign</span>
+                  <span className="text-xs font-medium text-[#0D0D0E] block">Product Launch Campaign</span>
                   <span className="text-[11px] text-[#525866] mt-0.5 block">Audience: Customer Segment - A</span>
                 </div>
-                <Badge variant="success" className="text-[9px] uppercase px-2 py-0.5 font-semibold">
+                <Badge variant="success" className="text-[9px] uppercase px-2 py-0.5 font-medium">
                   Active
                 </Badge>
               </div>
@@ -1198,20 +1198,20 @@ export default function OverviewPage() {
               {/* Metrics Grid */}
               <div className="grid grid-cols-4 gap-2 text-center">
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,248</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-semibold">Sent</span>
+                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">1,248</span>
+                  <span className="text-[10px] text-[#717680] uppercase font-medium">Sent</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">1,012</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-semibold">Delivered</span>
+                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">1,012</span>
+                  <span className="text-[10px] text-[#717680] uppercase font-medium">Delivered</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-semibold font-mono text-[#0D0D0E] block">312</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-semibold">Replied</span>
+                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">312</span>
+                  <span className="text-[10px] text-[#717680] uppercase font-medium">Replied</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-semibold font-mono text-emerald-600 block">25.2%</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-semibold">Rate</span>
+                  <span className="text-base font-medium font-mono text-emerald-600 block">25.2%</span>
+                  <span className="text-[10px] text-[#717680] uppercase font-medium">Rate</span>
                 </div>
               </div>
 
@@ -1219,7 +1219,7 @@ export default function OverviewPage() {
               <div className="pt-2 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="text-[#525866] font-medium">Delivery Success Rate</span>
-                  <span className="font-mono font-semibold text-[#0D0D0E]">81.1%</span>
+                  <span className="font-mono font-medium text-[#0D0D0E]">81.1%</span>
                 </div>
                 <div className="h-2 w-full bg-[#F0F1F3] rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full" style={{ width: "81.1%" }} />
@@ -1259,7 +1259,7 @@ export default function OverviewPage() {
               <select
                 value={selectedContactId}
                 onChange={(e) => setSelectedContactId(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
               >
                 <option value="">-- Create or enter new contact --</option>
                 {contacts.map((c) => (
@@ -1304,7 +1304,7 @@ export default function OverviewPage() {
                 <select
                   value={leadStage}
                   onChange={(e) => setLeadStage(e.target.value as LeadStage)}
-                  className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                  className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
                 >
                   <option value="new">New Inquiry</option>
                   <option value="contacted">Contacted</option>
@@ -1322,7 +1322,7 @@ export default function OverviewPage() {
               <select
                 value={leadSource}
                 onChange={(e) => setLeadSource(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-white px-3 py-2 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
               >
                 <option value="WhatsApp Inbound">WhatsApp Inbound</option>
                 <option value="Website Form">Website Form</option>

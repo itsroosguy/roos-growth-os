@@ -27,11 +27,11 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/35 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
         onClick={() => onOpenChange(false)}
       />
       {/* Dialog content */}
-      <div className="relative z-50 w-full max-w-lg rounded-[26px] border border-white/80 bg-white/90 backdrop-blur-2xl p-6 sm:p-7 shadow-glass-dock">
+      <div className="relative z-50 w-full max-w-lg rounded-xl border border-border bg-surface p-6 sm:p-7 shadow-floating animate-page-enter">
         <button
           onClick={() => onOpenChange(false)}
           className="absolute right-4 top-4 rounded-full p-2 text-foreground-secondary hover:bg-surface-subtle hover:text-foreground"

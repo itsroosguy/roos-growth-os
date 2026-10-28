@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTenant } from "@/lib/organizations/tenant-context";
@@ -22,15 +22,12 @@ import {
   Settings,
   FileText,
   Layers,
-  Building2,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
   Menu,
   X,
-  User,
   LogOut,
-  ExternalLink,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -53,7 +50,7 @@ interface NavSection {
 
 export function Sidebar({ orgSlug }: SidebarProps) {
   const pathname = usePathname();
-  const { currentOrg, userRole, setUserRole, isAdmin, isJuniorManager } = useTenant();
+  const { currentOrg, userRole, setUserRole, isJuniorManager } = useTenant();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -83,7 +80,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     });
   };
 
-  // Structured, logical categories for navigation items matching Executive Directive
+  // Structured, logical categories matching Executive Directive
   const navSections = useMemo<NavSection[]>(() => {
     const sections: NavSection[] = [
       {
@@ -257,16 +254,16 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] select-none transition-[width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-        collapsed ? "w-20 px-2.5 py-4" : "w-[272px] px-3.5 py-5"
+        "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] select-none transition-[width] duration-200 ease-[cubic-bezier(0.2,0,0,1)]",
+        collapsed ? "w-[68px] px-2 py-4" : "w-[248px] px-3.5 py-4"
       )}
     >
       <div className="flex flex-col flex-1 min-h-0">
         {/* Top Header - Logo & Collapse Button */}
         <div
           className={cn(
-            "flex items-center pb-5 pt-0.5 transition-all duration-300",
-            collapsed ? "flex-col gap-3 items-center justify-center" : "justify-between px-1.5"
+            "flex items-center pb-4 pt-1 transition-all duration-200 border-b border-[#18181C] mb-4",
+            collapsed ? "flex-col gap-3 items-center justify-center" : "justify-between px-1"
           )}
         >
           <Link
@@ -280,7 +277,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           <button
             type="button"
             onClick={toggleCollapsed}
-            className="text-[#71717A] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-[#1A1A1E] cursor-pointer shrink-0"
+            className="text-[#717680] hover:text-white transition-colors p-1.5 rounded-md hover:bg-[#18181C] cursor-pointer shrink-0"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -290,18 +287,18 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
         {/* Navigation Sections */}
         <nav
-          className="flex-1 overflow-y-auto space-y-4 pr-0.5 custom-dark-scroll"
+          className="flex-1 overflow-y-auto space-y-6 pr-0.5 custom-dark-scroll"
           aria-label="Sidebar Navigation"
         >
           {navSections.map((section, sIdx) => (
             <div key={section.id} className="space-y-1">
               {/* Category Header or Divider */}
               {!collapsed ? (
-                <div className="px-2.5 pt-2 pb-1 text-[10px] tracking-wider uppercase font-medium text-[#71717A]">
+                <div className="px-2 pb-1.5 type-utility text-[#717680]">
                   {section.label}
                 </div>
               ) : sIdx > 0 ? (
-                <div className="my-2 border-t border-[#1C1C20] mx-1.5" />
+                <div className="my-2 border-t border-[#1C1C20] mx-1" />
               ) : null}
 
               {/* Items in this category */}
@@ -321,12 +318,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         onMouseEnter={(e) => handleMouseEnterItem(e, item)}
                         onMouseLeave={handleMouseLeaveItem}
                         className={cn(
-                          "group relative flex items-center rounded-xl text-[13px] font-medium transition-all duration-200 outline-none",
+                          "group relative flex items-center rounded-lg text-[13px] font-medium transition-all duration-120 outline-none",
                           collapsed
-                            ? "h-10 w-10 mx-auto justify-center"
-                            : "h-9.5 px-3 w-full",
+                            ? "h-9 w-9 mx-auto justify-center"
+                            : "h-9 px-2.5 w-full",
                           isActive
-                            ? "bg-[#18181C] text-white border border-[#27272F] shadow-2xs font-semibold"
+                            ? "bg-[#18181C] text-white border border-[#27272F]"
                             : "text-[#9CA3AF] hover:text-white hover:bg-[#141417] border border-transparent"
                         )}
                         aria-label={item.title}
@@ -335,10 +332,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         {isActive && (
                           <span
                             className={cn(
-                              "absolute rounded-full bg-[#FF7900] shadow-[0_0_8px_rgba(255,121,0,0.5)] transition-all",
+                              "absolute rounded-full bg-[#FF7900] transition-all",
                               collapsed
                                 ? "-left-1 top-1/2 -translate-y-1/2 h-4 w-1"
-                                : "left-0 top-1/2 -translate-y-1/2 h-5 w-1"
+                                : "left-0 top-1/2 -translate-y-1/2 h-4 w-0.5"
                             )}
                           />
                         )}
@@ -346,9 +343,9 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         {/* Icon */}
                         <Icon
                           className={cn(
-                            "h-[18px] w-[18px] shrink-0 transition-colors duration-200",
-                            isActive ? "text-[#FF7900]" : "text-[#71717A] group-hover:text-white",
-                            !collapsed && "mr-3"
+                            "h-[17px] w-[17px] shrink-0 transition-colors duration-120",
+                            isActive ? "text-[#FF7900]" : "text-[#717680] group-hover:text-white",
+                            !collapsed && "mr-2.5"
                           )}
                         />
 
@@ -356,8 +353,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         {!collapsed && (
                           <span
                             className={cn(
-                              "flex-1 truncate tracking-tight transition-colors",
-                              isActive ? "text-white" : "text-[#D1D5DB] group-hover:text-white"
+                              "flex-1 truncate tracking-tight transition-colors text-[13px]",
+                              isActive ? "text-white font-medium" : "text-[#D1D5DB] font-normal group-hover:text-white"
                             )}
                           >
                             {item.title}
@@ -366,14 +363,14 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
                         {/* Badge (Expanded mode) */}
                         {!collapsed && item.badge && (
-                          <span className="ml-auto text-white leading-none shrink-0 font-medium bg-[#FF7900] text-[10px] px-2 py-0.5 rounded-full shadow-xs">
+                          <span className="ml-auto text-white leading-none shrink-0 font-medium bg-[#FF7900] text-[10px] px-1.5 py-0.5 rounded-full">
                             {item.badge}
                           </span>
                         )}
 
                         {/* Unread indicator dot (Collapsed mode) */}
                         {collapsed && item.badge && (
-                          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#FF7900] ring-2 ring-[#0D0D0E]" />
+                          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-[#FF7900] ring-2 ring-[#0D0D0E]" />
                         )}
                       </Link>
                     </div>
@@ -388,7 +385,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       {/* Floating Tooltip in Collapsed Mode */}
       {collapsed && hoveredItem && (
         <div
-          className="pointer-events-none fixed left-[84px] z-50 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#141417] text-white border border-[#27272E] shadow-2xl text-xs font-medium whitespace-nowrap animate-in fade-in zoom-in-95 duration-150"
+          className="pointer-events-none fixed left-[74px] z-50 flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-[#141417] text-white border border-[#27272E] shadow-xl text-xs font-medium whitespace-nowrap"
           style={{ top: `${hoveredItem.top}px`, transform: "translateY(-50%)" }}
         >
           <span>{hoveredItem.title}</span>
@@ -406,14 +403,14 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           type="button"
           onClick={() => setUserMenuOpen(!userMenuOpen)}
           className={cn(
-            "flex items-center rounded-xl bg-[#121214] hover:bg-[#18181B] border border-[#232326] hover:border-[#2E2E33] transition-all cursor-pointer w-full text-left outline-none p-2",
+            "flex items-center rounded-lg bg-[#121214] hover:bg-[#18181C] border border-[#232326] hover:border-[#2E2E33] transition-all cursor-pointer w-full text-left outline-none p-1.5",
             collapsed ? "justify-center" : "justify-between"
           )}
           title="Account profile & workspace settings"
         >
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
             {/* User Avatar Circle */}
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#1C1C20] text-[#FF7900] border border-[#2B2B33] font-medium text-xs shadow-2xs">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#1C1C20] text-[#FF7900] border border-[#2B2B33] font-medium text-xs">
               P
             </div>
 
@@ -423,11 +420,11 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   <span className="text-xs font-medium text-white truncate leading-tight">
                     Praveen
                   </span>
-                  <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 rounded bg-[#1C1C20] text-[#A1A1AA] border border-[#2A2A30]">
+                  <span className="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-[#1C1C20] text-[#A1A1AA] border border-[#2A2A30]">
                     {roleLabel}
                   </span>
                 </div>
-                <span className="text-[11px] text-[#71717A] truncate mt-0.5">
+                <span className="text-[11px] text-[#717680] truncate mt-0.5">
                   {currentOrg.name}
                 </span>
               </div>
@@ -435,7 +432,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           </div>
 
           {!collapsed && (
-            <ChevronDown className="h-3.5 w-3.5 text-[#71717A] shrink-0 ml-1" />
+            <ChevronDown className="h-3.5 w-3.5 text-[#717680] shrink-0 ml-1" />
           )}
         </button>
 
@@ -448,17 +445,17 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             />
             <div
               className={cn(
-                "absolute z-50 rounded-2xl border border-[#27272A] bg-[#121214] p-2 shadow-2xl text-white backdrop-blur-xl animate-in fade-in zoom-in-95",
-                collapsed ? "left-full bottom-0 ml-3 w-60" : "bottom-full mb-2 left-0 right-0"
+                "absolute z-50 rounded-xl border border-[#27272A] bg-[#121214] p-2 shadow-2xl text-white",
+                collapsed ? "left-full bottom-0 ml-2 w-56" : "bottom-full mb-2 left-0 right-0"
               )}
             >
-              <div className="px-3 py-2 border-b border-[#1F1F23] mb-1">
+              <div className="px-2.5 py-2 border-b border-[#1F1F23] mb-1">
                 <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-lg bg-[#FF7900]/10 text-[#FF7900] flex items-center justify-center text-xs font-semibold">
+                  <div className="h-6 w-6 rounded-md bg-[#FF7900]/10 text-[#FF7900] flex items-center justify-center text-xs font-medium">
                     P
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-white">Praveen</p>
+                    <p className="text-xs font-medium text-white">Praveen</p>
                     <p className="text-[10px] text-[#8E8E93] truncate">praveen@roosstudiox.com</p>
                   </div>
                 </div>
@@ -469,8 +466,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               </div>
 
               {/* Clearance Level Switcher */}
-              <div className="p-1 space-y-1">
-                <div className="text-[10px] uppercase font-mono text-[#71717A] px-2 py-0.5">
+              <div className="p-1 space-y-0.5">
+                <div className="text-[10px] uppercase font-mono text-[#717680] px-2 py-0.5">
                   Clearance Level
                 </div>
                 <button
@@ -480,10 +477,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                     setUserMenuOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer",
+                    "w-full text-left px-2 py-1.5 rounded-md text-xs font-medium flex items-center justify-between cursor-pointer",
                     userRole === "admin" || userRole === "owner"
                       ? "bg-[#24180E] text-[#FF7900]"
-                      : "text-slate-300 hover:bg-[#1A1A1E]"
+                      : "text-slate-300 hover:bg-[#18181C]"
                   )}
                 >
                   <span>Level 1: Admin</span>
@@ -498,10 +495,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                     setUserMenuOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer",
+                    "w-full text-left px-2 py-1.5 rounded-md text-xs font-medium flex items-center justify-between cursor-pointer",
                     userRole === "senior_manager"
                       ? "bg-[#24180E] text-[#FF7900]"
-                      : "text-slate-300 hover:bg-[#1A1A1E]"
+                      : "text-slate-300 hover:bg-[#18181C]"
                   )}
                 >
                   <span>Level 2: Sr Manager</span>
@@ -516,10 +513,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                     setUserMenuOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer",
+                    "w-full text-left px-2 py-1.5 rounded-md text-xs font-medium flex items-center justify-between cursor-pointer",
                     userRole === "junior_manager" || userRole === "staff"
                       ? "bg-[#24180E] text-[#FF7900]"
-                      : "text-slate-300 hover:bg-[#1A1A1E]"
+                      : "text-slate-300 hover:bg-[#18181C]"
                   )}
                 >
                   <span>Level 3: Jr Manager</span>
@@ -534,16 +531,16 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               <Link
                 href={`/app/${orgSlug}/settings`}
                 onClick={() => setUserMenuOpen(false)}
-                className="flex items-center px-2.5 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-[#1A1A1E] rounded-lg transition-colors font-medium"
+                className="flex items-center px-2 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-[#18181C] rounded-md transition-colors font-medium"
               >
-                <Settings className="mr-2 h-3.5 w-3.5 text-[#71717A]" />
+                <Settings className="mr-2 h-3.5 w-3.5 text-[#717680]" />
                 Workspace Settings
               </Link>
 
               <Link
                 href="/login"
                 onClick={() => setUserMenuOpen(false)}
-                className="w-full flex items-center px-2.5 py-1.5 text-xs text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors font-medium cursor-pointer"
+                className="w-full flex items-center px-2 py-1.5 text-xs text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors font-medium cursor-pointer"
               >
                 <LogOut className="mr-2 h-3.5 w-3.5" />
                 Sign Out
@@ -557,35 +554,35 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
   return (
     <>
-      {/* Desktop Persistent Sidebar */}
-      <aside className="hidden md:block shrink-0 h-screen sticky top-0 z-30">
+      {/* Desktop Persistent Sidebar (>= 1024px) */}
+      <aside className="hidden lg:block shrink-0 h-screen sticky top-0 z-30">
         {sidebarContent}
       </aside>
 
-      {/* Mobile Menu Trigger */}
-      <div className="md:hidden fixed top-3 left-3 z-40">
+      {/* Mobile / Tablet Menu Trigger (< 1024px) */}
+      <div className="lg:hidden fixed top-3.5 left-3.5 z-40">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D0D0E] text-white border border-[#232326] shadow-sm cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0D0D0E] text-white border border-[#232326] shadow-xs cursor-pointer hover:bg-[#18181C] transition-colors"
           aria-label="Open mobile navigation"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-4.5 w-4.5" />
         </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Overlay Drawer (< 1024px) with Backdrop & Focus Lock */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden flex">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-68 max-w-[85vw] h-full z-50 bg-[#0D0D0E] shadow-2xl">
+          <div className="relative w-[248px] max-w-[85vw] h-full z-50 bg-[#0D0D0E] shadow-2xl">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-[#18181B] text-[#A1A1AA] hover:text-white cursor-pointer"
+              className="absolute top-4 right-3 h-7 w-7 flex items-center justify-center rounded-md bg-[#18181C] text-[#A1A1AA] hover:text-white cursor-pointer"
               aria-label="Close navigation"
             >
               <X className="h-4 w-4" />
