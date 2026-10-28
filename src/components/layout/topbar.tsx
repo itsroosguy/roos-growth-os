@@ -2,27 +2,31 @@
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
 import {
   Building2,
   ChevronDown,
-  LogOut,
-  PlusCircle,
   Check,
-  User,
   Search,
   Bell,
   X,
   MessageSquare,
   Users,
-  CheckSquare,
+  CheckCircle2,
   Sparkles,
   ArrowRight,
-  Command,
+  Send,
+  Filter,
+  FileText,
+  Zap,
+  BarChart3,
+  Shield,
+  Smartphone,
+  Sliders,
+  CreditCard,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 interface NotificationItem {
@@ -37,9 +41,10 @@ interface NotificationItem {
 
 export function Topbar() {
   const pathname = usePathname();
-  const { currentOrg, userRole, organizations } = useTenant();
+  const router = useRouter();
+  const { currentOrg, organizations } = useTenant();
+
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
@@ -51,16 +56,16 @@ export function Topbar() {
     if (pathname.includes("/overview")) return { section: "Workspace", page: "Overview" };
     if (pathname.includes("/inbox")) return { section: "Workspace", page: "Shared Inbox" };
     if (pathname.includes("/leads")) return { section: "Workspace", page: "Sales Pipeline" };
-    if (pathname.includes("/contacts")) return { section: "Workspace", page: "Contacts Directory" };
-    if (pathname.includes("/campaigns")) return { section: "Engagement", page: "Broadcast Campaigns" };
-    if (pathname.includes("/templates")) return { section: "Engagement", page: "Message Templates" };
-    if (pathname.includes("/automations")) return { section: "Engagement", page: "Automations Engine" };
+    if (pathname.includes("/contacts")) return { section: "Workspace", page: "Contacts" };
+    if (pathname.includes("/campaigns")) return { section: "Engagement", page: "Broadcasts" };
+    if (pathname.includes("/templates")) return { section: "Engagement", page: "Templates" };
+    if (pathname.includes("/automations")) return { section: "Engagement", page: "Automations" };
     if (pathname.includes("/tasks")) return { section: "Operations", page: "Tasks & SLAs" };
     if (pathname.includes("/reports")) return { section: "Operations", page: "Analytics & Reports" };
     if (pathname.includes("/team")) return { section: "Operations", page: "Team Roster" };
-    if (pathname.includes("/whatsapp")) return { section: "Configuration", page: "WhatsApp Cloud API" };
+    if (pathname.includes("/whatsapp")) return { section: "Configuration", page: "WhatsApp API" };
     if (pathname.includes("/settings/ai")) return { section: "Configuration", page: "AI Engine" };
-    if (pathname.includes("/settings/admin")) return { section: "Configuration", page: "Integrations & API" };
+    if (pathname.includes("/settings/admin")) return { section: "Configuration", page: "Integrations" };
     if (pathname.includes("/subscription")) return { section: "Configuration", page: "Subscription & Limits" };
     if (pathname.includes("/settings")) return { section: "Configuration", page: "Organisation Details" };
     return { section: "Roos StudioX", page: "Business OS" };
@@ -87,7 +92,7 @@ export function Topbar() {
     },
     {
       id: "n-3",
-      title: "AI Lead Qualified",
+      title: "Opportunity Qualified",
       subtitle: "Vikram Malhotra scored 94/100 (High Commercial Intent)",
       time: "3h ago",
       read: false,
@@ -130,33 +135,62 @@ export function Topbar() {
     }
   }, [commandPaletteOpen]);
 
-  // Search Results
+  // Search Results for Command Palette
   const searchResults = useMemo(() => {
-    if (!commandSearch.trim()) return { leads: [], contacts: [], pages: [] };
-    const q = commandSearch.toLowerCase();
-    const leads = crmStore.getLeads(currentOrg.slug).filter((l) =>
-      l.title.toLowerCase().includes(q) || l.contact_name?.toLowerCase().includes(q)
-    ).slice(0, 4);
+    const query = commandSearch.toLowerCase().trim();
+    if (!query) {
+      return {
+        leads: [],
+        contacts: [],
+        pages: [
+          { name: "Overview", href: `/app/${currentOrg.slug}/overview`, icon: Sparkles },
+          { name: "Shared Inbox", href: `/app/${currentOrg.slug}/inbox`, icon: MessageSquare },
+          { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads`, icon: Filter },
+          { name: "Contacts", href: `/app/${currentOrg.slug}/contacts`, icon: Users },
+          { name: "Broadcasts", href: `/app/${currentOrg.slug}/campaigns`, icon: Send },
+          { name: "Templates", href: `/app/${currentOrg.slug}/templates`, icon: FileText },
+          { name: "Automations", href: `/app/${currentOrg.slug}/automations`, icon: Zap },
+          { name: "Tasks & SLAs", href: `/app/${currentOrg.slug}/tasks`, icon: CheckCircle2 },
+          { name: "Analytics & Reports", href: `/app/${currentOrg.slug}/reports`, icon: BarChart3 },
+          { name: "Team Roster", href: `/app/${currentOrg.slug}/team`, icon: Shield },
+          { name: "WhatsApp API", href: `/app/${currentOrg.slug}/whatsapp`, icon: Smartphone },
+          { name: "AI Engine", href: `/app/${currentOrg.slug}/settings/ai`, icon: Sparkles },
+          { name: "Integrations", href: `/app/${currentOrg.slug}/settings/admin`, icon: Sliders },
+          { name: "Subscription & Limits", href: `/app/${currentOrg.slug}/subscription`, icon: CreditCard },
+          { name: "Organisation Details", href: `/app/${currentOrg.slug}/settings`, icon: Building2 },
+        ],
+      };
+    }
 
-    const contacts = crmStore.getContacts(currentOrg.slug).filter((c) =>
-      c.first_name.toLowerCase().includes(q) || (c.last_name && c.last_name.toLowerCase().includes(q))
-    ).slice(0, 4);
+    const leads = crmStore
+      .getLeads(currentOrg.slug)
+      .filter((l) => l.title.toLowerCase().includes(query) || (l.contact_name && l.contact_name.toLowerCase().includes(query)))
+      .slice(0, 5);
 
-    const pages = [
-      { name: "Overview Dashboard", href: `/app/${currentOrg.slug}/overview`, category: "Navigation" },
-      { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads`, category: "Navigation" },
-      { name: "WhatsApp Shared Inbox", href: `/app/${currentOrg.slug}/inbox`, category: "Navigation" },
-      { name: "Contacts Directory", href: `/app/${currentOrg.slug}/contacts`, category: "Navigation" },
-      { name: "Tasks & SLAs", href: `/app/${currentOrg.slug}/tasks`, category: "Navigation" },
-      { name: "Broadcast Campaigns", href: `/app/${currentOrg.slug}/campaigns`, category: "Navigation" },
-      { name: "Message Templates", href: `/app/${currentOrg.slug}/templates`, category: "Navigation" },
-      { name: "Automations Engine", href: `/app/${currentOrg.slug}/automations`, category: "Navigation" },
-      { name: "Analytics & Reports", href: `/app/${currentOrg.slug}/reports`, category: "Navigation" },
-      { name: "Team Roster", href: `/app/${currentOrg.slug}/team`, category: "Navigation" },
-      { name: "WhatsApp Cloud API", href: `/app/${currentOrg.slug}/whatsapp`, category: "Navigation" },
-      { name: "Subscription & Limits", href: `/app/${currentOrg.slug}/subscription`, category: "Navigation" },
-      { name: "Organisation Details", href: `/app/${currentOrg.slug}/settings`, category: "Navigation" },
-    ].filter((p) => p.name.toLowerCase().includes(q));
+    const contacts = crmStore
+      .getContacts(currentOrg.slug)
+      .filter((c) => `${c.first_name} ${c.last_name || ""}`.toLowerCase().includes(query) || c.phone.includes(query))
+      .slice(0, 5);
+
+    const allPages = [
+      { name: "Overview", href: `/app/${currentOrg.slug}/overview` },
+      { name: "Shared Inbox", href: `/app/${currentOrg.slug}/inbox` },
+      { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads` },
+      { name: "Contacts", href: `/app/${currentOrg.slug}/contacts` },
+      { name: "Broadcasts", href: `/app/${currentOrg.slug}/campaigns` },
+      { name: "Templates", href: `/app/${currentOrg.slug}/templates` },
+      { name: "Automations", href: `/app/${currentOrg.slug}/automations` },
+      { name: "Tasks & SLAs", href: `/app/${currentOrg.slug}/tasks` },
+      { name: "Analytics & Reports", href: `/app/${currentOrg.slug}/reports` },
+      { name: "Team Roster", href: `/app/${currentOrg.slug}/team` },
+      { name: "WhatsApp API", href: `/app/${currentOrg.slug}/whatsapp` },
+      { name: "AI Engine", href: `/app/${currentOrg.slug}/settings/ai` },
+      { name: "Integrations", href: `/app/${currentOrg.slug}/settings/admin` },
+      { name: "Subscription & Limits", href: `/app/${currentOrg.slug}/subscription` },
+      { name: "Organisation Details", href: `/app/${currentOrg.slug}/settings` },
+    ];
+
+    const pages = allPages.filter((p) => p.name.toLowerCase().includes(query)).slice(0, 4);
 
     return { leads, contacts, pages };
   }, [commandSearch, currentOrg.slug]);
@@ -165,250 +199,152 @@ export function Topbar() {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
-  const handleSignOut = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (e) {}
-
-    document.cookie = "roos_session=; path=/; max-age=0";
-    document.cookie = "roos_user_role=; path=/; max-age=0";
-    document.cookie = "roos_user_email=; path=/; max-age=0";
-
-    const supabase = createClient();
-    if (supabase) {
-      try {
-        await supabase.auth.signOut();
-      } catch (e) {}
-    }
-    window.location.href = "/login?logout=1";
-  };
-
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-13 w-full items-center justify-between border-b border-[#E4E4E7] bg-white px-4 sm:px-6 select-none">
-        {/* Left: Breadcrumbs + Contextual Page Title */}
-        <div className="flex items-center gap-2 pl-10 lg:pl-0 min-w-0">
-          <span className="text-xs text-[#717680] font-normal hidden sm:inline truncate">
+      <header className="sticky top-0 z-20 flex h-[52px] shrink-0 items-center justify-between border-b border-[#E4E1D8] bg-[#F6F5F1] px-4 md:px-6 select-none">
+        {/* Left: Contextual Breadcrumb */}
+        <div className="flex items-center gap-2 text-[13px]">
+          <span className="text-[#6A707C] font-normal">
             {currentBreadcrumb.section}
           </span>
-          <span className="text-xs text-[#D4D4D8] hidden sm:inline">/</span>
-          <span className="text-xs font-medium text-[#0D0D0E] truncate">
+          <span className="text-[#D2CEC2] select-none font-normal">/</span>
+          <span className="font-medium text-[#12141A]">
             {currentBreadcrumb.page}
           </span>
         </div>
 
-        {/* Right: Compact Command Trigger + Workspace Switcher + Alerts + Profile */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Compact Command Trigger (Defect 8 fix) */}
+        {/* Center-Right: Controls */}
+        <div className="flex items-center gap-2.5">
+          {/* Command Palette Trigger (Cmd+K) */}
           <button
             type="button"
             onClick={() => setCommandPaletteOpen(true)}
-            className="flex items-center gap-2 h-8 px-2.5 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] text-xs text-[#717680] hover:text-[#0D0D0E] hover:border-[#D4D4D8] hover:bg-white transition-all duration-140 ease-spring active:scale-95 will-change-transform shadow-2xs cursor-pointer"
-            title="Search workspace (⌘K)"
+            className="hidden sm:flex items-center justify-between w-56 h-8 px-2.5 rounded-[8px] bg-white border border-[#E4E1D8] text-[13px] text-[#6A707C] hover:border-[#D2CEC2] hover:text-[#12141A] shadow-hairline transition-colors"
           >
-            <Search className="h-3.5 w-3.5 text-[#717680] shrink-0" />
-            <span className="hidden md:inline font-normal text-xs text-[#717680]">Search...</span>
-            <kbd className="inline-flex items-center gap-0.5 rounded bg-white border border-[#E4E4E7] px-1 py-0.2 text-[10px] text-[#717680] font-sans">
-              <Command className="h-2.5 w-2.5" />
-              <span className="font-sans">K</span>
+            <div className="flex items-center gap-2">
+              <Search className="h-3.5 w-3.5 text-[#6A707C]" />
+              <span className="text-[12px]">Search or jump to...</span>
+            </div>
+            <kbd className="inline-flex items-center rounded border border-[#E4E1D8] bg-[#EFEDE7] px-1.5 py-0.5 text-[10px] text-[#6A707C]">
+              ⌘K
             </kbd>
           </button>
 
-          {/* Workspace Switcher */}
+          {/* Notifications Trigger */}
           <div className="relative">
             <button
-              onClick={() => {
-                setOrgDropdownOpen(!orgDropdownOpen);
-                setNotificationsOpen(false);
-                setUserMenuOpen(false);
-              }}
-              className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-[#E4E4E7] bg-white text-xs font-medium text-[#0D0D0E] transition-all duration-140 ease-spring active:scale-95 will-change-transform hover:bg-[#FAF9F6] hover:border-[#D4D4D8] shadow-2xs cursor-pointer"
-            >
-              <Building2 className="h-3.5 w-3.5 text-[#717680]" />
-              <span className="font-medium text-[#0D0D0E] truncate max-w-[120px] sm:max-w-none">
-                {currentOrg.name}
-              </span>
-              <ChevronDown className="h-3 w-3 text-[#717680]" />
-            </button>
-
-            {orgDropdownOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setOrgDropdownOpen(false)} />
-                <div className="absolute right-0 mt-1.5 z-50 w-56 rounded-xl border border-[#E4E4E7] bg-white p-1.5 shadow-dropdown animate-page-enter">
-                  <div className="px-2.5 py-1 type-eyebrow text-[#717680]">
-                    Workspaces
-                  </div>
-                  <div className="space-y-0.5">
-                    {organizations.map((org) => {
-                      const isCurrent = org.id === currentOrg.id;
-                      return (
-                        <Link
-                          key={org.id}
-                          href={`/app/${org.slug}/overview`}
-                          onClick={() => setOrgDropdownOpen(false)}
-                          className={cn(
-                            "flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors duration-140",
-                            isCurrent
-                              ? "bg-[#FFF4EC] text-[#FF7A1A] border border-[#FFD8BF]"
-                              : "text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E]"
-                          )}
-                        >
-                          <div className="flex items-center gap-2 truncate">
-                            <Building2 className="h-3.5 w-3.5 shrink-0" />
-                            <span className="truncate">{org.name}</span>
-                          </div>
-                          {isCurrent && <Check className="h-3.5 w-3.5 text-[#FF7A1A] shrink-0" />}
-                        </Link>
-                      );
-                    })}
-                  </div>
-
-                  <div className="my-1 border-t border-[#E4E4E7]" />
-
-                  <Link
-                    href="/select-org"
-                    onClick={() => setOrgDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#FF7A1A] hover:bg-[#FFF4EC] transition-colors"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5" />
-                    <span>Create workspace</span>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Notifications Bell */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setNotificationsOpen(!notificationsOpen);
-                setOrgDropdownOpen(false);
-                setUserMenuOpen(false);
-              }}
-              className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-[#E4E4E7] bg-white text-[#717680] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] transition-all duration-140 ease-spring active:scale-95 will-change-transform cursor-pointer shadow-2xs"
+              type="button"
+              onClick={() => setNotificationsOpen((prev) => !prev)}
+              className="relative flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#E4E1D8] bg-white text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
               aria-label="Notifications"
             >
-              <Bell className="h-3.5 w-3.5" />
+              <Bell className="h-4 w-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-[#FF7A1A] ring-2 ring-white" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#FF5A1F]" />
               )}
             </button>
 
+            {/* Notifications Popover */}
             {notificationsOpen && (
               <>
-                <div className="fixed inset-0 z-40" onClick={() => setNotificationsOpen(false)} />
-                <div className="absolute right-0 mt-1.5 z-50 w-80 sm:w-88 rounded-xl border border-[#E4E4E7] bg-white p-2.5 shadow-dropdown animate-page-enter space-y-2">
-                  <div className="flex items-center justify-between pb-1.5 border-b border-[#E4E4E7] px-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-[#0D0D0E]">Notifications</span>
-                      {unreadCount > 0 && (
-                        <span className="rounded-full bg-[#FF7A1A] text-white text-[10px] font-medium px-1.5 py-0.2">
-                          {unreadCount} new
-                        </span>
-                      )}
-                    </div>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setNotificationsOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 z-50 w-80 rounded-[14px] border border-[#E4E1D8] bg-white p-3 shadow-overlay animate-reveal text-[#12141A]">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E4E1D8] mb-2">
+                    <span className="text-[13px] font-medium text-[#12141A]">
+                      Notifications
+                    </span>
                     {unreadCount > 0 && (
                       <button
+                        type="button"
                         onClick={markAllNotificationsAsRead}
-                        className="text-[11px] font-medium text-[#FF7A1A] hover:underline cursor-pointer"
+                        className="text-[11px] text-[#FF5A1F] hover:underline"
                       >
-                        Mark all read
+                        Mark all as read
                       </button>
                     )}
                   </div>
-
-                  <div className="max-h-72 overflow-y-auto space-y-1 pr-1 custom-light-scroll">
+                  <div className="space-y-1.5 max-h-72 overflow-y-auto">
                     {notifications.map((n) => (
                       <Link
                         key={n.id}
                         href={n.href}
                         onClick={() => setNotificationsOpen(false)}
                         className={cn(
-                          "flex items-start gap-2.5 rounded-lg p-2 transition-colors border text-xs",
-                          n.read
-                            ? "bg-white border-transparent hover:bg-[#FAF9F6]"
-                            : "bg-[#FFF4EC]/30 border-[#FFD8BF] hover:bg-[#FFF4EC]/60"
+                          "block p-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors text-left",
+                          !n.read && "bg-[#FFF1EA]/60"
                         )}
                       >
-                        <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white border border-[#E4E4E7]">
-                          {n.type === "inbox" && <MessageSquare className="h-3 w-3 text-emerald-600" />}
-                          {n.type === "task" && <CheckSquare className="h-3 w-3 text-amber-600" />}
-                          {n.type === "lead" && <Users className="h-3 w-3 text-blue-600" />}
-                          {n.type === "system" && <Sparkles className="h-3 w-3 text-purple-600" />}
+                        <div className="flex items-center justify-between">
+                          <span className="text-[12px] font-medium text-[#12141A]">
+                            {n.title}
+                          </span>
+                          <span className="text-[10px] text-[#6A707C]">
+                            {n.time}
+                          </span>
                         </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-[#0D0D0E] truncate">{n.title}</span>
-                            <span className="text-[10px] text-[#717680]">{n.time}</span>
-                          </div>
-                          <p className="text-[11px] text-[#525866] mt-0.5 line-clamp-1 leading-snug font-normal">
-                            {n.subtitle}
-                          </p>
-                        </div>
+                        <p className="text-[11px] text-[#4B515D] mt-0.5 truncate">
+                          {n.subtitle}
+                        </p>
                       </Link>
                     ))}
-                  </div>
-
-                  <div className="pt-1.5 border-t border-[#E4E4E7] text-center">
-                    <Link
-                      href={`/app/${currentOrg.slug}/tasks`}
-                      onClick={() => setNotificationsOpen(false)}
-                      className="text-xs font-medium text-[#FF7A1A] hover:underline transition-colors"
-                    >
-                      View all tasks & updates →
-                    </Link>
                   </div>
                 </div>
               </>
             )}
           </div>
 
-          {/* User Profile Avatar */}
+          {/* Workspace Switcher */}
           <div className="relative">
             <button
-              onClick={() => {
-                setUserMenuOpen(!userMenuOpen);
-                setOrgDropdownOpen(false);
-                setNotificationsOpen(false);
-              }}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E4E4E7] bg-[#0D0D0E] text-white font-medium text-xs shadow-2xs cursor-pointer transition-all duration-140 ease-spring active:scale-95 will-change-transform hover:ring-1 hover:ring-[#FF7A1A]/40 overflow-hidden"
-              title="User Account"
+              type="button"
+              onClick={() => setOrgDropdownOpen((prev) => !prev)}
+              className="flex items-center gap-2 h-8 px-2.5 rounded-[8px] border border-[#E4E1D8] bg-white text-[12px] font-medium text-[#12141A] hover:bg-[#EFEDE7] transition-colors shadow-hairline"
             >
-              <User className="h-3.5 w-3.5 text-white" />
+              <Building2 className="h-3.5 w-3.5 text-[#6A707C]" />
+              <span className="max-w-[120px] truncate">{currentOrg.name}</span>
+              <ChevronDown className="h-3 w-3 text-[#6A707C]" />
             </button>
 
-            {userMenuOpen && (
+            {/* Workspace Dropdown */}
+            {orgDropdownOpen && (
               <>
-                <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                <div className="absolute right-0 mt-1.5 z-50 w-48 rounded-xl border border-[#E4E4E7] bg-white p-1.5 shadow-dropdown animate-page-enter">
-                  <div className="px-2.5 py-1.5 border-b border-[#E4E4E7] mb-1">
-                    <p className="text-xs font-medium text-[#0D0D0E]">Praveen</p>
-                    <p className="text-[11px] text-[#717680] truncate font-normal">{currentOrg.name}</p>
-                    <span className="inline-block mt-1 text-[10px] uppercase font-medium text-[#FF7A1A] bg-[#FFF4EC] px-1.5 py-0.2 rounded border border-[#FFD8BF]">
-                      {userRole.replace("_", " ")}
-                    </span>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setOrgDropdownOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 z-50 w-52 rounded-[14px] border border-[#E4E1D8] bg-white p-1.5 shadow-overlay text-[#12141A] animate-reveal">
+                  <div className="px-2 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                    Workspaces
                   </div>
-
-                  <Link
-                    href={`/app/${currentOrg.slug}/settings`}
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center px-2.5 py-1.5 text-xs text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] rounded-lg transition-colors font-medium"
-                  >
-                    <User className="mr-2 h-3.5 w-3.5 text-[#717680]" />
-                    Settings
-                  </Link>
-
-                  <div className="my-1 border-t border-[#E4E4E7]" />
-
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-medium cursor-pointer"
-                  >
-                    <LogOut className="mr-2 h-3.5 w-3.5" />
-                    Sign out
-                  </button>
+                  {organizations.map((org) => {
+                    const isSelected = org.slug === currentOrg.slug;
+                    return (
+                      <button
+                        key={org.id}
+                        type="button"
+                        onClick={() => {
+                          setOrgDropdownOpen(false);
+                          if (!isSelected) {
+                            router.push(`/app/${org.slug}/overview`);
+                          }
+                        }}
+                        className={cn(
+                          "flex items-center justify-between w-full px-2.5 py-1.5 rounded-[6px] text-[13px] text-left transition-colors",
+                          isSelected
+                            ? "bg-[#EFEDE7] text-[#12141A] font-medium"
+                            : "text-[#4B515D] hover:bg-[#F6F5F1] hover:text-[#12141A]"
+                        )}
+                      >
+                        <span className="truncate">{org.name}</span>
+                        {isSelected && (
+                          <Check className="h-3.5 w-3.5 text-[#FF5A1F] shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -416,85 +352,61 @@ export function Topbar() {
         </div>
       </header>
 
-      {/* Interactive Command Palette Modal (Cmd+K / Ctrl+K) */}
+      {/* ⌘K Command Palette Modal */}
       {commandPaletteOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-120">
-          <div className="fixed inset-0" onClick={() => setCommandPaletteOpen(false)} />
-
-          <div className="relative w-full max-w-lg bg-white rounded-xl border border-[#E4E4E7] shadow-dropdown overflow-hidden z-10 animate-page-enter">
-            {/* Search Input Bar */}
-            <div className="flex items-center px-3.5 py-2.5 border-b border-[#E4E4E7]">
-              <Search className="h-4 w-4 text-[#FF7A1A] mr-2.5 shrink-0" />
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">
+          <div
+            className="fixed inset-0 bg-[#0B0D12]/50 backdrop-blur-xs"
+            onClick={() => setCommandPaletteOpen(false)}
+          />
+          <div className="relative w-full max-w-xl rounded-[14px] border border-[#E4E1D8] bg-white shadow-overlay overflow-hidden animate-reveal text-[#12141A]">
+            {/* Input Header */}
+            <div className="flex items-center px-4 py-3 border-b border-[#E4E1D8]">
+              <Search className="h-4 w-4 text-[#6A707C] mr-3 shrink-0" />
               <input
                 ref={searchInputRef}
+                type="text"
                 value={commandSearch}
                 onChange={(e) => setCommandSearch(e.target.value)}
-                placeholder="Search leads, contacts, pages..."
-                className="w-full text-xs font-medium text-[#0D0D0E] placeholder:text-[#717680] outline-none bg-transparent"
+                placeholder="Type a command, page, lead or contact..."
+                className="w-full text-[14px] bg-transparent outline-none placeholder:text-[#6A707C] text-[#12141A]"
               />
               <button
                 type="button"
                 onClick={() => setCommandPaletteOpen(false)}
-                className="p-1 rounded-md text-[#717680] hover:text-[#0D0D0E] hover:bg-[#FAF9F6] cursor-pointer"
-                aria-label="Close command palette"
+                className="text-[#6A707C] hover:text-[#12141A] ml-2"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Results Area */}
-            <div className="max-h-80 overflow-y-auto p-2 space-y-2 custom-light-scroll">
-              {!commandSearch.trim() && (
-                <div className="space-y-0.5">
-                  <div className="px-2.5 py-1 type-eyebrow text-[#717680]">
-                    Quick Jumps
-                  </div>
-                  {[
-                    { name: "Overview Dashboard", href: `/app/${currentOrg.slug}/overview`, icon: Building2 },
-                    { name: "WhatsApp Shared Inbox", href: `/app/${currentOrg.slug}/inbox`, icon: MessageSquare },
-                    { name: "Sales Pipeline", href: `/app/${currentOrg.slug}/leads`, icon: Users },
-                    { name: "Tasks & SLAs", href: `/app/${currentOrg.slug}/tasks`, icon: CheckSquare },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setCommandPaletteOpen(false)}
-                        className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] transition-colors group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon className="h-3.5 w-3.5 text-[#717680] group-hover:text-[#FF7A1A]" />
-                          <span>{item.name}</span>
-                        </div>
-                        <ArrowRight className="h-3 w-3 text-[#D4D4D8] group-hover:text-[#717680]" />
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-
+            {/* Content List */}
+            <div className="max-h-80 overflow-y-auto p-2 space-y-3">
               {searchResults.leads.length > 0 && (
-                <div className="space-y-0.5">
-                  <div className="px-2.5 py-1 type-eyebrow text-[#717680]">
-                    Leads ({searchResults.leads.length})
+                <div>
+                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                    Opportunities
                   </div>
-                  {searchResults.leads.map((l) => (
+                  {searchResults.leads.map((lead) => (
                     <Link
-                      key={l.id}
-                      href={`/app/${currentOrg.slug}/leads?leadId=${l.id}`}
+                      key={lead.id}
+                      href={`/app/${currentOrg.slug}/leads?leadId=${lead.id}`}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] transition-colors cursor-pointer"
+                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
                     >
                       <div className="flex items-center gap-2 truncate">
-                        <Users className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                        <span className="font-medium text-[#0D0D0E] truncate">{l.title}</span>
-                        {l.contact_name && (
-                          <span className="text-[11px] text-[#717680] truncate">({l.contact_name})</span>
+                        <Filter className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                        <span className="text-[13px] font-medium text-[#12141A] truncate">
+                          {lead.title}
+                        </span>
+                        {lead.contact_name && (
+                          <span className="text-[12px] text-[#6A707C]">
+                            ({lead.contact_name})
+                          </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-emerald-600 font-medium shrink-0">
-                        ₹{(l.estimated_value || 0).toLocaleString()}
+                      <span className="text-[12px] font-medium text-[#0F7B5A] font-variant-numeric tabular-nums">
+                        ₹{(lead.estimated_value || 0).toLocaleString()}
                       </span>
                     </Link>
                   ))}
@@ -502,27 +414,25 @@ export function Topbar() {
               )}
 
               {searchResults.contacts.length > 0 && (
-                <div className="space-y-0.5">
-                  <div className="px-2.5 py-1 type-eyebrow text-[#717680]">
-                    Contacts ({searchResults.contacts.length})
+                <div>
+                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                    Contacts
                   </div>
-                  {searchResults.contacts.map((c) => (
+                  {searchResults.contacts.map((contact) => (
                     <Link
-                      key={c.id}
-                      href={`/app/${currentOrg.slug}/contacts?contactId=${c.id}`}
+                      key={contact.id}
+                      href={`/app/${currentOrg.slug}/contacts?contactId=${contact.id}`}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] transition-colors cursor-pointer"
+                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
                     >
                       <div className="flex items-center gap-2 truncate">
-                        <div className="h-5 w-5 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center text-[10px] font-medium shrink-0">
-                          {c.first_name[0]}
-                        </div>
-                        <span className="font-medium text-[#0D0D0E] truncate">
-                          {c.first_name} {c.last_name || ""}
+                        <Users className="h-3.5 w-3.5 text-[#4B515D]" />
+                        <span className="text-[13px] font-medium text-[#12141A]">
+                          {contact.first_name} {contact.last_name || ""}
                         </span>
                       </div>
-                      <span className="text-[11px] text-[#717680] font-normal">
-                        {c.phone}
+                      <span className="text-[12px] text-[#6A707C] font-variant-numeric tabular-nums">
+                        {contact.phone}
                       </span>
                     </Link>
                   ))}
@@ -530,38 +440,31 @@ export function Topbar() {
               )}
 
               {searchResults.pages.length > 0 && (
-                <div className="space-y-0.5">
-                  <div className="px-2.5 py-1 type-eyebrow text-[#717680]">
-                    Pages ({searchResults.pages.length})
+                <div>
+                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                    Navigation
                   </div>
-                  {searchResults.pages.map((p) => (
+                  {searchResults.pages.map((page) => (
                     <Link
-                      key={p.href}
-                      href={p.href}
+                      key={page.href}
+                      href={page.href}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#525866] hover:bg-[#FAF9F6] hover:text-[#0D0D0E] transition-colors cursor-pointer"
+                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
                     >
-                      <span className="font-medium text-[#0D0D0E]">{p.name}</span>
-                      <span className="text-[10px] text-[#717680]">Jump</span>
+                      <span className="text-[13px] font-medium text-[#12141A]">
+                        {page.name}
+                      </span>
+                      <span className="text-[11px] text-[#6A707C]">Jump</span>
                     </Link>
                   ))}
                 </div>
               )}
-
-              {commandSearch.trim() &&
-                searchResults.leads.length === 0 &&
-                searchResults.contacts.length === 0 &&
-                searchResults.pages.length === 0 && (
-                  <div className="p-6 text-center text-xs text-[#717680] font-medium">
-                    No results found for &quot;{commandSearch}&quot;
-                  </div>
-                )}
             </div>
 
-            {/* Footer Hints */}
-            <div className="bg-[#FAF9F6] px-3.5 py-2 border-t border-[#E4E4E7] flex items-center justify-between text-[11px] text-[#717680]">
+            {/* Footer */}
+            <div className="px-4 py-2 bg-[#EFEDE7] border-t border-[#E4E1D8] flex items-center justify-between text-[11px] text-[#6A707C]">
               <span>Navigate with arrow keys</span>
-              <span>ESC to close</span>
+              <span>ESC to dismiss</span>
             </div>
           </div>
         </div>

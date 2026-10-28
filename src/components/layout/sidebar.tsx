@@ -1,26 +1,27 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { RoosLogo } from "@/components/ui/roos-logo";
 import { cn } from "@/lib/utils";
 import {
   Home,
-  Users,
-  UserCheck,
   MessageSquare,
+  Filter,
+  Users,
   Send,
+  FileText,
   Zap,
-  CheckSquare,
+  CheckCircle2,
   BarChart3,
   Shield,
   Smartphone,
   Sparkles,
-  Layers,
+  Sliders,
   CreditCard,
-  Settings,
+  Building2,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -28,6 +29,7 @@ import {
   X,
   LogOut,
   Terminal,
+  Plus,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -35,14 +37,16 @@ interface SidebarProps {
 }
 
 interface NavItem {
+  id: string;
   title: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
-  badgeType?: "number" | "pill";
+  isAttentionBadge?: boolean;
+  shortcut?: string;
 }
 
-interface NavSection {
+interface NavGroup {
   id: string;
   label: string;
   items: NavItem[];
@@ -50,19 +54,35 @@ interface NavSection {
 
 export function Sidebar({ orgSlug }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentOrg, userRole, setUserRole, isJuniorManager } = useTenant();
+
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [quickCreateOpen, setQuickCreateOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [devSandboxOpen, setDevSandboxOpen] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<{ title: string; badge?: string; top: number } | null>(null);
+  const [sandboxOpen, setSandboxOpen] = useState(false);
+
+  // Collapsed group sections persistence
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  // Tooltip state for collapsed rail
+  const [hoveredTooltip, setHoveredTooltip] = useState<{
+    title: string;
+    shortcut?: string;
+    top: number;
+  } | null>(null);
 
   // Initialize and persist collapsed state from localStorage
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("roos_sidebar_collapsed");
-      if (saved !== null) {
-        setCollapsed(saved === "true");
+      const savedCollapsed = localStorage.getItem("roos_sidebar_collapsed_v2");
+      if (savedCollapsed !== null) {
+        setCollapsed(savedCollapsed === "true");
+      }
+      const savedGroups = localStorage.getItem("roos_sidebar_groups");
+      if (savedGroups) {
+        setCollapsedGroups(JSON.parse(savedGroups));
       }
     } catch {
       // Ignore
@@ -73,7 +93,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     setCollapsed((prev) => {
       const next = !prev;
       try {
-        localStorage.setItem("roos_sidebar_collapsed", String(next));
+        localStorage.setItem("roos_sidebar_collapsed_v2", String(next));
       } catch {
         // Ignore
       }
@@ -81,34 +101,54 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     });
   };
 
-  // Structured, logical categories matching Executive Directive
-  const navSections = useMemo<NavSection[]>(() => {
-    const sections: NavSection[] = [
+  const toggleGroup = (groupId: string) => {
+    setCollapsedGroups((prev) => {
+      const next = { ...prev, [groupId]: !prev[groupId] };
+      try {
+        localStorage.setItem("roos_sidebar_groups", JSON.stringify(next));
+      } catch {
+        // Ignore
+      }
+      return next;
+    });
+  };
+
+  // Nav Groups strictly matching Section 3 specification
+  const navGroups = useMemo<NavGroup[]>(() => {
+    const groups: NavGroup[] = [
       {
         id: "workspace",
         label: "Workspace",
         items: [
           {
+            id: "overview",
             title: "Overview",
             href: `/app/${orgSlug}/overview`,
             icon: Home,
+            shortcut: "G O",
           },
           {
+            id: "inbox",
             title: "Shared Inbox",
             href: `/app/${orgSlug}/inbox`,
             icon: MessageSquare,
             badge: "3",
-            badgeType: "number",
+            isAttentionBadge: true,
+            shortcut: "G I",
           },
           {
+            id: "leads",
             title: "Sales Pipeline",
             href: `/app/${orgSlug}/leads`,
-            icon: Users,
+            icon: Filter,
+            shortcut: "G P",
           },
           {
+            id: "contacts",
             title: "Contacts",
             href: `/app/${orgSlug}/contacts`,
-            icon: UserCheck,
+            icon: Users,
+            shortcut: "G C",
           },
         ],
       },
@@ -117,16 +157,19 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         label: "Engagement",
         items: [
           {
+            id: "campaigns",
             title: "Broadcasts",
             href: `/app/${orgSlug}/campaigns`,
             icon: Send,
           },
           {
+            id: "templates",
             title: "Templates",
             href: `/app/${orgSlug}/templates`,
-            icon: Sparkles,
+            icon: FileText,
           },
           {
+            id: "automations",
             title: "Automations",
             href: `/app/${orgSlug}/automations`,
             icon: Zap,
@@ -138,18 +181,22 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         label: "Operations",
         items: [
           {
+            id: "tasks",
             title: "Tasks & SLAs",
             href: `/app/${orgSlug}/tasks`,
-            icon: CheckSquare,
+            icon: CheckCircle2,
             badge: "4",
-            badgeType: "number",
+            isAttentionBadge: true,
+            shortcut: "G T",
           },
           {
+            id: "reports",
             title: "Analytics & Reports",
             href: `/app/${orgSlug}/reports`,
             icon: BarChart3,
           },
           {
+            id: "team",
             title: "Team Roster",
             href: `/app/${orgSlug}/team`,
             icon: Shield,
@@ -161,392 +208,538 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         label: "Configuration",
         items: [
           {
+            id: "whatsapp",
             title: "WhatsApp API",
             href: `/app/${orgSlug}/whatsapp`,
             icon: Smartphone,
           },
           {
+            id: "settings-ai",
             title: "AI Engine",
             href: `/app/${orgSlug}/settings/ai`,
             icon: Sparkles,
           },
           {
+            id: "settings-admin",
             title: "Integrations",
             href: `/app/${orgSlug}/settings/admin`,
-            icon: Layers,
+            icon: Sliders,
           },
           {
+            id: "subscription",
             title: "Subscription & Limits",
             href: `/app/${orgSlug}/subscription`,
             icon: CreditCard,
           },
           {
+            id: "settings",
             title: "Organisation Details",
             href: `/app/${orgSlug}/settings`,
-            icon: Settings,
+            icon: Building2,
           },
         ],
       },
     ];
 
-    // Role-based restrictions
     if (isJuniorManager) {
       return [
         {
           id: "workspace",
           label: "Workspace",
-          items: [
-            { title: "Overview", href: `/app/${orgSlug}/overview`, icon: Home },
-            { title: "Shared Inbox", href: `/app/${orgSlug}/inbox`, icon: MessageSquare, badge: "3", badgeType: "number" },
-            { title: "Contacts", href: `/app/${orgSlug}/contacts`, icon: UserCheck },
-          ],
+          items: groups[0].items.filter((i) => i.id !== "leads"),
         },
+        groups[1],
         {
           id: "operations",
           label: "Operations",
-          items: [
-            { title: "Tasks & SLAs", href: `/app/${orgSlug}/tasks`, icon: CheckSquare },
-            { title: "Analytics & Reports", href: `/app/${orgSlug}/reports`, icon: BarChart3 },
-          ],
+          items: groups[2].items.filter((i) => i.id !== "team"),
         },
       ];
     }
 
-    if (userRole === "senior_manager") {
-      return sections.map((sec) => {
-        if (sec.id === "configuration") {
-          return {
-            ...sec,
-            items: sec.items.filter(
-              (item) => !["Subscription & Limits", "Organisation Details"].includes(item.title)
-            ),
-          };
+    return groups;
+  }, [orgSlug, isJuniorManager]);
+
+  // Exact / Longest-route active matching
+  const activeHref = useMemo(() => {
+    let bestMatch = "";
+    for (const group of navGroups) {
+      for (const item of group.items) {
+        if (pathname === item.href) {
+          return item.href;
         }
-        return sec;
-      });
+        if (pathname.startsWith(item.href) && item.href.length > bestMatch.length) {
+          bestMatch = item.href;
+        }
+      }
     }
+    return bestMatch;
+  }, [pathname, navGroups]);
 
-    return sections;
-  }, [orgSlug, isJuniorManager, userRole]);
+  // Global Keyboard Shortcuts (G O, G I, G P, G C, G T, C)
+  useEffect(() => {
+    let lastKey = "";
+    let lastKeyTime = 0;
 
-  // All valid item hrefs for longest-prefix / exact matching (Defect 10 fix)
-  const allHrefs = useMemo(() => {
-    return navSections.flatMap((s) => s.items.map((i) => i.href));
-  }, [navSections]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is inside an input, textarea or select
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
 
-  const checkIsActive = (href: string) => {
-    if (pathname === href) return true;
-    // Check if there is a more specific href that matches pathname
-    const hasMoreSpecific = allHrefs.some(
-      (h) => h !== href && h.startsWith(href) && pathname.startsWith(h)
-    );
-    if (hasMoreSpecific) return false;
-    return pathname.startsWith(href);
-  };
+      const now = Date.now();
+      const key = e.key.toLowerCase();
 
-  const roleLabel =
-    userRole === "owner"
-      ? "Owner"
-      : userRole === "admin"
-      ? "Admin"
-      : userRole === "senior_manager"
-      ? "Manager"
-      : "Staff";
+      // Quick create shortcut
+      if (key === "c" && !e.metaKey && !e.ctrlKey && now - lastKeyTime > 800) {
+        e.preventDefault();
+        setQuickCreateOpen((prev) => !prev);
+        return;
+      }
 
-  const handleMouseEnterItem = (e: React.MouseEvent<HTMLAnchorElement>, item: NavItem) => {
-    if (!collapsed) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoveredItem({
-      title: item.title,
-      badge: item.badge,
-      top: rect.top + rect.height / 2,
-    });
-  };
+      // Two-key G sequence
+      if (lastKey === "g" && now - lastKeyTime < 800) {
+        if (key === "o") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/overview`);
+        } else if (key === "i") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/inbox`);
+        } else if (key === "p") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/leads`);
+        } else if (key === "c") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/contacts`);
+        } else if (key === "t") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/tasks`);
+        }
+        lastKey = "";
+        return;
+      }
 
-  const handleMouseLeaveItem = () => {
-    if (collapsed) {
-      setHoveredItem(null);
+      if (key === "g" && !e.metaKey && !e.ctrlKey) {
+        lastKey = "g";
+        lastKeyTime = now;
+      } else {
+        lastKey = "";
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [orgSlug, router]);
+
+  const roleLabel = useMemo(() => {
+    switch (userRole) {
+      case "owner":
+        return "Owner";
+      case "admin":
+        return "Admin";
+      case "senior_manager":
+        return "Manager";
+      case "junior_manager":
+        return "Staff";
+      case "staff":
+        return "Staff";
+      default:
+        return "Member";
     }
-  };
+  }, [userRole]);
 
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col justify-between bg-[#0D0D0E] text-white border-r border-[#1C1C1F] select-none transition-[width] duration-180 ease-expo-out will-change-[width]",
-        collapsed ? "w-[64px] px-2 py-3.5" : "w-[248px] px-3.5 py-3.5"
+        "flex h-full flex-col bg-[#0B0D12] text-[#F4F5F7] border-r border-[#1B1F29] select-none transition-all duration-320 ease-expo-out",
+        collapsed ? "w-[76px]" : "w-[272px]"
       )}
     >
-      <div className="flex flex-col flex-1 min-h-0">
-        {/* Top Header - Brand Logo & Collapse Toggle */}
-        <div
-          className={cn(
-            "flex items-center pb-3 pt-0.5 transition-all duration-180 ease-expo-out border-b border-[#18181C] mb-3 shrink-0",
-            collapsed ? "flex-col gap-2 items-center justify-center" : "justify-between px-1"
-          )}
+      {/* 1. TOP LOGO BLOCK (72px) */}
+      <div className="flex h-[72px] shrink-0 items-center justify-between px-4 border-b border-[#1B1F29]/60">
+        <Link
+          href={`/app/${orgSlug}/overview`}
+          className="flex items-center gap-3 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px]"
         >
-          <Link
-            href={`/app/${orgSlug}/overview`}
-            className="flex items-center outline-none focus-visible:ring-1 focus-visible:ring-[#FF7A1A] rounded-lg shrink-0 transition-transform duration-140 ease-spring active:scale-95 will-change-transform"
-            title="Roos StudioX"
-          >
-            <RoosLogo variant="white" size="md" collapsed={collapsed} />
-          </Link>
-
-          <button
-            type="button"
-            onClick={toggleCollapsed}
-            className="text-[#717680] hover:text-white transition-all duration-140 ease-spring active:scale-90 will-change-transform p-1 rounded-md hover:bg-[#18181C] cursor-pointer shrink-0"
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </button>
-        </div>
-
-        {/* Navigation Sections */}
-        <nav
-          className="flex-1 overflow-y-auto space-y-5 pr-0.5 custom-dark-scroll"
-          aria-label="Sidebar Navigation"
-        >
-          {navSections.map((section, sIdx) => (
-            <div key={section.id} className="space-y-0.5">
-              {/* Category Header or Divider */}
-              {!collapsed ? (
-                <div className="px-2 pb-1 type-eyebrow text-[#717680]">
-                  {section.label}
-                </div>
-              ) : sIdx > 0 ? (
-                <div className="my-1.5 border-t border-[#1C1C20] mx-1" />
-              ) : null}
-
-              {/* Items in this category */}
-              <div className="space-y-0.5">
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = checkIsActive(item.href);
-
-                  return (
-                    <div key={item.href} className="relative">
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileOpen(false)}
-                        onMouseEnter={(e) => handleMouseEnterItem(e, item)}
-                        onMouseLeave={handleMouseLeaveItem}
-                        className={cn(
-                          "group relative flex items-center rounded-lg text-xs font-medium transition-all duration-140 ease-expo-out active:scale-[0.985] will-change-transform outline-none select-none",
-                          collapsed
-                            ? "h-9 w-9 mx-auto justify-center"
-                            : "h-8.5 px-2.5 w-full",
-                          isActive
-                            ? "bg-[#18181C] text-white border border-[#27272F]"
-                            : "text-[#9CA3AF] hover:text-white hover:bg-[#141417] border border-transparent"
-                        )}
-                        aria-label={item.title}
-                      >
-                        {/* Active Accent Hairline Strip */}
-                        {isActive && (
-                          <span
-                            className={cn(
-                              "absolute rounded-full bg-[#FF7A1A] transition-all",
-                              collapsed
-                                ? "-left-1 top-1/2 -translate-y-1/2 h-3.5 w-1"
-                                : "left-0 top-1/2 -translate-y-1/2 h-3.5 w-0.5"
-                            )}
-                          />
-                        )}
-
-                        {/* Icon - Always 17px on single vertical axis */}
-                        <Icon
-                          className={cn(
-                            "h-[17px] w-[17px] shrink-0 transition-colors duration-120",
-                            isActive ? "text-[#FF7A1A]" : "text-[#717680] group-hover:text-white",
-                            !collapsed && "mr-2.5"
-                          )}
-                        />
-
-                        {/* Label (Expanded mode) */}
-                        {!collapsed && (
-                          <span
-                            className={cn(
-                              "flex-1 truncate tracking-tight transition-colors text-xs",
-                              isActive ? "text-white font-medium" : "text-[#D1D5DB] font-normal group-hover:text-white"
-                            )}
-                          >
-                            {item.title}
-                          </span>
-                        )}
-
-                        {/* Badge (Expanded mode) */}
-                        {!collapsed && item.badge && (
-                          <span className="ml-auto text-white leading-none shrink-0 font-medium bg-[#FF7A1A] text-[10px] px-1.5 py-0.5 rounded-full">
-                            {item.badge}
-                          </span>
-                        )}
-
-                        {/* Unread dot (Collapsed mode) */}
-                        {collapsed && item.badge && (
-                          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-[#FF7A1A] ring-2 ring-[#0D0D0E]" />
-                        )}
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
+          <RoosLogo size={collapsed ? "sm" : "md"} className="shrink-0" />
+          {!collapsed && (
+            <div className="flex flex-col min-w-0 transition-opacity duration-200">
+              <span className="text-[14px] font-medium tracking-tight text-[#F4F5F7] truncate leading-tight">
+                ROOS STUDIOX
+              </span>
+              <span className="text-[10px] font-medium tracking-[0.06em] text-[#6B7280] uppercase truncate">
+                Business OS
+              </span>
             </div>
-          ))}
-        </nav>
-      </div>
-
-      {/* Floating Tooltip in Collapsed Mode */}
-      {collapsed && hoveredItem && (
-        <div
-          className="pointer-events-none fixed left-[70px] z-50 flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-[#141417] text-white border border-[#27272E] shadow-xl text-xs font-medium whitespace-nowrap will-change-transform animate-reveal"
-          style={{ top: `${hoveredItem.top}px`, transform: "translate3d(0, -50%, 0)" }}
-        >
-          <span>{hoveredItem.title}</span>
-          {hoveredItem.badge && (
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#FF7A1A] text-white font-medium">
-              {hoveredItem.badge}
-            </span>
           )}
-        </div>
-      )}
+        </Link>
 
-      {/* Bottom Pinned Section: Developer Sandbox (Defect 6) + Account Bar */}
-      <div className="pt-2.5 border-t border-[#1C1C1F] relative mt-2 shrink-0 space-y-1.5">
-        {/* Collapsible Developer / Sandbox Drawer */}
-        {!collapsed && (
-          <div className="rounded-lg border border-[#1F1F24] bg-[#121215] overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setDevSandboxOpen(!devSandboxOpen)}
-              className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] text-[#717680] hover:text-[#D1D5DB] transition-colors cursor-pointer select-none"
-            >
-              <div className="flex items-center gap-1.5">
-                <Terminal className="h-3 w-3 text-[#FF7A1A]" />
-                <span className="font-medium">Sandbox Controls</span>
-              </div>
-              <ChevronDown
-                className={cn("h-3 w-3 transition-transform duration-140", devSandboxOpen && "rotate-180")}
-              />
-            </button>
-
-            {devSandboxOpen && (
-              <div className="px-2.5 pb-2 pt-1 border-t border-[#1C1C20] space-y-1.5 text-[11px]">
-                <div className="text-[10px] text-[#717680] uppercase tracking-wider">
-                  Active Role
-                </div>
-                <div className="grid grid-cols-3 gap-1">
-                  {(["admin", "senior_manager", "junior_manager"] as const).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setUserRole(r)}
-                      className={cn(
-                        "py-1 px-1.5 rounded text-[10px] font-medium transition-colors cursor-pointer text-center truncate",
-                        userRole === r
-                          ? "bg-[#FF7A1A] text-white"
-                          : "bg-[#18181C] text-[#9CA3AF] hover:text-white"
-                      )}
-                    >
-                      {r === "admin" ? "Admin" : r === "senior_manager" ? "Manager" : "Staff"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* User Account Bar */}
+        {/* Collapse Toggle Button */}
         <button
           type="button"
-          onClick={() => setUserMenuOpen(!userMenuOpen)}
-          className={cn(
-            "flex items-center rounded-lg bg-[#121215] hover:bg-[#18181C] border border-[#232326] hover:border-[#2E2E33] transition-all cursor-pointer w-full text-left outline-none p-1.5",
-            collapsed ? "justify-center" : "justify-between"
-          )}
-          title="Account profile & workspace settings"
+          onClick={toggleCollapsed}
+          className="hidden lg:flex h-7 w-7 items-center justify-center rounded-[6px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-colors duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <div className="flex items-center gap-2 min-w-0">
-            {/* User Avatar Circle */}
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#1C1C20] text-[#FF7A1A] border border-[#2B2B33] font-medium text-xs">
-              P
-            </div>
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </button>
+      </div>
 
+      {/* 2. QUICK CREATE BUTTON (Beneath Logo Block) */}
+      <div className="px-3 pt-3 pb-2 relative">
+        <button
+          type="button"
+          onClick={() => setQuickCreateOpen((prev) => !prev)}
+          className={cn(
+            "group relative flex items-center justify-center rounded-[8px] bg-[#1B1F29] text-[#F4F5F7] border border-[#242A38] hover:bg-[#12151C] hover:border-[#373E50] transition-all duration-140 ease-spring active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
+            collapsed ? "h-11 w-11 mx-auto" : "h-10 w-full px-3 justify-between"
+          )}
+          title="Quick create (C)"
+        >
+          <div className="flex items-center gap-2">
+            <Plus className="h-4 w-4 text-[#FF5A1F] transition-transform duration-140 group-hover:rotate-90" />
             {!collapsed && (
-              <div className="flex flex-col min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-medium text-white truncate leading-tight">
-                    Praveen
-                  </span>
-                  <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-[#1C1C20] text-[#A1A1AA] border border-[#2A2A30]">
-                    {roleLabel}
-                  </span>
-                </div>
-                <span className="text-[11px] text-[#717680] truncate mt-0.5">
-                  {currentOrg.name}
-                </span>
-              </div>
+              <span className="text-[13px] font-medium text-[#F4F5F7]">
+                Quick create
+              </span>
             )}
           </div>
-
           {!collapsed && (
-            <ChevronDown className="h-3.5 w-3.5 text-[#717680] shrink-0 ml-1" />
+            <kbd className="hidden sm:inline-flex items-center rounded border border-[#242A38] bg-[#0B0D12] px-1.5 py-0.5 text-[10px] text-[#A3A9B6]">
+              C
+            </kbd>
           )}
         </button>
 
-        {/* User Menu Dropdown */}
-        {userMenuOpen && (
+        {/* Quick Create Dropdown Menu */}
+        {quickCreateOpen && (
           <>
             <div
               className="fixed inset-0 z-40"
-              onClick={() => setUserMenuOpen(false)}
+              onClick={() => setQuickCreateOpen(false)}
             />
             <div
               className={cn(
-                "absolute z-50 rounded-xl border border-[#27272A] bg-[#121215] p-2 shadow-2xl text-white",
-                collapsed ? "left-full bottom-0 ml-2 w-56" : "bottom-full mb-2 left-0 right-0"
+                "absolute z-50 rounded-[14px] border border-[#242A38] bg-[#12151C] p-1.5 shadow-overlay text-[#F4F5F7] animate-reveal",
+                collapsed ? "left-full top-3 ml-2 w-48" : "left-3 right-3 top-full mt-1.5"
               )}
             >
-              <div className="px-2.5 py-2 border-b border-[#1F1F23] mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-md bg-[#FF7A1A]/10 text-[#FF7A1A] flex items-center justify-center text-xs font-medium">
-                    P
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-white">Praveen</p>
-                    <p className="text-[10px] text-[#8E8E93] truncate">praveen@roosstudiox.com</p>
-                  </div>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-[10px] text-[#A1A1AA]">
-                  <span>Workspace:</span>
-                  <span className="text-white font-medium">{currentOrg.name}</span>
-                </div>
-              </div>
-
               <Link
-                href={`/app/${orgSlug}/settings`}
-                onClick={() => setUserMenuOpen(false)}
-                className="flex items-center px-2 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-[#18181C] rounded-md transition-colors font-medium"
+                href={`/app/${orgSlug}/leads?action=new`}
+                onClick={() => setQuickCreateOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
               >
-                <Settings className="mr-2 h-3.5 w-3.5 text-[#717680]" />
-                Workspace Settings
+                <Filter className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                <span>New opportunity</span>
               </Link>
-
-              <div className="my-1 border-t border-[#1F1F23]" />
-
               <Link
-                href="/login"
-                onClick={() => setUserMenuOpen(false)}
-                className="w-full flex items-center px-2 py-1.5 text-xs text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors font-medium cursor-pointer"
+                href={`/app/${orgSlug}/contacts?action=new`}
+                onClick={() => setQuickCreateOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
               >
-                <LogOut className="mr-2 h-3.5 w-3.5" />
-                Sign Out
+                <Users className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                <span>New contact</span>
+              </Link>
+              <Link
+                href={`/app/${orgSlug}/tasks?action=new`}
+                onClick={() => setQuickCreateOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                <span>New task</span>
+              </Link>
+              <Link
+                href={`/app/${orgSlug}/campaigns?action=new`}
+                onClick={() => setQuickCreateOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
+              >
+                <Send className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                <span>New broadcast</span>
               </Link>
             </div>
           </>
         )}
+      </div>
+
+      {/* 3. NAVIGATION ITEMS SCROLL AREA */}
+      <nav
+        className="flex-1 overflow-y-auto px-3 py-2 space-y-6 custom-dark-scroll"
+        style={{
+          maskImage: "linear-gradient(to bottom, black calc(100% - 24px), transparent 100%)",
+        }}
+      >
+        {navGroups.map((group) => {
+          const isGroupCollapsed = !!collapsedGroups[group.id];
+
+          return (
+            <div key={group.id} className="first:mt-1">
+              {/* Group Label */}
+              {!collapsed ? (
+                <div className="flex items-center justify-between px-3 mb-2">
+                  <span className="text-[11px] font-medium tracking-[0.06em] text-[#6B7280] uppercase">
+                    {group.label}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.id)}
+                    className="h-4 w-4 flex items-center justify-center text-[#6B7280] hover:text-[#A3A9B6] transition-colors"
+                    aria-label={`Toggle ${group.label} group`}
+                  >
+                    <ChevronDown
+                      className={cn(
+                        "h-3 w-3 transition-transform duration-160",
+                        isGroupCollapsed && "-rotate-90"
+                      )}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div className="my-2 border-t border-[#1B1F29]/60" />
+              )}
+
+              {/* Group Items */}
+              {(!isGroupCollapsed || collapsed) && (
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeHref === item.href;
+
+                    return (
+                      <Link
+                        key={item.id}
+                        href={item.href}
+                        onMouseEnter={(e) => {
+                          if (collapsed) {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setHoveredTooltip({
+                              title: item.title,
+                              shortcut: item.shortcut,
+                              top: rect.top,
+                            });
+                          }
+                        }}
+                        onMouseLeave={() => setHoveredTooltip(null)}
+                        className={cn(
+                          "group relative flex items-center rounded-[8px] h-11 px-3 transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
+                          isActive
+                            ? "bg-[#1B1F29] text-[#F4F5F7] font-medium"
+                            : "text-[#A3A9B6] hover:bg-[#1B1F29]/60 hover:text-[#F4F5F7]",
+                          collapsed && "justify-center px-0 w-11 mx-auto"
+                        )}
+                      >
+                        {/* 3px Flame Active Bar on Left Edge */}
+                        {isActive && (
+                          <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r bg-[#FF5A1F] transition-all duration-320" />
+                        )}
+
+                        {/* Icon with idle/active states */}
+                        <div className="flex h-6 w-6 shrink-0 items-center justify-center transition-transform duration-120 group-hover:translate-x-[1px]">
+                          <Icon
+                            className={cn(
+                              "h-[20px] w-[20px] transition-colors duration-140",
+                              isActive
+                                ? "text-[#FF5A1F]"
+                                : "text-[#A3A9B6] group-hover:text-[#F4F5F7]"
+                            )}
+                          />
+                        </div>
+
+                        {/* Title Label */}
+                        {!collapsed && (
+                          <span className="ml-3 truncate text-[13px] font-normal leading-none group-hover:text-[#F4F5F7]">
+                            {item.title}
+                          </span>
+                        )}
+
+                        {/* Badges */}
+                        {item.badge && !collapsed && (
+                          <span
+                            className={cn(
+                              "ml-auto h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[11px] font-variant-numeric tabular-nums font-medium",
+                              item.isAttentionBadge
+                                ? "bg-[#FF5A1F] text-white"
+                                : "bg-[#1B1F29] text-[#A3A9B6] border border-[#242A38]"
+                            )}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+
+                        {/* Collapsed dot marker for attention badge */}
+                        {item.badge && collapsed && item.isAttentionBadge && (
+                          <span className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full bg-[#FF5A1F]" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* FLOATING HOVER TOOLTIP IN COLLAPSED MODE */}
+      {collapsed && hoveredTooltip && (
+        <div
+          className="fixed z-50 left-[84px] px-2.5 py-1 rounded-[6px] bg-[#12151C] text-[#F4F5F7] border border-[#242A38] text-[12px] font-medium shadow-overlay pointer-events-none flex items-center gap-2 animate-reveal"
+          style={{ top: `${hoveredTooltip.top + 8}px` }}
+        >
+          <span>{hoveredTooltip.title}</span>
+          {hoveredTooltip.shortcut && (
+            <kbd className="text-[10px] text-[#A3A9B6] border border-[#242A38] bg-[#0B0D12] px-1 py-0.2 rounded">
+              {hoveredTooltip.shortcut}
+            </kbd>
+          )}
+        </div>
+      )}
+
+      {/* 4. PINNED BOTTOM UTILITIES & ACCOUNT CARD */}
+      <div className="shrink-0 p-3 border-t border-[#1B1F29]/80 space-y-2 bg-[#0B0D12]">
+        {/* Sandbox Controls (Collapsed by default) */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setSandboxOpen((prev) => !prev)}
+            className={cn(
+              "flex items-center justify-between w-full h-8 px-2.5 rounded-[6px] text-[11px] text-[#6B7280] hover:text-[#A3A9B6] hover:bg-[#1B1F29]/60 transition-colors",
+              collapsed && "justify-center px-0"
+            )}
+            title="Sandbox & Mock Controls"
+          >
+            <div className="flex items-center gap-2">
+              <Terminal className="h-3.5 w-3.5 text-[#6B7280]" />
+              {!collapsed && <span>Sandbox Controls</span>}
+            </div>
+            {!collapsed && (
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 transition-transform",
+                  sandboxOpen && "rotate-180"
+                )}
+              />
+            )}
+          </button>
+
+          {sandboxOpen && !collapsed && (
+            <div className="mt-2 p-2.5 rounded-[8px] bg-[#12151C] border border-[#242A38] space-y-2 text-[11px] animate-reveal">
+              <div className="flex items-center justify-between text-[#A3A9B6]">
+                <span>Active Role:</span>
+                <span className="text-[#FF5A1F] font-medium uppercase">{userRole}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 pt-1">
+                {(["owner", "admin", "senior_manager", "junior_manager"] as const).map(
+                  (role) => (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => setUserRole(role)}
+                      className={cn(
+                        "px-1.5 py-1 rounded text-[10px] transition-colors border text-center capitalize",
+                        userRole === role
+                          ? "bg-[#FF5A1F]/15 text-[#FF5A1F] border-[#FF5A1F]/40 font-medium"
+                          : "bg-[#1B1F29] text-[#A3A9B6] border-[#242A38] hover:text-[#F4F5F7]"
+                      )}
+                    >
+                      {role.replace("_", " ")}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 56px Workspace & Account Card */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setUserMenuOpen((prev) => !prev)}
+            className={cn(
+              "flex items-center justify-between w-full h-14 p-2 rounded-[8px] bg-[#12151C] border border-[#1B1F29] hover:border-[#242A38] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
+              collapsed && "justify-center p-0 h-11 w-11 mx-auto"
+            )}
+          >
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] bg-[#1B1F29] text-[#FF5A1F] border border-[#242A38] text-[13px] font-medium">
+                P
+              </div>
+
+              {!collapsed && (
+                <div className="flex flex-col text-left min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-medium text-[#F4F5F7] truncate leading-tight">
+                      Praveen
+                    </span>
+                    <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-[#1B1F29] text-[#A3A9B6] border border-[#242A38]">
+                      {roleLabel}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-[#6B7280] truncate mt-0.5">
+                    {currentOrg.name}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {!collapsed && (
+              <ChevronDown className="h-3.5 w-3.5 text-[#6B7280] shrink-0 ml-1" />
+            )}
+          </button>
+
+          {/* User Account Popover */}
+          {userMenuOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setUserMenuOpen(false)}
+              />
+              <div
+                className={cn(
+                  "absolute z-50 rounded-[14px] border border-[#242A38] bg-[#12151C] p-2 shadow-overlay text-[#F4F5F7] animate-reveal",
+                  collapsed
+                    ? "left-full bottom-0 ml-2 w-56"
+                    : "bottom-full mb-2 left-0 right-0"
+                )}
+              >
+                <div className="px-2.5 py-2 border-b border-[#1B1F29] mb-1">
+                  <p className="text-[13px] font-medium text-[#F4F5F7]">Praveen</p>
+                  <p className="text-[11px] text-[#6B7280] truncate">praveen@roosstudiox.com</p>
+                </div>
+
+                <Link
+                  href={`/app/${orgSlug}/settings`}
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center px-2.5 py-2 text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] rounded-[6px] transition-colors"
+                >
+                  <Building2 className="mr-2 h-3.5 w-3.5 text-[#6B7280]" />
+                  Organisation Details
+                </Link>
+
+                <div className="my-1 border-t border-[#1B1F29]" />
+
+                <Link
+                  href="/login"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="w-full flex items-center px-2.5 py-2 text-[13px] text-[#B42318] hover:bg-[#FDECEA]/10 rounded-[6px] transition-colors"
+                >
+                  <LogOut className="mr-2 h-3.5 w-3.5" />
+                  Sign Out
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -563,25 +756,25 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex h-8.5 w-8.5 items-center justify-center rounded-lg bg-[#0D0D0E] text-white border border-[#232326] shadow-xs cursor-pointer hover:bg-[#18181C] transition-colors"
+          className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[#0B0D12] text-white border border-[#242A38] shadow-hairline hover:bg-[#1B1F29] transition-colors"
           aria-label="Open mobile navigation"
         >
           <Menu className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Overlay Drawer (< 1024px) */}
+      {/* Mobile Overlay Drawer (< 1024px) */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-[#0B0D12]/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-[248px] max-w-[85vw] h-full z-50 bg-[#0D0D0E] shadow-2xl">
+          <div className="relative w-[272px] max-w-[85vw] h-full z-50 bg-[#0B0D12] shadow-overlay">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute top-3.5 right-3 h-7 w-7 flex items-center justify-center rounded-md bg-[#18181C] text-[#A1A1AA] hover:text-white cursor-pointer"
+              className="absolute top-4 right-4 h-7 w-7 flex items-center justify-center rounded-[6px] bg-[#1B1F29] text-[#A3A9B6] hover:text-white transition-colors"
               aria-label="Close navigation"
             >
               <X className="h-4 w-4" />
