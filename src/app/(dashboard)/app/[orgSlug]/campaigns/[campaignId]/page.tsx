@@ -133,7 +133,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
       <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E7]">
         <Link
           href={`/app/${orgSlug}/campaigns`}
-          className="text-xs font-semibold text-[#8E8E93] hover:text-[#FF7900] flex items-center gap-1.5 transition-colors"
+          className="text-xs font-semibold text-[#8E8E93] hover:text-[#FF7A1A] flex items-center gap-1.5 transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back to Campaigns
         </Link>
@@ -161,7 +161,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             onClick={handleExportCSV}
             className="text-xs font-semibold rounded-xl bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white flex items-center gap-1.5 shadow-2xs"
           >
-            <Download className="h-3.5 w-3.5 text-[#FF7900]" /> Export Report (CSV)
+            <Download className="h-3.5 w-3.5 text-[#FF7A1A]" /> Export Report (CSV)
           </Button>
         </div>
       </div>
@@ -176,19 +176,19 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                 {statusCfg.label}
               </Badge>
               {campaign.is_test_mode && (
-                <Badge variant="orangeSubtle" className="text-[10px] font-mono font-medium">
+                <Badge variant="orangeSubtle" className="text-[10px] tabular-nums font-medium">
                   TEST RUN
                 </Badge>
               )}
             </div>
             <p className="text-xs text-[#8E8E93] font-medium mt-1">
-              Template: <code className="font-mono bg-[#F7F7F8] border border-[#E5E5E7] px-1.5 py-0.5 rounded text-[#0D0D0E] font-semibold">{campaign.template_name}</code> ({campaign.template_category.toUpperCase()}) • Launched by {campaign.created_by_name} on {formatDate(campaign.created_at)}
+              Template: <code className="tabular-nums bg-[#F7F7F8] border border-[#E5E5E7] px-1.5 py-0.5 rounded text-[#0D0D0E] font-semibold">{campaign.template_name}</code> ({campaign.template_category.toUpperCase()}) • Launched by {campaign.created_by_name} on {formatDate(campaign.created_at)}
             </p>
           </div>
 
           <div className="text-left sm:text-right">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Actual Meta Cloud Spend</span>
-            <span className="text-2xl font-semibold font-mono text-[#FF7900]">
+            <span className="text-2xl font-semibold tabular-nums text-[#FF7A1A]">
               ₹{campaign.actual_cost > 0 ? campaign.actual_cost.toFixed(2) : campaign.estimated_cost.toFixed(2)}
             </span>
           </div>
@@ -198,23 +198,23 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-4 border-t border-[#E5E5E7]">
           <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Target Audience</span>
-            <span className="text-xl font-semibold font-mono text-[#0D0D0E]">{campaign.total_recipients}</span>
+            <span className="text-xl font-semibold tabular-nums text-[#0D0D0E]">{campaign.total_recipients}</span>
           </div>
           <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Messages Sent</span>
-            <span className="text-xl font-semibold font-mono text-[#0D0D0E]">{campaign.sent_count}</span>
+            <span className="text-xl font-semibold tabular-nums text-[#0D0D0E]">{campaign.sent_count}</span>
           </div>
           <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Delivered ({deliveredPercent}%)</span>
-            <span className="text-xl font-semibold font-mono text-emerald-600">{campaign.delivered_count}</span>
+            <span className="text-xl font-semibold tabular-nums text-emerald-600">{campaign.delivered_count}</span>
           </div>
           <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Read ({readPercent}%)</span>
-            <span className="text-xl font-semibold font-mono text-[#FF7900]">{campaign.read_count}</span>
+            <span className="text-xl font-semibold tabular-nums text-[#FF7A1A]">{campaign.read_count}</span>
           </div>
           <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] block">Failed</span>
-            <span className="text-xl font-semibold font-mono text-rose-600">{campaign.failed_count}</span>
+            <span className="text-xl font-semibold tabular-nums text-rose-600">{campaign.failed_count}</span>
           </div>
         </div>
 
@@ -225,7 +225,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <span className="font-semibold text-[#0D0D0E]">{sentPercent}% Completed</span>
           </div>
           <div className="h-2 w-full bg-[#E5E5E7] rounded-full overflow-hidden">
-            <div className="h-full bg-[#FF7900] transition-all" style={{ width: `${sentPercent}%` }} />
+            <div className="h-full bg-[#FF7A1A] transition-all" style={{ width: `${sentPercent}%` }} />
           </div>
         </div>
       </div>
@@ -249,14 +249,14 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                 value={recipientSearch}
                 onChange={(e) => setRecipientSearch(e.target.value)}
                 placeholder="Search recipient..."
-                className="pl-8 h-8 text-xs bg-white border-[#E5E5E7] focus:border-[#FF7900] rounded-xl"
+                className="pl-8 h-8 text-xs bg-white border-[#E5E5E7] focus:border-[#FF7A1A] rounded-xl"
               />
             </div>
 
             <select
               value={recipientStatusFilter}
               onChange={(e) => setRecipientStatusFilter(e.target.value)}
-              className="rounded-xl border border-[#E5E5E7] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+              className="rounded-xl border border-[#E5E5E7] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
             >
               <option value="all">All Statuses</option>
               <option value="read">Read</option>
@@ -299,7 +299,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     </TableCell>
 
                     <TableCell>
-                      <span className="font-mono text-xs text-[#0D0D0E] font-medium">
+                      <span className="tabular-nums text-xs text-[#0D0D0E] font-medium">
                         {r.phone}
                       </span>
                     </TableCell>
@@ -307,7 +307,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     <TableCell>
                       <div className="flex items-center gap-1.5">
                         {r.status === "read" && (
-                          <span className="flex items-center gap-1 text-xs text-[#FF7900] font-semibold">
+                          <span className="flex items-center gap-1 text-xs text-[#FF7A1A] font-semibold">
                             <CheckCheck className="h-3.5 w-3.5" /> Read
                           </span>
                         )}
@@ -340,13 +340,13 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     </TableCell>
 
                     <TableCell>
-                      <span className="font-mono text-[11px] text-[#8E8E93]">
+                      <span className="tabular-nums text-[11px] text-[#8E8E93]">
                         {r.external_message_id || "—"}
                       </span>
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-xs font-semibold font-mono text-[#0D0D0E]">
+                      <span className="text-xs font-semibold tabular-nums text-[#0D0D0E]">
                         ₹{r.cost.toFixed(2)}
                       </span>
                     </TableCell>
@@ -354,7 +354,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     <TableCell>
                       <div className="text-[10px] text-[#8E8E93] space-y-0.5 font-medium">
                         {r.sent_at && <div>Sent: {formatDate(r.sent_at)}</div>}
-                        {r.read_at && <div className="text-[#FF7900] font-semibold">Read: {formatDate(r.read_at)}</div>}
+                        {r.read_at && <div className="text-[#FF7A1A] font-semibold">Read: {formatDate(r.read_at)}</div>}
                       </div>
                     </TableCell>
 

@@ -9,6 +9,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { SettingsShell } from "@/components/layout/settings-shell";
 import {
   Smartphone,
   CheckCircle2,
@@ -112,58 +113,56 @@ export default function WhatsAppSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
-        <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              WhatsApp Cloud API Settings
-            </h1>
-            <Badge
-              variant={connection.status === "connected" ? "success" : "neutral"}
-              className="text-xs uppercase font-semibold shadow-2xs"
-            >
-              {connection.status}
+    <SettingsShell
+      orgSlug={currentOrg.slug}
+      title="WhatsApp Configuration"
+      description={`Configure official Meta WhatsApp Business Cloud API or local mock simulation for ${currentOrg.name}.`}
+      badge={
+        <div className="flex items-center gap-1.5">
+          <Badge
+            variant={connection.status === "connected" ? "success" : "neutral"}
+            className="text-xs uppercase font-medium"
+          >
+            {connection.status}
+          </Badge>
+          {connection.mode === "mock" && (
+            <Badge variant="orangeSubtle" className="text-xs font-medium tabular-nums">
+              MOCK DEV MODE
             </Badge>
-            {connection.mode === "mock" && (
-              <Badge variant="orangeSubtle" className="text-xs shadow-2xs font-medium font-mono">
-                MOCK DEV MODE
-              </Badge>
-            )}
-          </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Configure official Meta WhatsApp Business Cloud API or local mock simulation for {currentOrg.name}.
-          </p>
+          )}
         </div>
+      }
+    >
+      <div className="space-y-6">
 
         {isAdmin && (
-          <Button
-            variant={connection.status === "connected" ? "outline" : "default"}
-            size="sm"
-            onClick={handleToggleConnection}
-            className={`rounded-xl shadow-2xs font-semibold text-xs ${
-              connection.status === "connected"
-                ? "border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
-                : "bg-[#FF7900] hover:bg-[#E66D00] text-white"
-            }`}
-          >
-            <Power className="mr-1.5 h-3.5 w-3.5" />
-            {connection.status === "connected" ? "Disable WhatsApp" : "Connect WhatsApp"}
-          </Button>
+          <div className="flex justify-end pb-2">
+            <Button
+              variant={connection.status === "connected" ? "outline" : "default"}
+              size="sm"
+              onClick={handleToggleConnection}
+              className={`rounded-xl shadow-2xs font-medium text-xs ${
+                connection.status === "connected"
+                  ? "border-[#E4E4E7] bg-white hover:bg-[#FAF9F6] text-[#0D0D0E]"
+                  : "bg-[#FF7A1A] hover:bg-[#FF8833] text-white"
+              }`}
+            >
+              <Power className="mr-1.5 h-3.5 w-3.5" />
+              {connection.status === "connected" ? "Disable WhatsApp" : "Connect WhatsApp"}
+            </Button>
+          </div>
         )}
-      </div>
 
       {/* Mode Switcher Banner */}
       <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-start space-x-3.5">
-          <div className="p-2.5 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 shrink-0 mt-0.5">
+          <div className="p-2.5 rounded-xl bg-[#FFF4EC] text-[#FF7A1A] border border-[#FF7A1A]/30 shrink-0 mt-0.5">
             <Zap className="h-5 w-5" />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-[#0D0D0E]">
               Active Messaging Mode:{" "}
-              <span className="capitalize text-[#FF7900] font-semibold">{mode} Mode</span>
+              <span className="capitalize text-[#FF7A1A] font-semibold">{mode} Mode</span>
             </h3>
             <p className="text-xs text-[#8E8E93] font-medium mt-1 max-w-xl leading-relaxed">
               {mode === "mock"
@@ -178,7 +177,7 @@ export default function WhatsAppSettingsPage() {
             onClick={() => setMode("mock")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               mode === "mock"
-                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
@@ -188,7 +187,7 @@ export default function WhatsAppSettingsPage() {
             onClick={() => setMode("live")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               mode === "live"
-                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
+                ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
                 : "text-[#8E8E93] hover:text-[#0D0D0E]"
             }`}
           >
@@ -224,7 +223,7 @@ export default function WhatsAppSettingsPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Display Phone Number"
@@ -232,7 +231,7 @@ export default function WhatsAppSettingsPage() {
                 value={displayPhone}
                 onChange={(e) => setDisplayPhone(e.target.value)}
                 disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
               />
             </div>
 
@@ -243,7 +242,7 @@ export default function WhatsAppSettingsPage() {
                 value={phoneNumberId}
                 onChange={(e) => setPhoneNumberId(e.target.value)}
                 disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
               />
               <Input
                 label="WhatsApp Business Account ID (WABA ID)"
@@ -251,7 +250,7 @@ export default function WhatsAppSettingsPage() {
                 value={wabaId}
                 onChange={(e) => setWabaId(e.target.value)}
                 disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
               />
             </div>
 
@@ -263,7 +262,7 @@ export default function WhatsAppSettingsPage() {
                 value={accessToken}
                 onChange={(e) => setAccessToken(e.target.value)}
                 disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] font-mono rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
               />
             )}
 
@@ -277,7 +276,7 @@ export default function WhatsAppSettingsPage() {
                 isLoading={isTesting}
                 className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs"
               >
-                <RefreshCw className="mr-1.5 h-3.5 w-3.5 text-[#FF7900]" />
+                <RefreshCw className="mr-1.5 h-3.5 w-3.5 text-[#FF7A1A]" />
                 Test Connection Status
               </Button>
 
@@ -302,7 +301,7 @@ export default function WhatsAppSettingsPage() {
 
           {isAdmin && (
             <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl shadow-2xs text-xs">
+              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl shadow-2xs text-xs">
                 Save WhatsApp Configuration
               </Button>
             </div>
@@ -313,7 +312,7 @@ export default function WhatsAppSettingsPage() {
       {/* Webhook Configuration Section */}
       <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
         <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-          <Globe className="h-5 w-5 text-[#FF7900]" />
+          <Globe className="h-5 w-5 text-[#FF7A1A]" />
           <div>
             <h2 className="text-base font-semibold text-[#0D0D0E]">Meta Webhook Callback URL</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -328,7 +327,7 @@ export default function WhatsAppSettingsPage() {
               Callback URL (Webhook Ingestion)
             </label>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 font-mono text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-semibold">
+              <div className="flex-1 tabular-nums text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-semibold">
                 {webhookUrl}
               </div>
               <Button
@@ -358,7 +357,7 @@ export default function WhatsAppSettingsPage() {
               Verify Token
             </label>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 font-mono text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-semibold">
+              <div className="flex-1 tabular-nums text-xs bg-[#F7F7F8] p-2.5 rounded-xl border border-[#E5E5E7] select-all truncate text-[#0D0D0E] font-semibold">
                 {connection.webhook_verify_token}
               </div>
               <Button
@@ -383,9 +382,9 @@ export default function WhatsAppSettingsPage() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-[#FFF4EC] p-3.5 border border-[#FF7900]/30 text-xs text-[#0D0D0E] space-y-1">
-            <span className="font-semibold text-[#FF7900] block">Webhook Subscriptions Required:</span>
-            <p className="text-[#8E8E93] font-medium">Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded font-mono text-[#0D0D0E] font-semibold border border-[#E5E5E7]">messages</code> subscription field in your Meta Developer App Dashboard.</p>
+          <div className="rounded-xl bg-[#FFF4EC] p-3.5 border border-[#FF7A1A]/30 text-xs text-[#0D0D0E] space-y-1">
+            <span className="font-semibold text-[#FF7A1A] block">Webhook Subscriptions Required:</span>
+            <p className="text-[#8E8E93] font-medium">Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded tabular-nums text-[#0D0D0E] font-semibold border border-[#E5E5E7]">messages</code> subscription field in your Meta Developer App Dashboard.</p>
           </div>
         </div>
       </div>
@@ -404,11 +403,11 @@ export default function WhatsAppSettingsPage() {
             {MOCK_TEMPLATES.map((tpl) => (
               <div
                 key={tpl.id}
-                className="p-4 rounded-xl border border-[#E5E5E7] bg-white flex flex-col justify-between shadow-2xs hover:border-[#FF7900]/40 transition-all"
+                className="p-4 rounded-xl border border-[#E5E5E7] bg-white flex flex-col justify-between shadow-2xs hover:border-[#FF7A1A]/40 transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono font-semibold text-xs text-[#0D0D0E]">
+                    <span className="tabular-nums font-semibold text-xs text-[#0D0D0E]">
                       {tpl.name}
                     </span>
                     <Badge variant="success" className="text-[10px] uppercase font-medium">
@@ -421,13 +420,14 @@ export default function WhatsAppSettingsPage() {
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#8E8E93] pt-2 border-t border-[#E5E5E7]">
                   <span className="capitalize font-medium">Category: {tpl.category}</span>
-                  <span className="font-mono text-[10px]">Variables: {tpl.variables.join(", ")}</span>
+                  <span className="tabular-nums text-[10px]">Variables: {tpl.variables.join(", ")}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </SettingsShell>
   );
 }

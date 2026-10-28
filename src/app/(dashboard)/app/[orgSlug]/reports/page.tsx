@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import {
   ReportingEngine,
   ReportTimeRange,
@@ -48,7 +49,7 @@ export default function ReportsPage() {
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Reports &amp; Analytics
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 font-mono text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 tabular-nums text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] shadow-2xs">
               Live Database
             </span>
           </div>
@@ -88,7 +89,7 @@ export default function ReportsPage() {
             onClick={() => alert("Exporting executive summary CSV...")}
             className="text-xs h-10 rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium shadow-2xs cursor-pointer px-3.5"
           >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
+            <Download className="h-3.5 w-3.5 mr-1.5 text-[#FF7A1A]" />
             Export
           </Button>
         </div>
@@ -121,7 +122,7 @@ export default function ReportsPage() {
       {isJuniorManager && (
         <div className="bg-[#FFF4EC] rounded-2xl border border-[#FFE1CC] p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-[#FF7900] text-white flex items-center justify-center font-medium text-xs shadow-2xs">
+            <div className="h-10 w-10 rounded-xl bg-[#FF7A1A] text-white flex items-center justify-center font-medium text-xs shadow-2xs">
               L3
             </div>
             <div>
@@ -129,7 +130,7 @@ export default function ReportsPage() {
                 <span className="font-semibold text-sm text-[#0D0D0E]">
                   Junior Manager Performance &amp; Productivity KPIs
                 </span>
-                <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30">
+                <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7A1A] border border-[#FF7A1A]/30">
                   Performance Clearance
                 </span>
               </div>
@@ -139,7 +140,7 @@ export default function ReportsPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-medium text-[#FF7900] bg-white px-3 py-1.5 rounded-xl border border-[#FFE1CC] shadow-2xs">
+            <span className="text-xs tabular-nums font-medium text-[#FF7A1A] bg-white px-3 py-1.5 rounded-xl border border-[#FFE1CC] shadow-2xs">
               SLA Adherence: 98.4%
             </span>
           </div>
@@ -147,91 +148,34 @@ export default function ReportsPage() {
       )}
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Card 1: Total Leads */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">
-              Total Leads
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FFE1CC] flex items-center justify-center shadow-2xs">
-              <Users className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-semibold font-mono text-[#0D0D0E] tracking-tight">
-              {mounted ? Math.max(s.totalLeads, 168) : 168}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium mt-1">
-              <span>+24%</span>
-              <span className="text-[#525866] font-normal">from last period</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Conversions */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-800">
-              Conversions
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shadow-2xs">
-              <CheckCircle2 className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-semibold font-mono text-emerald-600 tracking-tight">
-              {mounted ? Math.max(s.wonDealsCount, 32) : 32}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium mt-1">
-              <span>+18%</span>
-              <span className="text-[#525866] font-normal">from last period</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Messages Sent */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">
-              Messages Sent
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-600 border border-teal-200 flex items-center justify-center shadow-2xs">
-              <MessageSquare className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-semibold font-mono text-[#0D0D0E] tracking-tight">
-              {mounted ? Math.max(report.messagingFunnel.sent, 4280).toLocaleString() : "4,280"}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium mt-1">
-              <span>+12%</span>
-              <span className="text-[#525866] font-normal">from last period</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: Response Rate */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FF7900]">
-              Response Rate
-            </span>
-            <div className="h-9 w-9 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center shadow-2xs">
-              <TrendingUp className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-semibold font-mono text-[#FF7900] tracking-tight">
-              25.2%
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium mt-1">
-              <span>+4.4%</span>
-              <span className="text-[#525866] font-normal">from last period</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StatStrip
+        stats={[
+          {
+            id: "leads",
+            label: "Total Leads",
+            value: mounted ? Math.max(s.totalLeads, 168) : 168,
+            change: { value: "+24% period", trend: "up" },
+          },
+          {
+            id: "conversions",
+            label: "Conversions",
+            value: mounted ? Math.max(s.wonDealsCount, 32) : 32,
+            change: { value: "+18% period", trend: "up" },
+          },
+          {
+            id: "messages",
+            label: "Messages Sent",
+            value: mounted ? Math.max(report.messagingFunnel.sent, 4280).toLocaleString() : "4,280",
+            change: { value: "+12% period", trend: "up" },
+          },
+          {
+            id: "response-rate",
+            label: "Response Rate",
+            value: "25.2%",
+            change: { value: "+4.4% velocity", trend: "up" },
+          },
+        ]}
+      />
 
       {/* Visual Analytics Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -246,7 +190,7 @@ export default function ReportsPage() {
             </div>
             <div className="flex items-center gap-4 text-xs font-medium">
               <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#FF7900]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#FF7A1A]" />
                 <span className="text-[#0D0D0E]">Leads</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -260,8 +204,8 @@ export default function ReportsPage() {
             <svg viewBox="0 0 500 180" className="w-full h-full overflow-visible">
               <defs>
                 <linearGradient id="leadsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#FF7900" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#FF7900" stopOpacity="0.0" />
+                  <stop offset="0%" stopColor="#FF7A1A" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#FF7A1A" stopOpacity="0.0" />
                 </linearGradient>
                 <linearGradient id="convGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#10B981" stopOpacity="0.2" />
@@ -283,7 +227,7 @@ export default function ReportsPage() {
               <path
                 d="M 20 120 Q 100 80 180 95 T 340 45 T 480 35"
                 fill="none"
-                stroke="#FF7900"
+                stroke="#FF7A1A"
                 strokeWidth="2.5"
                 strokeLinecap="round"
               />
@@ -302,10 +246,10 @@ export default function ReportsPage() {
               />
 
               {/* Data points */}
-              <circle cx="20" cy="120" r="3.5" fill="#FF7900" />
-              <circle cx="180" cy="95" r="3.5" fill="#FF7900" />
-              <circle cx="340" cy="45" r="3.5" fill="#FF7900" />
-              <circle cx="480" cy="35" r="4" fill="#FF7900" stroke="#FFFFFF" strokeWidth="2" />
+              <circle cx="20" cy="120" r="3.5" fill="#FF7A1A" />
+              <circle cx="180" cy="95" r="3.5" fill="#FF7A1A" />
+              <circle cx="340" cy="45" r="3.5" fill="#FF7A1A" />
+              <circle cx="480" cy="35" r="4" fill="#FF7A1A" stroke="#FFFFFF" strokeWidth="2" />
 
               <circle cx="20" cy="150" r="3" fill="#10B981" />
               <circle cx="180" cy="140" r="3" fill="#10B981" />
@@ -314,7 +258,7 @@ export default function ReportsPage() {
             </svg>
 
             {/* X-Axis Labels */}
-            <div className="flex justify-between text-[11px] font-mono text-[#525866] pt-2 px-3">
+            <div className="flex justify-between text-[11px] tabular-nums text-[#525866] pt-2 px-3">
               <span>Week 1</span>
               <span>Week 2</span>
               <span>Week 3</span>
@@ -341,7 +285,7 @@ export default function ReportsPage() {
                 cy="75"
                 r="54"
                 fill="none"
-                stroke="#FF7900"
+                stroke="#FF7A1A"
                 strokeWidth="18"
                 strokeDasharray="142 340"
                 strokeDashoffset="0"
@@ -351,7 +295,7 @@ export default function ReportsPage() {
                 cy="75"
                 r="54"
                 fill="none"
-                stroke="#3B82F6"
+                stroke="#0D0D0E"
                 strokeWidth="18"
                 strokeDasharray="95 340"
                 strokeDashoffset="-142"
@@ -361,7 +305,7 @@ export default function ReportsPage() {
                 cy="75"
                 r="54"
                 fill="none"
-                stroke="#10B981"
+                stroke="#71717A"
                 strokeWidth="18"
                 strokeDasharray="61 340"
                 strokeDashoffset="-237"
@@ -371,33 +315,33 @@ export default function ReportsPage() {
                 cy="75"
                 r="54"
                 fill="none"
-                stroke="#8B5CF6"
+                stroke="#D4D4D8"
                 strokeWidth="18"
                 strokeDasharray="42 340"
                 strokeDashoffset="-298"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-lg font-semibold font-mono text-[#0D0D0E]">168</span>
+              <span className="text-lg font-semibold tabular-nums text-[#0D0D0E]">168</span>
               <span className="text-[10px] text-[#525866] font-semibold uppercase tracking-wider">Leads</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-[#E5E7EB]">
+          <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-[#E4E4E7]">
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#FF7900]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#FF7A1A]" />
               <span className="text-[#0D0D0E] font-medium">Website (42%)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#0D0D0E]" />
               <span className="text-[#0D0D0E] font-medium">Referral (28%)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#71717A]" />
               <span className="text-[#0D0D0E] font-medium">Social (18%)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#D4D4D8]" />
               <span className="text-[#0D0D0E] font-medium">Campaign (12%)</span>
             </div>
           </div>
@@ -414,7 +358,7 @@ export default function ReportsPage() {
                 Distribution of leads and estimated deal value across stages.
               </p>
             </div>
-            <span className="text-xs font-mono font-medium px-3 py-1 bg-[#F8F9FA] text-[#0D0D0E] rounded-lg border border-[#E5E7EB]" suppressHydrationWarning>
+            <span className="text-xs tabular-nums font-medium px-3 py-1 bg-[#F8F9FA] text-[#0D0D0E] rounded-lg border border-[#E5E7EB]" suppressHydrationWarning>
               Total: ₹{mounted ? s.pipelineValue.toLocaleString("en-IN") : s.pipelineValue.toLocaleString("en-IN")}
             </span>
           </div>
@@ -427,27 +371,27 @@ export default function ReportsPage() {
                     <span className="font-semibold text-[#0D0D0E]">
                       {st.label}
                     </span>
-                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-[#F8F9FA] text-[#525866] border border-[#E5E7EB] rounded-md">
+                    <span className="text-[10px] tabular-nums font-medium px-2 py-0.5 bg-[#F8F9FA] text-[#525866] border border-[#E5E7EB] rounded-md">
                       {st.count} leads
                     </span>
                   </div>
-                  <div className="font-mono text-[#0D0D0E] font-medium">
+                  <div className="tabular-nums text-[#0D0D0E] font-medium">
                     ₹{st.value.toLocaleString("en-IN")}{" "}
                     <span className="text-[#525866] text-[11px]">
                       ({st.percentage}%)
                     </span>
                   </div>
                 </div>
-                <div className="w-full h-2.5 bg-[#E5E7EB] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[#F4F4F5] rounded-full overflow-hidden border border-[#E4E4E7]">
                   <div
                     className={`h-full transition-all duration-300 rounded-full ${
                       st.stage === "won"
-                        ? "bg-emerald-500"
+                        ? "bg-emerald-600"
                         : st.stage === "lost"
-                        ? "bg-rose-500"
-                        : "bg-[#FF7900]"
+                        ? "bg-zinc-300"
+                        : "bg-[#FF7A1A]"
                     }`}
-                    style={{ width: `${Math.max(st.percentage, 3)}%` }}
+                    style={{ width: `${Math.max(st.percentage, 4)}%` }}
                   />
                 </div>
               </div>
@@ -469,7 +413,7 @@ export default function ReportsPage() {
               <span className="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider block">
                 Closed Won Revenue
               </span>
-              <div className="text-2xl font-semibold font-mono text-emerald-700" suppressHydrationWarning>
+              <div className="text-2xl font-semibold tabular-nums text-emerald-700" suppressHydrationWarning>
                 ₹{mounted ? s.wonDealsValue.toLocaleString("en-IN") : s.wonDealsValue.toLocaleString("en-IN")}
               </div>
               <p className="text-xs text-[#525866] font-normal" suppressHydrationWarning>
@@ -481,7 +425,7 @@ export default function ReportsPage() {
               <span className="text-[11px] font-semibold text-rose-800 uppercase tracking-wider block">
                 Closed Lost Deals
               </span>
-              <div className="text-2xl font-semibold font-mono text-rose-700" suppressHydrationWarning>
+              <div className="text-2xl font-semibold tabular-nums text-rose-700" suppressHydrationWarning>
                 {mounted ? s.lostDealsCount : s.lostDealsCount} deals
               </div>
               <p className="text-xs text-[#525866] font-normal">
@@ -514,25 +458,25 @@ export default function ReportsPage() {
             <div className="grid grid-cols-4 gap-2.5 text-center">
               <div className="p-3 bg-[#F8F9FA] rounded-xl border border-[#E5E7EB]">
                 <span className="text-[10px] font-semibold text-[#525866] uppercase tracking-wider block mb-1">Sent</span>
-                <span className="text-xl font-semibold font-mono text-[#0D0D0E]" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-[#0D0D0E]" suppressHydrationWarning>
                   {mounted ? report.messagingFunnel.sent : report.messagingFunnel.sent}
                 </span>
               </div>
               <div className="p-3 bg-[#FFF4EC] rounded-xl border border-[#FFE1CC]">
-                <span className="text-[10px] font-semibold text-[#FF7900] uppercase tracking-wider block mb-1">Delivered</span>
-                <span className="text-xl font-semibold font-mono text-[#FF7900]" suppressHydrationWarning>
+                <span className="text-[10px] font-semibold text-[#FF7A1A] uppercase tracking-wider block mb-1">Delivered</span>
+                <span className="text-xl font-semibold tabular-nums text-[#FF7A1A]" suppressHydrationWarning>
                   {mounted ? report.messagingFunnel.delivered : report.messagingFunnel.delivered}
                 </span>
               </div>
               <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
                 <span className="text-[10px] font-semibold text-emerald-700 uppercase tracking-wider block mb-1">Read</span>
-                <span className="text-xl font-semibold font-mono text-emerald-800" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-emerald-800" suppressHydrationWarning>
                   {mounted ? report.messagingFunnel.read : report.messagingFunnel.read}
                 </span>
               </div>
               <div className="p-3 bg-rose-50/70 rounded-xl border border-rose-200">
                 <span className="text-[10px] font-semibold text-rose-700 uppercase tracking-wider block mb-1">Failed</span>
-                <span className="text-xl font-semibold font-mono text-rose-800" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-rose-800" suppressHydrationWarning>
                   {mounted ? report.messagingFunnel.failed : report.messagingFunnel.failed}
                 </span>
               </div>
@@ -547,7 +491,7 @@ export default function ReportsPage() {
         {/* Workflow Reliability & Execution Metrics */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-2xs p-6">
           <div className="flex items-center space-x-2 pb-4 border-b border-[#E5E7EB] mb-5">
-            <Zap className="h-5 w-5 text-[#FF7900]" />
+            <Zap className="h-5 w-5 text-[#FF7A1A]" />
             <div>
               <h2 className="text-base font-semibold text-[#0D0D0E]">Workflow Queue Health</h2>
               <p className="text-xs text-[#525866] font-normal mt-0.5">
@@ -560,19 +504,19 @@ export default function ReportsPage() {
             <div className="grid grid-cols-3 gap-2.5 text-center">
               <div className="p-3 bg-[#F8F9FA] rounded-xl border border-[#E5E7EB]">
                 <span className="text-[10px] font-semibold text-[#525866] uppercase tracking-wider block mb-1">Total Runs</span>
-                <span className="text-xl font-semibold font-mono text-[#0D0D0E]" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-[#0D0D0E]" suppressHydrationWarning>
                   {mounted ? report.workflowMetrics.totalRuns : report.workflowMetrics.totalRuns}
                 </span>
               </div>
               <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
                 <span className="text-[10px] font-semibold text-emerald-700 uppercase tracking-wider block mb-1">Successful</span>
-                <span className="text-xl font-semibold font-mono text-emerald-800" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-emerald-800" suppressHydrationWarning>
                   {mounted ? report.workflowMetrics.successfulRuns : report.workflowMetrics.successfulRuns}
                 </span>
               </div>
               <div className="p-3 bg-rose-50/70 rounded-xl border border-rose-200">
                 <span className="text-[10px] font-semibold text-rose-700 uppercase tracking-wider block mb-1">Failed</span>
-                <span className="text-xl font-semibold font-mono text-rose-800" suppressHydrationWarning>
+                <span className="text-xl font-semibold tabular-nums text-rose-800" suppressHydrationWarning>
                   {mounted ? report.workflowMetrics.failedRuns : report.workflowMetrics.failedRuns}
                 </span>
               </div>

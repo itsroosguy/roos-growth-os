@@ -12,6 +12,7 @@ import { useMounted } from "@/lib/use-mounted";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import {
   Users,
@@ -54,7 +55,6 @@ interface StageConfig {
   id: LeadStage;
   title: string;
   dotColor: string;
-  barColor: string;
   pillColor: string;
   badgeVariant: "orange" | "orangeSubtle" | "dark" | "success" | "warning" | "danger" | "purple" | "default" | "secondary";
 }
@@ -63,49 +63,43 @@ const STAGES: StageConfig[] = [
   {
     id: "new",
     title: "New Inquiry",
-    dotColor: "bg-[#FF7900]",
-    barColor: "bg-[#FF7900]",
-    pillColor: "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30",
+    dotColor: "bg-[#FF7A1A]",
+    pillColor: "bg-orange-50 text-[#FF7A1A] border-orange-200",
     badgeVariant: "orangeSubtle",
   },
   {
     id: "contacted",
     title: "Contacted",
-    dotColor: "bg-amber-500",
-    barColor: "bg-amber-500",
-    pillColor: "bg-amber-50 text-amber-800 border-amber-200",
-    badgeVariant: "warning",
+    dotColor: "bg-zinc-400",
+    pillColor: "bg-zinc-50 text-zinc-700 border-zinc-200",
+    badgeVariant: "default",
   },
   {
     id: "qualified",
     title: "Qualified",
-    dotColor: "bg-purple-600",
-    barColor: "bg-purple-600",
-    pillColor: "bg-purple-50 text-purple-800 border-purple-200",
-    badgeVariant: "purple",
+    dotColor: "bg-zinc-700",
+    pillColor: "bg-zinc-100 text-zinc-800 border-zinc-300",
+    badgeVariant: "default",
   },
   {
     id: "proposal",
     title: "Proposal Sent",
-    dotColor: "bg-[#FF7900]",
-    barColor: "bg-[#FF7900]",
-    pillColor: "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30",
-    badgeVariant: "orangeSubtle",
+    dotColor: "bg-zinc-500",
+    pillColor: "bg-zinc-50 text-zinc-700 border-zinc-200",
+    badgeVariant: "secondary",
   },
   {
     id: "won",
     title: "Deals Won",
     dotColor: "bg-emerald-500",
-    barColor: "bg-emerald-500",
     pillColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
     badgeVariant: "success",
   },
   {
     id: "lost",
     title: "Closed Lost",
-    dotColor: "bg-rose-500",
-    barColor: "bg-rose-500",
-    pillColor: "bg-rose-50 text-rose-800 border-rose-200",
+    dotColor: "bg-zinc-300",
+    pillColor: "bg-zinc-50 text-zinc-500 border-zinc-200",
     badgeVariant: "danger",
   },
 ];
@@ -534,7 +528,7 @@ export default function LeadsPage() {
             </h1>
             <span
               suppressHydrationWarning
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] shadow-2xs tabular-nums"
             >
               {filteredLeads.length} {filteredLeads.length === 1 ? "deal" : "deals"}
             </span>
@@ -579,7 +573,7 @@ export default function LeadsPage() {
           <Button
             onClick={() => setCreateModalOpen(true)}
             size="default"
-            className="shadow-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
+            className="shadow-xs bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Lead</span>
@@ -588,77 +582,35 @@ export default function LeadsPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* MINI COMMAND STATS BANNER                                             */}
+      {/* STAT STRIP METRICS BANNER                                             */}
       {/* ===================================================================== */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">
-              Active Pipeline
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1 block"
-            >
-              {mounted ? formatCurrency(pipelineMetrics.activeValue) : "₹0"}
-            </span>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-[#FFF4EC] text-[#FF7900] flex items-center justify-center shrink-0 border border-[#FFE1CC]">
-            <TrendingUp className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">
-              Total Opportunities
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1 block"
-            >
-              {mounted ? pipelineMetrics.totalLeads : 0}
-            </span>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
-            <Users className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block">
-              Deals Won
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1 block"
-            >
-              {mounted ? formatCurrency(pipelineMetrics.wonValue) : "₹0"}
-            </span>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-            <Award className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider block">
-              Win Rate
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1 block"
-            >
-              {mounted ? `${pipelineMetrics.winRate}%` : "0%"}
-            </span>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
-            <Clock className="h-5 w-5" />
-          </div>
-        </div>
-      </div>
+      <StatStrip
+        stats={[
+          {
+            id: "pipeline",
+            label: "Active Pipeline",
+            value: mounted ? formatCurrency(pipelineMetrics.activeValue) : "₹0",
+            change: { value: `${pipelineMetrics.totalLeads} deals`, trend: "neutral" },
+          },
+          {
+            id: "total",
+            label: "Total Deals",
+            value: mounted ? String(pipelineMetrics.totalLeads) : "0",
+          },
+          {
+            id: "won",
+            label: "Deals Won",
+            value: mounted ? formatCurrency(pipelineMetrics.wonValue) : "₹0",
+            change: { value: `${pipelineMetrics.winRate}% win`, trend: "up" },
+          },
+          {
+            id: "attention",
+            label: "Needs Follow-up",
+            value: mounted ? String(leads.filter((l) => !!l.next_follow_up_at).length) : "0",
+            subtext: "Action required",
+          },
+        ]}
+      />
 
       {/* ===================================================================== */}
       {/* INTERACTIVE QUICK FILTER PILLS                                        */}
@@ -674,32 +626,32 @@ export default function LeadsPage() {
           }`}
         >
           <span>All Deals</span>
-          <span className="font-mono text-[11px] opacity-80">({leads.length})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({leads.length})</span>
         </button>
         <button
           type="button"
           onClick={() => setQuickFilter("starred")}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "starred"
-              ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/40 shadow-xs"
+              ? "bg-[#24180E] text-[#FF7A1A] border border-[#FF7A1A]/40 shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <Star className="h-3.5 w-3.5 fill-current text-amber-400" />
           <span>Starred</span>
-          <span className="font-mono text-[11px] opacity-80">({starredIds.size})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({starredIds.size})</span>
         </button>
         <button
           type="button"
           onClick={() => setQuickFilter("high_value")}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 ${
             quickFilter === "high_value"
-              ? "bg-[#24180E] text-[#FF7900] border border-[#FF7900]/40 shadow-xs"
+              ? "bg-[#24180E] text-[#FF7A1A] border border-[#FF7A1A]/40 shadow-xs"
               : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>🔥 High Value (≥ ₹1L)</span>
-          <span className="font-mono text-[11px] opacity-80">
+          <span className="tabular-nums text-[11px] opacity-80">
             ({leads.filter((l) => l.estimated_value >= 100000).length})
           </span>
         </button>
@@ -713,7 +665,7 @@ export default function LeadsPage() {
           }`}
         >
           <span>⏰ Needs Action</span>
-          <span className="font-mono text-[11px] opacity-80">
+          <span className="tabular-nums text-[11px] opacity-80">
             ({leads.filter((l) => !!l.next_follow_up_at).length})
           </span>
         </button>
@@ -727,7 +679,7 @@ export default function LeadsPage() {
           }`}
         >
           <span>🏆 Closed Won</span>
-          <span className="font-mono text-[11px] opacity-80">
+          <span className="tabular-nums text-[11px] opacity-80">
             ({leads.filter((l) => l.stage === "won").length})
           </span>
         </button>
@@ -746,7 +698,7 @@ export default function LeadsPage() {
               placeholder="Search by deal title, customer, or phone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9.5 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#8E8E93] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs transition-all font-medium"
+              className="w-full pl-9.5 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#8E8E93] focus:outline-none focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white shadow-xs transition-all font-medium"
             />
             {searchQuery && (
               <button
@@ -765,7 +717,7 @@ export default function LeadsPage() {
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white shadow-xs cursor-pointer"
             >
               <option value="all">All Sources</option>
               {uniqueSources.map((src) => (
@@ -782,7 +734,7 @@ export default function LeadsPage() {
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+              className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white shadow-xs cursor-pointer"
             >
               <option value="all">All Stages ({leads.length})</option>
               {STAGES.map((s) => {
@@ -803,7 +755,7 @@ export default function LeadsPage() {
               <select
                 value={ownerFilter}
                 onChange={(e) => setOwnerFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white shadow-xs cursor-pointer"
+                className="px-3 py-2 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white shadow-xs cursor-pointer"
               >
                 <option value="all">All Owners</option>
                 {uniqueOwners.map((owner) => (
@@ -826,7 +778,7 @@ export default function LeadsPage() {
               setSourceFilter("all");
               setOwnerFilter("all");
             }}
-            className="text-xs sm:text-sm font-semibold text-[#FF7900] hover:text-[#E66D00] transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 shadow-2xs"
+            className="text-xs sm:text-sm font-semibold text-[#FF7A1A] hover:text-[#FF8833] transition-colors cursor-pointer px-3.5 py-2 rounded-xl bg-[#FFF4EC] border border-[#FF7A1A]/30 shadow-2xs"
           >
             Reset Filters
           </button>
@@ -837,7 +789,7 @@ export default function LeadsPage() {
       {/* KANBAN BOARD VIEW                                                     */}
       {/* ===================================================================== */}
       {viewMode === "board" ? (
-        <div className="flex gap-4.5 overflow-x-auto pb-6 items-start min-h-[580px]">
+        <div className="overflow-x-auto pb-4 pt-1 -mx-4 px-4 sm:-mx-6 sm:px-6"><div className="inline-flex gap-4 items-start min-w-full min-h-[580px]">
           {STAGES.map((stage) => {
             const stageLeads = filteredLeads.filter((l) => l.stage === stage.id);
             const stageValue = stageLeads.reduce((acc, curr) => acc + curr.estimated_value, 0);
@@ -848,31 +800,28 @@ export default function LeadsPage() {
                 className="w-80 shrink-0 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] p-3.5 flex flex-col space-y-3 shadow-2xs"
               >
                 {/* Stage Header */}
-                <div className="space-y-2">
-                  <div className={`h-1.5 w-full rounded-full ${stage.barColor}`} />
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`h-2.5 w-2.5 rounded-full ${stage.dotColor}`} />
-                      <span className="font-semibold text-xs sm:text-sm uppercase tracking-wider text-[#0D0D0E]">
-                        {stage.title}
-                      </span>
-                      <span
-                        suppressHydrationWarning
-                        className="px-2 py-0.5 rounded-full bg-white border border-[#E5E5E7] text-xs font-mono font-semibold text-[#0D0D0E] shadow-2xs"
-                      >
-                        {stageLeads.length}
-                      </span>
-                    </div>
-
-                    {stageValue > 0 && (
-                      <span
-                        suppressHydrationWarning
-                        className="text-xs font-mono font-semibold text-[#0D0D0E]"
-                      >
-                        {formatCurrency(stageValue)}
-                      </span>
-                    )}
+                <div className="flex items-center justify-between px-1 pb-2 border-b border-[#E4E4E7]">
+                  <div className="flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full ${stage.dotColor}`} />
+                    <span className="font-medium text-xs tracking-tight text-[#0D0D0E]">
+                      {stage.title}
+                    </span>
+                    <span
+                      suppressHydrationWarning
+                      className="px-1.5 py-0.5 rounded text-[11px] tabular-nums font-medium text-[#71717A] bg-[#F4F4F5] border border-[#E4E4E7]"
+                    >
+                      {stageLeads.length}
+                    </span>
                   </div>
+
+                  {stageValue > 0 && (
+                    <span
+                      suppressHydrationWarning
+                      className="text-xs tabular-nums text-[#71717A] font-medium"
+                    >
+                      {formatCurrency(stageValue)}
+                    </span>
+                  )}
                 </div>
 
                 {/* Cards List in Stage */}
@@ -893,7 +842,7 @@ export default function LeadsPage() {
                         <div
                           key={lead.id}
                           onClick={() => setActiveLead(lead)}
-                          className="group relative rounded-xl border border-[#E5E5E7] bg-white p-4 shadow-xs hover:border-[#FF7900] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-left space-y-3"
+                          className="group relative rounded-xl border border-[#E5E5E7] bg-white p-4 shadow-xs hover:border-[#FF7A1A] hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-left space-y-3"
                         >
                           {/* Card Top: Star, Title & Source */}
                           <div className="flex items-start justify-between gap-2">
@@ -912,11 +861,11 @@ export default function LeadsPage() {
                                   }`}
                                 />
                               </button>
-                              <h4 className="text-sm font-semibold text-[#0D0D0E] group-hover:text-[#FF7900] transition-colors line-clamp-2 leading-snug">
+                              <h4 className="text-sm font-semibold text-[#0D0D0E] group-hover:text-[#FF7A1A] transition-colors line-clamp-2 leading-snug">
                                 {lead.title}
                               </h4>
                             </div>
-                            <span className="shrink-0 text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7] shadow-2xs font-semibold">
+                            <span className="shrink-0 text-[11px] tabular-nums px-2 py-0.5 rounded-md bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7] shadow-2xs font-semibold">
                               {lead.source}
                             </span>
                           </div>
@@ -924,7 +873,7 @@ export default function LeadsPage() {
                           {/* Contact & Company */}
                           <div className="flex items-center justify-between text-xs text-[#0D0D0E] pt-0.5">
                             <div className="flex items-center gap-2 truncate">
-                              <div className="h-5 w-5 rounded-full bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-semibold text-[10px] flex items-center justify-center shrink-0">
+                              <div className="h-5 w-5 rounded-full bg-[#FFF4EC] text-[#FF7A1A] border border-[#FF7A1A]/30 font-semibold text-[10px] flex items-center justify-center shrink-0">
                                 {lead.contact_name ? lead.contact_name[0] : "L"}
                               </div>
                               <span className="truncate font-semibold text-[#0D0D0E]">{lead.contact_name}</span>
@@ -947,7 +896,7 @@ export default function LeadsPage() {
                             <div className="space-y-0.5">
                               <span
                                 suppressHydrationWarning
-                                className="font-mono font-semibold text-[#0D0D0E] text-base block"
+                                className="tabular-nums font-semibold text-[#0D0D0E] text-base block"
                               >
                                 {formatCurrency(lead.estimated_value)}
                               </span>
@@ -975,7 +924,7 @@ export default function LeadsPage() {
                               <button
                                 type="button"
                                 onClick={(e) => handleAdvanceStage(lead, e)}
-                                className="p-1.5 px-2.5 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
+                                className="p-1.5 px-2.5 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7A1A] text-[#FF7A1A] hover:text-white border border-[#FF7A1A]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
                                 title="Advance to next stage"
                               >
                                 <span>Next</span>
@@ -996,15 +945,15 @@ export default function LeadsPage() {
                     setInitialStage(stage.id);
                     setCreateModalOpen(true);
                   }}
-                  className="w-full py-2 px-3 rounded-xl border border-dashed border-[#D1D5DB] hover:border-[#FF7900] bg-white/60 hover:bg-white text-xs font-semibold text-[#8E8E93] hover:text-[#FF7900] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs group mt-1"
+                  className="w-full py-2 px-3 rounded-xl border border-dashed border-[#D1D5DB] hover:border-[#FF7A1A] bg-white/60 hover:bg-white text-xs font-semibold text-[#8E8E93] hover:text-[#FF7A1A] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs group mt-1"
                 >
-                  <Plus className="h-3.5 w-3.5 group-hover:scale-110 transition-transform text-[#FF7900]" />
+                  <Plus className="h-3.5 w-3.5 group-hover:scale-110 transition-transform text-[#FF7A1A]" />
                   <span>Add Lead</span>
                 </button>
               </div>
             );
           })}
-        </div>
+        </div></div>
       ) : (
         /* ===================================================================== */
         /* TABLE LIST VIEW                                                       */
@@ -1012,14 +961,14 @@ export default function LeadsPage() {
         <div className="rounded-2xl border border-[#E5E5E7] bg-white overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-[#F7F7F8] border-b border-[#E5E5E7] text-[#8E8E93] uppercase font-mono text-[11px] tracking-wider">
+              <thead className="bg-[#F7F7F8] border-b border-[#E5E5E7] text-[#8E8E93] uppercase tabular-nums text-[11px] tracking-wider">
                 <tr>
                   <th className="py-3.5 px-4 w-10 text-center">
                     <input
                       type="checkbox"
                       checked={isAllSelected}
                       onChange={handleSelectAll}
-                      className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                      className="rounded border-[#E5E5E7] text-[#FF7A1A] focus:ring-[#FF7A1A] cursor-pointer h-4 w-4"
                       aria-label="Select all deals"
                     />
                   </th>
@@ -1061,7 +1010,7 @@ export default function LeadsPage() {
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => {}}
-                            className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                            className="rounded border-[#E5E5E7] text-[#FF7A1A] focus:ring-[#FF7A1A] cursor-pointer h-4 w-4"
                             aria-label={`Select ${lead.title}`}
                           />
                         </td>
@@ -1082,10 +1031,10 @@ export default function LeadsPage() {
                               />
                             </button>
                             <div>
-                              <div className="group-hover:text-[#FF7900] transition-colors">
+                              <div className="group-hover:text-[#FF7A1A] transition-colors">
                                 {lead.title}
                               </div>
-                              <span className="text-[11px] font-mono text-[#8E8E93] font-normal">
+                              <span className="text-[11px] tabular-nums text-[#8E8E93] font-normal">
                                 {lead.source}
                               </span>
                             </div>
@@ -1093,7 +1042,7 @@ export default function LeadsPage() {
                         </td>
                         <td className="py-3.5 px-4 text-[#0D0D0E]">
                           <div className="font-semibold text-[#0D0D0E]">{lead.contact_name}</div>
-                          <div className="text-[11px] text-[#8E8E93] font-mono font-medium">
+                          <div className="text-[11px] text-[#8E8E93] tabular-nums font-medium">
                             {lead.contact_phone}
                           </div>
                         </td>
@@ -1105,7 +1054,7 @@ export default function LeadsPage() {
                             {stageConfig.title}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-mono font-semibold text-[#0D0D0E] text-right text-sm">
+                        <td className="py-3.5 px-4 tabular-nums font-semibold text-[#0D0D0E] text-right text-sm">
                           {formatCurrency(lead.estimated_value)}
                         </td>
                         <td className="py-3.5 px-4 text-[#0D0D0E] font-semibold">
@@ -1122,7 +1071,7 @@ export default function LeadsPage() {
                               <button
                                 type="button"
                                 onClick={(e) => handleAdvanceStage(lead, e)}
-                                className="p-1.5 px-2 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7900] text-[#FF7900] hover:text-white border border-[#FF7900]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer"
+                                className="p-1.5 px-2 rounded-xl bg-[#FFF4EC] hover:bg-[#FF7A1A] text-[#FF7A1A] hover:text-white border border-[#FF7A1A]/30 transition-all font-semibold text-xs flex items-center gap-1 shadow-2xs cursor-pointer"
                                 title="Advance Stage"
                               >
                                 <span>Next</span>
@@ -1143,7 +1092,7 @@ export default function LeadsPage() {
                                 e.stopPropagation();
                                 setActiveLead(lead);
                               }}
-                              className="p-1.5 rounded-xl text-[#8E8E93] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
+                              className="p-1.5 rounded-xl text-[#8E8E93] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
                             >
                               <ChevronRight className="h-4 w-4" />
                             </button>
@@ -1165,8 +1114,8 @@ export default function LeadsPage() {
       {selectedLeadIds.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#121214] text-white px-5 py-3 rounded-2xl shadow-2xl border border-[#1F1F23] flex items-center gap-4 animate-in fade-in slide-in-from-bottom-3 duration-200">
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#FF7900] animate-pulse" />
-            <span className="font-semibold text-sm font-mono text-white">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#FF7A1A] animate-pulse" />
+            <span className="font-semibold text-sm tabular-nums text-white">
               {selectedLeadIds.size} {selectedLeadIds.size === 1 ? "deal" : "deals"} selected
             </span>
           </div>
@@ -1175,7 +1124,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={handleBulkAdvance}
-              className="px-3.5 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
             >
               <span>Advance Stage</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -1215,7 +1164,7 @@ export default function LeadsPage() {
             {/* Drawer Header */}
             <div className="p-5 border-b border-[#E5E5E7] flex items-start justify-between gap-4 bg-[#F7F7F8]">
               <div className="space-y-1.5 flex-1 min-w-0">
-                <span className="text-[11px] font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
+                <span className="text-[11px] tabular-nums font-medium text-[#8E8E93] uppercase tracking-wider block">
                   OPPORTUNITY OVERVIEW
                 </span>
                 <h3 className="text-xl font-semibold text-[#0D0D0E] leading-snug truncate">
@@ -1226,7 +1175,7 @@ export default function LeadsPage() {
                   <select
                     value={activeLead.stage}
                     onChange={(e) => handleStageChange(activeLead, e.target.value as LeadStage)}
-                    className="px-3 py-1 rounded-xl text-xs font-semibold bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7900] cursor-pointer"
+                    className="px-3 py-1 rounded-xl text-xs font-semibold bg-white border border-[#E5E5E7] text-[#0D0D0E] shadow-2xs focus:outline-none focus:border-[#FF7A1A] cursor-pointer"
                   >
                     {STAGES.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -1253,7 +1202,7 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab("details")}
                 className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
                   activeTab === "details"
-                    ? "border-[#FF7900] text-[#FF7900]"
+                    ? "border-[#FF7A1A] text-[#FF7A1A]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
                 }`}
               >
@@ -1264,12 +1213,12 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab("tasks")}
                 className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "tasks"
-                    ? "border-[#FF7900] text-[#FF7900]"
+                    ? "border-[#FF7A1A] text-[#FF7A1A]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
                 }`}
               >
                 <span>Follow-ups</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[11px] font-mono font-semibold bg-[#F7F7F8] text-[#0D0D0E]">
+                <span className="px-1.5 py-0.2 rounded-full text-[11px] tabular-nums font-semibold bg-[#F7F7F8] text-[#0D0D0E]">
                   {activeLeadTasks.length}
                 </span>
               </button>
@@ -1278,7 +1227,7 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab("timeline")}
                 className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
                   activeTab === "timeline"
-                    ? "border-[#FF7900] text-[#FF7900]"
+                    ? "border-[#FF7A1A] text-[#FF7A1A]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
                 }`}
               >
@@ -1289,11 +1238,11 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab("ai")}
                 className={`py-3 px-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "ai"
-                    ? "border-[#FF7900] text-[#FF7900]"
+                    ? "border-[#FF7A1A] text-[#FF7A1A]"
                     : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
                 }`}
               >
-                <Sparkles className="h-3.5 w-3.5 text-[#FF7900]" />
+                <Sparkles className="h-3.5 w-3.5 text-[#FF7A1A]" />
                 <span>Qualification</span>
               </button>
             </div>
@@ -1307,7 +1256,7 @@ export default function LeadsPage() {
                   <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center justify-between pr-2">
-                        <span className="text-[11px] font-mono text-[#8E8E93] uppercase tracking-wider block font-medium">
+                        <span className="text-[11px] tabular-nums text-[#8E8E93] uppercase tracking-wider block font-medium">
                           ESTIMATED DEAL VALUE
                         </span>
                         <button
@@ -1320,7 +1269,7 @@ export default function LeadsPage() {
                               setIsEditingValue(false);
                             }
                           }}
-                          className="text-xs font-semibold text-[#FF7900] hover:text-[#E66D00] cursor-pointer"
+                          className="text-xs font-semibold text-[#FF7A1A] hover:text-[#FF8833] cursor-pointer"
                         >
                           {isEditingValue ? "Cancel" : "Edit Value"}
                         </button>
@@ -1331,25 +1280,25 @@ export default function LeadsPage() {
                             type="number"
                             value={editValueInput}
                             onChange={(e) => setEditValueInput(e.target.value)}
-                            className="w-36 px-2.5 py-1 rounded-lg border border-[#FF7900] bg-white font-mono font-semibold text-[#0D0D0E] text-sm focus:outline-none"
+                            className="w-36 px-2.5 py-1 rounded-lg border border-[#FF7A1A] bg-white tabular-nums font-semibold text-[#0D0D0E] text-sm focus:outline-none"
                             autoFocus
                           />
                           <button
                             type="button"
                             onClick={handleQuickUpdateValue}
-                            className="px-3 py-1 bg-[#FF7900] hover:bg-[#E66D00] text-white text-xs font-semibold rounded-lg cursor-pointer"
+                            className="px-3 py-1 bg-[#FF7A1A] hover:bg-[#FF8833] text-white text-xs font-semibold rounded-lg cursor-pointer"
                           >
                             Save
                           </button>
                         </div>
                       ) : (
-                        <span className="text-2xl font-mono font-semibold text-[#0D0D0E] block mt-0.5">
+                        <span className="text-2xl tabular-nums font-semibold text-[#0D0D0E] block mt-0.5">
                           {formatCurrency(activeLead.estimated_value)}
                         </span>
                       )}
                     </div>
                     {!isEditingValue && (
-                      <span className="px-3 py-1 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold font-mono text-[#0D0D0E]">
+                      <span className="px-3 py-1 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold tabular-nums text-[#0D0D0E]">
                         {activeLead.currency}
                       </span>
                     )}
@@ -1357,7 +1306,7 @@ export default function LeadsPage() {
 
                   {/* Associated Contact */}
                   <div className="space-y-2.5">
-                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs tabular-nums font-medium text-[#8E8E93] uppercase tracking-wider block">
                       ASSOCIATED CUSTOMER
                     </span>
                     <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs space-y-3">
@@ -1367,7 +1316,7 @@ export default function LeadsPage() {
                             {activeLead.contact_name}
                           </span>
                           <div className="flex items-center gap-2 text-xs text-[#8E8E93] mt-0.5">
-                            <span className="font-mono font-semibold text-[#0D0D0E]">{activeLead.contact_phone}</span>
+                            <span className="tabular-nums font-semibold text-[#0D0D0E]">{activeLead.contact_phone}</span>
                             <button
                               type="button"
                               onClick={() => copyPhoneNumber(activeLead.contact_phone)}
@@ -1394,7 +1343,7 @@ export default function LeadsPage() {
                   {/* Key Metadata Grid */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
+                      <span className="text-[#8E8E93] block tabular-nums text-[10px] uppercase font-medium">
                         Lead Source
                       </span>
                       <span className="font-semibold text-[#0D0D0E] mt-1 block">
@@ -1403,13 +1352,13 @@ export default function LeadsPage() {
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
+                      <span className="text-[#8E8E93] block tabular-nums text-[10px] uppercase font-medium">
                         Assigned Owner
                       </span>
                       <select
                         value={activeLead.assigned_to_name || "unassigned"}
                         onChange={(e) => handleOwnerChange(e.target.value)}
-                        className="w-full mt-1 px-2 py-1 rounded-lg text-xs font-semibold bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                        className="w-full mt-1 px-2 py-1 rounded-lg text-xs font-semibold bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
                       >
                         <option value="unassigned">Unassigned</option>
                         {teamMembers.map((m) => (
@@ -1421,7 +1370,7 @@ export default function LeadsPage() {
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
+                      <span className="text-[#8E8E93] block tabular-nums text-[10px] uppercase font-medium">
                         Next Follow-Up
                       </span>
                       <span className="font-semibold text-[#0D0D0E] mt-1 block">
@@ -1432,7 +1381,7 @@ export default function LeadsPage() {
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs">
-                      <span className="text-[#8E8E93] block font-mono text-[10px] uppercase font-medium">
+                      <span className="text-[#8E8E93] block tabular-nums text-[10px] uppercase font-medium">
                         Created
                       </span>
                       <span className="font-semibold text-[#0D0D0E] mt-1 block">
@@ -1443,7 +1392,7 @@ export default function LeadsPage() {
 
                   {/* Notes */}
                   <div className="space-y-1.5">
-                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs tabular-nums font-medium text-[#8E8E93] uppercase tracking-wider block">
                       DEAL NOTES &amp; CLIENT BRIEF
                     </span>
                     <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] text-xs sm:text-sm text-[#0D0D0E] leading-relaxed min-h-[80px] shadow-xs">
@@ -1457,13 +1406,13 @@ export default function LeadsPage() {
               {activeTab === "tasks" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
+                    <span className="text-xs tabular-nums font-medium text-[#8E8E93] uppercase tracking-wider block">
                       LINKED FOLLOW-UPS
                     </span>
                     <Button
                       size="sm"
                       onClick={() => setTaskFormOpen(!taskFormOpen)}
-                      className="h-8 text-xs font-semibold bg-[#FF7900] hover:bg-[#E66D00] text-white rounded-xl"
+                      className="h-8 text-xs font-semibold bg-[#FF7A1A] hover:bg-[#FF8833] text-white rounded-xl"
                     >
                       <Plus className="h-3.5 w-3.5 mr-1" />
                       <span>{taskFormOpen ? "Cancel" : "Add Task"}</span>
@@ -1474,7 +1423,7 @@ export default function LeadsPage() {
                   {taskFormOpen && (
                     <form
                       onSubmit={handleCreateTaskForLead}
-                      className="p-4 rounded-2xl bg-white border border-[#FF7900]/40 space-y-3 shadow-xs animate-in fade-in"
+                      className="p-4 rounded-2xl bg-white border border-[#FF7A1A]/40 space-y-3 shadow-xs animate-in fade-in"
                     >
                       <h4 className="text-xs font-medium text-[#0D0D0E] uppercase">
                         Schedule Follow-Up Task
@@ -1517,7 +1466,7 @@ export default function LeadsPage() {
                         <Button
                           type="submit"
                           size="sm"
-                          className="h-8 text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl"
+                          className="h-8 text-xs bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl"
                         >
                           Save Task
                         </Button>
@@ -1544,7 +1493,7 @@ export default function LeadsPage() {
                               className={`mt-0.5 h-4 w-4 rounded-md border flex items-center justify-center cursor-pointer transition-colors ${
                                 t.status === "completed"
                                   ? "bg-emerald-600 border-emerald-600 text-white"
-                                  : "border-[#8E8E93] hover:border-[#FF7900] bg-white"
+                                  : "border-[#8E8E93] hover:border-[#FF7A1A] bg-white"
                               }`}
                             >
                               {t.status === "completed" && <Check className="h-3 w-3" />}
@@ -1570,7 +1519,7 @@ export default function LeadsPage() {
                             className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase shrink-0 ${
                               t.priority === "high"
                                 ? "bg-rose-50 text-rose-800 border border-rose-200"
-                                : "bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30"
+                                : "bg-[#FFF4EC] text-[#FF7A1A] border border-[#FF7A1A]/30"
                             }`}
                           >
                             {t.priority}
@@ -1585,19 +1534,19 @@ export default function LeadsPage() {
               {/* TAB 3: ACTIVITY TIMELINE */}
               {activeTab === "timeline" && (
                 <div className="space-y-4">
-                  <span className="text-xs font-mono font-medium text-[#8E8E93] uppercase tracking-wider block">
+                  <span className="text-xs tabular-nums font-medium text-[#8E8E93] uppercase tracking-wider block">
                     EVENT TIMELINE
                   </span>
                   <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-[#E5E5E7]">
                     <div className="flex items-start gap-3 relative">
-                      <div className="h-6 w-6 rounded-full bg-[#FFF4EC] text-[#FF7900] flex items-center justify-center shrink-0 z-10">
+                      <div className="h-6 w-6 rounded-full bg-[#FFF4EC] text-[#FF7A1A] flex items-center justify-center shrink-0 z-10">
                         <Check className="h-3 w-3" />
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-[#0D0D0E]">
                           Lead in stage &ldquo;{activeLead.stage.toUpperCase()}&rdquo;
                         </p>
-                        <p className="text-[11px] text-[#8E8E93] font-mono">
+                        <p className="text-[11px] text-[#8E8E93] tabular-nums">
                           Last updated: {formatDate(activeLead.updated_at)}
                         </p>
                       </div>
@@ -1611,7 +1560,7 @@ export default function LeadsPage() {
                         <p className="text-xs font-semibold text-[#0D0D0E]">
                           Opportunity initialized via {activeLead.source}
                         </p>
-                        <p className="text-[11px] text-[#8E8E93] font-mono">
+                        <p className="text-[11px] text-[#8E8E93] tabular-nums">
                           {formatDate(activeLead.created_at)}
                         </p>
                       </div>
@@ -1623,10 +1572,10 @@ export default function LeadsPage() {
               {/* TAB 4: AI QUALIFICATION */}
               {activeTab === "ai" && (
                 <div className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-[#FFF4EC]/60 border border-[#FF7900]/30 text-xs space-y-2.5">
+                  <div className="p-4 rounded-2xl bg-[#FFF4EC]/60 border border-[#FF7A1A]/30 text-xs space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-[#0D0D0E] flex items-center gap-1.5 text-sm">
-                        <Sparkles className="h-4 w-4 text-[#FF7900]" />
+                        <Sparkles className="h-4 w-4 text-[#FF7A1A]" />
                         AI Lead Qualification
                       </span>
                       <Button
@@ -1634,7 +1583,7 @@ export default function LeadsPage() {
                         variant="secondary"
                         onClick={() => handleAssessLead(activeLead.id)}
                         disabled={assessingLead}
-                        className="h-7 text-xs bg-white text-[#FF7900] hover:bg-[#FFF4EC] border-[#FF7900]/30 font-semibold"
+                        className="h-7 text-xs bg-white text-[#FF7A1A] hover:bg-[#FFF4EC] border-[#FF7A1A]/30 font-semibold"
                       >
                         {assessingLead ? "Analyzing..." : "Re-assess"}
                       </Button>
@@ -1648,7 +1597,7 @@ export default function LeadsPage() {
                   {activeQualification ? (
                     <div className="space-y-3">
                       <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] space-y-1 shadow-xs">
-                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
+                        <span className="text-[10px] tabular-nums text-[#8E8E93] uppercase font-medium">
                           Classification &amp; Priority
                         </span>
                         <div className="flex items-center justify-between pt-0.5">
@@ -1662,7 +1611,7 @@ export default function LeadsPage() {
                       </div>
 
                       <div className="p-3.5 rounded-2xl bg-white border border-[#E5E5E7] space-y-1 shadow-xs">
-                        <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
+                        <span className="text-[10px] tabular-nums text-[#8E8E93] uppercase font-medium">
                           Suggested Action
                         </span>
                         <p className="text-xs text-[#0D0D0E] leading-relaxed font-semibold pt-0.5">
@@ -1672,7 +1621,7 @@ export default function LeadsPage() {
 
                       {activeQualification.explanation && (
                         <div className="p-3.5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-1">
-                          <span className="text-[10px] font-mono text-[#8E8E93] uppercase font-medium">
+                          <span className="text-[10px] tabular-nums text-[#8E8E93] uppercase font-medium">
                             Evaluation Context
                           </span>
                           <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
@@ -1769,7 +1718,7 @@ export default function LeadsPage() {
                 required
                 value={selectedContactId}
                 onChange={(e) => setSelectedContactId(e.target.value)}
-                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
               >
                 <option value="">Select a contact...</option>
                 {contacts.map((c) => (
@@ -1787,7 +1736,7 @@ export default function LeadsPage() {
               <select
                 value={initialStage}
                 onChange={(e) => setInitialStage(e.target.value as LeadStage)}
-                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
               >
                 {STAGES.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -1809,7 +1758,7 @@ export default function LeadsPage() {
                 step="1000"
                 value={dealValue}
                 onChange={(e) => setDealValue(e.target.value)}
-                className="font-mono font-semibold"
+                className="tabular-nums font-semibold"
               />
             </div>
 
@@ -1834,7 +1783,7 @@ export default function LeadsPage() {
               placeholder="Key client requirements, budget range, or notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] resize-none font-medium"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] resize-none font-medium"
             />
           </div>
 
@@ -1846,7 +1795,7 @@ export default function LeadsPage() {
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold">
+            <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold">
               Create Lead
             </Button>
           </DialogFooter>
@@ -1871,7 +1820,7 @@ export default function LeadsPage() {
           <select
             value={lostReasonText}
             onChange={(e) => setLostReasonText(e.target.value)}
-            className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+            className="w-full h-11 px-3 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
           >
             <option>Price too high</option>
             <option>Competitor chosen</option>

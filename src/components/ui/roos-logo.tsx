@@ -18,7 +18,7 @@ export function RoosLogo({
     return (
       <div
         className={cn(
-          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] shadow-xs select-none p-2 group hover:border-[#FF7900]/40 transition-all",
+          "flex items-center justify-center h-10 w-10 rounded-xl bg-[#161618] border border-[#232326] shadow-xs select-none p-2 group hover:border-[#FF7A1A]/40 transition-all",
           className
         )}
         title="ROOS STUDIOX"

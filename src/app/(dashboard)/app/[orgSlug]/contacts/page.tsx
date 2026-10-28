@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -59,6 +60,8 @@ export default function ContactsPage() {
   const [showArchived, setShowArchived] = useState(false);
   const [sortBy, setSortBy] = useState<"name" | "date" | "company">("date");
   const [selectedContactIds, setSelectedContactIds] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   // Modals state
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -133,6 +136,12 @@ export default function ContactsPage() {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
   }, [rawContacts, searchQuery, consentFilter, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredContacts.length / pageSize));
+  const paginatedContacts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredContacts.slice(start, start + pageSize);
+  }, [filteredContacts, currentPage, pageSize]);
 
   // Handlers
   const isAllContactsSelected =
@@ -348,10 +357,10 @@ export default function ContactsPage() {
               Contacts Directory
             </h1>
             <span
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] flex items-center gap-1.5 shadow-2xs tabular-nums"
               suppressHydrationWarning
             >
-              <span className="font-mono font-semibold text-[#FF7900]">
+              <span className="tabular-nums font-semibold text-[#FF7A1A]">
                 {mounted ? filteredContacts.length : rawContacts.length}
               </span>
               <span>contacts</span>
@@ -385,7 +394,7 @@ export default function ContactsPage() {
           <Button
             size="sm"
             onClick={() => setAddModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer"
+            className="rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer"
           >
             <Plus className="mr-1.5 h-4 w-4 stroke-[2.5]" />
             Add Contact
@@ -394,47 +403,36 @@ export default function ContactsPage() {
       </div>
 
       {/* Stats Summary Banner */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">Total Contacts</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">{allContacts.length}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-[#0D0D0E]">
-            <Users className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">WhatsApp Opted-In</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1">{optedInCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">Pending Consent</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1">{pendingCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
-            <Clock className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-700">Opted Out</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-rose-600 mt-1">{optedOutCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
-            <ShieldAlert className="h-5 w-5" />
-          </div>
-        </div>
-      </div>
+      <StatStrip
+        stats={[
+          {
+            id: "total",
+            label: "Total Contacts",
+            value: allContacts.length,
+          },
+          {
+            id: "opted-in",
+            label: "WhatsApp Opted-In",
+            value: optedInCount,
+            change: {
+              value: `${allContacts.length > 0 ? Math.round((optedInCount / allContacts.length) * 100) : 0}%`,
+              trend: "up",
+            },
+          },
+          {
+            id: "pending",
+            label: "Pending Consent",
+            value: pendingCount,
+            change: { value: "Awaiting SLA", trend: "neutral" },
+          },
+          {
+            id: "opted-out",
+            label: "Opted Out",
+            value: optedOutCount,
+            subtext: "Suppressed from broadcasts",
+          },
+        ]}
+      />
 
       {/* Filter and Search Bar */}
       <div className="bg-white p-3.5 rounded-2xl border border-[#E5E7EB] shadow-xs">
@@ -446,7 +444,7 @@ export default function ContactsPage() {
               placeholder="Search contacts by name, phone, email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#717680] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
+              className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#717680] focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white focus:outline-none transition-all shadow-2xs"
             />
           </div>
 
@@ -456,7 +454,7 @@ export default function ContactsPage() {
               <select
                 value={tagFilter}
                 onChange={(e) => setTagFilter(e.target.value)}
-                className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+                className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
               >
                 <option value="all">All Tags</option>
                 {uniqueTags.map((tag) => (
@@ -471,7 +469,7 @@ export default function ContactsPage() {
             <select
               value={consentFilter}
               onChange={(e) => setConsentFilter(e.target.value)}
-              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
             >
               <option value="all">All Consent Statuses</option>
               <option value="opted_in">WhatsApp Opted-In</option>
@@ -483,7 +481,7 @@ export default function ContactsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "name" | "date" | "company")}
-              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
             >
               <option value="date">Newest First</option>
               <option value="name">Sort by Name</option>
@@ -495,7 +493,7 @@ export default function ContactsPage() {
               onClick={() => setShowArchived(!showArchived)}
               className={`h-10 px-3 rounded-xl border text-xs font-medium transition-all cursor-pointer shadow-2xs ${
                 showArchived
-                  ? "bg-[#FFF4EC] border-[#FF7900]/30 text-[#FF7900]"
+                  ? "bg-[#FFF4EC] border-[#FF7A1A]/30 text-[#FF7A1A]"
                   : "border-[#E5E7EB] bg-[#F7F7F8] text-[#525866] hover:text-[#0D0D0E] hover:bg-white"
               }`}
             >
@@ -512,7 +510,7 @@ export default function ContactsPage() {
                   setTagFilter("all");
                   setShowArchived(false);
                 }}
-                className="h-10 px-3 rounded-xl text-xs font-medium text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
+                className="h-10 px-3 rounded-xl text-xs font-medium text-[#FF7A1A] bg-[#FFF4EC] border border-[#FF7A1A]/30 hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
               >
                 Reset
               </button>
@@ -524,7 +522,7 @@ export default function ContactsPage() {
       {/* Contacts Table View */}
       {filteredContacts.length === 0 ? (
         <EmptyState
-          icon={<Users className="h-8 w-8 text-[#FF7900]" />}
+          icon={<Users className="h-8 w-8 text-[#FF7A1A]" />}
           title="No contacts found"
           description={
             searchQuery
@@ -544,7 +542,7 @@ export default function ContactsPage() {
                     type="checkbox"
                     checked={isAllContactsSelected}
                     onChange={handleSelectAllContacts}
-                    className="rounded border-[#E5E7EB] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                    className="rounded border-[#E5E7EB] text-[#FF7A1A] focus:ring-[#FF7A1A] cursor-pointer h-4 w-4"
                     aria-label="Select all contacts"
                   />
                 </TableHead>
@@ -558,7 +556,7 @@ export default function ContactsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredContacts.map((contact) => {
+              {paginatedContacts.map((contact) => {
                 const isSelected = selectedContactIds.has(contact.id);
                 return (
                   <TableRow
@@ -573,13 +571,13 @@ export default function ContactsPage() {
                         type="checkbox"
                         checked={isSelected}
                         onChange={(e) => toggleSelectContact(contact.id, e as unknown as React.MouseEvent)}
-                        className="rounded border-[#E5E7EB] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                        className="rounded border-[#E5E7EB] text-[#FF7A1A] focus:ring-[#FF7A1A] cursor-pointer h-4 w-4"
                         aria-label={`Select ${contact.first_name}`}
                       />
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-3 py-1">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FFE1CC] font-semibold text-xs shadow-2xs">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF4EC] text-[#FF7A1A] border border-[#FFE1CC] font-semibold text-xs shadow-2xs">
                           {contact.first_name[0]}
                           {contact.last_name ? contact.last_name[0] : ""}
                         </div>
@@ -599,7 +597,7 @@ export default function ContactsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-1.5 font-mono text-xs font-medium text-[#0D0D0E]">
+                      <div className="flex items-center space-x-1.5 tabular-nums text-xs font-medium text-[#0D0D0E]">
                         <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                         <span>{contact.phone}</span>
                         <button
@@ -628,7 +626,7 @@ export default function ContactsPage() {
                               lower.includes("client") || lower.includes("vip")
                                 ? "bg-indigo-50 text-indigo-700 border-indigo-200"
                                 : lower.includes("crm") || lower.includes("lead")
-                                ? "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30"
+                                ? "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30"
                                 : lower.includes("enterprise") || lower.includes("retail")
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : "bg-[#F7F7F8] text-[#0D0D0E] border-[#E5E7EB]";
@@ -675,7 +673,7 @@ export default function ContactsPage() {
                         </Link>
                         <button
                           onClick={() => setDetailContact(contact)}
-                          className="p-1.5 rounded-lg text-[#525866] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-[#525866] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
                           title="View details"
                         >
                           <Eye className="h-4 w-4" />
@@ -705,47 +703,30 @@ export default function ContactsPage() {
           </Table>
 
           {/* Pagination Footer */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-[#E5E7EB] bg-[#FAF9F8] text-xs text-[#525866]">
-            <span className="font-medium text-[#0D0D0E]">
-              Showing 1 to {Math.min(filteredContacts.length, 10)} of {filteredContacts.length} contacts
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 border-t border-[#E4E4E7] bg-white text-xs text-[#717680]">
+            <span className="tabular-nums font-normal text-[#0D0D0E]">
+              Showing {filteredContacts.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredContacts.length)} of {filteredContacts.length} contacts
             </span>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                className="h-8 px-2.5 rounded-lg border border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium transition-colors disabled:opacity-40 cursor-pointer shadow-2xs"
-                disabled
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="h-8 px-2.5 rounded-lg border border-[#E4E4E7] bg-white hover:bg-[#FAF9F6] text-[#0D0D0E] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs flex items-center gap-1"
               >
                 <ChevronLeft className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Prev</span>
               </button>
+              <span className="px-2.5 py-1 text-xs tabular-nums text-[#0D0D0E] font-medium">
+                Page {currentPage} of {totalPages}
+              </span>
               <button
                 type="button"
-                className="h-8 w-8 rounded-lg bg-[#FF7900] text-white font-medium flex items-center justify-center shadow-2xs cursor-pointer"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages}
+                className="h-8 px-2.5 rounded-lg border border-[#E4E4E7] bg-white hover:bg-[#FAF9F6] text-[#0D0D0E] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs flex items-center gap-1"
               >
-                1
-              </button>
-              <button
-                type="button"
-                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-              >
-                2
-              </button>
-              <button
-                type="button"
-                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-              >
-                3
-              </button>
-              <span className="px-1 text-[#8E8E93] font-semibold">...</span>
-              <button
-                type="button"
-                className="h-8 w-8 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-              >
-                {Math.max(4, Math.ceil(filteredContacts.length / 10))}
-              </button>
-              <button
-                type="button"
-                className="h-8 px-2.5 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold transition-colors cursor-pointer shadow-2xs"
-              >
+                <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -789,7 +770,7 @@ export default function ContactsPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white font-mono text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white tabular-nums text-xs"
               />
               <Input
                 label="Email"
@@ -830,7 +811,7 @@ export default function ContactsPage() {
                     name="consent"
                     checked={consentStatus === "opted_in"}
                     onChange={() => setConsentStatus("opted_in")}
-                    className="accent-[#FF7900]"
+                    className="accent-[#FF7A1A]"
                   />
                   <span>Opted In (Permit broadcasts)</span>
                 </label>
@@ -840,7 +821,7 @@ export default function ContactsPage() {
                     name="consent"
                     checked={consentStatus === "pending"}
                     onChange={() => setConsentStatus("pending")}
-                    className="accent-[#FF7900]"
+                    className="accent-[#FF7A1A]"
                   />
                   <span>Pending</span>
                 </label>
@@ -850,7 +831,7 @@ export default function ContactsPage() {
                     name="consent"
                     checked={consentStatus === "opted_out"}
                     onChange={() => setConsentStatus("opted_out")}
-                    className="accent-[#FF7900]"
+                    className="accent-[#FF7A1A]"
                   />
                   <span>Opted Out</span>
                 </label>
@@ -870,7 +851,7 @@ export default function ContactsPage() {
             <Button type="button" variant="ghost" onClick={() => setAddModalOpen(false)} className="text-[#8E8E93]">
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold">
+            <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold">
               Create Contact
             </Button>
           </DialogFooter>
@@ -905,7 +886,7 @@ export default function ContactsPage() {
                         `First Name,Last Name,Phone,Email,Company,Tags,Consent\nRajesh,Kumar,+919876543280,rajesh@example.com,Kumar Imports,Wholesale,opted_in\nSimran,Kaur,+919876543281,simran@example.com,Kaur Exports,Retail,pending\nAarav,Patel,+919876543210,aarav@duplicate.com,Patel Group,VIP,opted_in`
                       )
                     }
-                    className="text-[#FF7900] hover:underline font-semibold"
+                    className="text-[#FF7A1A] hover:underline font-semibold"
                   >
                     Load Sample CSV
                   </button>
@@ -918,7 +899,7 @@ export default function ContactsPage() {
                     setCsvPreview(null);
                   }}
                   placeholder="First Name,Last Name,Phone,Email,Company,Tags,Consent..."
-                  className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-3 text-xs font-mono text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none"
+                  className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-3 text-xs tabular-nums text-[#0D0D0E] focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white focus:outline-none"
                 />
               </div>
 
@@ -974,7 +955,7 @@ export default function ContactsPage() {
               <Button
                 onClick={handleExecuteImport}
                 disabled={csvPreview.validRows.length === 0}
-                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold"
+                className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold"
               >
                 Import {csvPreview.validRows.length} Contacts
               </Button>
@@ -1007,7 +988,7 @@ export default function ContactsPage() {
               <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
                 <div>
                   <span className="text-[#8E8E93] block">Phone</span>
-                  <span className="font-semibold text-[#0D0D0E] font-mono">
+                  <span className="font-semibold text-[#0D0D0E] tabular-nums">
                     {detailContact.phone}
                   </span>
                 </div>
@@ -1055,7 +1036,7 @@ export default function ContactsPage() {
                         <span className="font-semibold text-[#0D0D0E] block">
                           {lead.title}
                         </span>
-                        <span className="text-xs font-mono font-semibold text-[#8E8E93]">
+                        <span className="text-xs tabular-nums font-semibold text-[#8E8E93]">
                           ₹{lead.estimated_value.toLocaleString("en-IN")}
                         </span>
                       </div>

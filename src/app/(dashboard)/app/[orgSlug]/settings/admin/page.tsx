@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SettingsShell } from "@/components/layout/settings-shell";
+import { RestrictedState } from "@/components/ui/restricted-state";
 import { subscriptionService } from "@/lib/billing/subscription-service";
 import { usageService } from "@/lib/billing/usage-service";
 import { getPlanDefinition } from "@/lib/billing/plans";
@@ -39,20 +41,20 @@ export default function PlatformAdminPage() {
   const [overrideReason, setOverrideReason] = useState<string>("Customer support retention grant");
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  // Protected Operator Guard
+  // Protected Operator Guard (Defect 32 RestrictedState)
   if (!isOwner) {
     return (
-      <div className="max-w-md mx-auto py-20 text-center space-y-4">
-        <div className="h-14 w-14 rounded-2xl bg-[#121214] border border-[#1C1C1F] flex items-center justify-center mx-auto text-[#FF7900] shadow-sm">
-          <Lock className="h-6 w-6" />
-        </div>
-        <div className="space-y-1.5">
-          <h2 className="text-xl font-semibold text-[#0D0D0E] tracking-tight">Access Restricted</h2>
-          <p className="text-xs text-[#8E8E93] leading-relaxed max-w-sm mx-auto">
-            The Platform Administration console is restricted strictly to verified workspace owners and authorised Level 1 system operators. Your current role is <span className="font-semibold text-[#0D0D0E] uppercase">{userRole}</span>.
-          </p>
-        </div>
-      </div>
+      <SettingsShell
+        orgSlug={currentOrg.slug}
+        title="Platform Administration"
+        description="Master multi-tenant operator console and cross-tenant capacity overrides."
+      >
+        <RestrictedState
+          title="Access Restricted"
+          description={`The Platform Administration console is restricted strictly to verified workspace owners. Your current role is ${userRole}.`}
+          requiredRole="Workspace Owner"
+        />
+      </SettingsShell>
     );
   }
 
@@ -90,23 +92,13 @@ export default function PlatformAdminPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl font-semibold tracking-tight text-[#0D0D0E]">
-              Platform Administration
-            </h1>
-            <Badge variant="orange" className="text-[11px] font-semibold">
-              Level 1 Operator Console
-            </Badge>
-          </div>
-          <p className="text-xs text-[#8E8E93] mt-1">
-            Multi-tenant oversight, billing event history, and quota overrides for authorised operators.
-          </p>
-        </div>
-      </div>
+    <SettingsShell
+      orgSlug={currentOrg.slug}
+      title="Platform Administration"
+      description="Multi-tenant oversight, billing event history, and quota overrides for authorised operators."
+      badge={<Badge variant="orangeSubtle" className="text-xs font-medium">Level 1 Operator Console</Badge>}
+    >
+      <div className="space-y-6">
 
       {feedback && (
         <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between animate-fadeIn">
@@ -125,7 +117,7 @@ export default function PlatformAdminPage() {
         <div className="bg-[#121214] border border-[#1C1C1F] rounded-2xl p-5 text-white flex flex-col justify-between shadow-xs">
           <div className="flex items-center justify-between text-xs text-[#8E8E93]">
             <span>Active Tenants</span>
-            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7900]">
+            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7A1A]">
               <Building className="h-4 w-4" />
             </div>
           </div>
@@ -140,14 +132,14 @@ export default function PlatformAdminPage() {
         <div className="bg-[#121214] border border-[#1C1C1F] rounded-2xl p-5 text-white flex flex-col justify-between shadow-xs">
           <div className="flex items-center justify-between text-xs text-[#8E8E93]">
             <span>Total Contacts Managed</span>
-            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7900]">
+            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7A1A]">
               <Users className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
             <div className="text-2xl font-semibold tracking-tight text-white">4,850</div>
             <div className="text-[11px] text-[#8E8E93] mt-1 flex items-center gap-1">
-              <span className="text-[#FF7900] font-medium">+12.4%</span> this billing cycle
+              <span className="text-[#FF7A1A] font-medium">+12.4%</span> this billing cycle
             </div>
           </div>
         </div>
@@ -155,7 +147,7 @@ export default function PlatformAdminPage() {
         <div className="bg-[#121214] border border-[#1C1C1F] rounded-2xl p-5 text-white flex flex-col justify-between shadow-xs">
           <div className="flex items-center justify-between text-xs text-[#8E8E93]">
             <span>Monthly Run-Rate</span>
-            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7900]">
+            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7A1A]">
               <CreditCard className="h-4 w-4" />
             </div>
           </div>
@@ -170,7 +162,7 @@ export default function PlatformAdminPage() {
         <div className="bg-[#121214] border border-[#1C1C1F] rounded-2xl p-5 text-white flex flex-col justify-between shadow-xs">
           <div className="flex items-center justify-between text-xs text-[#8E8E93]">
             <span>Fleet Health</span>
-            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7900]">
+            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7A1A]">
               <Activity className="h-4 w-4" />
             </div>
           </div>
@@ -188,7 +180,7 @@ export default function PlatformAdminPage() {
         <CardHeader className="p-5 border-b border-[#E5E5E7]/60">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
-              <div className="h-8 w-8 rounded-xl bg-[#24180E] border border-[#FF7900]/20 flex items-center justify-center text-[#FF7900]">
+              <div className="h-8 w-8 rounded-xl bg-[#24180E] border border-[#FF7A1A]/20 flex items-center justify-center text-[#FF7A1A]">
                 <Building className="h-4 w-4" />
               </div>
               <div>
@@ -222,7 +214,7 @@ export default function PlatformAdminPage() {
                   <tr key={item.slug} className="hover:bg-[#F7F7F8]/60 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-[#0D0D0E]">
                       {item.slug === "acme-corp" ? "ABC Testing Brand" : "Sub Testing 2"}
-                      <span className="block text-[11px] font-mono text-[#8E8E93] font-normal mt-0.5">
+                      <span className="block text-[11px] tabular-nums text-[#8E8E93] font-normal mt-0.5">
                         /app/{item.slug}
                       </span>
                     </td>
@@ -239,23 +231,23 @@ export default function PlatformAdminPage() {
                         {item.sub.status}
                       </Badge>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-[#0D0D0E]">
+                    <td className="py-3.5 px-4 tabular-nums text-[#0D0D0E]">
                       {item.usage.metrics.active_contacts.current_count} <span className="text-[#8E8E93]">/ {item.usage.metrics.active_contacts.max_quota}</span>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-[#0D0D0E]">
+                    <td className="py-3.5 px-4 tabular-nums text-[#0D0D0E]">
                       {item.usage.metrics.team_seats.current_count} <span className="text-[#8E8E93]">/ {item.usage.metrics.team_seats.max_quota}</span>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-[#0D0D0E]">
+                    <td className="py-3.5 px-4 tabular-nums text-[#0D0D0E]">
                       {item.usage.metrics.workflow_executions.current_count} <span className="text-[#8E8E93]">/ {item.usage.metrics.workflow_executions.max_quota}</span>
                     </td>
                     <td className="py-3.5 px-4 text-right space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 text-xs border-[#E5E5E7] hover:border-[#FF7900] hover:text-[#FF7900] transition-colors"
+                        className="h-7 text-xs border-[#E5E5E7] hover:border-[#FF7A1A] hover:text-[#FF7A1A] transition-colors"
                         onClick={() => setSelectedOrgForOverride(item.slug)}
                       >
-                        <PlusCircle className="h-3 w-3 mr-1 text-[#FF7900]" />
+                        <PlusCircle className="h-3 w-3 mr-1 text-[#FF7A1A]" />
                         Bonus Quota
                       </Button>
                       <Button
@@ -283,7 +275,7 @@ export default function PlatformAdminPage() {
               <CardHeader className="p-5 border-b border-[#1C1C1F]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2.5">
-                    <div className="h-8 w-8 rounded-xl bg-[#24180E] border border-[#FF7900]/30 flex items-center justify-center text-[#FF7900]">
+                    <div className="h-8 w-8 rounded-xl bg-[#24180E] border border-[#FF7A1A]/30 flex items-center justify-center text-[#FF7A1A]">
                       <Zap className="h-4 w-4" />
                     </div>
                     <div>
@@ -291,7 +283,7 @@ export default function PlatformAdminPage() {
                         Grant Quota Override
                       </CardTitle>
                       <CardDescription className="text-xs text-[#8E8E93]">
-                        Target workspace: <span className="font-mono text-[#FF7900]">/app/{selectedOrgForOverride}</span>
+                        Target workspace: <span className="tabular-nums text-[#FF7A1A]">/app/{selectedOrgForOverride}</span>
                       </CardDescription>
                     </div>
                   </div>
@@ -308,7 +300,7 @@ export default function PlatformAdminPage() {
                 <div>
                   <label className="block text-[#8E8E93] mb-1.5 font-medium">Metric Target</label>
                   <select
-                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7900]"
+                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7A1A]"
                     value={overrideMetric}
                     onChange={(e) => setOverrideMetric(e.target.value as any)}
                   >
@@ -323,7 +315,7 @@ export default function PlatformAdminPage() {
                   <label className="block text-[#8E8E93] mb-1.5 font-medium">Extra Quota Amount</label>
                   <input
                     type="number"
-                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7900]"
+                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7A1A]"
                     value={overrideAmount}
                     onChange={(e) => setOverrideAmount(Number(e.target.value))}
                     min={1}
@@ -335,7 +327,7 @@ export default function PlatformAdminPage() {
                   <label className="block text-[#8E8E93] mb-1.5 font-medium">Reason for Audit Log</label>
                   <input
                     type="text"
-                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7900]"
+                    className="w-full h-9 rounded-xl border border-[#1C1C1F] bg-[#0D0D0E] text-white px-3 text-xs focus:outline-hidden focus:border-[#FF7A1A]"
                     value={overrideReason}
                     onChange={(e) => setOverrideReason(e.target.value)}
                     required
@@ -355,7 +347,7 @@ export default function PlatformAdminPage() {
                 <Button
                   type="submit"
                   size="sm"
-                  className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold"
+                  className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold"
                 >
                   Apply Bonus Quota
                 </Button>
@@ -364,6 +356,7 @@ export default function PlatformAdminPage() {
           </Card>
         </div>
       )}
-    </div>
+      </div>
+    </SettingsShell>
   );
 }

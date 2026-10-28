@@ -5,6 +5,7 @@ import { useTenant } from "@/lib/organizations/tenant-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { SettingsShell } from "@/components/layout/settings-shell";
 import { Building2, AlertTriangle, CheckCircle2, Sparkles, Shield, Trash2, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
@@ -20,15 +21,12 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl pb-12">
-      <div className="pb-4 border-b border-[#E5E5E7]">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-          Organisation Settings
-        </h1>
-        <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-          Manage workspace profile, AI configuration, and preferences for {currentOrg.name}.
-        </p>
-      </div>
+    <SettingsShell
+      orgSlug={currentOrg.slug}
+      title="Organisation Details"
+      description={`Manage workspace profile, parameters, and defaults for ${currentOrg.name}.`}
+    >
+      <div className="space-y-6">
 
       {!isAdmin && (
         <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-xs text-amber-900 flex items-center justify-between">
@@ -66,14 +64,14 @@ export default function SettingsPage() {
               onChange={(e) => setOrgName(e.target.value)}
               disabled={!isAdmin}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
             />
 
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-[#0D0D0E]">
                 Workspace URL Identifier (Slug)
               </label>
-              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs font-mono font-semibold text-[#0D0D0E]">
+              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs tabular-nums font-semibold text-[#0D0D0E]">
                 /app/{currentOrg.slug}
               </div>
               <p className="text-[11px] text-[#8E8E93]">
@@ -84,7 +82,7 @@ export default function SettingsPage() {
 
           {isAdmin && (
             <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl shadow-2xs text-xs">
+              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl shadow-2xs text-xs">
                 Save Changes
               </Button>
             </div>
@@ -95,7 +93,7 @@ export default function SettingsPage() {
       {/* AI Copilot & Business Grounding Knowledge */}
       <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
         <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-          <Sparkles className="h-5 w-5 text-[#FF7900]" />
+          <Sparkles className="h-5 w-5 text-[#FF7A1A]" />
           <div>
             <h2 className="text-base font-semibold text-[#0D0D0E]">AI Assistant &amp; Business Knowledge</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -151,7 +149,7 @@ export default function SettingsPage() {
       {isOwner && (
         <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
           <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-[#FF7900]" />
+            <Building2 className="h-5 w-5 text-[#FF7A1A]" />
             <div>
               <h2 className="text-base font-semibold text-[#0D0D0E]">Platform Administration</h2>
               <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -222,6 +220,7 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </SettingsShell>
   );
 }

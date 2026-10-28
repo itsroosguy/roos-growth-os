@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SettingsShell } from "@/components/layout/settings-shell";
+import { RestrictedState } from "@/components/ui/restricted-state";
 import {
   BillingInterval,
   PlanTier,
@@ -124,119 +126,57 @@ export default function SubscriptionPage() {
   // Senior Manager (Level 2) and Junior Manager (Level 3) are restricted.
   if (!canAccessFunds) {
     return (
-      <div className="space-y-6 max-w-4xl mx-auto py-8">
-        <div className="bg-white rounded-2xl border border-rose-200/90 p-8 shadow-2xs text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 shadow-2xs">
-            <Lock className="h-8 w-8" />
-          </div>
-          <div className="space-y-1.5">
-            <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono">
-              Clearance Restricted
-            </span>
-            <h2 className="text-xl sm:text-2xl font-semibold text-[#0D0D0E]">
-              Fund Transfer &amp; Billing Details Restricted
-            </h2>
-            <p className="text-xs sm:text-sm text-[#8E8E93] max-w-lg mx-auto leading-relaxed font-medium">
-              Your active credential is{" "}
-              <strong className="text-[#0D0D0E] font-semibold capitalize">
-                {userRole === "senior_manager"
-                  ? "Senior Manager (Operational Access)"
-                  : userRole === "junior_manager"
-                  ? "Junior Manager (Tasks & Performance)"
-                  : userRole}
-              </strong>
-              . Per company policy, operational managers do not have clearance to view overall fund transfer ledgers, gateway payouts, or banking settlements.
-            </p>
-          </div>
-
-          <div className="p-4 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7] max-w-md mx-auto text-left text-xs space-y-2">
-            <p className="font-semibold text-[#0D0D0E] flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              Your Authorized Operational Scope:
-            </p>
-            <ul className="text-[#8E8E93] font-medium text-[11px] space-y-1 list-disc list-inside">
-              {userRole === "senior_manager" ? (
-                <>
-                  <li>Full CRM Pipelines, Contacts &amp; Deals</li>
-                  <li>WhatsApp Shared Inbox &amp; Broadcast Campaigns</li>
-                  <li>Automation Workflow Triggers &amp; Templates</li>
-                  <li>Team operational roster &amp; agent task tracking</li>
-                </>
-              ) : (
-                <>
-                  <li>Daily Tasks &amp; Follow-up checklists</li>
-                  <li>Personal throughput and conversion KPIs</li>
-                  <li>Assigned WhatsApp chats and contacts</li>
-                </>
-              )}
-            </ul>
-          </div>
-
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-            <Link href={`/app/${currentOrg.slug}/tasks`}>
-              <Button variant="outline" className="rounded-xl text-xs font-semibold border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]">
-                Go to Tasks &amp; Follow-ups
-              </Button>
-            </Link>
-            <Link href={`/app/${currentOrg.slug}/overview`}>
-              <Button className="rounded-xl bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white text-xs font-semibold">
-                Return to Operational Workspace
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <SettingsShell
+        orgSlug={currentOrg.slug}
+        title="Subscription & Usage"
+        description="Plan tiers, quota limits, and billing settlements."
+      >
+        <RestrictedState
+          title="Billing Clearance Restricted"
+          description={`Your active credential is ${userRole.replace("_", " ")}. Financial controls and payment settlements require Administrator clearance.`}
+          requiredRole="Administrator or Owner"
+        />
+      </SettingsShell>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
-        <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Subscription &amp; Usage
-            </h1>
-            <span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-semibold px-2.5 py-0.5 text-emerald-700">
-              {subscription.status}
-            </span>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-2.5 py-0.5 text-[#FF7900] font-mono">
-              Sandbox Mode
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Manage plan tier, quota consumption, and review transparent unit economics for {currentOrg.name}.
-          </p>
-        </div>
+    <SettingsShell
+      orgSlug={currentOrg.slug}
+      title="Subscription & Usage"
+      description={`Manage plan tier, quota consumption, and review unit economics for ${currentOrg.name}.`}
+      badge={<span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-medium px-2 py-0.5 text-emerald-700">{subscription.status}</span>}
+    >
+      <div className="space-y-6">
 
         {/* Monthly / Annual Toggle */}
-        <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs self-start sm:self-auto">
-          <button
-            onClick={() => setInterval("monthly")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-              interval === "monthly"
-                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
-                : "text-[#8E8E93] hover:text-[#0D0D0E]"
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setInterval("yearly")}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
-              interval === "yearly"
-                ? "bg-[#24180E] text-[#FF7900] shadow-2xs border border-[#FF7900]/30"
-                : "text-[#8E8E93] hover:text-[#0D0D0E]"
-            }`}
-          >
-            <span>Annual</span>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-full">
-              Save ~17%
-            </span>
-          </button>
+        <div className="flex justify-end pb-2">
+          <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs">
+            <button
+              onClick={() => setInterval("monthly")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                interval === "monthly"
+                  ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
+                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setInterval("yearly")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+                interval === "yearly"
+                  ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
+                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+              }`}
+            >
+              <span>Annual</span>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-full">
+                Save ~17%
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
 
       {feedbackMessage && (
         <div className="rounded-xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between shadow-2xs">
@@ -260,7 +200,7 @@ export default function SubscriptionPage() {
             <div className="text-2xl sm:text-3xl font-semibold text-[#0D0D0E] tracking-tight">
               {currentPlanDef.name}
             </div>
-            <p className="text-xs sm:text-sm text-[#FF7900] font-semibold font-mono">
+            <p className="text-xs sm:text-sm text-[#FF7A1A] font-semibold tabular-nums">
               ₹{interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr} /{" "}
               {interval === "yearly" ? "year" : "month"}
             </p>
@@ -271,7 +211,7 @@ export default function SubscriptionPage() {
               Billing Cycle
             </span>
             <div className="text-sm sm:text-base font-semibold text-[#0D0D0E] capitalize flex items-center space-x-1.5">
-              <Clock className="h-4 w-4 text-[#FF7900]" />
+              <Clock className="h-4 w-4 text-[#FF7A1A]" />
               <span>{subscription.billing_interval} interval</span>
             </div>
             <p className="text-xs text-[#8E8E93] font-medium">
@@ -308,7 +248,7 @@ export default function SubscriptionPage() {
                   onClick={handleReactivate}
                   className="w-full text-xs rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs h-9"
                 >
-                  <RotateCcw className="h-3.5 w-3.5 mr-1.5 text-[#FF7900]" />
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5 text-[#FF7A1A]" />
                   Reactivate Plan
                 </Button>
               </div>
@@ -352,7 +292,7 @@ export default function SubscriptionPage() {
               ? "bg-rose-500"
               : isWarning
               ? "bg-amber-500"
-              : "bg-[#FF7900]";
+              : "bg-[#FF7A1A]";
 
             return (
               <div key={metric.metric_name} className="p-4 bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs">
@@ -368,7 +308,7 @@ export default function SubscriptionPage() {
                     )}
                   </div>
                   <span
-                    className="text-xs font-mono font-semibold text-[#0D0D0E]"
+                    className="text-xs tabular-nums font-semibold text-[#0D0D0E]"
                     suppressHydrationWarning
                   >
                     {mounted ? metric.current_count.toLocaleString("en-IN") : metric.current_count.toLocaleString("en-IN")} / {metric.max_quota.toLocaleString("en-IN")} {metric.unit}
@@ -384,7 +324,7 @@ export default function SubscriptionPage() {
                 </div>
 
                 <div className="flex justify-between items-center text-xs text-[#8E8E93]">
-                  <span className="font-mono font-semibold text-[#0D0D0E]" suppressHydrationWarning>
+                  <span className="tabular-nums font-semibold text-[#0D0D0E]" suppressHydrationWarning>
                     {mounted ? metric.percentage_used : metric.percentage_used}% consumed
                   </span>
                   {isExceeded ? (
@@ -425,12 +365,12 @@ export default function SubscriptionPage() {
               <div
                 key={p.tier}
                 className={`relative bg-white rounded-2xl border p-6 flex flex-col justify-between shadow-2xs transition-all ${
-                  p.popular ? "border-[#FF7900] ring-2 ring-[#FF7900]/20" : "border-[#E5E5E7]"
+                  p.popular ? "border-[#FF7A1A] ring-2 ring-[#FF7A1A]/20" : "border-[#E5E5E7]"
                 }`}
               >
                 {p.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-[#FF7900] text-white text-[10px] px-3 py-0.5 rounded-full font-semibold uppercase shadow-2xs tracking-wider">
+                    <span className="bg-[#FF7A1A] text-white text-[10px] px-3 py-0.5 rounded-full font-semibold uppercase shadow-2xs tracking-wider">
                       Most Popular
                     </span>
                   </div>
@@ -452,7 +392,7 @@ export default function SubscriptionPage() {
                   </div>
 
                   <div className="mt-4 pb-4 border-b border-[#E5E5E7]">
-                    <span className="text-3xl font-semibold font-mono text-[#0D0D0E]">
+                    <span className="text-3xl font-semibold tabular-nums text-[#0D0D0E]">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
                     <span className="text-xs text-[#8E8E93] font-semibold ml-1.5">
@@ -469,7 +409,7 @@ export default function SubscriptionPage() {
                     </div>
                     {p.features.map((feat) => (
                       <div key={feat} className="flex items-start text-xs text-[#0D0D0E] font-medium">
-                        <Check className="h-4 w-4 text-[#FF7900] stroke-[2.5] mr-2 shrink-0 mt-0.5" />
+                        <Check className="h-4 w-4 text-[#FF7A1A] stroke-[2.5] mr-2 shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </div>
                     ))}
@@ -486,7 +426,7 @@ export default function SubscriptionPage() {
                       variant={p.popular ? "default" : "outline"}
                       className={`w-full text-xs font-semibold h-9 rounded-xl cursor-pointer ${
                         p.popular
-                          ? "bg-[#FF7900] hover:bg-[#E66D00] text-white shadow-2xs"
+                          ? "bg-[#FF7A1A] hover:bg-[#FF8833] text-white shadow-2xs"
                           : "border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
                       }`}
                       disabled={!isOwner}
@@ -519,22 +459,22 @@ export default function SubscriptionPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Subscription Revenue</span>
-            <span className="text-xl font-semibold font-mono text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
+            <span className="text-xl font-semibold tabular-nums text-slate-950">₹{unitEconomics.monthlyPriceInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">(excl. GST)</span>
           </div>
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Gateway Fees (2.36%)</span>
-            <span className="text-xl font-semibold font-mono text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
+            <span className="text-xl font-semibold tabular-nums text-rose-700">-₹{unitEconomics.paymentGatewayFeeInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Domestic UPI/Card</span>
           </div>
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider block mb-1">Direct Compute</span>
-            <span className="text-xl font-semibold font-mono text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
+            <span className="text-xl font-semibold tabular-nums text-rose-700">-₹{unitEconomics.infrastructureAllocationInr}</span>
             <span className="text-[11px] text-slate-500 font-medium block mt-0.5">Server & DB compute</span>
           </div>
           <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50">
             <span className="text-[11px] font-medium text-emerald-800 uppercase tracking-wider block mb-1">Contribution Margin</span>
-            <span className="text-xl font-semibold font-mono text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
+            <span className="text-xl font-semibold tabular-nums text-emerald-700">₹{unitEconomics.contributionMarginInr}</span>
             <span className="text-[11px] text-emerald-800 font-semibold block mt-0.5">{unitEconomics.contributionMarginPercentage}% margin</span>
           </div>
         </div>
@@ -544,13 +484,13 @@ export default function SubscriptionPage() {
       <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
         <div className="p-5 border-b border-[#E5E5E7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
-            <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 flex items-center justify-center text-[#FF7900]">
+            <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] border border-[#FF7A1A]/30 flex items-center justify-center text-[#FF7A1A]">
               <Landmark className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-semibold text-[#0D0D0E]">Overall Fund Transfers &amp; Settlements</h2>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/30 font-mono">
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7A1A] border border-[#FF7A1A]/30 tabular-nums">
                   Level 1 Admin Only
                 </span>
               </div>
@@ -560,8 +500,8 @@ export default function SubscriptionPage() {
             </div>
           </div>
           <div className="text-left sm:text-right">
-            <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#8E8E93] block">Total Settled (MTD)</span>
-            <span className="text-lg font-semibold font-mono text-[#0D0D0E]">₹ 24,50,000</span>
+            <span className="text-[11px] tabular-nums font-medium uppercase tracking-wider text-[#8E8E93] block">Total Settled (MTD)</span>
+            <span className="text-lg font-semibold tabular-nums text-[#0D0D0E]">₹ 24,50,000</span>
           </div>
         </div>
 
@@ -569,17 +509,17 @@ export default function SubscriptionPage() {
         <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-[#E5E5E7] bg-[#F7F7F8]">
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
             <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Available Balance</span>
-            <span className="text-xl font-semibold font-mono text-emerald-600">₹ 3,12,450.00</span>
+            <span className="text-xl font-semibold tabular-nums text-emerald-600">₹ 3,12,450.00</span>
             <span className="text-[11px] text-[#8E8E93] font-medium block mt-0.5">Ready for auto-disbursement</span>
           </div>
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
             <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Linked Settlement Bank</span>
             <span className="text-sm font-semibold text-[#0D0D0E] block truncate">HDFC Corporate Bank</span>
-            <span className="text-[11px] font-mono text-[#8E8E93] font-medium block mt-0.5">A/C ••••••••8491 (RTGS/NEFT)</span>
+            <span className="text-[11px] tabular-nums text-[#8E8E93] font-medium block mt-0.5">A/C ••••••••8491 (RTGS/NEFT)</span>
           </div>
           <div className="p-3.5 bg-white rounded-xl border border-[#E5E5E7]">
             <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Clearance Level</span>
-            <span className="text-sm font-semibold text-[#FF7900] block">Admin Full Financial Access</span>
+            <span className="text-sm font-semibold text-[#FF7A1A] block">Admin Full Financial Access</span>
             <span className="text-[11px] text-rose-600 font-semibold block mt-0.5">Restricted from Senior &amp; Jr Managers</span>
           </div>
         </div>
@@ -600,40 +540,40 @@ export default function SubscriptionPage() {
               </thead>
               <tbody className="divide-y divide-[#E5E5E7] font-medium">
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-884102</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">TRF-884102</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
-                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 1,45,000</td>
+                  <td className="py-3 px-3 text-[#8E8E93] tabular-nums">Operating Current A/C ••8491</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">₹ 1,45,000</td>
                   <td className="py-3 px-3">
                     <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Today, 09:30 AM</td>
+                  <td className="py-3 px-3 text-right tabular-nums text-[#8E8E93]">Today, 09:30 AM</td>
                 </tr>
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-883918</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">TRF-883918</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Stripe Automated Payout</td>
-                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Operating Current A/C ••8491</td>
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 2,20,000</td>
+                  <td className="py-3 px-3 text-[#8E8E93] tabular-nums">Operating Current A/C ••8491</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">₹ 2,20,000</td>
                   <td className="py-3 px-3">
                     <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Yesterday, 14:15 PM</td>
+                  <td className="py-3 px-3 text-right tabular-nums text-[#8E8E93]">Yesterday, 14:15 PM</td>
                 </tr>
                 <tr className="hover:bg-[#F7F7F8]/80 transition-colors">
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">TRF-882045</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">TRF-882045</td>
                   <td className="py-3 px-3 text-[#0D0D0E]">Razorpay Payouts Direct</td>
-                  <td className="py-3 px-3 text-[#8E8E93] font-mono">Treasury Reserve Pool ••1024</td>
-                  <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">₹ 3,75,000</td>
+                  <td className="py-3 px-3 text-[#8E8E93] tabular-nums">Treasury Reserve Pool ••1024</td>
+                  <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">₹ 3,75,000</td>
                   <td className="py-3 px-3">
                     <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Settled
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-right font-mono text-[#8E8E93]">Oct 20, 2026</td>
+                  <td className="py-3 px-3 text-right tabular-nums text-[#8E8E93]">Oct 20, 2026</td>
                 </tr>
               </tbody>
             </table>
@@ -644,7 +584,7 @@ export default function SubscriptionPage() {
       {/* Payment History & Receipts */}
       <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
         <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-          <Receipt className="h-5 w-5 text-[#FF7900]" />
+          <Receipt className="h-5 w-5 text-[#FF7A1A]" />
           <div>
             <h2 className="text-base font-semibold text-[#0D0D0E]">Billing History &amp; GST Invoices</h2>
             <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -675,23 +615,23 @@ export default function SubscriptionPage() {
                 <tbody className="divide-y divide-[#E5E5E7]">
                   {paymentEvents.map((event) => (
                     <tr key={event.id} className="hover:bg-[#F7F7F8]/80 transition-colors">
-                      <td className="py-3 px-3 font-mono text-[#8E8E93]">
+                      <td className="py-3 px-3 tabular-nums text-[#8E8E93]">
                         {new Date(event.created_at).toLocaleDateString("en-IN", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="py-3 px-3 font-mono text-[#0D0D0E] font-semibold">
+                      <td className="py-3 px-3 tabular-nums text-[#0D0D0E] font-semibold">
                         {event.provider_invoice_id || "N/A"}
                       </td>
                       <td className="py-3 px-3 text-[#0D0D0E] font-medium">
                         {event.description}
                       </td>
-                      <td className="py-3 px-3 font-mono font-semibold text-[#0D0D0E]">
+                      <td className="py-3 px-3 tabular-nums font-semibold text-[#0D0D0E]">
                         ₹{(event.amount_inr_paise / 100).toLocaleString("en-IN")}
                       </td>
-                      <td className="py-3 px-3 capitalize font-mono text-[#8E8E93]">
+                      <td className="py-3 px-3 capitalize tabular-nums text-[#8E8E93]">
                         {event.payment_method}
                       </td>
                       <td className="py-3 px-3">
@@ -709,7 +649,7 @@ export default function SubscriptionPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] font-semibold rounded-xl"
+                          className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] font-semibold rounded-xl"
                           onClick={() => alert(`Downloading verified tax invoice ${event.provider_invoice_id}`)}
                         >
                           <Download className="h-3 w-3 mr-1 text-[#8E8E93]" />
@@ -771,7 +711,7 @@ export default function SubscriptionPage() {
               <Button
                 size="sm"
                 onClick={() => handleSimulatePayment(selectedPlanForDowngrade)}
-                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs"
+                className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs"
               >
                 Confirm Downgrade
               </Button>
@@ -822,6 +762,7 @@ export default function SubscriptionPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </SettingsShell>
   );
 }

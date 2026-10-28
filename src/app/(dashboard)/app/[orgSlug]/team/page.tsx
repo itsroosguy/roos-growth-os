@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import { Input } from "@/components/ui/input";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -58,7 +59,7 @@ export default function TeamAndCredentialsPage() {
   const { currentOrg, userRole, setUserRole, isAdmin } = useTenant();
 
   // Active Tab: "credentials" | "roster" | "invitations" | "matrix"
-  const [activeTab, setActiveTab] = useState<"credentials" | "roster" | "invitations" | "matrix">("invitations");
+  const [activeTab, setActiveTab] = useState<"credentials" | "roster" | "invitations" | "matrix">("roster");
 
   // Credential State
   const [credentials, setCredentials] = useState<AccessCredential[]>(() =>
@@ -224,7 +225,7 @@ export default function TeamAndCredentialsPage() {
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Access Credentials &amp; Team Governance
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] font-mono shadow-2xs">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] tabular-nums shadow-2xs">
               Admin Dispatched
             </span>
           </div>
@@ -238,7 +239,7 @@ export default function TeamAndCredentialsPage() {
             <>
               <Button
                 onClick={() => setInviteModalOpen(true)}
-                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer flex items-center gap-1.5"
+                className="rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer flex items-center gap-1.5"
               >
                 <Send className="h-3.5 w-3.5" />
                 <span>Dispatch Multi-Level Account</span>
@@ -261,6 +262,36 @@ export default function TeamAndCredentialsPage() {
         </div>
       </div>
 
+      {/* StatStrip Metrics Banner */}
+      <StatStrip
+        stats={[
+          {
+            id: "members",
+            label: "Total Team",
+            value: members.length,
+            subtext: "Active workspace roster",
+          },
+          {
+            id: "invites",
+            label: "Pending Dispatches",
+            value: pendingCount,
+            change: { value: "Awaiting token accept", trend: "neutral" },
+          },
+          {
+            id: "credentials",
+            label: "API Tokens",
+            value: credentials.length,
+            subtext: "Active integrations",
+          },
+          {
+            id: "governance",
+            label: "Role Governance",
+            value: "Enterprise",
+            change: { value: "Decoupled liability", trend: "up" },
+          },
+        ]}
+      />
+
       {/* Tabs */}
       <div className="flex items-center border-b border-[#E5E7EB] gap-6 text-xs font-medium">
         <button
@@ -268,7 +299,7 @@ export default function TeamAndCredentialsPage() {
           className={cn(
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "invitations"
-              ? "border-[#FF7900] text-[#FF7900] font-semibold"
+              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
               : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
@@ -280,7 +311,7 @@ export default function TeamAndCredentialsPage() {
           className={cn(
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "roster"
-              ? "border-[#FF7900] text-[#FF7900] font-semibold"
+              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
               : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
@@ -292,7 +323,7 @@ export default function TeamAndCredentialsPage() {
           className={cn(
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "credentials"
-              ? "border-[#FF7900] text-[#FF7900] font-semibold"
+              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
               : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
@@ -304,7 +335,7 @@ export default function TeamAndCredentialsPage() {
           className={cn(
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "matrix"
-              ? "border-[#FF7900] text-[#FF7900] font-semibold"
+              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
               : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
@@ -318,10 +349,10 @@ export default function TeamAndCredentialsPage() {
         {/* Level 1: Admin */}
         <div className="bg-[#121214] text-white rounded-2xl border border-[#1F1F23] p-5 shadow-xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-[#FF7900] bg-[#24180E] border border-[#FF7900]/30 px-2.5 py-0.5 rounded-full font-mono">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-[#FF7A1A] bg-[#24180E] border border-[#FF7A1A]/30 px-2.5 py-0.5 rounded-full tabular-nums">
               Level 1: Admin
             </span>
-            <Crown className="h-4 w-4 text-[#FF7900]" />
+            <Crown className="h-4 w-4 text-[#FF7A1A]" />
           </div>
           <h3 className="text-sm font-semibold text-white">Full Root &amp; Fund Authority</h3>
           <p className="text-xs text-[#8E8E93] leading-relaxed font-normal">
@@ -333,7 +364,7 @@ export default function TeamAndCredentialsPage() {
             </span>
             <button
               onClick={() => setUserRole("admin")}
-              className="text-[#FF7900] hover:underline cursor-pointer"
+              className="text-[#FF7A1A] hover:underline cursor-pointer"
             >
               Simulate Role →
             </button>
@@ -343,7 +374,7 @@ export default function TeamAndCredentialsPage() {
         {/* Level 2: Senior Manager */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full font-mono">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full tabular-nums">
               Level 2: Senior Manager
             </span>
             <Shield className="h-4 w-4 text-purple-600" />
@@ -358,7 +389,7 @@ export default function TeamAndCredentialsPage() {
             </span>
             <button
               onClick={() => setUserRole("senior_manager")}
-              className="text-[#FF7900] hover:underline cursor-pointer font-medium"
+              className="text-[#FF7A1A] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -368,7 +399,7 @@ export default function TeamAndCredentialsPage() {
         {/* Level 3: Junior Manager */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full font-mono">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full tabular-nums">
               Level 3: Junior Manager
             </span>
             <Users className="h-4 w-4 text-blue-600" />
@@ -383,7 +414,7 @@ export default function TeamAndCredentialsPage() {
             </span>
             <button
               onClick={() => setUserRole("junior_manager")}
-              className="text-[#FF7900] hover:underline cursor-pointer font-medium"
+              className="text-[#FF7A1A] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -407,7 +438,7 @@ export default function TeamAndCredentialsPage() {
             {isAdmin && (
               <Button
                 onClick={() => setInviteModalOpen(true)}
-                className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold text-xs h-8.5 rounded-xl self-start sm:self-auto cursor-pointer"
+                className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold text-xs h-8.5 rounded-xl self-start sm:self-auto cursor-pointer"
               >
                 <Send className="mr-1.5 h-3.5 w-3.5" />
                 New Appointment Dispatch
@@ -438,7 +469,7 @@ export default function TeamAndCredentialsPage() {
                             className={cn(
                               "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white font-semibold text-xs",
                               inv.role === "admin"
-                                ? "bg-[#121214] text-[#FF7900] border border-[#FF7900]/30"
+                                ? "bg-[#121214] text-[#FF7A1A] border border-[#FF7A1A]/30"
                                 : inv.role === "senior_manager"
                                 ? "bg-purple-600"
                                 : "bg-emerald-600"
@@ -450,7 +481,7 @@ export default function TeamAndCredentialsPage() {
                             <span className="font-semibold text-sm text-[#0D0D0E] block">
                               {inv.recipient_name}
                             </span>
-                            <span className="text-xs text-[#8E8E93] font-mono">
+                            <span className="text-xs text-[#8E8E93] tabular-nums">
                               {inv.recipient_email}
                             </span>
                           </div>
@@ -462,7 +493,7 @@ export default function TeamAndCredentialsPage() {
                           className={cn(
                             "text-[10px] font-medium uppercase px-2 py-0.5 rounded-full border",
                             inv.role === "admin"
-                              ? "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30 font-semibold"
+                              ? "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30 font-semibold"
                               : inv.role === "senior_manager"
                               ? "bg-purple-50 text-purple-700 border-purple-200"
                               : "bg-emerald-50 text-emerald-700 border-emerald-200"
@@ -515,7 +546,7 @@ export default function TeamAndCredentialsPage() {
                               setPreviewInvite(inv);
                               setEmailPreviewModalOpen(true);
                             }}
-                            className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] font-semibold px-2 rounded-xl cursor-pointer"
+                            className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] font-semibold px-2 rounded-xl cursor-pointer"
                           >
                             <Eye className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" />
                             Email Preview
@@ -523,7 +554,7 @@ export default function TeamAndCredentialsPage() {
                           <Link
                             href={`/invite/${inv.token}`}
                             target="_blank"
-                            className="inline-flex items-center text-xs font-semibold text-[#0D0D0E] hover:text-[#FF7900] bg-[#F7F7F8] hover:bg-[#FFF4EC] px-2.5 py-1 rounded-xl transition-colors border border-[#E5E5E7]"
+                            className="inline-flex items-center text-xs font-semibold text-[#0D0D0E] hover:text-[#FF7A1A] bg-[#F7F7F8] hover:bg-[#FFF4EC] px-2.5 py-1 rounded-xl transition-colors border border-[#E5E5E7]"
                           >
                             <span>Accept</span>
                             <ExternalLink className="h-3 w-3 ml-1" />
@@ -550,7 +581,7 @@ export default function TeamAndCredentialsPage() {
               </p>
             </div>
             <span className="rounded-full bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold px-3 py-1 text-[#0D0D0E]">
-              <span className="font-mono font-semibold text-[#FF7900] mr-1">{members.length}</span>
+              <span className="tabular-nums font-semibold text-[#FF7A1A] mr-1">{members.length}</span>
               members
             </span>
           </div>
@@ -577,7 +608,7 @@ export default function TeamAndCredentialsPage() {
                           className={cn(
                             "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white font-semibold text-xs shadow-2xs",
                             member.role === "admin" || member.role === "owner"
-                              ? "bg-[#121214] text-[#FF7900] border border-[#FF7900]/30"
+                              ? "bg-[#121214] text-[#FF7A1A] border border-[#FF7A1A]/30"
                               : member.role === "senior_manager"
                               ? "bg-purple-600"
                               : "bg-emerald-600"
@@ -602,7 +633,7 @@ export default function TeamAndCredentialsPage() {
                           member.role === "owner"
                             ? "bg-purple-50 text-purple-700 border-purple-200"
                             : member.role === "admin"
-                            ? "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30"
+                            ? "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30"
                             : member.role === "senior_manager"
                             ? "bg-purple-50 text-purple-700 border-purple-200"
                             : "bg-emerald-50 text-emerald-700 border-emerald-200"
@@ -652,7 +683,7 @@ export default function TeamAndCredentialsPage() {
                               onChange={(e) =>
                                 handleUpdateRole(member.id, e.target.value as OrganizationRole)
                               }
-                              className="rounded-xl border border-[#E5E5E7] bg-white px-2 py-1 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900]"
+                              className="rounded-xl border border-[#E5E5E7] bg-white px-2 py-1 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
                             >
                               <option value="admin">Level 1: Admin</option>
                               <option value="senior_manager">Level 2: Sr Manager</option>
@@ -691,7 +722,7 @@ export default function TeamAndCredentialsPage() {
                 Cryptographic credentials for users, backend microservices, and WhatsApp integrations
               </p>
             </div>
-            <span className="text-xs font-mono font-semibold text-slate-500">
+            <span className="text-xs tabular-nums font-semibold text-slate-500">
               Workspace: {currentOrg.slug}
             </span>
           </div>
@@ -774,7 +805,7 @@ export default function TeamAndCredentialsPage() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 font-mono text-xs flex items-center justify-between">
+                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 tabular-nums text-xs flex items-center justify-between">
                       <div className="truncate pr-2">
                         <span className="text-[10px] uppercase font-medium text-slate-400 block font-sans">
                           Access Key ID
@@ -791,7 +822,7 @@ export default function TeamAndCredentialsPage() {
                       </button>
                     </div>
 
-                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 font-mono text-xs flex items-center justify-between">
+                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 tabular-nums text-xs flex items-center justify-between">
                       <div className="truncate pr-2">
                         <span className="text-[10px] uppercase font-medium text-slate-400 block font-sans">
                           Secret Token
@@ -817,7 +848,7 @@ export default function TeamAndCredentialsPage() {
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-[#E5E5E7] p-6 shadow-2xs space-y-4">
             <div>
-              <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-mono">
+              <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-[#FFF4EC] text-[#FF7A1A] border border-[#FF7A1A]/30 tabular-nums">
                 Brand Product &amp; Institutional Trust Seal
               </span>
               <h2 className="text-lg font-semibold text-[#0D0D0E] mt-2">
@@ -832,14 +863,14 @@ export default function TeamAndCredentialsPage() {
               {ENTERPRISE_GOVERNANCE_RULES.map((rule) => (
                 <div
                   key={rule.code}
-                  className="p-5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-2 hover:border-[#FF7900]/40 transition-colors"
+                  className="p-5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-2 hover:border-[#FF7A1A]/40 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
-                      <ShieldCheck className="h-4 w-4 text-[#FF7900]" />
+                      <ShieldCheck className="h-4 w-4 text-[#FF7A1A]" />
                       {rule.title}
                     </span>
-                    <span className="text-[10px] font-mono font-semibold text-[#FF7900] bg-[#FFF4EC] px-2 py-0.5 rounded-full border border-[#FF7900]/30">
+                    <span className="text-[10px] tabular-nums font-semibold text-[#FF7A1A] bg-[#FFF4EC] px-2 py-0.5 rounded-full border border-[#FF7A1A]/30">
                       {rule.code}
                     </span>
                   </div>
@@ -858,7 +889,7 @@ export default function TeamAndCredentialsPage() {
         <form onSubmit={handleDispatchInvitation} className="max-w-md bg-white rounded-2xl p-2">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-[#0D0D0E] flex items-center gap-2">
-              <Send className="h-5 w-5 text-[#FF7900]" />
+              <Send className="h-5 w-5 text-[#FF7A1A]" />
               <span>Dispatch Account Invitation</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
@@ -880,7 +911,7 @@ export default function TeamAndCredentialsPage() {
               value={inviteName}
               onChange={(e) => setInviteName(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl text-xs"
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
             />
 
             <Input
@@ -890,7 +921,7 @@ export default function TeamAndCredentialsPage() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl text-xs"
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
             />
 
             <div className="space-y-1.5">
@@ -900,7 +931,7 @@ export default function TeamAndCredentialsPage() {
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value as OrganizationRole)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7900] focus:bg-white focus:outline-none"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none"
               >
                 <option value="admin">Level 1: Admin (Full Access + Overall Fund Transfers)</option>
                 <option value="senior_manager">Level 2: Senior Manager (Operational - Zero Fund Liability)</option>
@@ -911,7 +942,7 @@ export default function TeamAndCredentialsPage() {
             <div className="rounded-xl bg-[#F7F7F8] p-3 border border-[#E5E5E7] text-[11px] text-[#8E8E93] space-y-1">
               <span className="font-semibold text-[#0D0D0E] block">Brand Trust Guarantee:</span>
               {inviteRole === "admin" && (
-                <span className="text-[#FF7900] font-semibold block">
+                <span className="text-[#FF7A1A] font-semibold block">
                   ✓ Full governance clearance. Recipient is granted overall fund transfer &amp; settlement oversight.
                 </span>
               )}
@@ -939,7 +970,7 @@ export default function TeamAndCredentialsPage() {
             </Button>
             <Button
               type="submit"
-              className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
+              className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
             >
               Dispatch Email Invitation
             </Button>
@@ -953,7 +984,7 @@ export default function TeamAndCredentialsPage() {
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="text-base font-semibold text-[#0D0D0E] flex items-center gap-2">
-                <Mail className="h-4 w-4 text-[#FF7900]" />
+                <Mail className="h-4 w-4 text-[#FF7A1A]" />
                 <span>Dispatched Official Invitation Email</span>
               </DialogTitle>
               <Badge variant="success" className="text-[10px] uppercase font-medium">
@@ -968,7 +999,7 @@ export default function TeamAndCredentialsPage() {
           {previewInvite && (
             <div className="my-4 border border-[#E5E5E7] rounded-2xl overflow-hidden shadow-2xs bg-[#F7F7F8]">
               {/* Email Envelope Bar */}
-              <div className="bg-[#E5E5E7]/50 p-3 border-b border-[#E5E5E7] text-[11px] space-y-1 font-mono text-[#0D0D0E]">
+              <div className="bg-[#E5E5E7]/50 p-3 border-b border-[#E5E5E7] text-[11px] space-y-1 tabular-nums text-[#0D0D0E]">
                 <div>
                   <span className="text-[#8E8E93] font-semibold">From:</span> ROOS STUDIOX Growth OS &lt;auth@roosstudiox.com&gt;
                 </div>
@@ -985,12 +1016,12 @@ export default function TeamAndCredentialsPage() {
                 {/* Brand Logo Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
                   <div className="flex items-center gap-2 font-semibold text-sm text-[#0D0D0E]">
-                    <div className="h-7 w-7 rounded-lg bg-[#FF7900] text-white font-semibold flex items-center justify-center text-xs">
+                    <div className="h-7 w-7 rounded-lg bg-[#FF7A1A] text-white font-semibold flex items-center justify-center text-xs">
                       RX
                     </div>
                     <span>ROOS STUDIOX</span>
                   </div>
-                  <span className="text-[10px] text-[#8E8E93] font-mono">SOC-2 VERIFIED</span>
+                  <span className="text-[10px] text-[#8E8E93] tabular-nums">SOC-2 VERIFIED</span>
                 </div>
 
                 <div className="space-y-2">
@@ -1022,12 +1053,12 @@ export default function TeamAndCredentialsPage() {
                   <Link
                     href={`/invite/${previewInvite.token}`}
                     target="_blank"
-                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold text-xs shadow-xs transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold text-xs shadow-xs transition-colors"
                   >
                     <span>Accept Appointment &amp; Activate Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <span className="text-[10px] text-[#8E8E93] mt-2 block font-mono">
+                  <span className="text-[10px] text-[#8E8E93] mt-2 block tabular-nums">
                     Token Expiration: 7 Days (168 Hours) SLA Guarantee
                   </span>
                 </div>
@@ -1085,7 +1116,7 @@ export default function TeamAndCredentialsPage() {
               value={credName}
               onChange={(e) => setCredName(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl text-xs"
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
             />
 
             <Input
@@ -1095,7 +1126,7 @@ export default function TeamAndCredentialsPage() {
               value={credEmail}
               onChange={(e) => setCredEmail(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl text-xs"
+              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
             />
 
             <div className="space-y-1.5">
@@ -1105,7 +1136,7 @@ export default function TeamAndCredentialsPage() {
               <select
                 value={credRole}
                 onChange={(e) => setCredRole(e.target.value as OrganizationRole)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7900] focus:bg-white focus:outline-none"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none"
               >
                 <option value="admin">Level 1: Admin (Full Access + Fund Transfers)</option>
                 <option value="senior_manager">Level 2: Senior Manager (Operational)</option>
@@ -1125,7 +1156,7 @@ export default function TeamAndCredentialsPage() {
             </Button>
             <Button
               type="submit"
-              className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
+              className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
             >
               Generate Token
             </Button>

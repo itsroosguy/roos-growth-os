@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -206,10 +207,10 @@ export default function TasksPage() {
               Tasks &amp; Follow-ups
             </h1>
             <span
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] flex items-center gap-1.5 shadow-2xs tabular-nums"
               suppressHydrationWarning
             >
-              <span className="font-mono font-semibold text-[#FF7900]">
+              <span className="tabular-nums font-semibold text-[#FF7A1A]">
                 {mounted ? rawTasks.filter((t) => t.status !== "completed").length : rawTasks.filter((t) => t.status !== "completed").length}
               </span>
               <span>active</span>
@@ -223,7 +224,7 @@ export default function TasksPage() {
         <Button
           size="sm"
           onClick={() => setCreateModalOpen(true)}
-          className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer"
+          className="rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer"
         >
           <Plus className="mr-1.5 h-4 w-4 stroke-[2.5]" />
           New Task
@@ -233,7 +234,7 @@ export default function TasksPage() {
       {isJuniorManager && (
         <div className="bg-[#121214] text-white rounded-2xl border border-[#1F1F23] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-[#FF7900] text-white flex items-center justify-center font-medium text-xs shadow-2xs">
+            <div className="h-10 w-10 rounded-xl bg-[#FF7A1A] text-white flex items-center justify-center font-medium text-xs shadow-2xs">
               L3
             </div>
             <div>
@@ -241,7 +242,7 @@ export default function TasksPage() {
                 <span className="font-semibold text-sm text-white">
                   Junior Manager Task &amp; Execution Workspace
                 </span>
-                <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7900] border border-[#FF7900]/40">
+                <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded-full bg-[#24180E] text-[#FF7A1A] border border-[#FF7A1A]/40">
                   Clearance Level 3
                 </span>
               </div>
@@ -259,47 +260,34 @@ export default function TasksPage() {
       )}
 
       {/* KPI Stats Banner */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">Due Today</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1">{todayCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
-            <Clock className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-700">Overdue</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-rose-600 mt-1">{overdueCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
-            <AlertTriangle className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FF7900]">Upcoming</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-[#FF7900] mt-1">{upcomingCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-[#FFF4EC] border border-[#FFE1CC] flex items-center justify-center text-[#FF7900]">
-            <Calendar className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">Completed</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1">{completedCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-        </div>
-      </div>
+      <StatStrip
+        stats={[
+          {
+            id: "today",
+            label: "Due Today",
+            value: todayCount,
+            change: { value: "Priority focus", trend: "neutral" },
+          },
+          {
+            id: "overdue",
+            label: "Overdue",
+            value: overdueCount,
+            change: { value: overdueCount > 0 ? "Requires action" : "Clear", trend: overdueCount > 0 ? "down" : "up" },
+          },
+          {
+            id: "upcoming",
+            label: "Upcoming Follow-ups",
+            value: upcomingCount,
+            subtext: "Scheduled pipeline",
+          },
+          {
+            id: "completed",
+            label: "Completed",
+            value: completedCount,
+            change: { value: "SLA tracked", trend: "up" },
+          },
+        ]}
+      />
 
       {/* Tabs and Search */}
       <div className="bg-white p-3.5 rounded-2xl border border-[#E5E7EB] shadow-xs">
@@ -336,7 +324,7 @@ export default function TasksPage() {
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] pl-10 pr-3 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#717680] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
+              className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] pl-10 pr-3 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#717680] focus:border-[#FF7A1A] focus:ring-1 focus:ring-[#FF7A1A] focus:bg-white focus:outline-none transition-all shadow-2xs"
             />
           </div>
         </div>
@@ -347,7 +335,7 @@ export default function TasksPage() {
         onSubmit={handleQuickAddTask}
         className="flex items-center gap-2 p-2 bg-white rounded-2xl border border-[#E5E7EB] shadow-xs"
       >
-        <div className="flex items-center justify-center h-8 w-8 rounded-xl bg-[#FFF4EC] text-[#FF7900] shrink-0 ml-1">
+        <div className="flex items-center justify-center h-8 w-8 rounded-xl bg-[#FFF4EC] text-[#FF7A1A] shrink-0 ml-1">
           <Plus className="h-4 w-4 stroke-[2.5]" />
         </div>
         <input
@@ -361,7 +349,7 @@ export default function TasksPage() {
           type="submit"
           size="sm"
           disabled={!quickTitle.trim()}
-          className="h-8 px-3.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs shadow-2xs cursor-pointer active:scale-95 transition-all"
+          className="h-8 px-3.5 rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium text-xs shadow-2xs cursor-pointer active:scale-95 transition-all"
         >
           Add Task
         </Button>
@@ -370,7 +358,7 @@ export default function TasksPage() {
       {/* Tasks Table */}
       {filteredTasks.length === 0 ? (
         <EmptyState
-          icon={<CheckSquare className="h-8 w-8 text-[#FF7900]" />}
+          icon={<CheckSquare className="h-8 w-8 text-[#FF7A1A]" />}
           title={`No ${activeTab} follow-ups`}
           description="You are all caught up! Schedule a new follow-up reminder for any sales lead or customer."
           actionLabel="Schedule Follow-up"
@@ -409,7 +397,7 @@ export default function TasksPage() {
                         className={`flex h-6 w-6 items-center justify-center rounded-lg border-2 transition-all cursor-pointer ${
                           task.status === "completed"
                             ? "bg-emerald-600 border-emerald-600 text-white shadow-2xs"
-                            : "border-[#717680] hover:border-[#FF7900] bg-white"
+                            : "border-[#717680] hover:border-[#FF7A1A] bg-white"
                         }`}
                         aria-label="Toggle completed"
                       >
@@ -445,7 +433,7 @@ export default function TasksPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-1.5 text-xs font-mono">
+                      <div className="flex items-center space-x-1.5 text-xs tabular-nums">
                         <Calendar className="h-3.5 w-3.5 text-[#717680] shrink-0" />
                         <span
                           className={
@@ -501,7 +489,7 @@ export default function TasksPage() {
               <select
                 value={selectedLeadId}
                 onChange={(e) => setSelectedLeadId(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:bg-white focus:outline-none"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-medium text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none"
               >
                 <option value="">-- No specific lead (General task) --</option>
                 {leads.map((l) => (
@@ -519,7 +507,7 @@ export default function TasksPage() {
                 value={taskDueDate}
                 onChange={(e) => setTaskDueDate(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white text-xs font-mono"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white text-xs tabular-nums"
               />
               <div className="space-y-1.5">
                 <label className="block text-xs font-medium text-[#0D0D0E]">
@@ -528,7 +516,7 @@ export default function TasksPage() {
                 <select
                   value={taskPriority}
                   onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
-                  className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:bg-white focus:outline-none h-10"
+                  className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-medium text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none h-10"
                 >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
@@ -550,7 +538,7 @@ export default function TasksPage() {
             <Button type="button" variant="ghost" onClick={() => setCreateModalOpen(false)} className="text-[#8E8E93]">
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold">Save Follow-up</Button>
+            <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold">Save Follow-up</Button>
           </DialogFooter>
         </form>
       </Dialog>

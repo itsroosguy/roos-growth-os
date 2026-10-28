@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatStrip } from "@/components/ui/stat-strip";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import {
   FileText,
@@ -37,7 +38,7 @@ const CATEGORY_CONFIG: Record<
   TemplateCategory,
   { label: string; cost: string; color: string }
 > = {
-  marketing: { label: "Marketing", cost: "₹0.82 / conv", color: "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30" },
+  marketing: { label: "Marketing", cost: "₹0.82 / conv", color: "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30" },
   utility: { label: "Utility", cost: "₹0.35 / conv", color: "bg-amber-50 text-amber-700 border-amber-200" },
   authentication: { label: "Authentication", cost: "₹0.12 / conv", color: "bg-purple-50 text-purple-700 border-purple-200" },
 };
@@ -176,7 +177,7 @@ export default function TemplatesPage() {
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Message Templates
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] shadow-2xs tabular-nums">
               Meta Approved
             </span>
           </div>
@@ -188,7 +189,7 @@ export default function TemplatesPage() {
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/campaigns`}>
             <Button size="sm" variant="outline" className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-medium cursor-pointer h-10 px-3.5">
-              <Send className="h-3.5 w-3.5 text-[#FF7900]" />
+              <Send className="h-3.5 w-3.5 text-[#FF7A1A]" />
               <span>Go to Campaigns</span>
             </Button>
           </Link>
@@ -200,7 +201,7 @@ export default function TemplatesPage() {
               setCreateSuccessMsg(null);
               setCreateModalOpen(true);
             }}
-            className="rounded-xl text-xs sm:text-sm bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-medium cursor-pointer h-10 px-4"
+            className="rounded-xl text-xs sm:text-sm bg-[#FF7A1A] hover:bg-[#FF8833] text-white flex items-center gap-1.5 shadow-2xs font-medium cursor-pointer h-10 px-4"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Template</span>
@@ -209,51 +210,38 @@ export default function TemplatesPage() {
       </div>
 
       {/* KPI Stats Banner */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">Total Templates</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">{allTemplates.length}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-[#0D0D0E]">
-            <FileText className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-800">Approved</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1">{approvedCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-800">Under Review</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1">{pendingCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
-            <Clock className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-800">Rejected</span>
-            <div className="text-2xl font-semibold font-mono tracking-tight text-rose-600 mt-1">{rejectedCount}</div>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
-            <XCircle className="h-5 w-5" />
-          </div>
-        </div>
-      </div>
+      <StatStrip
+        stats={[
+          {
+            id: "total",
+            label: "Total Templates",
+            value: allTemplates.length,
+            subtext: "Meta Cloud Library",
+          },
+          {
+            id: "approved",
+            label: "Approved by Meta",
+            value: approvedCount,
+            change: { value: "Ready to send", trend: "up" },
+          },
+          {
+            id: "pending",
+            label: "Under Review",
+            value: pendingCount,
+            change: { value: "Pending Meta SLA", trend: "neutral" },
+          },
+          {
+            id: "rejected",
+            label: "Rejected",
+            value: rejectedCount,
+            subtext: "Policy compliance",
+          },
+        ]}
+      />
 
       {/* Meta Guidelines Callout */}
       <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 text-xs text-[#0D0D0E] shadow-2xs flex items-start gap-3">
-        <div className="p-2 rounded-xl bg-[#FFF4EC] border border-[#FFE1CC] text-[#FF7900] shrink-0">
+        <div className="p-2 rounded-xl bg-[#FFF4EC] border border-[#FFE1CC] text-[#FF7A1A] shrink-0">
           <Info className="h-4.5 w-4.5" />
         </div>
         <div className="space-y-1">
@@ -262,7 +250,7 @@ export default function TemplatesPage() {
           </p>
           <p className="text-xs leading-relaxed text-[#525866] font-normal">
             • <span className="text-[#0D0D0E] font-medium">Pre-Approval Mandatory:</span> Only templates with <span className="text-emerald-700 font-medium">APPROVED</span> status can be dispatched.
-            • <span className="text-[#0D0D0E] font-medium">Variables:</span> Must be sequentially numbered as <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7900] font-medium">{"{{1}}"}</code>, <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7900] font-medium">{"{{2}}"}</code>.
+            • <span className="text-[#0D0D0E] font-medium">Variables:</span> Must be sequentially numbered as <code className="tabular-nums bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7A1A] font-medium">{"{{1}}"}</code>, <code className="tabular-nums bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7A1A] font-medium">{"{{2}}"}</code>.
             • <span className="text-[#0D0D0E] font-medium">Marketing Opt-out:</span> Marketing templates must provide explicit opt-out wording (e.g. Reply STOP to opt out).
           </p>
         </div>
@@ -280,7 +268,7 @@ export default function TemplatesPage() {
           }`}
         >
           <span>All Templates</span>
-          <span className="font-mono text-[11px] opacity-80">({allTemplates.length})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({allTemplates.length})</span>
         </button>
         <button
           type="button"
@@ -292,7 +280,7 @@ export default function TemplatesPage() {
           }`}
         >
           <span>Approved</span>
-          <span className="font-mono text-[11px] opacity-80">({approvedCount})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({approvedCount})</span>
         </button>
         <button
           type="button"
@@ -304,7 +292,7 @@ export default function TemplatesPage() {
           }`}
         >
           <span>Pending Review</span>
-          <span className="font-mono text-[11px] opacity-80">({pendingCount})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({pendingCount})</span>
         </button>
         <button
           type="button"
@@ -316,7 +304,7 @@ export default function TemplatesPage() {
           }`}
         >
           <span>Rejected</span>
-          <span className="font-mono text-[11px] opacity-80">({rejectedCount})</span>
+          <span className="tabular-nums text-[11px] opacity-80">({rejectedCount})</span>
         </button>
       </div>
 
@@ -328,7 +316,7 @@ export default function TemplatesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search templates by name or content..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#717680] focus:outline-none focus:border-[#FF7900] focus:bg-white transition-all font-medium"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#717680] focus:outline-none focus:border-[#FF7A1A] focus:bg-white transition-all font-medium"
           />
         </div>
 
@@ -336,7 +324,7 @@ export default function TemplatesPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as TemplateCategory | "all")}
-            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Categories</option>
             <option value="marketing">Marketing (₹0.82)</option>
@@ -347,7 +335,7 @@ export default function TemplatesPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as TemplateStatus | "all")}
-            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="APPROVED">Approved</option>
@@ -372,16 +360,16 @@ export default function TemplatesPage() {
             return (
               <div
                 key={tpl.id}
-                className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs hover:shadow-md hover:border-[#FF7900]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs hover:shadow-md hover:border-[#FF7A1A]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <h3 className="font-semibold text-sm text-[#0D0D0E] font-mono tracking-tight">
+                      <h3 className="font-semibold text-sm text-[#0D0D0E] tabular-nums tracking-tight">
                         {tpl.name}
                       </h3>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[11px] text-[#525866] font-medium uppercase font-mono">
+                        <span className="text-[11px] text-[#525866] font-medium uppercase tabular-nums">
                           {tpl.language}
                         </span>
                         <span className="text-[#E5E7EB]">•</span>
@@ -461,7 +449,7 @@ export default function TemplatesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => setInspectTemplate(tpl)}
-                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl font-medium"
+                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] rounded-xl font-medium"
                     >
                       <Eye className="h-3.5 w-3.5 mr-1 text-[#525866]" /> Inspect
                     </Button>
@@ -523,7 +511,7 @@ export default function TemplatesPage() {
                     onChange={(e) => setNameInput(e.target.value.toLowerCase().replace(/\s+/g, "_"))}
                     placeholder="e.g. festival_discount_offer"
                     required
-                    className="font-mono text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl"
+                    className="tabular-nums text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl"
                   />
                 </div>
 
@@ -534,7 +522,7 @@ export default function TemplatesPage() {
                   <select
                     value={categoryInput}
                     onChange={(e) => setCategoryInput(e.target.value as TemplateCategory)}
-                    className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs text-[#0D0D0E] font-semibold focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                    className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs text-[#0D0D0E] font-semibold focus:outline-none focus:bg-white focus:border-[#FF7A1A]"
                   >
                     <option value="marketing">Marketing (₹0.82 / conv)</option>
                     <option value="utility">Utility (₹0.35 / conv)</option>
@@ -552,7 +540,7 @@ export default function TemplatesPage() {
                   value={headerInput}
                   onChange={(e) => setHeaderInput(e.target.value)}
                   placeholder="e.g. Special Offer For You"
-                  className="text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl"
+                  className="text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl"
                 />
               </div>
 
@@ -562,7 +550,7 @@ export default function TemplatesPage() {
                   <label className="font-medium text-[#0D0D0E]">
                     Body Content (use {"{{1}}"}, {"{{2}}"} for variables) *
                   </label>
-                  <span className="text-[10px] text-[#8E8E93] font-mono">
+                  <span className="text-[10px] text-[#8E8E93] tabular-nums">
                     {bodyInput.length}/1024 chars
                   </span>
                 </div>
@@ -572,7 +560,7 @@ export default function TemplatesPage() {
                   onChange={(e) => setBodyInput(e.target.value)}
                   placeholder="Hello {{1}}, we are excited to announce our new catalog. Reply STOP to opt out."
                   required
-                  className="w-full rounded-2xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white resize-none font-medium"
+                  className="w-full rounded-2xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white resize-none font-medium"
                 />
               </div>
 
@@ -585,7 +573,7 @@ export default function TemplatesPage() {
                   value={footerInput}
                   onChange={(e) => setFooterInput(e.target.value)}
                   placeholder="e.g. Acme Technologies Support"
-                  className="text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] rounded-xl"
+                  className="text-xs bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl"
                 />
               </div>
 
@@ -602,7 +590,7 @@ export default function TemplatesPage() {
                   <div className="grid grid-cols-2 gap-2">
                     {liveVariables.map((v) => (
                       <div key={v}>
-                        <label className="text-[10px] font-mono text-[#8E8E93] block mb-0.5">
+                        <label className="text-[10px] tabular-nums text-[#8E8E93] block mb-0.5">
                           Value for {"{{" + v + "}}"}
                         </label>
                         <Input
@@ -611,7 +599,7 @@ export default function TemplatesPage() {
                             setSampleValuesInput({ ...sampleValuesInput, [v]: e.target.value })
                           }
                           placeholder={`Sample value for {{${v}}}`}
-                          className="text-xs h-8 bg-white border-[#E5E5E7] focus:border-[#FF7900] rounded-xl"
+                          className="text-xs h-8 bg-white border-[#E5E5E7] focus:border-[#FF7A1A] rounded-xl"
                         />
                       </div>
                     ))}
@@ -646,7 +634,7 @@ export default function TemplatesPage() {
               <Button variant="ghost" onClick={() => setCreateModalOpen(false)} className="text-[#8E8E93] hover:text-[#0D0D0E] rounded-xl text-xs font-semibold">
                 Cancel
               </Button>
-              <Button type="submit" disabled={!nameInput.trim() || !bodyInput.trim()} className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer">
+              <Button type="submit" disabled={!nameInput.trim() || !bodyInput.trim()} className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer">
                 Submit for Meta Review
               </Button>
             </DialogFooter>
@@ -661,7 +649,7 @@ export default function TemplatesPage() {
             <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <DialogTitle className="font-mono text-base font-semibold text-[#0D0D0E]">{inspectTemplate.name}</DialogTitle>
+                  <DialogTitle className="tabular-nums text-base font-semibold text-[#0D0D0E]">{inspectTemplate.name}</DialogTitle>
                   <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
                     Category: {inspectTemplate.category.toUpperCase()} • Language: {inspectTemplate.language}
                   </DialogDescription>
@@ -713,7 +701,7 @@ export default function TemplatesPage() {
               <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] text-[11px]">
                 <div>
                   <span className="text-[#8E8E93] block font-medium">Meta Template ID:</span>
-                  <span className="font-mono font-semibold text-[#0D0D0E]">
+                  <span className="tabular-nums font-semibold text-[#0D0D0E]">
                     {inspectTemplate.meta_template_id || "Awaiting Approval"}
                   </span>
                 </div>

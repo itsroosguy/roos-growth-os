@@ -88,7 +88,7 @@ export default function BusinessProfileSettingsPage() {
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Business Knowledge &amp; Grounding Profile
             </h1>
-            <Badge variant="orangeSubtle" className="text-xs font-mono font-medium">
+            <Badge variant="orangeSubtle" className="text-xs tabular-nums font-medium">
               Anti-Hallucination Grounding
             </Badge>
           </div>
@@ -115,7 +115,7 @@ export default function BusinessProfileSettingsPage() {
       <form onSubmit={handleSave} className="space-y-6">
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
-            <Building2 className="h-5 w-5 text-[#FF7900]" />
+            <Building2 className="h-5 w-5 text-[#FF7A1A]" />
             <h2 className="text-base font-semibold text-[#0D0D0E]">Company Identity &amp; Services</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
@@ -129,14 +129,14 @@ export default function BusinessProfileSettingsPage() {
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Service Area / Geographical Coverage"
                 value={serviceArea}
                 onChange={(e) => setServiceArea(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
             </div>
 
@@ -148,7 +148,7 @@ export default function BusinessProfileSettingsPage() {
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7A1A]"
                 required
               />
             </div>
@@ -161,7 +161,7 @@ export default function BusinessProfileSettingsPage() {
                 rows={2}
                 value={products}
                 onChange={(e) => setProducts(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7A1A]"
                 required
               />
             </div>
@@ -172,21 +172,21 @@ export default function BusinessProfileSettingsPage() {
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Official Contact Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
               <Input
                 label="Official Helpline Phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs font-mono"
+                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs tabular-nums"
               />
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function BusinessProfileSettingsPage() {
                 rows={2}
                 value={pricing}
                 onChange={(e) => setPricing(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7A1A]"
                 placeholder="e.g. Starter: ₹299/mo, Growth: ₹799/mo, Business: ₹1,499/mo..."
                 required
               />
@@ -225,7 +225,7 @@ export default function BusinessProfileSettingsPage() {
                 rows={2}
                 value={returnPolicy}
                 onChange={(e) => setReturnPolicy(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7900]"
+                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:bg-white focus:border-[#FF7A1A]"
                 placeholder="e.g. 14-day refund policy on annual plans. Cancel monthly anytime..."
                 required
               />
@@ -236,7 +236,7 @@ export default function BusinessProfileSettingsPage() {
         {/* Approved FAQs */}
         <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
-            <HelpCircle className="h-5 w-5 text-[#FF7900]" />
+            <HelpCircle className="h-5 w-5 text-[#FF7A1A]" />
             <h2 className="text-base font-semibold text-[#0D0D0E]">Approved Frequently Asked Questions (FAQs)</h2>
           </div>
           <p className="text-xs text-[#8E8E93] font-medium">
@@ -281,7 +281,7 @@ export default function BusinessProfileSettingsPage() {
                 placeholder="e.g. Do you support broadcast marketing?"
                 value={newFaqQuestion}
                 onChange={(e) => setNewFaqQuestion(e.target.value)}
-                className="bg-white border-[#E5E5E7] focus:border-[#FF7900] text-[#0D0D0E] rounded-xl text-xs"
+                className="bg-white border-[#E5E5E7] focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
               />
               <div>
                 <label className="block text-xs font-medium text-[#0D0D0E] mb-1">
@@ -292,7 +292,7 @@ export default function BusinessProfileSettingsPage() {
                   placeholder="e.g. Yes, on Growth and Business plans..."
                   value={newFaqAnswer}
                   onChange={(e) => setNewFaqAnswer(e.target.value)}
-                  className="w-full rounded-xl border border-[#E5E5E7] bg-white p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:border-[#FF7900]"
+                  className="w-full rounded-xl border border-[#E5E5E7] bg-white p-2.5 text-xs text-[#0D0D0E] font-medium focus:outline-none focus:border-[#FF7A1A]"
                 />
               </div>
               <Button
@@ -302,7 +302,7 @@ export default function BusinessProfileSettingsPage() {
                 className="text-xs font-semibold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]"
                 onClick={handleAddFaq}
               >
-                <Plus className="h-3.5 w-3.5 mr-1 text-[#FF7900]" />
+                <Plus className="h-3.5 w-3.5 mr-1 text-[#FF7A1A]" />
                 Add FAQ
               </Button>
             </div>
@@ -310,7 +310,7 @@ export default function BusinessProfileSettingsPage() {
 
           {isAdmin && (
             <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
-              <Button type="submit" className="bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl text-xs shadow-2xs">
+              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs">
                 Save Business Profile
               </Button>
             </div>
