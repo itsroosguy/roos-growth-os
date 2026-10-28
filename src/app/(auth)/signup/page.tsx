@@ -127,7 +127,7 @@ export default function SignupPage() {
 
           {orgName && (
             <p className="text-[11px] text-[#8E8E93]">
-              Workspace URL: <span className="font-mono text-[#FF7900] font-semibold">/app/{cleanSlug(orgName)}</span>
+              Workspace URL: <span className="font-sans text-[#FF5A1F] font-medium">/app/{cleanSlug(orgName)}</span>
             </p>
           )}
 

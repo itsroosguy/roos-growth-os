@@ -106,7 +106,7 @@ export default function AcceptInvitationPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0D0D0E] flex items-center justify-center p-4">
-        <div className="text-white text-xs font-mono flex items-center gap-2">
+        <div className="text-white text-xs font-sans flex items-center gap-2">
           <Shield className="h-4 w-4 text-[#FF7900] animate-spin" />
           <span>Verifying cryptographic token security...</span>
         </div>
@@ -146,7 +146,7 @@ export default function AcceptInvitationPage() {
         <div className="flex items-center justify-center mb-1">
           <RoosLogo variant="white" size="lg" />
         </div>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#24180E] border border-[#FF7900]/30 text-[11px] font-mono text-[#FF7900]">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#24180E] border border-[#FF7900]/30 text-[11px] font-sans text-[#FF7900]">
           <ShieldCheck className="h-3.5 w-3.5 text-[#FF7900]" />
           <span>ROOS STUDIOX VERIFIED INSTITUTIONAL CREDENTIAL</span>
         </div>
@@ -167,7 +167,7 @@ export default function AcceptInvitationPage() {
               Verified Invitation from: <span className="text-[#FF7900] font-semibold">{invite.inviter_name}</span> ({invite.inviter_email})
             </span>
           </div>
-          <span className="font-mono text-[10px] text-[#8E8E93] bg-white border border-[#E5E5E7] px-2 py-0.5 rounded-md">
+          <span className="font-sans text-[10px] text-[#8E8E93] bg-white border border-[#E5E5E7] px-2 py-0.5 rounded-md">
             7-Day SLA Token Valid
           </span>
         </div>
@@ -181,7 +181,7 @@ export default function AcceptInvitationPage() {
             <p className="text-xs text-[#8E8E93] max-w-md mx-auto leading-relaxed">
               Your appointment as <strong className="text-[#0D0D0E] font-semibold">{roleMeta.title}</strong> has been sealed. Launching your workspace session now...
             </p>
-            <div className="flex items-center justify-center text-xs font-mono text-[#FF7900] pt-2 animate-pulse">
+            <div className="flex items-center justify-center text-xs font-sans text-[#FF7900] pt-2 animate-pulse">
               Redirecting to secure workspace...
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function AcceptInvitationPage() {
                 >
                   {roleMeta.level} Clearance
                 </span>
-                <span className="text-xs font-semibold text-[#8E8E93] flex items-center gap-1 font-mono">
+                <span className="text-xs font-semibold text-[#8E8E93] flex items-center gap-1 font-sans">
                   Token: {invite.token.substring(0, 16)}...
                 </span>
               </div>
@@ -254,7 +254,7 @@ export default function AcceptInvitationPage() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-[#0D0D0E] text-[11px]">{rule.title}</span>
-                      <span className="text-[9px] font-mono font-semibold text-[#FF7900] bg-white px-1.5 py-0.5 rounded border border-[#E5E5E7]">
+                      <span className="text-[9px] font-sans font-semibold text-[#FF7900] bg-white px-1.5 py-0.5 rounded border border-[#E5E5E7]">
                         {rule.code}
                       </span>
                     </div>
@@ -332,7 +332,7 @@ export default function AcceptInvitationPage() {
         )}
 
         {/* Footer Security Seal */}
-        <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] text-center text-[10px] text-[#8E8E93] font-mono flex items-center justify-center gap-4">
+        <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] text-center text-[10px] text-[#8E8E93] font-sans flex items-center justify-center gap-4">
           <span>🔒 SOC-2 TYPE II COMPLIANT</span>
           <span>•</span>
           <span>256-BIT TOKEN ENCRYPTED</span>

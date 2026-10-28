@@ -44,7 +44,7 @@ export default function InviteIndexPage() {
             value={inputToken}
             onChange={(e) => setInputToken(e.target.value)}
             required
-            className="font-mono text-xs"
+            className="font-sans text-xs"
           />
           <Button
             type="submit"
@@ -70,7 +70,7 @@ export default function InviteIndexPage() {
                   <span className="font-semibold text-[#0D0D0E] block group-hover:text-[#FF7900] transition-colors">
                     {invite.recipient_name} ({invite.role})
                   </span>
-                  <span className="text-[10px] font-mono text-[#8E8E93]">
+                  <span className="text-[10px] font-sans text-[#8E8E93]">
                     {invite.token}
                   </span>
                 </div>

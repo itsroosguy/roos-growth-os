@@ -211,8 +211,8 @@ export default function LoginPage() {
           </div>
 
           {/* Preloader Micro-Readout */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161619] border border-[#27272A] text-[10px] font-mono text-[#FF7900] tracking-widest uppercase mb-4 shadow-inner">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#FF7900] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161619] border border-[#27272A] text-[10px] font-sans text-[#FF5A1F] tracking-widest uppercase mb-4 shadow-inner">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F] animate-pulse" />
             <span>[ ROOS STUDIOX // GROWTH OS ]</span>
           </div>
 
@@ -227,14 +227,14 @@ export default function LoginPage() {
 
           {/* Carousel Indicator Dots */}
           <div className="flex items-center justify-center gap-2 mt-7">
-            <span className="w-6 h-1.5 rounded-full bg-[#FF7900]" />
+            <span className="w-6 h-1.5 rounded-full bg-[#FF5A1F]" />
             <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
             <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
           </div>
         </div>
 
         {/* Bottom Left Meta on Dark Panel */}
-        <div className="relative z-10 flex items-center justify-between text-[11px] text-[#71717A] font-mono border-t border-[#1C1C20] pt-4">
+        <div className="relative z-10 flex items-center justify-between text-[11px] text-[#71717A] font-sans border-t border-[#1C1C20] pt-4">
           <span>ROOS STUDIOX ENTERPRISE</span>
           <span>v2.4 SECURE</span>
         </div>
@@ -273,7 +273,7 @@ export default function LoginPage() {
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
               <div className="flex flex-col truncate">
                 <span className="text-[#0D0D0E] font-semibold text-[11px] leading-tight">Master Admin Access</span>
-                <span className="font-mono text-[#71717A] text-[10px] truncate">admin@acmetech.io • roos2026demo</span>
+                <span className="font-sans text-[#71717A] text-[10px] truncate">admin@acmetech.io • roos2026demo</span>
               </div>
             </div>
             <button

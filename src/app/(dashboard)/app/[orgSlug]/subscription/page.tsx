@@ -328,15 +328,15 @@ export default function SubscriptionPage() {
                     {mounted ? metric.percentage_used : metric.percentage_used}% consumed
                   </span>
                   {isExceeded ? (
-                    <span className="text-rose-600 font-semibold flex items-center text-[11px]">
-                      <AlertTriangle className="h-3 w-3 mr-1 inline" /> Exceeded
+                    <span className="text-amber-800 font-medium flex items-center text-[11px] bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                      <AlertTriangle className="h-3 w-3 mr-1 inline" /> At limit
                     </span>
                   ) : isWarning ? (
                     <span className="text-amber-700 font-medium text-[11px]">
-                      Warning (&gt;80%)
+                      Near limit (&gt;80%)
                     </span>
                   ) : (
-                    <span className="text-emerald-700 font-medium text-[11px]">Normal</span>
+                    <span className="text-emerald-700 font-medium text-[11px]">Within quota</span>
                   )}
                 </div>
               </div>

@@ -46,13 +46,13 @@ export default function PlatformAdminPage() {
     return (
       <SettingsShell
         orgSlug={currentOrg.slug}
-        title="Platform Administration"
-        description="Master multi-tenant operator console and cross-tenant capacity overrides."
+        title="Integrations & Platform Console"
+        description="Navigation item 'Integrations' routes to `/settings/admin`."
       >
         <RestrictedState
-          title="Access Restricted"
-          description={`The Platform Administration console is restricted strictly to verified workspace owners. Your current role is ${userRole}.`}
-          requiredRole="Workspace Owner"
+          title="Integrations Access Notice"
+          description={`The navigation route 'Integrations' resolves to the Platform Administration Console. Direct third-party SaaS integrations require enterprise OAuth clearance. Your active role is ${userRole}.`}
+          requiredRole="Enterprise Owner or Superadmin"
         />
       </SettingsShell>
     );

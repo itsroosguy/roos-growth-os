@@ -109,7 +109,7 @@ export default function SelectOrgPage() {
                         </Badge>
                       </div>
                       <p className="text-[11px] text-[#8E8E93] mt-0.5">
-                        workspace: <span className="font-mono text-[#0D0D0E]">/app/{org.slug}</span>
+                        workspace: <span className="font-sans text-[#0D0D0E]">/app/{org.slug}</span>
                       </p>
                     </div>
                   </div>
@@ -169,7 +169,7 @@ export default function SelectOrgPage() {
             {newOrgName && (
               <p className="text-xs text-[#8E8E93]">
                 Generated URL slug:{" "}
-                <span className="font-mono text-[#FF7900] font-semibold">
+                <span className="font-sans text-[#FF5A1F] font-medium">
                   /app/{cleanSlug(newOrgName)}
                 </span>
               </p>
