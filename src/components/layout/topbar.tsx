@@ -208,9 +208,9 @@ export function Topbar() {
           >
             <Search className="h-3.5 w-3.5 text-[#717680] shrink-0" />
             <span className="hidden md:inline font-normal text-xs text-[#717680]">Search...</span>
-            <kbd className="inline-flex items-center gap-0.5 rounded bg-white border border-[#E4E4E7] px-1 py-0.2 text-[10px] text-[#717680]">
+            <kbd className="inline-flex items-center gap-0.5 rounded bg-white border border-[#E4E4E7] px-1 py-0.2 text-[10px] text-[#717680] font-sans">
               <Command className="h-2.5 w-2.5" />
-              <span>K</span>
+              <span className="font-sans">K</span>
             </kbd>
           </button>
 

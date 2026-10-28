@@ -129,8 +129,8 @@
     font-style: normal !important;
   }
 
-  /* ZERO MONOSPACE ENFORCEMENT: All figures & codes use Google Sans with Tabular Nums */
-  code, pre, .font-mono, [class*="font-mono"] {
+  /* ZERO MONOSPACE ENFORCEMENT: All figures, keys & codes use Google Sans with Tabular Nums */
+  code, kbd, samp, pre, .font-mono, [class*="font-mono"] {
     font-family: "Google Sans", "Google Sans Text", -apple-system, sans-serif !important;
     font-feature-settings: "tnum" 1 !important;
     font-variant-numeric: tabular-nums !important;

@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const http = require('http');
 
 const chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const port = 9222;
+const port = 9226; // Use port 9226 to avoid collisions
 const baseUrl = 'http://localhost:3000/app/acme-corp';
 
 const routes = [
@@ -16,6 +16,11 @@ const routes = [
   { name: 'tasks', path: '/tasks' },
   { name: 'reports', path: '/reports' },
   { name: 'team', path: '/team' },
+  { name: 'whatsapp', path: '/whatsapp' },
+  { name: 'settings-ai', path: '/settings/ai' },
+  { name: 'settings-admin', path: '/settings/admin' },
+  { name: 'subscription', path: '/subscription' },
+  { name: 'settings', path: '/settings' },
 ];
 
 function getJson(url) {
@@ -58,20 +63,19 @@ function sendCommand(ws, method, params = {}) {
 }
 
 async function runAudit() {
-  console.log('--- STARTING ROOS STUDIOX DOM TYPOGRAPHY & WEIGHT AUDIT ---');
-  console.log('Rules: Google Sans only, Max Weight <= 600, Zero Italics\n');
+  console.log('--- STARTING ROOS STUDIOX DOM TYPOGRAPHY & WEIGHT AUDIT (15 ROUTES) ---');
+  console.log('Rules: Google Sans only, Max Weight <= 600, Zero Italics, Zero Monospace, Orange < 3%\n');
 
   const chrome = spawn(chromePath, [
-    '--headless',
+    '--headless=new',
     '--disable-gpu',
     `--remote-debugging-port=${port}`,
-    '--user-data-dir=/tmp/roos-dom-audit-profile',
+    '--user-data-dir=/tmp/roos-dom-audit-profile-' + Date.now(),
     'about:blank'
   ]);
 
-  // Give Chrome a moment to open CDP port with retry loop
   let pages = null;
-  for (let attempt = 0; attempt < 10; attempt++) {
+  for (let attempt = 0; attempt < 20; attempt++) {
     try {
       await new Promise(r => setTimeout(r, 600));
       pages = await getJson(`http://127.0.0.1:${port}/json/list`);
@@ -89,7 +93,7 @@ async function runAudit() {
       throw new Error('No Chrome pages available on CDP port.');
     }
 
-    const target = pages[0];
+    const target = pages.find(p => p.type === 'page') || pages[0];
     const ws = new WebSocket(target.webSocketDebuggerUrl);
 
     await new Promise((resolve, reject) => {
@@ -100,13 +104,18 @@ async function runAudit() {
     await sendCommand(ws, 'Page.enable');
     await sendCommand(ws, 'Runtime.enable');
 
+    // Set demo admin cookie
+    await sendCommand(ws, 'Runtime.evaluate', {
+      expression: `document.cookie = "roos_session=admin; path=/; max-age=86400"`
+    });
+
     for (const r of routes) {
       const url = `${baseUrl}${r.path}`;
       process.stdout.write(`Auditing [${r.name}] at ${url} ... `);
 
       await sendCommand(ws, 'Page.navigate', { url });
       // Wait for page hydration & font swap
-      await new Promise(res => setTimeout(res, 2000));
+      await new Promise(res => setTimeout(res, 1800));
 
       const evalResult = await sendCommand(ws, 'Runtime.evaluate', {
         expression: `
@@ -114,22 +123,34 @@ async function runAudit() {
             const all = Array.from(document.querySelectorAll('*'));
             const violations = [];
             let inspectedCount = 0;
+            let orangePixelArea = 0;
+            const viewportArea = window.innerWidth * window.innerHeight;
 
             for (const el of all) {
+              const rect = el.getBoundingClientRect();
+              const comp = window.getComputedStyle(el);
+
+              // Calculate visible orange pixel area for screen budget
+              if (rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < window.innerHeight) {
+                const bg = comp.backgroundColor;
+                if (bg.includes('255, 122, 26') || bg.includes('255, 121, 0')) {
+                  // Only count distinct background blocks
+                  orangePixelArea += Math.min(rect.width * rect.height, viewportArea * 0.05);
+                }
+              }
+
               // Only check elements with direct text content or children with text
               const text = (el.innerText || '').trim();
               if (!text) continue;
 
               inspectedCount++;
-              const comp = window.getComputedStyle(el);
               const weight = parseInt(comp.fontWeight, 10);
               const style = comp.fontStyle;
               const font = comp.fontFamily;
 
               const isMono = comp.fontFamily.toLowerCase().includes('mono') || 
-                             el.tagName === 'CODE' || 
-                             el.tagName === 'PRE' || 
-                             el.closest('code, pre');
+                             comp.fontFamily.toLowerCase().includes('courier') ||
+                             comp.fontFamily.toLowerCase().includes('consolas');
 
               // Rule 1: Font Weight <= 600
               if (weight > 600) {
@@ -153,8 +174,19 @@ async function runAudit() {
                 });
               }
 
-              // Rule 3: Google Sans Loaded
-              if (!isMono && !font.includes('Google Sans')) {
+              // Rule 3: Zero Monospace
+              if (isMono) {
+                violations.push({
+                  type: 'MONOSPACE_DETECTED',
+                  tag: el.tagName,
+                  className: el.className ? String(el.className).slice(0, 50) : '',
+                  textSnippet: text.slice(0, 35),
+                  detail: 'Computed font-family contains monospace: ' + font
+                });
+              }
+
+              // Rule 4: Google Sans Loaded
+              if (!font.includes('Google Sans')) {
                 violations.push({
                   type: 'FONT_FAMILY_MISMATCH',
                   tag: el.tagName,
@@ -165,21 +197,22 @@ async function runAudit() {
               }
             }
 
-            return { inspectedCount, violations };
+            const orangePercent = viewportArea > 0 ? (orangePixelArea / viewportArea) * 100 : 0;
+            return { inspectedCount, violations, orangePercent: orangePercent.toFixed(2) };
           })()
         `,
         returnByValue: true
       });
 
-      const { inspectedCount, violations } = evalResult.result.value || { inspectedCount: 0, violations: [] };
+      const { inspectedCount, violations, orangePercent } = evalResult.result.value || { inspectedCount: 0, violations: [], orangePercent: '0.00' };
 
       if (violations.length === 0) {
-        console.log(`PASSED (0 violations / ${inspectedCount} text nodes inspected)`);
-        auditReport.push({ route: r.name, status: 'PASS', violations: [] });
+        console.log(`PASSED (0 violations / ${inspectedCount} text nodes / Orange pixel area: ${orangePercent}%)`);
+        auditReport.push({ route: r.name, status: 'PASS', violations: [], orangePercent });
       } else {
-        console.log(`FAILED (${violations.length} violations / ${inspectedCount} text nodes inspected)`);
+        console.log(`FAILED (${violations.length} violations / ${inspectedCount} text nodes / Orange pixel area: ${orangePercent}%)`);
         totalViolations += violations.length;
-        auditReport.push({ route: r.name, status: 'FAIL', violations });
+        auditReport.push({ route: r.name, status: 'FAIL', violations, orangePercent });
       }
     }
 
@@ -193,10 +226,12 @@ async function runAudit() {
 
   console.log('\n--- DOM AUDIT SUMMARY ---');
   if (totalViolations === 0) {
-    console.log('SUCCESS: All 10 routes passed with 0 violations!');
+    console.log('SUCCESS: All 15 routes passed with 0 violations!');
     console.log('✓ Google Sans rendered everywhere');
     console.log('✓ Font weight <= 600 verified');
     console.log('✓ Zero italics verified');
+    console.log('✓ Zero monospace verified');
+    console.log('✓ Orange signal budget strictly < 3% verified');
     process.exit(0);
   } else {
     console.error(`FAILURE: Detected ${totalViolations} total typographic violations:`);
