@@ -14,8 +14,8 @@ export interface RestrictedStateProps {
 
 export function RestrictedState({
   title = "Access Restricted",
-  description = "This section contains enterprise configuration and API management tools that require elevated clearance.",
-  requiredRole = "Admin or Owner",
+  description = "This console contains internal system administration tools and webhook diagnostics that require elevated clearance.",
+  requiredRole = "Enterprise Owner or Superadmin",
   onUpgradeOrContact,
   actionLabel = "Request Clearance",
   className,
@@ -23,21 +23,21 @@ export function RestrictedState({
   return (
     <div
       className={cn(
-        "flex min-h-[340px] flex-col items-center justify-center rounded-xl border border-[#E4E4E7] bg-white p-8 text-center shadow-2xs select-none",
+        "flex min-h-[320px] flex-col items-center justify-center rounded-[14px] border border-[#E4E1D8] bg-white p-8 text-center shadow-hairline select-none",
         className
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#FAF9F6] border border-[#E4E4E7] text-[#0D0D0E] mb-3.5 shadow-2xs">
-        <Lock className="h-5 w-5 text-[#717680]" />
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EFEDE7] text-[#4B515D] mb-3.5">
+        <Lock className="h-5 w-5 text-[#4B515D]" />
       </div>
 
-      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F4F4F5] text-[#525866] border border-[#E4E4E7] mb-2">
-        <ShieldAlert className="h-3 w-3 text-[#FF7A1A]" />
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#EFEDE7] text-[#4B515D] border border-[#E4E1D8] mb-2.5">
+        <ShieldAlert className="h-3 w-3 text-[#FF5A1F]" />
         <span>Requires {requiredRole}</span>
       </div>
 
-      <h3 className="text-sm font-medium text-[#0D0D0E] mb-1">{title}</h3>
-      <p className="max-w-sm text-xs text-[#717680] mb-5 font-normal leading-relaxed">
+      <h3 className="text-[15px] font-medium text-[#12141A] mb-1">{title}</h3>
+      <p className="max-w-sm text-[13px] text-[#4B515D] mb-5 font-normal leading-relaxed">
         {description}
       </p>
 

@@ -7,13 +7,13 @@ const statusPillVariants = cva(
   {
     variants: {
       variant: {
-        neutral: "bg-[#F4F4F5] text-[#525866] border-[#E4E4E7]",
-        success: "bg-emerald-50 text-emerald-800 border-emerald-200",
-        warning: "bg-amber-50 text-amber-800 border-amber-200",
-        danger: "bg-rose-50 text-rose-800 border-rose-200",
-        attention: "bg-[#FFF4EC] text-[#FF7A1A] border-[#FFD8BF]",
-        info: "bg-sky-50 text-sky-800 border-sky-200",
-        dark: "bg-[#18181B] text-[#D4D4D8] border-[#27272A]",
+        neutral: "bg-[#EFEDE7] text-[#4B515D] border-[#E4E1D8]",
+        success: "bg-[#E6F4EE] text-[#0F7B5A] border-[#C7EADB]",
+        warning: "bg-[#FBF0DC] text-[#A8650A] border-[#F5E0B8]",
+        danger: "bg-[#FDECEA] text-[#B42318] border-[#F8D0CC]",
+        attention: "bg-[#FFF1EA] text-[#C73E0C] border-[#FFE0D2]",
+        info: "bg-[#E8EEFD] text-[#2F55D4] border-[#D0DCFA]",
+        dark: "bg-[#1B1F29] text-[#A3A9B6] border-[#242A38]",
       },
       size: {
         default: "text-[11px] px-2 py-0.5",
@@ -50,17 +50,17 @@ export function StatusPill({
     if (dotColor) return dotColor;
     switch (variant) {
       case "success":
-        return "bg-emerald-500";
+        return "bg-[#0F7B5A]";
       case "warning":
-        return "bg-amber-500";
+        return "bg-[#A8650A]";
       case "danger":
-        return "bg-rose-500";
+        return "bg-[#B42318]";
       case "attention":
-        return "bg-[#FF7A1A]";
+        return "bg-[#FF5A1F]";
       case "info":
-        return "bg-sky-500";
+        return "bg-[#2F55D4]";
       default:
-        return "bg-[#717680]";
+        return "bg-[#6A707C]";
     }
   };
 

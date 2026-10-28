@@ -9,7 +9,7 @@ import {
   Sparkles,
   Layers,
   CreditCard,
-  Settings,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -40,43 +40,43 @@ export function SettingsShell({
 
   const navItems = [
     {
-      title: "WhatsApp Configuration",
+      title: "WhatsApp API",
       href: `/app/${orgSlug}/whatsapp`,
       icon: Smartphone,
     },
     {
-      title: "AI Assistant",
+      title: "AI Engine",
       href: `/app/${orgSlug}/settings/ai`,
       icon: Sparkles,
     },
     {
-      title: "Integrations & API",
+      title: "Integrations",
       href: `/app/${orgSlug}/settings/admin`,
       icon: Layers,
     },
     {
-      title: "Subscription & Usage",
+      title: "Subscription & Limits",
       href: `/app/${orgSlug}/subscription`,
       icon: CreditCard,
     },
     {
       title: "Organisation Details",
       href: `/app/${orgSlug}/settings`,
-      icon: Settings,
+      icon: Building2,
     },
   ];
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pb-4 border-b border-[#E4E4E7]">
+      <div className="pb-4 border-b border-[#E4E1D8]">
         <div className="flex items-center gap-3">
-          <h1 className="type-title text-[#0D0D0E] font-medium tracking-tight">
+          <h1 className="text-[24px] font-medium tracking-tight text-[#12141A]">
             {title}
           </h1>
           {badge}
         </div>
-        <p className="text-xs text-[#717680] mt-1 font-normal">
+        <p className="text-[13px] text-[#4B515D] mt-1 font-normal">
           {description}
         </p>
       </div>
@@ -85,8 +85,8 @@ export function SettingsShell({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Sub-nav */}
         <aside className="lg:col-span-3 space-y-1">
-          <div className="type-eyebrow text-[#717680] px-2 py-1 mb-1">
-            Settings Menu
+          <div className="type-eyebrow text-[#6A707C] px-2 py-1 mb-1">
+            Configuration
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -98,16 +98,16 @@ export function SettingsShell({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition-colors duration-140 select-none",
+                  "flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[13px] transition-colors duration-140 select-none",
                   isActive
-                    ? "bg-[#0D0D0E] text-white font-medium shadow-2xs"
-                    : "text-[#525866] hover:text-[#0D0D0E] hover:bg-white"
+                    ? "bg-[#1B1F29] text-[#F4F5F7] font-medium shadow-hairline"
+                    : "text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7]"
                 )}
               >
                 <Icon
                   className={cn(
                     "h-4 w-4 shrink-0",
-                    isActive ? "text-[#FF7A1A]" : "text-[#717680]"
+                    isActive ? "text-[#FF5A1F]" : "text-[#6A707C]"
                   )}
                 />
                 <span className="truncate">{item.title}</span>
@@ -116,14 +116,14 @@ export function SettingsShell({
           })}
         </aside>
 
-        {/* Right Form Column */}
+        {/* Right Form Column (max-w-[760px]) */}
         <main className="lg:col-span-9 max-w-[760px] space-y-6">
           {children}
 
           {/* Sticky Save Bar */}
           {showSaveBar && (
-            <div className="sticky bottom-4 z-20 flex items-center justify-between p-3.5 rounded-xl bg-[#0D0D0E] text-white border border-[#27272A] shadow-dropdown animate-reveal">
-              <span className="text-xs text-[#D4D4D8]">
+            <div className="sticky bottom-4 z-20 flex items-center justify-between p-3.5 rounded-[14px] bg-[#0B0D12] text-white border border-[#242A38] shadow-overlay animate-reveal">
+              <span className="text-[13px] text-[#A3A9B6]">
                 You have unsaved changes in this configuration.
               </span>
               <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function SettingsShell({
                     variant="ghost"
                     size="sm"
                     onClick={onReset}
-                    className="text-[#D4D4D8] hover:text-white hover:bg-[#18181B]"
+                    className="text-[#A3A9B6] hover:text-white hover:bg-[#1B1F29]"
                   >
                     Reset
                   </Button>
@@ -141,7 +141,7 @@ export function SettingsShell({
                   size="sm"
                   onClick={onSave}
                   isLoading={isSaving}
-                  className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white"
+                  variant="primary"
                 >
                   Save Changes
                 </Button>

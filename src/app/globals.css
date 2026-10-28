@@ -44,38 +44,40 @@
 
 @layer base {
   :root {
-    /* Roos StudioX Business OS — Quiet Instrument Calm Paper Canvas */
-    --background: #FAF9F6;
-    --canvas: #FAF9F6;
-    --foreground: #0D0D0E;
-    --foreground-secondary: #525866;
-    --foreground-muted: #717680;
-    
+    /* Roos StudioX Business OS — Quiet Instrument: Warm Paper Canvas */
+    --canvas: #F6F5F1;
+    --background: #F6F5F1;
     --surface: #FFFFFF;
-    --surface-subtle: #F4F4F5;
-    --surface-muted: #F7F7F8;
-    --surface-hover: #F1F1F4;
+    --sunken: #EFEDE7;
     
-    --border: #E4E4E7;
-    --border-strong: #D4D4D8;
-    --border-subtle: #F0F0F3;
+    --line: #E4E1D8;
+    --line-strong: #D2CEC2;
+    --border: #E4E1D8;
 
-    /* ROOS Identity Orange — Reserved strictly for primary action & active state (< 3% pixels) */
-    --roos-orange: #FF7A1A;
-    --roos-orange-hover: #FF8833;
-    --roos-orange-subtle: rgba(255, 122, 26, 0.08);
+    --text-1: #12141A;
+    --text-2: #4B515D;
+    --text-3: #6A707C;
+    --foreground: #12141A;
 
-    /* Dark App Shell Surfaces (Sidebar & Shell Chrome) */
-    --dark-bg: #0D0D0E;
-    --dark-card: #121215;
-    --dark-elevated: #18181B;
-    --dark-hover: #202024;
-    --dark-border: #1F1F24;
+    /* The One Signal: Flame-500 */
+    --flame-500: #FF5A1F;
+    --flame-700: #C73E0C;
+    --flame-50: #FFF1EA;
+    --flame-100: #FFE0D2;
+    --roos-orange: #FF5A1F;
+
+    /* Dark App Shell */
+    --ink-950: #0B0D12;
+    --ink-850: #12151C;
+    --ink-700: #1B1F29;
+    --on-ink-1: #F4F5F7;
+    --on-ink-2: #A3A9B6;
+    --on-ink-3: #6B7280;
   }
 
   /* Universal typographic constraint & synthetic resets */
   * {
-    border-color: var(--border);
+    border-color: var(--line);
     font-synthesis: none !important;
     font-style: normal !important; /* Strict: Never italic anywhere */
   }
@@ -87,14 +89,14 @@
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--canvas);
+    color: var(--text-1);
     font-family: "Google Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 0.875rem;
     line-height: 1.5;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
     font-weight: 400;
   }
 
@@ -152,18 +154,37 @@
 }
 
 /* ========================================================================= */
-/* 8-LEVEL CALIBRATED GOOGLE SANS TYPOGRAPHY SCALE                            */
+/* CALIBRATED GOOGLE SANS TYPOGRAPHY UTILITIES                                */
 /* ========================================================================= */
+
+.type-metric-xl {
+  font-family: "Google Sans", sans-serif;
+  font-size: 3.5rem; /* 56px */
+  line-height: 3.75rem; /* 60px */
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
 
 .type-display {
   font-family: "Google Sans", sans-serif;
-  font-size: 1.75rem; /* 28px */
-  line-height: 2.125rem; /* 34px */
+  font-size: 1.875rem; /* 30px */
+  line-height: 2.25rem; /* 36px */
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 
-.type-heading,
+.type-metric {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.75rem; /* 28px */
+  line-height: 2rem; /* 32px */
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
 .type-title {
   font-family: "Google Sans", sans-serif;
   font-size: 1.125rem; /* 18px */
@@ -172,17 +193,7 @@
   letter-spacing: -0.015em;
 }
 
-.type-metric {
-  font-family: "Google Sans", sans-serif;
-  font-size: 2rem; /* 32px */
-  line-height: 2.25rem; /* 36px */
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  font-feature-settings: "tnum" 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.type-label-lg {
+.type-label {
   font-family: "Google Sans", sans-serif;
   font-size: 0.9375rem; /* 15px */
   line-height: 1.375rem; /* 22px */
@@ -198,8 +209,7 @@
   letter-spacing: -0.005em;
 }
 
-.type-body-sm,
-.type-supporting {
+.type-small {
   font-family: "Google Sans", sans-serif;
   font-size: 0.8125rem; /* 13px */
   line-height: 1.25rem; /* 20px */
@@ -215,8 +225,7 @@
   letter-spacing: 0;
 }
 
-.type-eyebrow,
-.type-utility {
+.type-eyebrow {
   font-family: "Google Sans", sans-serif;
   font-size: 0.6875rem; /* 11px */
   line-height: 0.875rem; /* 14px */
@@ -286,19 +295,7 @@
   transform: scale(0.98);
 }
 
-/* Fluid GPU-accelerated card hover */
-.interactive-hover-card {
-  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-}
-.interactive-hover-card:hover {
-  transform: translate3d(0, -1px, 0);
-  box-shadow: 0 4px 12px -2px rgba(13, 13, 14, 0.04);
-}
-
-/* Fast row selection */
+/* Row selection with 140ms easeOutExpo */
 .interactive-hover-row {
   transition: background-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
               border-color 140ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -315,21 +312,21 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E4E4E7;
+  background: #E4E1D8;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4D4D8;
+  background: #D2CEC2;
 }
 
 /* Crisp Text Selection */
 ::selection {
-  background-color: #FF7A1A;
+  background-color: #FF5A1F;
   color: #FFFFFF;
 }
 
 ::-moz-selection {
-  background-color: #FF7A1A;
+  background-color: #FF5A1F;
   color: #FFFFFF;
 }

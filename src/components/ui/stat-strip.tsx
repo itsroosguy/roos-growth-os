@@ -15,33 +15,58 @@ export interface StatItem {
 
 export interface StatStripProps {
   stats: StatItem[];
+  variant?: "strip" | "inline";
   className?: string;
 }
 
-export function StatStrip({ stats, className }: StatStripProps) {
+export function StatStrip({ stats, variant = "strip", className }: StatStripProps) {
+  if (variant === "inline") {
+    return (
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-x-6 gap-y-2 py-2 text-[13px] text-[#4B515D]",
+          className
+        )}
+      >
+        {stats.map((stat, idx) => (
+          <div key={stat.id} className="flex items-center gap-2">
+            {idx > 0 && <span className="text-[#D2CEC2] select-none">•</span>}
+            <span className="text-[#6A707C]">{stat.label}:</span>
+            <span className="font-medium text-[#12141A] font-variant-numeric tabular-nums">
+              {stat.value}
+            </span>
+            {stat.subtext && (
+              <span className="text-[11px] text-[#6A707C]">({stat.subtext})</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
-        "grid grid-cols-2 md:grid-cols-4 bg-white rounded-xl border border-[#E4E4E7] divide-y md:divide-y-0 md:divide-x divide-[#E4E4E7] shadow-2xs overflow-hidden",
+        "grid grid-cols-2 md:grid-cols-4 bg-white rounded-[14px] border border-[#E4E1D8] divide-y md:divide-y-0 md:divide-x divide-[#E4E1D8] shadow-hairline overflow-hidden",
         className
       )}
     >
       {stats.map((stat) => (
         <div
           key={stat.id}
-          className="p-5 flex flex-col justify-between transition-colors hover:bg-[#FAF9F6]/50"
+          className="p-5 flex flex-col justify-between transition-colors hover:bg-[#F6F5F1]/60"
         >
           <div className="flex items-center justify-between gap-2">
-            <span className="type-eyebrow text-[#717680] truncate">
+            <span className="type-eyebrow text-[#6A707C] truncate">
               {stat.label}
             </span>
             {stat.change && (
               <span
                 className={cn(
-                  "text-[11px] font-medium px-1.5 py-0.2 rounded",
-                  stat.change.trend === "up" && "text-emerald-700 bg-emerald-50 border border-emerald-200/60",
-                  stat.change.trend === "down" && "text-rose-700 bg-rose-50 border border-rose-200/60",
-                  stat.change.trend === "neutral" && "text-[#717680] bg-[#F4F4F5] border border-[#E4E4E7]"
+                  "text-[11px] font-medium px-1.5 py-0.5 rounded-full",
+                  stat.change.trend === "up" && "text-[#0F7B5A] bg-[#E6F4EE] border border-[#C7EADB]",
+                  stat.change.trend === "down" && "text-[#B42318] bg-[#FDECEA] border border-[#F8D0CC]",
+                  stat.change.trend === "neutral" && "text-[#4B515D] bg-[#EFEDE7] border border-[#E4E1D8]"
                 )}
               >
                 {stat.change.value}
@@ -49,12 +74,12 @@ export function StatStrip({ stats, className }: StatStripProps) {
             )}
           </div>
 
-          <div className="mt-3">
-            <div className="type-metric text-[#0D0D0E] tracking-tight">
+          <div className="mt-2.5">
+            <div className="text-[26px] font-medium text-[#12141A] tracking-tight font-variant-numeric tabular-nums leading-none">
               {stat.value}
             </div>
             {stat.subtext && (
-              <p className="text-xs text-[#717680] font-normal mt-1 truncate">
+              <p className="text-[12px] text-[#6A707C] font-normal mt-1.5 truncate">
                 {stat.subtext}
               </p>
             )}
