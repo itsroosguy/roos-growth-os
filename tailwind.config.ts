@@ -10,70 +10,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#F7F7F8",
-        canvas: "#F7F7F8",
+        background: "#FAF9F6",
+        canvas: "#FAF9F6",
         surface: {
           DEFAULT: "#FFFFFF",
-          subtle: "#F4F4F6",
+          subtle: "#F4F4F5",
           muted: "#F7F7F8",
           hover: "#F1F1F4",
           card: "#FFFFFF",
         },
         roos: {
-          orange: "#FF7900",
-          hover: "#E66D00",
-          light: "#FF9433",
-          dark: "#CC6000",
-          subtle: "rgba(255, 121, 0, 0.12)",
-          border: "rgba(255, 121, 0, 0.25)",
-          glow: "rgba(255, 121, 0, 0.35)",
+          orange: "#FF7A1A",      // True brand orange from roosstudiox.com
+          hover: "#FF8833",       // Interactive hover state
+          light: "#FFA055",
+          dark: "#E66500",
+          subtle: "rgba(255, 122, 26, 0.10)",
+          border: "rgba(255, 122, 26, 0.25)",
+        },
+        ink: {
+          950: "#0A0A0B",
+          900: "#0D0D0E",         // Primary dark sidebar shell
+          800: "#121215",
+          700: "#18181B",
+          600: "#27272A",
+          500: "#3F3F46",
         },
         dark: {
           bg: "#0D0D0E",
-          card: "#121214",
-          elevated: "#161619",
-          hover: "#18181C",
-          border: "#1F1F23",
+          card: "#121215",
+          elevated: "#18181B",
+          hover: "#202024",
+          border: "#1F1F24",
           muted: "#27272A",
           text: "#F4F4F5",
         },
         foreground: {
-          DEFAULT: "#0F172A",
-          secondary: "#475569",
-          muted: "#94A3B8",
-        },
-        google: {
-          blue: {
-            DEFAULT: "#2563EB", // Confident Interaction Blue
-            hover: "#1D4ED8",
-            subtle: "rgba(37, 99, 235, 0.08)",
-          },
-          green: {
-            DEFAULT: "#10B981", // Teal / Emerald Positive
-            hover: "#059669",
-            subtle: "rgba(16, 185, 129, 0.10)",
-          },
-          yellow: {
-            DEFAULT: "#F59E0B", // Amber Attention
-            hover: "#D97706",
-            subtle: "rgba(245, 158, 11, 0.10)",
-          },
-          red: {
-            DEFAULT: "#EF4444", // Coral / Red Destructive
-            hover: "#DC2626",
-            subtle: "rgba(239, 68, 68, 0.10)",
-          },
-          purple: {
-            DEFAULT: "#8B5CF6", // Purple Insights / AI
-            hover: "#7C3AED",
-            subtle: "rgba(139, 92, 246, 0.10)",
-          },
+          DEFAULT: "#0D0D0E",
+          secondary: "#525866",
+          muted: "#717680",
         },
         border: {
-          DEFAULT: "#E2E8F0",
-          subtle: "#F1F5F9",
-          strong: "#CBD5E1",
-          focus: "#2563EB",
+          DEFAULT: "#E4E4E7",
+          subtle: "#F0F0F3",
+          strong: "#D4D4D8",
+          hairline: "#E4E4E7",
+          focus: "#FF7A1A",
         },
       },
       fontFamily: {
@@ -92,14 +73,23 @@ const config: Config = {
           "-apple-system",
           "sans-serif",
         ],
+        // ZERO MONOSPACE: Map monospace classes to Google Sans with tabular figures
         mono: [
-          '"JetBrains Mono"',
-          '"SF Mono"',
-          "Menlo",
-          "Monaco",
-          "Consolas",
-          "monospace",
+          '"Google Sans"',
+          '"Google Sans Text"',
+          "-apple-system",
+          "sans-serif",
         ],
+      },
+      fontSize: {
+        display: ["28px", { lineHeight: "34px", fontWeight: "500", letterSpacing: "-0.02em" }],
+        title: ["18px", { lineHeight: "26px", fontWeight: "500", letterSpacing: "-0.015em" }],
+        metric: ["32px", { lineHeight: "36px", fontWeight: "500", letterSpacing: "-0.02em" }],
+        "label-lg": ["15px", { lineHeight: "22px", fontWeight: "500", letterSpacing: "-0.01em" }],
+        body: ["14px", { lineHeight: "22px", fontWeight: "400", letterSpacing: "-0.005em" }],
+        "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400", letterSpacing: "0em" }],
+        meta: ["12px", { lineHeight: "16px", fontWeight: "400", letterSpacing: "0em" }],
+        eyebrow: ["11px", { lineHeight: "14px", fontWeight: "500", letterSpacing: "0.06em" }],
       },
       fontWeight: {
         normal: "400",
@@ -111,20 +101,24 @@ const config: Config = {
       },
       borderRadius: {
         sm: "6px",
-        md: "10px",
-        lg: "14px",
-        xl: "18px",
-        "2xl": "22px",
-        "3xl": "26px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        "2xl": "20px",
+        "3xl": "24px",
         full: "9999px",
       },
+      maxWidth: {
+        data: "1680px",
+        settings: "880px",
+      },
       boxShadow: {
-        subtle: "0 1px 2px 0 rgba(0, 0, 0, 0.04)",
-        card: "0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02)",
-        dropdown: "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)",
-        floating: "0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03)",
-        blue: "0 4px 14px 0 rgba(37, 99, 235, 0.20)",
-        orange: "0 4px 14px 0 rgba(255, 122, 26, 0.20)",
+        none: "none",
+        "2xs": "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+        xs: "0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03)",
+        sm: "0 2px 4px 0 rgba(0, 0, 0, 0.04)",
+        card: "0 1px 2px 0 rgba(0, 0, 0, 0.04)",
+        dropdown: "0 8px 20px -4px rgba(0, 0, 0, 0.08)",
       },
       transitionTimingFunction: {
         DEFAULT: "cubic-bezier(0.16, 1, 0.3, 1)",
@@ -132,6 +126,7 @@ const config: Config = {
         spring: "cubic-bezier(0.34, 1.56, 0.64, 1)", // Emil Kowalski physics-based spring curve for clicks & micro-interactions
       },
       transitionDuration: {
+        120: "120ms",
         140: "140ms",
         160: "160ms",
         180: "180ms",

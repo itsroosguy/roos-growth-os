@@ -3,21 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors select-none",
+  "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium transition-colors select-none",
   {
     variants: {
       variant: {
-        default: "bg-blue-50 text-blue-700 border border-blue-200/80 font-medium",
-        orange: "bg-[#FF7900] text-white font-medium",
-        orangeSubtle: "bg-[rgba(255,121,0,0.12)] text-[#FF7900] border border-[rgba(255,121,0,0.25)] font-medium",
-        dark: "bg-[#1A1A1E] text-slate-200 border border-[#27272A] font-medium",
-        success: "bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-medium",
-        warning: "bg-amber-50 text-amber-700 border border-amber-200/80 font-medium",
-        danger: "bg-rose-50 text-rose-700 border border-rose-200/80 font-medium",
-        purple: "bg-purple-50 text-purple-700 border border-purple-200/80 font-medium",
-        neutral: "bg-slate-100 text-slate-700 border border-slate-200 font-medium",
-        secondary: "bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7] font-medium",
-        outline: "border border-slate-200 text-slate-700 bg-white font-medium",
+        default: "bg-[#F4F4F5] text-[#525866] border border-[#E4E4E7]",
+        orange: "bg-[#FF7A1A] text-white",
+        orangeSubtle: "bg-[#FFF4EC] text-[#FF7A1A] border border-[#FFD8BF]",
+        dark: "bg-[#18181B] text-[#D4D4D8] border border-[#27272A]",
+        success: "bg-emerald-50 text-emerald-800 border border-emerald-200",
+        warning: "bg-amber-50 text-amber-800 border border-amber-200",
+        danger: "bg-rose-50 text-rose-800 border border-rose-200",
+        purple: "bg-purple-50 text-purple-800 border border-purple-200",
+        neutral: "bg-[#F4F4F5] text-[#525866] border border-[#E4E4E7]",
+        secondary: "bg-[#F4F4F5] text-[#717680] border border-[#E4E4E7]",
+        outline: "border border-[#E4E4E7] text-[#525866] bg-white",
       },
     },
     defaultVariants: {

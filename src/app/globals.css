@@ -44,33 +44,33 @@
 
 @layer base {
   :root {
-    /* Roos StudioX Business OS — Restrained Calm Light Theme */
-    --background: #F7F7F8;
-    --canvas: #F7F7F8;
-    --foreground: #0F172A;
-    --foreground-secondary: #475569;
-    --foreground-muted: #94A3B8;
+    /* Roos StudioX Business OS — Quiet Instrument Calm Paper Canvas */
+    --background: #FAF9F6;
+    --canvas: #FAF9F6;
+    --foreground: #0D0D0E;
+    --foreground-secondary: #525866;
+    --foreground-muted: #717680;
     
     --surface: #FFFFFF;
-    --surface-subtle: #F8F9FA;
-    --surface-muted: #F1F3F5;
-    --surface-hover: #F1F3F5;
+    --surface-subtle: #F4F4F5;
+    --surface-muted: #F7F7F8;
+    --surface-hover: #F1F1F4;
     
-    --border: #E5E7EB;
-    --border-strong: #D1D5DB;
-    --border-subtle: #F3F4F6;
+    --border: #E4E4E7;
+    --border-strong: #D4D4D8;
+    --border-subtle: #F0F0F3;
 
-    /* ROOS Identity Orange — Reserved strictly for primary action & active state */
-    --roos-orange: #FF7900;
-    --roos-orange-hover: #E66D00;
-    --roos-orange-subtle: rgba(255, 121, 0, 0.08);
+    /* ROOS Identity Orange — Reserved strictly for primary action & active state (< 3% pixels) */
+    --roos-orange: #FF7A1A;
+    --roos-orange-hover: #FF8833;
+    --roos-orange-subtle: rgba(255, 122, 26, 0.08);
 
     /* Dark App Shell Surfaces (Sidebar & Shell Chrome) */
     --dark-bg: #0D0D0E;
-    --dark-card: #121214;
-    --dark-elevated: #161619;
-    --dark-hover: #18181C;
-    --dark-border: #1F1F23;
+    --dark-card: #121215;
+    --dark-elevated: #18181B;
+    --dark-hover: #202024;
+    --dark-border: #1F1F24;
   }
 
   /* Universal typographic constraint & synthetic resets */
@@ -129,9 +129,11 @@
     font-style: normal !important;
   }
 
-  code, pre, .font-mono {
-    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
-    font-feature-settings: "tnum" 1;
+  /* ZERO MONOSPACE ENFORCEMENT: All figures & codes use Google Sans with Tabular Nums */
+  code, pre, .font-mono, [class*="font-mono"] {
+    font-family: "Google Sans", "Google Sans Text", -apple-system, sans-serif !important;
+    font-feature-settings: "tnum" 1 !important;
+    font-variant-numeric: tabular-nums !important;
   }
 
   /* Accessibility Media Fallback Layer (Emil Kowalski Performance Guard) */
@@ -161,7 +163,8 @@
   letter-spacing: -0.02em;
 }
 
-.type-heading {
+.type-heading,
+.type-title {
   font-family: "Google Sans", sans-serif;
   font-size: 1.125rem; /* 18px */
   line-height: 1.625rem; /* 26px */
@@ -172,14 +175,14 @@
 .type-metric {
   font-family: "Google Sans", sans-serif;
   font-size: 2rem; /* 32px */
-  line-height: 2.375rem; /* 38px */
+  line-height: 2.25rem; /* 36px */
   font-weight: 500;
   letter-spacing: -0.02em;
   font-feature-settings: "tnum" 1;
   font-variant-numeric: tabular-nums;
 }
 
-.type-primary {
+.type-label-lg {
   font-family: "Google Sans", sans-serif;
   font-size: 0.9375rem; /* 15px */
   line-height: 1.375rem; /* 22px */
@@ -195,6 +198,7 @@
   letter-spacing: -0.005em;
 }
 
+.type-body-sm,
 .type-supporting {
   font-family: "Google Sans", sans-serif;
   font-size: 0.8125rem; /* 13px */
@@ -211,21 +215,18 @@
   letter-spacing: 0;
 }
 
+.type-eyebrow,
 .type-utility {
   font-family: "Google Sans", sans-serif;
   font-size: 0.6875rem; /* 11px */
   line-height: 0.875rem; /* 14px */
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 /* ========================================================================= */
 /* EMIL KOWALSKI MOTION DESIGN ENGINEERING SYSTEM                             */
-/* - Deceleration Curve (Entrances): cubic-bezier(0.16, 1, 0.3, 1)           */
-/* - Spring Curve (Clicks/Taps):     cubic-bezier(0.34, 1.56, 0.64, 1)       */
-/* - Interaction Duration:           140ms - 220ms                            */
-/* - Zero Layout Thrashing:          GPU translate3d & scale with will-change */
 /* ========================================================================= */
 
 .curve-expo-out {
@@ -240,7 +241,7 @@
 @keyframes emil-entrance {
   from {
     opacity: 0;
-    transform: translate3d(0, 4px, 0) scale(0.985);
+    transform: translate3d(0, 4px, 0) scale(0.99);
   }
   to {
     opacity: 1;
@@ -258,7 +259,7 @@
 @keyframes emil-reveal {
   from {
     opacity: 0;
-    transform: translate3d(0, -6px, 0) scale(0.97);
+    transform: translate3d(0, -6px, 0) scale(0.98);
   }
   to {
     opacity: 1;
@@ -271,7 +272,7 @@
   will-change: transform, opacity;
 }
 
-/* Tactile Physics-Based Spring Button / Card Tap */
+/* Tactile Physics-Based Spring Button / Tap */
 .interactive-tap-btn,
 .interactive-tap-spring {
   transition: transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -282,7 +283,7 @@
 }
 .interactive-tap-btn:active,
 .interactive-tap-spring:active {
-  transform: scale(0.975);
+  transform: scale(0.98);
 }
 
 /* Fluid GPU-accelerated card hover */
@@ -293,8 +294,8 @@
   will-change: transform;
 }
 .interactive-hover-card:hover {
-  transform: translate3d(0, -1.5px, 0);
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  transform: translate3d(0, -1px, 0);
+  box-shadow: 0 4px 12px -2px rgba(13, 13, 14, 0.04);
 }
 
 /* Fast row selection */
@@ -303,7 +304,7 @@
               border-color 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Polished Minimalist Scrollbars */
+/* Polished Minimalist Hairline Scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -314,21 +315,21 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E2E8F0;
+  background: #E4E4E7;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
+  background: #D4D4D8;
 }
 
 /* Crisp Text Selection */
 ::selection {
-  background-color: #FF7900;
+  background-color: #FF7A1A;
   color: #FFFFFF;
 }
 
 ::-moz-selection {
-  background-color: #FF7900;
+  background-color: #FF7A1A;
   color: #FFFFFF;
 }
