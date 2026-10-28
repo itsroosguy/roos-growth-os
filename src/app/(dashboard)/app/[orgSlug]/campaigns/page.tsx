@@ -280,25 +280,25 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E5E7EB]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Campaigns
+              Campaigns &amp; Broadcasts
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-0.5 text-[#FF7900] shadow-2xs font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono">
               Controlled Delivery
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Plan, send and track your WhatsApp campaigns.
+          <p className="text-sm text-[#525866] font-normal mt-1">
+            Compliant broadcast engine, opt-in suppression checks, and live Meta Cloud API delivery tracking.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/templates`}>
-            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer">
-              <FileText className="h-3.5 w-3.5 text-[#8E8E93]" />
+            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer h-10 px-3.5">
+              <FileText className="h-3.5 w-3.5 text-[#525866]" />
               <span>Manage Templates</span>
             </Button>
           </Link>
@@ -306,9 +306,9 @@ export default function CampaignsPage() {
           <Button
             size="sm"
             onClick={handleOpenWizard}
-            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer h-9 px-4"
+            className="rounded-xl text-xs sm:text-sm bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium flex items-center gap-1.5 shadow-2xs cursor-pointer h-10 px-4"
           >
-            <Plus className="h-4 w-4 stroke-[3]" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Campaign</span>
           </Button>
         </div>
@@ -316,8 +316,8 @@ export default function CampaignsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-        <div className="rounded-2xl border border-[#E5E5E7] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Total Campaigns</span>
+        <div className="rounded-2xl border border-[#E5E7EB] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
+          <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">Total Campaigns</span>
           <div>
             <span
               className="text-2xl sm:text-3xl font-semibold font-mono text-[#0D0D0E] tracking-tight block"
@@ -325,12 +325,12 @@ export default function CampaignsPage() {
             >
               {metrics.totalCampaigns}
             </span>
-            <span className="text-xs font-medium text-[#8E8E93] mt-1 block">Marketing &amp; Utility</span>
+            <span className="text-xs font-normal text-[#525866] mt-1 block">Marketing &amp; Utility</span>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#E5E5E7] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Dispatched</span>
+        <div className="rounded-2xl border border-[#E5E7EB] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
+          <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">Dispatched</span>
           <div>
             <span
               className="text-2xl sm:text-3xl font-semibold font-mono text-emerald-600 tracking-tight block"
@@ -338,12 +338,12 @@ export default function CampaignsPage() {
             >
               {metrics.totalSent}
             </span>
-            <span className="text-xs font-medium text-emerald-700 mt-1 block">Meta Cloud API</span>
+            <span className="text-xs font-normal text-emerald-700 mt-1 block">Meta Cloud API</span>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#E5E5E7] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Delivery Rate</span>
+        <div className="rounded-2xl border border-[#E5E7EB] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
+          <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">Delivery Rate</span>
           <div>
             <span
               className="text-2xl sm:text-3xl font-semibold font-mono text-[#0D0D0E] tracking-tight block"
@@ -351,12 +351,12 @@ export default function CampaignsPage() {
             >
               {metrics.deliveryRate}
             </span>
-            <span className="text-xs font-medium text-[#8E8E93] mt-1 block">Network delivery</span>
+            <span className="text-xs font-normal text-[#525866] mt-1 block">Network delivery</span>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#E5E5E7] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
-          <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">Total Spend</span>
+        <div className="rounded-2xl border border-[#E5E7EB] shadow-xs bg-white p-5 flex flex-col justify-between space-y-3 interactive-hover-card">
+          <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">Total Spend</span>
           <div>
             <span
               className="text-2xl sm:text-3xl font-semibold font-mono text-[#FF7900] tracking-tight block"
@@ -364,8 +364,8 @@ export default function CampaignsPage() {
             >
               {metrics.totalSpent}
             </span>
-            <span className="text-xs font-medium text-[#8E8E93] mt-1 block">
-              Monthly limit: ₹10,000
+            <span className="text-xs font-normal text-[#525866] mt-1 block">
+              Monthly budget: ₹10,000
             </span>
           </div>
         </div>
@@ -376,10 +376,10 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("all")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "all"
-              ? "bg-[#0D0D0E] text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>All Campaigns</span>
@@ -388,10 +388,10 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("draft")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "draft"
-              ? "bg-[#0D0D0E] text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Drafts</span>
@@ -400,10 +400,10 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("scheduled")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "scheduled"
-              ? "bg-amber-600 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-amber-600 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Scheduled</span>
@@ -412,10 +412,10 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("processing")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "processing"
-              ? "bg-emerald-600 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-emerald-600 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Active</span>
@@ -424,10 +424,10 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("completed")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "completed"
-              ? "bg-emerald-700 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-emerald-700 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Completed</span>
@@ -436,14 +436,14 @@ export default function CampaignsPage() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="p-3.5 rounded-2xl border border-[#E5E5E7] bg-white shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="p-3.5 rounded-2xl border border-[#E5E7EB] bg-white shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8E8E93]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#717680]" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search campaigns..."
-            className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#8E8E93] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-xs transition-all"
+            placeholder="Search campaigns by name..."
+            className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#717680] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-xs transition-all"
           />
         </div>
 
@@ -474,24 +474,24 @@ export default function CampaignsPage() {
       </div>
 
       {/* Campaigns Table */}
-      <div className="rounded-2xl border border-[#E5E5E7] bg-white overflow-hidden shadow-2xs">
+      <div className="rounded-2xl border border-[#E5E7EB] bg-white overflow-hidden shadow-2xs">
         <Table>
-          <TableHeader className="bg-[#F7F7F8]">
-            <TableRow className="border-b border-[#E5E5E7]">
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Campaign Name</TableHead>
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Template &amp; Type</TableHead>
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Status</TableHead>
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Audience / Progress</TableHead>
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Cost</TableHead>
-              <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Created</TableHead>
-              <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
+          <TableHeader className="bg-[#F8F9FA]">
+            <TableRow className="border-b border-[#E5E7EB]">
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Campaign Name</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Template &amp; Type</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Status</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Audience / Progress</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Cost</TableHead>
+              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Created</TableHead>
+              <TableHead className="text-right text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {campaigns.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-sm text-[#8E8E93] font-medium">
-                  No campaigns found. Click &quot;Create Campaign&quot; to launch your first controlled broadcast.
+                <TableCell colSpan={7} className="text-center py-12 text-sm text-[#525866] font-normal">
+                  No campaigns found. Click &quot;New Campaign&quot; to launch your first controlled broadcast.
                 </TableCell>
               </TableRow>
             ) : (
@@ -503,17 +503,17 @@ export default function CampaignsPage() {
                     : 0;
 
                 return (
-                  <TableRow key={camp.id} className="border-b border-[#E5E5E7] hover:bg-[#F7F7F8]/80 transition-colors">
+                  <TableRow key={camp.id} className="border-b border-[#E5E7EB]/70 hover:bg-[#FFF4EC]/15 transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3 py-1">
-                        <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 flex items-center justify-center shrink-0 shadow-2xs">
+                        <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FFE1CC] flex items-center justify-center shrink-0 shadow-2xs">
                           <Megaphone className="h-4 w-4" />
                         </div>
                         <div>
                           <span className="font-semibold text-sm text-[#0D0D0E] block">
                             {camp.name}
                           </span>
-                          <span className="text-xs text-[#8E8E93] font-medium">
+                          <span className="text-xs text-[#525866] font-normal">
                             By {camp.created_by_name}
                           </span>
                         </div>
@@ -522,10 +522,10 @@ export default function CampaignsPage() {
 
                     <TableCell>
                       <div>
-                        <span className="font-mono text-xs font-semibold text-[#0D0D0E] block">
+                        <span className="font-mono text-xs font-medium text-[#0D0D0E] block">
                           {camp.template_name}
                         </span>
-                        <Badge variant="neutral" className="text-[10px] uppercase font-medium px-2 py-0.5 mt-0.5">
+                        <Badge variant="neutral" className="text-[10px] uppercase font-medium px-2 py-0.5 mt-0.5 border border-[#E5E7EB] bg-[#F7F7F8] text-[#525866]">
                           {camp.template_category}
                         </Badge>
                       </div>
@@ -539,11 +539,11 @@ export default function CampaignsPage() {
 
                     <TableCell>
                       <div className="w-44 space-y-1.5">
-                        <div className="flex justify-between text-xs font-semibold text-[#0D0D0E]">
-                          <span className="font-mono text-[11px] text-[#8E8E93]">{camp.sent_count} / {camp.total_recipients} sent</span>
-                          <span className="font-mono font-semibold text-[#0D0D0E]">{progressPercent}%</span>
+                        <div className="flex justify-between text-xs font-medium text-[#0D0D0E]">
+                          <span className="font-mono text-[11px] text-[#525866]">{camp.sent_count} / {camp.total_recipients} sent</span>
+                          <span className="font-mono font-medium text-[#0D0D0E]">{progressPercent}%</span>
                         </div>
-                        <div className="h-2 w-full bg-[#E5E5E7] rounded-full overflow-hidden">
+                        <div className="h-2 w-full bg-[#E5E7EB] rounded-full overflow-hidden">
                           <div
                             className="h-full bg-[#FF7900] transition-all rounded-full"
                             style={{ width: `${progressPercent}%` }}
@@ -559,7 +559,7 @@ export default function CampaignsPage() {
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-xs font-semibold text-[#8E8E93]">
+                      <span className="text-xs font-normal text-[#525866]">
                         {formatDate(camp.created_at)}
                       </span>
                     </TableCell>
@@ -596,8 +596,8 @@ export default function CampaignsPage() {
                         )}
 
                         <Link href={`/app/${orgSlug}/campaigns/${camp.id}`}>
-                          <Button size="sm" variant="ghost" className="h-7 text-xs font-semibold text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC]">
-                            <Eye className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" /> Report
+                          <Button size="sm" variant="ghost" className="h-8 text-xs font-medium text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl">
+                            <Eye className="h-3.5 w-3.5 mr-1 text-[#525866]" /> Report
                           </Button>
                         </Link>
                       </div>

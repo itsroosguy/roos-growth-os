@@ -341,14 +341,14 @@ export default function ContactsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E7EB]">
         <div>
           <div className="flex items-center space-x-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Contacts
+              Contacts Directory
             </h1>
             <span
-              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
+              className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] flex items-center gap-1.5 shadow-2xs font-mono"
               suppressHydrationWarning
             >
               <span className="font-mono font-semibold text-[#FF7900]">
@@ -357,8 +357,8 @@ export default function ContactsPage() {
               <span>contacts</span>
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Your customer database and communication history.
+          <p className="text-sm text-[#525866] font-normal mt-1">
+            Unified audience registry, compliance consent tracking, and communication records.
           </p>
         </div>
 
@@ -368,26 +368,26 @@ export default function ContactsPage() {
             size="sm"
             onClick={handleExportCSV}
             disabled={filteredContacts.length === 0}
-            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs text-xs h-9 px-3 cursor-pointer"
+            className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium shadow-2xs text-xs h-10 px-3.5 cursor-pointer"
           >
-            <Download className="mr-1.5 h-3.5 w-3.5 text-[#8E8E93]" />
+            <Download className="mr-1.5 h-3.5 w-3.5 text-[#525866]" />
             Export CSV
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setImportModalOpen(true)}
-            className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold shadow-2xs text-xs h-9 px-3 cursor-pointer"
+            className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium shadow-2xs text-xs h-10 px-3.5 cursor-pointer"
           >
-            <Upload className="mr-1.5 h-3.5 w-3.5 text-[#8E8E93]" />
+            <Upload className="mr-1.5 h-3.5 w-3.5 text-[#525866]" />
             Import CSV
           </Button>
           <Button
             size="sm"
             onClick={() => setAddModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold shadow-2xs text-xs h-9 px-3.5 cursor-pointer"
+            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer"
           >
-            <Plus className="mr-1.5 h-4 w-4 stroke-[3]" />
+            <Plus className="mr-1.5 h-4 w-4 stroke-[2.5]" />
             Add Contact
           </Button>
         </div>
@@ -395,40 +395,40 @@ export default function ContactsPage() {
 
       {/* Stats Summary Banner */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93]">Total Contacts</span>
-            <div className="text-2xl font-semibold font-mono text-[#0D0D0E] mt-1">{allContacts.length}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">Total Contacts</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">{allContacts.length}</div>
           </div>
-          <div className="h-10 w-10 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-center text-[#0D0D0E]">
+          <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-[#0D0D0E]">
             <Users className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-700">WhatsApp Opted-In</span>
-            <div className="text-2xl font-semibold font-mono text-emerald-600 mt-1">{optedInCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">WhatsApp Opted-In</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1">{optedInCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
             <ShieldCheck className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-amber-700">Pending Consent</span>
-            <div className="text-2xl font-semibold font-mono text-amber-600 mt-1">{pendingCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">Pending Consent</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1">{pendingCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
             <Clock className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-rose-700">Opted Out</span>
-            <div className="text-2xl font-semibold font-mono text-rose-600 mt-1">{optedOutCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-700">Opted Out</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-rose-600 mt-1">{optedOutCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
             <ShieldAlert className="h-5 w-5" />
@@ -437,16 +437,16 @@ export default function ContactsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-3.5 rounded-2xl border border-[#E5E5E7] shadow-xs">
+      <div className="bg-white p-3.5 rounded-2xl border border-[#E5E7EB] shadow-xs">
         <div className="flex flex-col md:flex-row items-center gap-3 justify-between">
           <div className="relative w-full md:w-72">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8E8E93]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#717680]" />
             <input
               type="text"
-              placeholder="Search contacts..."
+              placeholder="Search contacts by name, phone, email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9.5 w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#8E8E93] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
+              className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#0D0D0E] placeholder:text-[#717680] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none transition-all shadow-2xs"
             />
           </div>
 
@@ -456,7 +456,7 @@ export default function ContactsPage() {
               <select
                 value={tagFilter}
                 onChange={(e) => setTagFilter(e.target.value)}
-                className="h-9 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+                className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
               >
                 <option value="all">All Tags</option>
                 {uniqueTags.map((tag) => (
@@ -471,9 +471,9 @@ export default function ContactsPage() {
             <select
               value={consentFilter}
               onChange={(e) => setConsentFilter(e.target.value)}
-              className="h-9 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
             >
-              <option value="all">All Segments</option>
+              <option value="all">All Consent Statuses</option>
               <option value="opted_in">WhatsApp Opted-In</option>
               <option value="pending">Pending Consent</option>
               <option value="opted_out">Opted Out</option>
@@ -483,7 +483,7 @@ export default function ContactsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "name" | "date" | "company")}
-              className="h-9 rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+              className="h-10 rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
             >
               <option value="date">Newest First</option>
               <option value="name">Sort by Name</option>
@@ -493,10 +493,10 @@ export default function ContactsPage() {
             {/* Archived toggle */}
             <button
               onClick={() => setShowArchived(!showArchived)}
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              className={`h-10 px-3 rounded-xl border text-xs font-medium transition-all cursor-pointer shadow-2xs ${
                 showArchived
                   ? "bg-[#FFF4EC] border-[#FF7900]/30 text-[#FF7900]"
-                  : "border-[#E5E5E7] bg-[#F7F7F8] text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-white"
+                  : "border-[#E5E7EB] bg-[#F7F7F8] text-[#525866] hover:text-[#0D0D0E] hover:bg-white"
               }`}
             >
               {showArchived ? "Archived Included" : "Active Only"}
@@ -512,7 +512,7 @@ export default function ContactsPage() {
                   setTagFilter("all");
                   setShowArchived(false);
                 }}
-                className="h-9 px-3 rounded-xl text-xs font-semibold text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
+                className="h-10 px-3 rounded-xl text-xs font-medium text-[#FF7900] bg-[#FFF4EC] border border-[#FF7900]/30 hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
               >
                 Reset
               </button>
@@ -535,26 +535,26 @@ export default function ContactsPage() {
           onAction={() => setAddModalOpen(true)}
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-xs overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden">
           <Table>
-            <TableHeader className="bg-[#F7F7F8] border-b border-[#E5E5E7]">
+            <TableHeader className="bg-[#F8F9FA] border-b border-[#E5E7EB]">
               <TableRow>
                 <TableHead className="py-3.5 px-4 w-10 text-center">
                   <input
                     type="checkbox"
                     checked={isAllContactsSelected}
                     onChange={handleSelectAllContacts}
-                    className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                    className="rounded border-[#E5E7EB] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
                     aria-label="Select all contacts"
                   />
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Contact</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Phone / WhatsApp</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Tags</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Marketing Consent</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Status</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Owner</TableHead>
-                <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Contact</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Phone / WhatsApp</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Tags</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Marketing Consent</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Status</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Owner</TableHead>
+                <TableHead className="text-right text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -563,8 +563,8 @@ export default function ContactsPage() {
                 return (
                   <TableRow
                     key={contact.id}
-                    className={`hover:bg-[#FFF4EC]/15 transition-colors cursor-pointer ${
-                      isSelected ? "bg-[#FFF4EC]/20" : ""
+                    className={`hover:bg-[#FFF4EC]/20 transition-colors cursor-pointer border-b border-[#E5E7EB]/60 ${
+                      isSelected ? "bg-[#FFF4EC]/25" : ""
                     } ${contact.is_archived ? "opacity-60 bg-slate-50/50" : ""}`}
                     onClick={() => setDetailContact(contact)}
                   >
@@ -573,13 +573,13 @@ export default function ContactsPage() {
                         type="checkbox"
                         checked={isSelected}
                         onChange={(e) => toggleSelectContact(contact.id, e as unknown as React.MouseEvent)}
-                        className="rounded border-[#E5E5E7] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
+                        className="rounded border-[#E5E7EB] text-[#FF7900] focus:ring-[#FF7900] cursor-pointer h-4 w-4"
                         aria-label={`Select ${contact.first_name}`}
                       />
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-3 py-1">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FF7900]/30 font-semibold text-xs shadow-2xs">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF4EC] text-[#FF7900] border border-[#FFE1CC] font-semibold text-xs shadow-2xs">
                           {contact.first_name[0]}
                           {contact.last_name ? contact.last_name[0] : ""}
                         </div>
@@ -587,19 +587,19 @@ export default function ContactsPage() {
                           <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
                             {contact.first_name} {contact.last_name || ""}
                             {contact.is_archived && (
-                              <span className="text-[10px] font-medium py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#8E8E93] border border-[#E5E5E7]">
+                              <span className="text-[10px] font-medium py-0.5 px-1.5 rounded bg-[#F7F7F8] text-[#717680] border border-[#E5E7EB]">
                                 Archived
                               </span>
                             )}
                           </span>
-                          <span className="text-xs text-[#8E8E93] font-normal truncate max-w-[180px]">
+                          <span className="text-xs text-[#525866] font-normal truncate max-w-[200px]">
                             {contact.email || contact.company || "No email listed"}
                           </span>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-1.5 font-mono text-xs font-semibold text-[#0D0D0E]">
+                      <div className="flex items-center space-x-1.5 font-mono text-xs font-medium text-[#0D0D0E]">
                         <Phone className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                         <span>{contact.phone}</span>
                         <button
@@ -608,7 +608,7 @@ export default function ContactsPage() {
                             e.stopPropagation();
                             handleCopyPhone(contact, e);
                           }}
-                          className="p-1 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+                          className="p-1 rounded-lg text-[#717680] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
                           title="Copy phone number"
                         >
                           {copiedContactId === contact.id ? (
@@ -631,19 +631,19 @@ export default function ContactsPage() {
                                 ? "bg-[#FFF4EC] text-[#FF7900] border-[#FF7900]/30"
                                 : lower.includes("enterprise") || lower.includes("retail")
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : "bg-[#F7F7F8] text-[#0D0D0E] border-[#E5E5E7]";
+                                : "bg-[#F7F7F8] text-[#0D0D0E] border-[#E5E7EB]";
 
                             return (
                               <span
                                 key={t}
-                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${pillColor}`}
+                                className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${pillColor}`}
                               >
                                 {t}
                               </span>
                             );
                           })
                         ) : (
-                          <span className="text-[#8E8E93] text-xs font-medium">—</span>
+                          <span className="text-[#717680] text-xs font-normal">—</span>
                         )}
                       </div>
                     </TableCell>
@@ -651,14 +651,14 @@ export default function ContactsPage() {
                       {getConsentBadge(contact.consent_status, (e) => handleToggleConsent(contact, e))}
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         Active
                       </span>
                     </TableCell>
                     <TableCell>
                       <div
-                        className="h-7 w-7 rounded-full bg-[#0D0D0E] text-white flex items-center justify-center text-[10px] font-semibold shadow-2xs"
+                        className="h-7 w-7 rounded-full bg-[#0D0D0E] text-white flex items-center justify-center text-[10px] font-medium shadow-2xs"
                         title="Owner: Workspace Staff"
                       >
                         WS
@@ -668,21 +668,21 @@ export default function ContactsPage() {
                       <div className="flex items-center justify-end space-x-1">
                         <Link
                           href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
-                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          className="p-1.5 rounded-lg text-[#525866] hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
                           title="Chat on WhatsApp"
                         >
                           <MessageSquare className="h-4 w-4 text-emerald-600" />
                         </Link>
                         <button
                           onClick={() => setDetailContact(contact)}
-                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-[#525866] hover:text-[#FF7900] hover:bg-[#FFF4EC] transition-colors cursor-pointer"
                           title="View details"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleArchiveToggle(contact)}
-                          className="p-1.5 rounded-lg text-[#8E8E93] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
                           title={contact.is_archived ? "Unarchive" : "Archive"}
                         >
                           <Archive className="h-4 w-4" />
@@ -690,7 +690,7 @@ export default function ContactsPage() {
                         {isAdmin && (
                           <button
                             onClick={() => handleDelete(contact.id)}
-                            className="p-1.5 rounded-lg text-[#8E8E93] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg text-[#525866] hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                             title="Delete contact"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -705,21 +705,21 @@ export default function ContactsPage() {
           </Table>
 
           {/* Pagination Footer */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-[#E5E5E7] bg-[#FAF9F8] text-xs text-[#8E8E93]">
-            <span className="font-semibold text-[#0D0D0E]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-[#E5E7EB] bg-[#FAF9F8] text-xs text-[#525866]">
+            <span className="font-medium text-[#0D0D0E]">
               Showing 1 to {Math.min(filteredContacts.length, 10)} of {filteredContacts.length} contacts
             </span>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                className="h-8 px-2.5 rounded-lg border border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold transition-colors disabled:opacity-40 cursor-pointer shadow-2xs"
+                className="h-8 px-2.5 rounded-lg border border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium transition-colors disabled:opacity-40 cursor-pointer shadow-2xs"
                 disabled
               >
                 <ChevronLeft className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
-                className="h-8 w-8 rounded-lg bg-[#FF7900] text-white font-semibold flex items-center justify-center shadow-2xs cursor-pointer"
+                className="h-8 w-8 rounded-lg bg-[#FF7900] text-white font-medium flex items-center justify-center shadow-2xs cursor-pointer"
               >
                 1
               </button>

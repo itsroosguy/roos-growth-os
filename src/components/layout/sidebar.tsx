@@ -83,12 +83,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     });
   };
 
-  // Structured, logical categories for navigation items
+  // Structured, logical categories for navigation items matching Executive Directive
   const navSections = useMemo<NavSection[]>(() => {
     const sections: NavSection[] = [
       {
-        id: "core",
-        label: "Core",
+        id: "workspace",
+        label: "Workspace",
         items: [
           {
             title: "Overview",
@@ -103,17 +103,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             badgeType: "number",
           },
           {
-            title: "Tasks & Follow-ups",
-            href: `/app/${orgSlug}/tasks`,
-            icon: CheckSquare,
-          },
-        ],
-      },
-      {
-        id: "commercial",
-        label: "Commercial",
-        items: [
-          {
             title: "Leads",
             href: `/app/${orgSlug}/leads`,
             icon: Users,
@@ -123,16 +112,11 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             href: `/app/${orgSlug}/contacts`,
             icon: UserCheck,
           },
-          {
-            title: "Reports",
-            href: `/app/${orgSlug}/reports`,
-            icon: BarChart3,
-          },
         ],
       },
       {
-        id: "workflows",
-        label: "Workflows",
+        id: "growth",
+        label: "Growth",
         items: [
           {
             title: "Campaigns",
@@ -140,14 +124,35 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             icon: Send,
           },
           {
+            title: "Templates",
+            href: `/app/${orgSlug}/templates`,
+            icon: FileText,
+          },
+          {
             title: "Automations",
             href: `/app/${orgSlug}/automations`,
             icon: Zap,
           },
+        ],
+      },
+      {
+        id: "operations",
+        label: "Operations",
+        items: [
           {
-            title: "Templates",
-            href: `/app/${orgSlug}/templates`,
-            icon: FileText,
+            title: "Tasks & Follow-ups",
+            href: `/app/${orgSlug}/tasks`,
+            icon: CheckSquare,
+          },
+          {
+            title: "Reports",
+            href: `/app/${orgSlug}/reports`,
+            icon: BarChart3,
+          },
+          {
+            title: "Team",
+            href: `/app/${orgSlug}/team`,
+            icon: Shield,
           },
         ],
       },
@@ -171,11 +176,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             icon: Layers,
           },
           {
-            title: "Team",
-            href: `/app/${orgSlug}/team`,
-            icon: Shield,
-          },
-          {
             title: "Subscription & Usage",
             href: `/app/${orgSlug}/subscription`,
             icon: CreditCard,
@@ -193,19 +193,19 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     if (isJuniorManager) {
       return [
         {
-          id: "core",
-          label: "Core",
+          id: "workspace",
+          label: "Workspace",
           items: [
             { title: "Overview", href: `/app/${orgSlug}/overview`, icon: Home },
             { title: "Inbox", href: `/app/${orgSlug}/inbox`, icon: MessageSquare, badge: "3", badgeType: "number" },
-            { title: "Tasks & Follow-ups", href: `/app/${orgSlug}/tasks`, icon: CheckSquare },
+            { title: "Contacts", href: `/app/${orgSlug}/contacts`, icon: UserCheck },
           ],
         },
         {
-          id: "commercial",
-          label: "Commercial",
+          id: "operations",
+          label: "Operations",
           items: [
-            { title: "Contacts", href: `/app/${orgSlug}/contacts`, icon: UserCheck },
+            { title: "Tasks & Follow-ups", href: `/app/${orgSlug}/tasks`, icon: CheckSquare },
             { title: "Reports", href: `/app/${orgSlug}/reports`, icon: BarChart3 },
           ],
         },

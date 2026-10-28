@@ -218,18 +218,18 @@ export default function TeamAndCredentialsPage() {
   return (
     <div className="space-y-6 max-w-6xl pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E7EB]">
         <div>
           <div className="flex items-center space-x-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
               Access Credentials &amp; Team Governance
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs font-semibold px-3 py-1 text-[#FF7900] font-mono">
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] font-mono shadow-2xs">
               Admin Dispatched
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Only Level 1 Administrators can issue multi-level appointments, dispatched via cryptographic email with verified acceptance.
+          <p className="text-sm text-[#525866] font-normal mt-1">
+            Level 1 Administrators control multi-level staff clearance, cryptographic invitation tokens, and decoupled liability matrices.
           </p>
         </div>
 
@@ -238,7 +238,7 @@ export default function TeamAndCredentialsPage() {
             <>
               <Button
                 onClick={() => setInviteModalOpen(true)}
-                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold shadow-2xs text-xs h-9 px-3.5 cursor-pointer flex items-center gap-1.5"
+                className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer flex items-center gap-1.5"
               >
                 <Send className="h-3.5 w-3.5" />
                 <span>Dispatch Multi-Level Account</span>
@@ -246,14 +246,14 @@ export default function TeamAndCredentialsPage() {
               <Button
                 onClick={() => setNewCredModalOpen(true)}
                 variant="outline"
-                className="rounded-xl border-[#E5E5E7] bg-white text-[#0D0D0E] font-semibold text-xs h-9 px-3 hover:bg-[#F7F7F8] cursor-pointer"
+                className="rounded-xl border-[#E5E7EB] bg-white text-[#0D0D0E] font-medium text-xs h-10 px-3.5 hover:bg-[#F7F7F8] cursor-pointer shadow-2xs"
               >
-                <KeyRound className="mr-1 h-3.5 w-3.5 text-[#8E8E93]" />
+                <KeyRound className="mr-1 h-3.5 w-3.5 text-[#525866]" />
                 API Token
               </Button>
             </>
           ) : (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs text-amber-800 font-semibold flex items-center gap-1.5">
+            <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs text-amber-800 font-medium flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5 text-amber-600" />
               <span>Admin Authority Required to Dispatch Accounts</span>
             </div>
@@ -262,14 +262,14 @@ export default function TeamAndCredentialsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center border-b border-[#E5E5E7] gap-6 text-xs font-semibold">
+      <div className="flex items-center border-b border-[#E5E7EB] gap-6 text-xs font-medium">
         <button
           onClick={() => setActiveTab("invitations")}
           className={cn(
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "invitations"
               ? "border-[#FF7900] text-[#FF7900] font-semibold"
-              : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
+              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
           <Mail className="h-4 w-4" />
@@ -281,7 +281,7 @@ export default function TeamAndCredentialsPage() {
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "roster"
               ? "border-[#FF7900] text-[#FF7900] font-semibold"
-              : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
+              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
           <Users className="h-4 w-4" />
@@ -293,7 +293,7 @@ export default function TeamAndCredentialsPage() {
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "credentials"
               ? "border-[#FF7900] text-[#FF7900] font-semibold"
-              : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
+              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
           <KeyRound className="h-4 w-4" />
@@ -305,7 +305,7 @@ export default function TeamAndCredentialsPage() {
             "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "matrix"
               ? "border-[#FF7900] text-[#FF7900] font-semibold"
-              : "border-transparent text-[#8E8E93] hover:text-[#0D0D0E]"
+              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
           )}
         >
           <Shield className="h-4 w-4" />
@@ -318,13 +318,13 @@ export default function TeamAndCredentialsPage() {
         {/* Level 1: Admin */}
         <div className="bg-[#121214] text-white rounded-2xl border border-[#1F1F23] p-5 shadow-xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#FF7900] bg-[#24180E] border border-[#FF7900]/30 px-2.5 py-0.5 rounded-full font-mono">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-[#FF7900] bg-[#24180E] border border-[#FF7900]/30 px-2.5 py-0.5 rounded-full font-mono">
               Level 1: Admin
             </span>
             <Crown className="h-4 w-4 text-[#FF7900]" />
           </div>
           <h3 className="text-sm font-semibold text-white">Full Root &amp; Fund Authority</h3>
-          <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
+          <p className="text-xs text-[#8E8E93] leading-relaxed font-normal">
             Exclusive authority to issue multi-level credentials, execute overall fund transfers, manage bank settlements, and configure webhooks.
           </p>
           <div className="pt-2 flex items-center justify-between border-t border-white/10 text-[11px] font-medium">
@@ -341,24 +341,24 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 2: Senior Manager */}
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-5 shadow-2xs space-y-2 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full font-mono">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full font-mono">
               Level 2: Senior Manager
             </span>
             <Shield className="h-4 w-4 text-purple-600" />
           </div>
           <h3 className="text-sm font-semibold text-[#0D0D0E]">Operational Management</h3>
-          <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
-            Full operational access (CRM, shared inbox, automations, campaigns). <strong>Strictly Decoupled &amp; Protected: Zero fund transfer liability.</strong>
+          <p className="text-xs text-[#525866] leading-relaxed font-normal">
+            Full operational access (CRM, shared inbox, automations, campaigns). <span className="font-medium text-[#0D0D0E]">Strictly Decoupled &amp; Protected: Zero fund transfer liability.</span>
           </p>
-          <div className="pt-2 flex items-center justify-between border-t border-[#E5E5E7] text-[11px] font-medium">
+          <div className="pt-2 flex items-center justify-between border-t border-[#E5E7EB] text-[11px] font-medium">
             <span className="text-rose-600 flex items-center gap-1">
               <Lock className="h-3.5 w-3.5" /> Funds: Blocked (Safe)
             </span>
             <button
               onClick={() => setUserRole("senior_manager")}
-              className="text-[#FF7900] hover:underline cursor-pointer"
+              className="text-[#FF7900] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -366,30 +366,32 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 3: Junior Manager */}
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-5 shadow-2xs space-y-2 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-mono">
-              Level 3: Jr Manager
+            <span className="text-[10px] font-medium uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full font-mono">
+              Level 3: Junior Manager
             </span>
-            <CheckSquare className="h-4 w-4 text-emerald-600" />
+            <Users className="h-4 w-4 text-blue-600" />
           </div>
-          <h3 className="text-sm font-semibold text-[#0D0D0E]">Tasks &amp; Performance KPIs</h3>
-          <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
-            Focused exclusively on task completion, client follow-up reminders, SLA response metrics, and assigned WhatsApp chats.
+          <h3 className="text-sm font-semibold text-[#0D0D0E]">Customer &amp; Task Frontline</h3>
+          <p className="text-xs text-[#525866] leading-relaxed font-normal">
+            Direct client communication and operational follow-up execution. <span className="font-medium text-[#0D0D0E]">Strictly Decoupled &amp; Protected: Zero financial configuration exposure.</span>
           </p>
-          <div className="pt-2 flex items-center justify-between border-t border-[#E5E5E7] text-[11px] font-medium">
-            <span className="text-emerald-700 flex items-center gap-1">
-              <BarChart3 className="h-3.5 w-3.5" /> Task KPIs: Active
+          <div className="pt-2 flex items-center justify-between border-t border-[#E5E7EB] text-[11px] font-medium">
+            <span className="text-rose-600 flex items-center gap-1">
+              <Lock className="h-3.5 w-3.5" /> Funds: Blocked (Safe)
             </span>
             <button
               onClick={() => setUserRole("junior_manager")}
-              className="text-[#FF7900] hover:underline cursor-pointer"
+              className="text-[#FF7900] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
           </div>
         </div>
       </div>
+
+      {/* TAB 1: EMAIL DISPATCHES & INVITATIONS */}
       {/* TAB 1: EMAIL DISPATCHES & INVITATIONS */}
       {activeTab === "invitations" && (
         <div className="space-y-4">

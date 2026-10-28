@@ -170,24 +170,24 @@ export default function TemplatesPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E5E7EB]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Templates
+              Message Templates
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 font-mono text-[11px] font-medium px-2.5 py-0.5 text-[#FF7900]">
-              Meta Cloud API
+            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono">
+              Meta Approved
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
-            Manage your WhatsApp message templates.
+          <p className="text-sm text-[#525866] font-normal mt-1">
+            Meta Cloud API verified templates, category pricing parameters, and compliant dynamic variables.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/campaigns`}>
-            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer">
+            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] text-xs flex items-center gap-1.5 shadow-2xs font-medium cursor-pointer h-10 px-3.5">
               <Send className="h-3.5 w-3.5 text-[#FF7900]" />
               <span>Go to Campaigns</span>
             </Button>
@@ -200,9 +200,9 @@ export default function TemplatesPage() {
               setCreateSuccessMsg(null);
               setCreateModalOpen(true);
             }}
-            className="rounded-xl text-xs bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-semibold cursor-pointer h-9 px-3.5"
+            className="rounded-xl text-xs sm:text-sm bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center gap-1.5 shadow-2xs font-medium cursor-pointer h-10 px-4"
           >
-            <Plus className="h-4 w-4 stroke-[3]" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Template</span>
           </Button>
         </div>
@@ -210,40 +210,40 @@ export default function TemplatesPage() {
 
       {/* KPI Stats Banner */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93]">Total Templates</span>
-            <div className="text-2xl font-semibold font-mono text-[#0D0D0E] mt-1">{allTemplates.length}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#525866]">Total Templates</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1">{allTemplates.length}</div>
           </div>
-          <div className="h-10 w-10 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-center text-[#0D0D0E]">
+          <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-[#0D0D0E]">
             <FileText className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-800">Approved</span>
-            <div className="text-2xl font-semibold font-mono text-emerald-600 mt-1">{approvedCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-800">Approved</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1">{approvedCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
             <CheckCircle2 className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-amber-800">Under Review</span>
-            <div className="text-2xl font-semibold font-mono text-amber-600 mt-1">{pendingCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-800">Under Review</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1">{pendingCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
             <Clock className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wider text-rose-800">Rejected</span>
-            <div className="text-2xl font-semibold font-mono text-rose-600 mt-1">{rejectedCount}</div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-800">Rejected</span>
+            <div className="text-2xl font-semibold font-mono tracking-tight text-rose-600 mt-1">{rejectedCount}</div>
           </div>
           <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
             <XCircle className="h-5 w-5" />
@@ -252,18 +252,18 @@ export default function TemplatesPage() {
       </div>
 
       {/* Meta Guidelines Callout */}
-      <div className="bg-white rounded-2xl border border-[#E5E5E7] p-4 text-xs text-[#0D0D0E] shadow-2xs flex items-start gap-3">
-        <div className="p-2 rounded-xl bg-[#FFF4EC] border border-[#FF7900]/30 text-[#FF7900] shrink-0">
+      <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 text-xs text-[#0D0D0E] shadow-2xs flex items-start gap-3">
+        <div className="p-2 rounded-xl bg-[#FFF4EC] border border-[#FFE1CC] text-[#FF7900] shrink-0">
           <Info className="h-4.5 w-4.5" />
         </div>
         <div className="space-y-1">
           <p className="font-semibold text-[#0D0D0E] text-xs sm:text-sm">
             Official Meta WhatsApp Platform Template Policies
           </p>
-          <p className="text-xs leading-relaxed text-[#8E8E93] font-medium">
-            • <strong className="text-[#0D0D0E]">Pre-Approval Mandatory:</strong> Only templates with <strong className="text-emerald-700">APPROVED</strong> status can be dispatched.
-            • <strong className="text-[#0D0D0E]">Variables:</strong> Must be sequentially numbered as <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-semibold">{"{{1}}"}</code>, <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E5E7] text-[#FF7900] font-semibold">{"{{2}}"}</code>.
-            • <strong className="text-[#0D0D0E]">Marketing Opt-out:</strong> Marketing templates must provide explicit opt-out wording (e.g. <em>Reply STOP to opt out</em>).
+          <p className="text-xs leading-relaxed text-[#525866] font-normal">
+            • <span className="text-[#0D0D0E] font-medium">Pre-Approval Mandatory:</span> Only templates with <span className="text-emerald-700 font-medium">APPROVED</span> status can be dispatched.
+            • <span className="text-[#0D0D0E] font-medium">Variables:</span> Must be sequentially numbered as <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7900] font-medium">{"{{1}}"}</code>, <code className="font-mono bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB] text-[#FF7900] font-medium">{"{{2}}"}</code>.
+            • <span className="text-[#0D0D0E] font-medium">Marketing Opt-out:</span> Marketing templates must provide explicit opt-out wording (e.g. Reply STOP to opt out).
           </p>
         </div>
       </div>
@@ -273,10 +273,10 @@ export default function TemplatesPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("all")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "all"
-              ? "bg-[#0D0D0E] text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>All Templates</span>
@@ -285,10 +285,10 @@ export default function TemplatesPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("APPROVED")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "APPROVED"
-              ? "bg-emerald-600 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-emerald-600 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Approved</span>
@@ -297,10 +297,10 @@ export default function TemplatesPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("PENDING")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "PENDING"
-              ? "bg-amber-600 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-amber-600 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Pending Review</span>
@@ -309,10 +309,10 @@ export default function TemplatesPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("REJECTED")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
             statusFilter === "REJECTED"
-              ? "bg-rose-600 text-white shadow-xs"
-              : "bg-white border border-[#E5E5E7] text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-rose-600 text-white shadow-xs font-semibold"
+              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
           }`}
         >
           <span>Rejected</span>
@@ -321,14 +321,14 @@ export default function TemplatesPage() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white p-3.5 rounded-2xl border border-[#E5E5E7] shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-white p-3.5 rounded-2xl border border-[#E5E7EB] shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8E8E93]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#717680]" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search templates..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#8E8E93] focus:outline-none focus:border-[#FF7900] focus:bg-white transition-all font-medium"
+            placeholder="Search templates by name or content..."
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#717680] focus:outline-none focus:border-[#FF7900] focus:bg-white transition-all font-medium"
           />
         </div>
 
@@ -336,7 +336,7 @@ export default function TemplatesPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as TemplateCategory | "all")}
-            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Categories</option>
             <option value="marketing">Marketing (₹0.82)</option>
@@ -347,7 +347,7 @@ export default function TemplatesPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as TemplateStatus | "all")}
-            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3 py-2 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] px-3 py-2 text-xs font-medium text-[#0D0D0E] focus:outline-none focus:border-[#FF7900] focus:bg-white shadow-2xs cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="APPROVED">Approved</option>
@@ -360,10 +360,10 @@ export default function TemplatesPage() {
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {templates.length === 0 ? (
-          <div className="col-span-full p-12 text-center text-xs text-[#8E8E93] bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs">
-            <FileText className="h-8 w-8 mx-auto mb-2 text-[#8E8E93]/60" />
+          <div className="col-span-full p-12 text-center text-xs text-[#525866] bg-white rounded-2xl border border-[#E5E7EB] shadow-2xs">
+            <FileText className="h-8 w-8 mx-auto mb-2 text-[#717680]/60" />
             <p className="font-semibold text-[#0D0D0E] text-sm">No templates found</p>
-            <p className="text-xs text-[#8E8E93] mt-1">Try adjusting your search query or filters.</p>
+            <p className="text-xs text-[#525866] mt-1">Try adjusting your search query or filters.</p>
           </div>
         ) : (
           templates.map((tpl) => {
@@ -372,7 +372,7 @@ export default function TemplatesPage() {
             return (
               <div
                 key={tpl.id}
-                className="bg-white rounded-2xl border border-[#E5E5E7] p-5 shadow-2xs hover:shadow-md hover:border-[#FF7900]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs hover:shadow-md hover:border-[#FF7900]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
@@ -381,10 +381,10 @@ export default function TemplatesPage() {
                         {tpl.name}
                       </h3>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[11px] text-[#8E8E93] font-medium uppercase font-mono">
+                        <span className="text-[11px] text-[#525866] font-medium uppercase font-mono">
                           {tpl.language}
                         </span>
-                        <span className="text-[#E5E5E7]">•</span>
+                        <span className="text-[#E5E7EB]">•</span>
                         <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${catCfg.color}`}>
                           {catCfg.label} ({catCfg.cost})
                         </span>
@@ -412,10 +412,10 @@ export default function TemplatesPage() {
                   )}
 
                   {/* Body content preview in WhatsApp bubble styling */}
-                  <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs text-[#0D0D0E] leading-relaxed my-2 shadow-2xs">
-                    <p className="whitespace-pre-wrap font-medium">{tpl.body_content}</p>
+                  <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-[#E5E7EB] text-xs text-[#0D0D0E] leading-relaxed my-2 shadow-2xs">
+                    <p className="whitespace-pre-wrap font-normal">{tpl.body_content}</p>
                     {tpl.footer_text && (
-                      <p className="text-[11px] text-[#8E8E93] mt-2 pt-1.5 border-t border-[#E5E5E7]">
+                      <p className="text-[11px] text-[#525866] mt-2 pt-1.5 border-t border-[#E5E7EB]">
                         {tpl.footer_text}
                       </p>
                     )}
@@ -431,8 +431,8 @@ export default function TemplatesPage() {
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="pt-3 border-t border-[#E5E5E7] flex items-center justify-between mt-3 text-xs">
-                  <span className="text-[11px] font-semibold text-[#8E8E93]">
+                <div className="pt-3 border-t border-[#E5E7EB] flex items-center justify-between mt-3 text-xs">
+                  <span className="text-[11px] font-medium text-[#525866]">
                     {tpl.variables.length} variable{tpl.variables.length === 1 ? "" : "s"}
                   </span>
 
@@ -441,7 +441,7 @@ export default function TemplatesPage() {
                     {tpl.status === "PENDING" && (
                       <button
                         onClick={() => handleSimulateApproval(tpl.id)}
-                        className="text-[11px] text-emerald-700 font-semibold hover:bg-emerald-100 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+                        className="text-[11px] text-emerald-700 font-medium hover:bg-emerald-100 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
                         title="Simulate Meta approval"
                       >
                         Approve (Mock)
@@ -450,7 +450,7 @@ export default function TemplatesPage() {
                     {tpl.status === "PENDING" && (
                       <button
                         onClick={() => handleSimulateRejection(tpl.id)}
-                        className="text-[11px] text-rose-700 font-semibold hover:bg-rose-100 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 transition-colors cursor-pointer"
+                        className="text-[11px] text-rose-700 font-medium hover:bg-rose-100 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 transition-colors cursor-pointer"
                         title="Simulate Meta rejection"
                       >
                         Reject (Mock)
@@ -461,9 +461,9 @@ export default function TemplatesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => setInspectTemplate(tpl)}
-                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl font-semibold"
+                      className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7900] hover:bg-[#FFF4EC] rounded-xl font-medium"
                     >
-                      <Eye className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" /> Inspect
+                      <Eye className="h-3.5 w-3.5 mr-1 text-[#525866]" /> Inspect
                     </Button>
                   </div>
                 </div>

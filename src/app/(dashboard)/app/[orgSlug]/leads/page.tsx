@@ -526,34 +526,34 @@ export default function LeadsPage() {
       {/* ===================================================================== */}
       {/* PAGE HEADER & TOP CONTROLS                                            */}
       {/* ===================================================================== */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E7EB]">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Leads
+              Leads &amp; Opportunities
             </h1>
             <span
               suppressHydrationWarning
               className="rounded-full bg-[#FFF4EC] border border-[#FF7900]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7900] shadow-2xs font-mono"
             >
-              {filteredLeads.length} {filteredLeads.length === 1 ? "lead" : "leads"}
+              {filteredLeads.length} {filteredLeads.length === 1 ? "deal" : "deals"}
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium">
-            Manage and convert your leads into customers.
+          <p className="text-sm text-[#525866] font-normal">
+            Commercial pipeline management, deal progression, and conversion tracking.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Board / Table View Toggle */}
-          <div className="flex items-center rounded-xl bg-[#F7F7F8] p-1 border border-[#E5E5E7] shadow-2xs">
+          <div className="flex items-center rounded-xl bg-[#F7F7F8] p-1 border border-[#E5E7EB] shadow-2xs">
             <button
               type="button"
               onClick={() => setViewMode("board")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 viewMode === "board"
-                  ? "bg-[#0D0D0E] text-white shadow-xs"
-                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+                  ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
+                  : "text-[#525866] hover:text-[#0D0D0E]"
               }`}
               title="Kanban Board View"
             >
@@ -563,10 +563,10 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={() => setViewMode("table")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 viewMode === "table"
-                  ? "bg-[#0D0D0E] text-white shadow-xs"
-                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+                  ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
+                  : "text-[#525866] hover:text-[#0D0D0E]"
               }`}
               title="List Table View"
             >
@@ -579,9 +579,9 @@ export default function LeadsPage() {
           <Button
             onClick={() => setCreateModalOpen(true)}
             size="default"
-            className="shadow-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-semibold rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
+            className="shadow-xs bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium rounded-xl flex items-center gap-2 h-10 px-4 cursor-pointer"
           >
-            <Plus className="h-4 w-4 stroke-[3]" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Lead</span>
           </Button>
         </div>
@@ -591,71 +591,71 @@ export default function LeadsPage() {
       {/* MINI COMMAND STATS BANNER                                             */}
       {/* ===================================================================== */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">
               Active Pipeline
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-semibold font-mono text-[#0D0D0E] block mt-0.5"
+              className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1 block"
             >
-              {formatCurrency(pipelineMetrics.activeValue)}
+              {mounted ? formatCurrency(pipelineMetrics.activeValue) : "₹0"}
             </span>
           </div>
-          <div className="h-10 w-10 rounded-xl bg-[#FFF4EC] text-[#FF7900] flex items-center justify-center shrink-0">
-            <DollarSign className="h-5 w-5" />
+          <div className="h-10 w-10 rounded-xl bg-[#FFF4EC] text-[#FF7900] flex items-center justify-center shrink-0 border border-[#FFE1CC]">
+            <TrendingUp className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
-              Won Revenue
+            <span className="text-[11px] font-semibold text-[#525866] uppercase tracking-wider block">
+              Total Opportunities
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-semibold font-mono text-emerald-600 block mt-0.5"
+              className="text-2xl font-semibold font-mono tracking-tight text-[#0D0D0E] mt-1 block"
             >
-              {formatCurrency(pipelineMetrics.wonValue)}
+              {mounted ? pipelineMetrics.totalLeads : 0}
             </span>
           </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+            <Users className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
+          <div>
+            <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block">
+              Deals Won
+            </span>
+            <span
+              suppressHydrationWarning
+              className="text-2xl font-semibold font-mono tracking-tight text-emerald-600 mt-1 block"
+            >
+              {mounted ? formatCurrency(pipelineMetrics.wonValue) : "₹0"}
+            </span>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
             <Award className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
+        <div className="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-xs flex items-center justify-between interactive-hover-card">
           <div>
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
-              Pipeline Deals
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-xl sm:text-2xl font-semibold font-mono text-[#0D0D0E] block mt-0.5"
-            >
-              {pipelineMetrics.totalLeads}
-            </span>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-[#F7F7F8] text-[#0D0D0E] flex items-center justify-center shrink-0">
-            <Briefcase className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-[#E5E5E7] shadow-xs flex items-center justify-between interactive-hover-card">
-          <div>
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider block">
               Win Rate
             </span>
             <span
               suppressHydrationWarning
-              className="text-xl sm:text-2xl font-semibold font-mono text-[#FF7900] block mt-0.5"
+              className="text-2xl font-semibold font-mono tracking-tight text-amber-600 mt-1 block"
             >
-              {pipelineMetrics.winRate}%
+              {mounted ? `${pipelineMetrics.winRate}%` : "0%"}
             </span>
           </div>
-          <div className="h-10 w-10 rounded-xl bg-[#FFF4EC] text-[#FF7900] flex items-center justify-center shrink-0">
-            <TrendingUp className="h-5 w-5" />
+          <div className="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
+            <Clock className="h-5 w-5" />
           </div>
         </div>
       </div>
