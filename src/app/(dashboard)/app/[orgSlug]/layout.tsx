@@ -69,12 +69,12 @@ export default async function OrgDashboardLayout({
       organizations={userOrganizations}
     >
       <ToastProvider>
-        <div className="flex min-h-screen bg-[#F7F7F8] text-[#0D0D0E] selection:bg-[#FF7900] selection:text-white relative">
+        <div className="flex min-h-screen bg-[#FAF9F6] text-[#0D0D0E] selection:bg-[#FF7A1A] selection:text-white relative">
           <Sidebar orgSlug={orgSlug} />
           <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
             <Topbar />
-            <main className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6 bg-[#F7F7F8]">
-              <div className="mx-auto max-w-[1580px] animate-page-enter">{children}</div>
+            <main className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6 bg-[#FAF9F6] custom-light-scroll">
+              <div className="mx-auto max-w-[1680px] animate-page-enter">{children}</div>
             </main>
           </div>
         </div>
