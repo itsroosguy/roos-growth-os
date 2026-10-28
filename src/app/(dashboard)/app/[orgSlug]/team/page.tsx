@@ -44,7 +44,7 @@ import {
   TeamInvitation,
 } from "@/lib/team/invitation-store";
 import { ROLE_DEFINITIONS } from "@/lib/organizations/permissions";
-import { cn } from "@/lib/utils";
+import { cn, formatINR, getAvatarColor, getInitials } from "@/lib/utils";
 
 interface MemberItem {
   id: string;
@@ -219,17 +219,17 @@ export default function TeamAndCredentialsPage() {
   return (
     <div className="space-y-6 max-w-6xl pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E7EB]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E6E2D8]">
         <div>
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
+            <h1 className="type-display text-[#12141A]">
               Access Credentials &amp; Team Governance
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] tabular-nums shadow-2xs">
+            <span className="rounded-full bg-[#EBF6FD] border border-[#BCE1F9] text-[13px] font-medium px-3.5 py-1 text-[#0F6F9D] tabular-nums">
               Admin Dispatched
             </span>
           </div>
-          <p className="text-sm text-[#525866] font-normal mt-1">
+          <p className="type-body text-[#454B57] mt-1">
             Level 1 Administrators control multi-level staff clearance, cryptographic invitation tokens, and decoupled liability matrices.
           </p>
         </div>
@@ -239,23 +239,24 @@ export default function TeamAndCredentialsPage() {
             <>
               <Button
                 onClick={() => setInviteModalOpen(true)}
-                className="rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium shadow-xs text-xs sm:text-sm h-10 px-4 cursor-pointer flex items-center gap-1.5"
+                variant="primary"
+                className="rounded-[12px] font-medium text-[14px] h-10 px-4 cursor-pointer flex items-center gap-1.5 shadow-xs"
               >
-                <Send className="h-3.5 w-3.5" />
+                <Send className="h-4 w-4" />
                 <span>Dispatch Multi-Level Account</span>
               </Button>
               <Button
                 onClick={() => setNewCredModalOpen(true)}
                 variant="outline"
-                className="rounded-xl border-[#E5E7EB] bg-white text-[#0D0D0E] font-medium text-xs h-10 px-3.5 hover:bg-[#F7F7F8] cursor-pointer shadow-2xs"
+                className="rounded-[12px] border-[#E6E2D8] bg-white text-[#12141A] font-medium text-[14px] h-10 px-3.5 hover:bg-[#F7F5F0] cursor-pointer shadow-xs"
               >
-                <KeyRound className="mr-1 h-3.5 w-3.5 text-[#525866]" />
+                <KeyRound className="mr-1 h-4 w-4 text-[#666C78]" />
                 API Token
               </Button>
             </>
           ) : (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs text-amber-800 font-medium flex items-center gap-1.5">
-              <Lock className="h-3.5 w-3.5 text-amber-600" />
+            <div className="rounded-[12px] bg-[#FFF3D6] border border-[#FFE5A3] px-3.5 py-2 text-[13px] text-[#8F5300] font-medium flex items-center gap-1.5">
+              <Lock className="h-4 w-4 text-[#8F5300]" />
               <span>Admin Authority Required to Dispatch Accounts</span>
             </div>
           )}
@@ -293,14 +294,14 @@ export default function TeamAndCredentialsPage() {
       />
 
       {/* Tabs */}
-      <div className="flex items-center border-b border-[#E5E7EB] gap-6 text-xs font-medium">
+      <div className="flex items-center border-b border-[#E6E2D8] gap-6 text-[14px] font-medium">
         <button
           onClick={() => setActiveTab("invitations")}
           className={cn(
-            "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
+            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "invitations"
-              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
-              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
+              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
           <Mail className="h-4 w-4" />
@@ -309,10 +310,10 @@ export default function TeamAndCredentialsPage() {
         <button
           onClick={() => setActiveTab("roster")}
           className={cn(
-            "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
+            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "roster"
-              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
-              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
+              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
           <Users className="h-4 w-4" />
@@ -321,10 +322,10 @@ export default function TeamAndCredentialsPage() {
         <button
           onClick={() => setActiveTab("credentials")}
           className={cn(
-            "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
+            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "credentials"
-              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
-              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
+              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
           <KeyRound className="h-4 w-4" />
@@ -333,10 +334,10 @@ export default function TeamAndCredentialsPage() {
         <button
           onClick={() => setActiveTab("matrix")}
           className={cn(
-            "pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
+            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "matrix"
-              ? "border-[#FF7A1A] text-[#FF7A1A] font-semibold"
-              : "border-transparent text-[#525866] hover:text-[#0D0D0E]"
+              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
           <Shield className="h-4 w-4" />
@@ -345,26 +346,26 @@ export default function TeamAndCredentialsPage() {
       </div>
 
       {/* Trust & Decoupled Liability Highlights Banner */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Level 1: Admin */}
-        <div className="bg-[#121214] text-white rounded-2xl border border-[#1F1F23] p-5 shadow-xs space-y-2 relative overflow-hidden">
+        <div className="bg-[#0B0D12] text-white rounded-[20px] border border-[#242A38] p-6 shadow-xs space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-[#FF7A1A] bg-[#24180E] border border-[#FF7A1A]/30 px-2.5 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-medium uppercase tracking-wider text-[#FF5A1F] bg-[#FF5A1F]/15 border border-[#FF5A1F]/30 px-3 py-0.5 rounded-full tabular-nums">
               Level 1: Admin
             </span>
-            <Crown className="h-4 w-4 text-[#FF7A1A]" />
+            <Crown className="h-5 w-5 text-[#FF5A1F]" />
           </div>
-          <h3 className="text-sm font-semibold text-white">Full Root &amp; Fund Authority</h3>
-          <p className="text-xs text-[#8E8E93] leading-relaxed font-normal">
+          <h3 className="text-[16px] font-medium text-white">Full Root &amp; Fund Authority</h3>
+          <p className="text-[13px] text-[#A3A9B6] leading-relaxed font-normal">
             Exclusive authority to issue multi-level credentials, execute overall fund transfers, manage bank settlements, and configure webhooks.
           </p>
-          <div className="pt-2 flex items-center justify-between border-t border-white/10 text-[11px] font-medium">
-            <span className="text-emerald-400 flex items-center gap-1">
-              <Unlock className="h-3.5 w-3.5" /> Full Funds: Authorized
+          <div className="pt-3 flex items-center justify-between border-t border-white/10 text-[13px] font-medium">
+            <span className="text-[#12B886] flex items-center gap-1.5">
+              <Unlock className="h-4 w-4" /> Full Funds: Authorized
             </span>
             <button
               onClick={() => setUserRole("admin")}
-              className="text-[#FF7A1A] hover:underline cursor-pointer"
+              className="text-[#FF5A1F] hover:underline cursor-pointer"
             >
               Simulate Role →
             </button>
@@ -372,24 +373,24 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 2: Senior Manager */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
+        <div className="bg-white rounded-[20px] border border-[#E6E2D8] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-medium uppercase tracking-wider text-[#7C4DFF] bg-[#F4F0FF] border border-[#E0D4FC] px-3 py-0.5 rounded-full tabular-nums">
               Level 2: Senior Manager
             </span>
-            <Shield className="h-4 w-4 text-purple-600" />
+            <Shield className="h-5 w-5 text-[#7C4DFF]" />
           </div>
-          <h3 className="text-sm font-semibold text-[#0D0D0E]">Operational Management</h3>
-          <p className="text-xs text-[#525866] leading-relaxed font-normal">
-            Full operational access (CRM, shared inbox, automations, campaigns). <span className="font-medium text-[#0D0D0E]">Strictly Decoupled &amp; Protected: Zero fund transfer liability.</span>
+          <h3 className="text-[16px] font-medium text-[#12141A]">Operational Management</h3>
+          <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
+            Full operational access (CRM, shared inbox, automations, campaigns). <span className="font-medium text-[#12141A]">Strictly Decoupled &amp; Protected: Zero fund transfer liability.</span>
           </p>
-          <div className="pt-2 flex items-center justify-between border-t border-[#E5E7EB] text-[11px] font-medium">
-            <span className="text-rose-600 flex items-center gap-1">
-              <Lock className="h-3.5 w-3.5" /> Funds: Blocked (Safe)
+          <div className="pt-3 flex items-center justify-between border-t border-[#E6E2D8] text-[13px] font-medium">
+            <span className="text-[#E5484D] flex items-center gap-1.5">
+              <Lock className="h-4 w-4" /> Funds: Blocked (Safe)
             </span>
             <button
               onClick={() => setUserRole("senior_manager")}
-              className="text-[#FF7A1A] hover:underline cursor-pointer font-medium"
+              className="text-[#FF5A1F] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -397,24 +398,24 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 3: Junior Manager */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-2xs space-y-2 relative overflow-hidden">
+        <div className="bg-white rounded-[20px] border border-[#E6E2D8] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-medium uppercase tracking-wider text-[#1FA2E8] bg-[#EBF6FD] border border-[#BCE1F9] px-3 py-0.5 rounded-full tabular-nums">
               Level 3: Junior Manager
             </span>
-            <Users className="h-4 w-4 text-blue-600" />
+            <Users className="h-5 w-5 text-[#1FA2E8]" />
           </div>
-          <h3 className="text-sm font-semibold text-[#0D0D0E]">Customer &amp; Task Frontline</h3>
-          <p className="text-xs text-[#525866] leading-relaxed font-normal">
-            Direct client communication and operational follow-up execution. <span className="font-medium text-[#0D0D0E]">Strictly Decoupled &amp; Protected: Zero financial configuration exposure.</span>
+          <h3 className="text-[16px] font-medium text-[#12141A]">Customer &amp; Task Frontline</h3>
+          <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
+            Direct client communication and operational follow-up execution. <span className="font-medium text-[#12141A]">Strictly Decoupled &amp; Protected: Zero financial configuration exposure.</span>
           </p>
-          <div className="pt-2 flex items-center justify-between border-t border-[#E5E7EB] text-[11px] font-medium">
-            <span className="text-rose-600 flex items-center gap-1">
-              <Lock className="h-3.5 w-3.5" /> Funds: Blocked (Safe)
+          <div className="pt-3 flex items-center justify-between border-t border-[#E6E2D8] text-[13px] font-medium">
+            <span className="text-[#E5484D] flex items-center gap-1.5">
+              <Lock className="h-4 w-4" /> Funds: Blocked (Safe)
             </span>
             <button
               onClick={() => setUserRole("junior_manager")}
-              className="text-[#FF7A1A] hover:underline cursor-pointer font-medium"
+              className="text-[#FF5A1F] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -446,42 +447,37 @@ export default function TeamAndCredentialsPage() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
+          <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
             <Table>
-              <TableHeader className="bg-[#F7F7F8] border-b border-[#E5E5E7]">
+              <TableHeader className="bg-[#FAF9F5] border-b border-[#E6E2D8]">
                 <TableRow>
-                  <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Recipient</TableHead>
-                  <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Assigned Level</TableHead>
-                  <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Fund Liability</TableHead>
-                  <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Status</TableHead>
-                  <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">SLA Expiry</TableHead>
-                  <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Actions</TableHead>
+                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Recipient</TableHead>
+                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Assigned Level</TableHead>
+                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Fund Liability</TableHead>
+                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
+                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">SLA Expiry</TableHead>
+                  <TableHead className="text-right text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {invitations.map((inv) => {
                   const roleMeta = ROLE_DEFINITIONS[inv.role];
+                  const avatarColor = getAvatarColor(inv.recipient_name);
                   return (
-                    <TableRow key={inv.id} className="hover:bg-[#F7F7F8]/80 transition-colors border-b border-[#E5E5E7]">
+                    <TableRow key={inv.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#E6E2D8]/70">
                       <TableCell>
                         <div className="flex items-center space-x-3 py-1">
                           <div
-                            className={cn(
-                              "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white font-semibold text-xs",
-                              inv.role === "admin"
-                                ? "bg-[#121214] text-[#FF7A1A] border border-[#FF7A1A]/30"
-                                : inv.role === "senior_manager"
-                                ? "bg-purple-600"
-                                : "bg-emerald-600"
-                            )}
+                            style={{ backgroundColor: avatarColor.bg, color: avatarColor.text }}
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-medium text-[13px] border border-black/5 shadow-xs"
                           >
-                            {inv.recipient_name[0]?.toUpperCase()}
+                            {getInitials(inv.recipient_name)}
                           </div>
                           <div>
-                            <span className="font-semibold text-sm text-[#0D0D0E] block">
+                            <span className="font-medium text-[15px] text-[#12141A] block">
                               {inv.recipient_name}
                             </span>
-                            <span className="text-xs text-[#8E8E93] tabular-nums">
+                            <span className="text-[13px] text-[#666C78] tabular-nums">
                               {inv.recipient_email}
                             </span>
                           </div>
@@ -491,12 +487,12 @@ export default function TeamAndCredentialsPage() {
                       <TableCell>
                         <span
                           className={cn(
-                            "text-[10px] font-medium uppercase px-2 py-0.5 rounded-full border",
+                            "text-[12px] font-medium uppercase px-2.5 py-0.5 rounded-full border",
                             inv.role === "admin"
-                              ? "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30 font-semibold"
+                              ? "bg-[#FFF0EB] text-[#FF5A1F] border-[#FF5A1F]/30"
                               : inv.role === "senior_manager"
-                              ? "bg-purple-50 text-purple-700 border-purple-200"
-                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
+                              : "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
                           )}
                         >
                           {roleMeta.title}
@@ -505,12 +501,12 @@ export default function TeamAndCredentialsPage() {
 
                       <TableCell>
                         {inv.role === "admin" ? (
-                          <span className="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
-                            <Check className="h-3.5 w-3.5" /> Full Funds
+                          <span className="text-[13px] font-medium text-[#0A7A53] flex items-center gap-1">
+                            <Check className="h-4 w-4" /> Full Funds
                           </span>
                         ) : (
-                          <span className="text-[11px] font-medium text-[#8E8E93] flex items-center gap-1">
-                            <Lock className="h-3.5 w-3.5 text-rose-500" /> Decoupled
+                          <span className="text-[13px] font-medium text-[#666C78] flex items-center gap-1">
+                            <Lock className="h-4 w-4 text-[#E5484D]" /> Decoupled
                           </span>
                         )}
                       </TableCell>
@@ -518,19 +514,19 @@ export default function TeamAndCredentialsPage() {
                       <TableCell>
                         <span
                           className={cn(
-                            "text-[10px] font-medium capitalize px-2 py-0.5 rounded-full border",
+                            "text-[12px] font-medium capitalize px-2.5 py-0.5 rounded-full border",
                             inv.status === "pending"
-                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              ? "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]"
                               : inv.status === "accepted"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-rose-50 text-rose-700 border-rose-200"
+                              ? "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
+                              : "bg-[#FFE9EA] text-[#B42336] border-[#FDCFD1]"
                           )}
                         >
                           {inv.status === "pending" ? "Awaiting Acceptance" : inv.status}
                         </span>
                       </TableCell>
 
-                      <TableCell className="text-xs text-[#8E8E93] font-medium">
+                      <TableCell className="text-[13px] text-[#666C78] font-medium">
                         {new Date(inv.expires_at).toLocaleDateString("en-IN", {
                           month: "short",
                           day: "numeric",
@@ -546,18 +542,18 @@ export default function TeamAndCredentialsPage() {
                               setPreviewInvite(inv);
                               setEmailPreviewModalOpen(true);
                             }}
-                            className="h-7 text-xs text-[#0D0D0E] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] font-semibold px-2 rounded-xl cursor-pointer"
+                            className="h-8 text-[13px] text-[#12141A] hover:text-[#FF5A1F] hover:bg-[#FFF0EB] font-medium px-2.5 rounded-[10px] cursor-pointer"
                           >
-                            <Eye className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" />
+                            <Eye className="h-3.5 w-3.5 mr-1 text-[#666C78]" />
                             Email Preview
                           </Button>
                           <Link
                             href={`/invite/${inv.token}`}
                             target="_blank"
-                            className="inline-flex items-center text-xs font-semibold text-[#0D0D0E] hover:text-[#FF7A1A] bg-[#F7F7F8] hover:bg-[#FFF4EC] px-2.5 py-1 rounded-xl transition-colors border border-[#E5E5E7]"
+                            className="inline-flex items-center text-[13px] font-medium text-[#12141A] hover:text-[#FF5A1F] bg-[#F7F5F0] hover:bg-[#FFF0EB] px-3 py-1.5 rounded-[10px] transition-colors border border-[#E6E2D8]"
                           >
                             <span>Accept</span>
-                            <ExternalLink className="h-3 w-3 ml-1" />
+                            <ExternalLink className="h-3.5 w-3.5 ml-1" />
                           </Link>
                         </div>
                       </TableCell>
@@ -572,55 +568,50 @@ export default function TeamAndCredentialsPage() {
 
       {/* TAB 2: ACTIVE TEAM ROSTER */}
       {activeTab === "roster" && (
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
-          <div className="p-5 border-b border-[#E5E5E7] flex items-center justify-between">
+        <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
+          <div className="p-5 border-b border-[#E6E2D8] flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-[#0D0D0E]">Active Workspace Members</h2>
-              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              <h2 className="text-[18px] font-medium text-[#12141A]">Active Workspace Members</h2>
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                 Staff holding activated credentials in {currentOrg.name}
               </p>
             </div>
-            <span className="rounded-full bg-[#F7F7F8] border border-[#E5E5E7] text-xs font-semibold px-3 py-1 text-[#0D0D0E]">
-              <span className="tabular-nums font-semibold text-[#FF7A1A] mr-1">{members.length}</span>
+            <span className="rounded-full bg-[#F7F5F0] border border-[#E6E2D8] text-[13px] font-medium px-3.5 py-1 text-[#12141A]">
+              <span className="tabular-nums font-medium text-[#FF5A1F] mr-1">{members.length}</span>
               members
             </span>
           </div>
 
           <Table>
-            <TableHeader className="bg-[#F7F7F8] border-b border-[#E5E5E7]">
+            <TableHeader className="bg-[#FAF9F5] border-b border-[#E6E2D8]">
               <TableRow>
-                <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">User</TableHead>
-                <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Assigned Role</TableHead>
-                <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Fund Clearance</TableHead>
-                <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Status</TableHead>
-                <TableHead className="text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Joined</TableHead>
-                {isAdmin && <TableHead className="text-right text-[11px] font-medium uppercase tracking-wider text-[#8E8E93] py-3.5">Role Action</TableHead>}
+                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">User</TableHead>
+                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Assigned Role</TableHead>
+                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Fund Clearance</TableHead>
+                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
+                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Joined</TableHead>
+                {isAdmin && <TableHead className="text-right text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Role Action</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {members.map((member) => {
                 const isFundAllowed = member.role === "admin" || member.role === "owner";
+                const avatarColor = getAvatarColor(member.name);
                 return (
-                  <TableRow key={member.id} className="hover:bg-[#F7F7F8]/80 transition-colors border-b border-[#E5E5E7]">
+                  <TableRow key={member.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#E6E2D8]/70">
                     <TableCell>
                       <div className="flex items-center space-x-3 py-1">
                         <div
-                          className={cn(
-                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white font-semibold text-xs shadow-2xs",
-                            member.role === "admin" || member.role === "owner"
-                              ? "bg-[#121214] text-[#FF7A1A] border border-[#FF7A1A]/30"
-                              : member.role === "senior_manager"
-                              ? "bg-purple-600"
-                              : "bg-emerald-600"
-                          )}
+                          style={{ backgroundColor: avatarColor.bg, color: avatarColor.text }}
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-medium text-[13px] border border-black/5 shadow-xs"
                         >
-                          {member.name[0]?.toUpperCase()}
+                          {getInitials(member.name)}
                         </div>
                         <div className="flex flex-col">
-                          <span className="font-semibold text-sm text-[#0D0D0E]">
+                          <span className="font-medium text-[15px] text-[#12141A]">
                             {member.name}
                           </span>
-                          <span className="text-xs text-[#8E8E93] font-medium">
+                          <span className="text-[13px] text-[#666C78] font-normal">
                             {member.email}
                           </span>
                         </div>
@@ -629,14 +620,14 @@ export default function TeamAndCredentialsPage() {
                     <TableCell>
                       <span
                         className={cn(
-                          "text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border",
+                          "text-[12px] font-medium uppercase px-2.5 py-0.5 rounded-full border",
                           member.role === "owner"
-                            ? "bg-purple-50 text-purple-700 border-purple-200"
+                            ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
                             : member.role === "admin"
-                            ? "bg-[#FFF4EC] text-[#FF7A1A] border-[#FF7A1A]/30"
+                            ? "bg-[#FFF0EB] text-[#FF5A1F] border-[#FF5A1F]/30"
                             : member.role === "senior_manager"
-                            ? "bg-purple-50 text-purple-700 border-purple-200"
-                            : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
+                            : "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
                         )}
                       >
                         {member.role === "admin"
@@ -650,28 +641,28 @@ export default function TeamAndCredentialsPage() {
                     </TableCell>
                     <TableCell>
                       {isFundAllowed ? (
-                        <span className="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
-                          <Check className="h-3.5 w-3.5" /> Full Funds
+                        <span className="text-[13px] font-medium text-[#0A7A53] flex items-center gap-1">
+                          <Check className="h-4 w-4" /> Full Funds
                         </span>
                       ) : (
-                        <span className="text-[11px] font-medium text-[#8E8E93] flex items-center gap-1">
-                          <Lock className="h-3.5 w-3.5 text-rose-500" /> Decoupled
+                        <span className="text-[13px] font-medium text-[#666C78] flex items-center gap-1">
+                          <Lock className="h-4 w-4 text-[#E5484D]" /> Decoupled
                         </span>
                       )}
                     </TableCell>
                     <TableCell>
                       <span
                         className={cn(
-                          "text-[10px] font-medium capitalize px-2 py-0.5 rounded-full border",
+                          "text-[12px] font-medium capitalize px-2.5 py-0.5 rounded-full border",
                           member.status === "active"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200"
+                            ? "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
+                            : "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]"
                         )}
                       >
                         {member.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-xs text-[#8E8E93] font-medium">
+                    <TableCell className="text-[13px] text-[#666C78] font-medium">
                       {member.joinedAt}
                     </TableCell>
                     {isAdmin && (
@@ -683,7 +674,7 @@ export default function TeamAndCredentialsPage() {
                               onChange={(e) =>
                                 handleUpdateRole(member.id, e.target.value as OrganizationRole)
                               }
-                              className="rounded-xl border border-[#E5E5E7] bg-white px-2 py-1 text-xs font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A]"
+                              className="rounded-[10px] border border-[#E6E2D8] bg-white px-2.5 py-1.5 text-[14px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
                             >
                               <option value="admin">Level 1: Admin</option>
                               <option value="senior_manager">Level 2: Sr Manager</option>
@@ -694,13 +685,13 @@ export default function TeamAndCredentialsPage() {
                               onClick={() =>
                                 setMembers(members.filter((m) => m.id !== member.id))
                               }
-                              className="text-xs font-semibold text-rose-600 hover:text-rose-700 cursor-pointer ml-1"
+                              className="text-[14px] font-medium text-[#E5484D] hover:text-[#B42336] cursor-pointer ml-1.5"
                             >
                               Remove
                             </button>
                           </div>
                         ) : (
-                          <span className="text-[11px] font-medium text-[#8E8E93]">Root Owner</span>
+                          <span className="text-[13px] font-medium text-[#666C78]">Root Owner</span>
                         )}
                       </TableCell>
                     )}

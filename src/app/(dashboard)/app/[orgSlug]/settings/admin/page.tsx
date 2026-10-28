@@ -96,17 +96,17 @@ export default function PlatformAdminPage() {
       orgSlug={currentOrg.slug}
       title="Platform Administration"
       description="Multi-tenant oversight, billing event history, and quota overrides for authorised operators."
-      badge={<Badge variant="orangeSubtle" className="text-xs font-medium">Level 1 Operator Console</Badge>}
+      badge={<Badge variant="orangeSubtle" className="text-[13px] font-medium">Level 1 Operator Console</Badge>}
     >
       <div className="space-y-6">
 
       {feedback && (
-        <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between animate-fadeIn">
+        <div className="rounded-[12px] bg-[#E6FBF2] p-4 border border-[#B8F5D8] text-[14px] text-[#0A7A53] flex items-center justify-between shadow-xs">
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
             <span className="font-medium">{feedback}</span>
           </div>
-          <button onClick={() => setFeedback(null)} className="font-semibold underline ml-4 hover:text-emerald-950">
+          <button onClick={() => setFeedback(null)} className="font-medium underline ml-4 hover:text-[#0A7A53] cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -114,10 +114,10 @@ export default function PlatformAdminPage() {
 
       {/* Operator KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#121214] border border-[#1C1C1F] rounded-2xl p-5 text-white flex flex-col justify-between shadow-xs">
-          <div className="flex items-center justify-between text-xs text-[#8E8E93]">
+        <div className="bg-[#0B0D12] border border-[#242A38] rounded-[20px] p-5 text-white flex flex-col justify-between shadow-xs">
+          <div className="flex items-center justify-between text-[13px] text-[#A3A9B6]">
             <span>Active Tenants</span>
-            <div className="h-8 w-8 rounded-xl bg-[#1C1C1F] flex items-center justify-center text-[#FF7A1A]">
+            <div className="h-8 w-8 rounded-[10px] bg-[#1B1F29] flex items-center justify-center text-[#FF5A1F]">
               <Building className="h-4 w-4" />
             </div>
           </div>

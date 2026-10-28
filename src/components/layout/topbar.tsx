@@ -27,7 +27,7 @@ import {
   Sliders,
   CreditCard,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatINR } from "@/lib/utils";
 
 interface NotificationItem {
   id: string;
@@ -201,10 +201,10 @@ export function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-[52px] shrink-0 items-center justify-between border-b border-[#E4E1D8] bg-[#F6F5F1] px-4 md:px-6 select-none">
+      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#E6E2D8] bg-[#F7F5F0] px-4 md:px-8 select-none">
         {/* Left: Contextual Breadcrumb */}
-        <div className="flex items-center gap-2 text-[13px]">
-          <span className="text-[#6A707C] font-normal">
+        <div className="flex items-center gap-2 text-[14px]">
+          <span className="text-[#666C78] font-normal">
             {currentBreadcrumb.section}
           </span>
           <span className="text-[#D2CEC2] select-none font-normal">/</span>
@@ -214,18 +214,18 @@ export function Topbar() {
         </div>
 
         {/* Center-Right: Controls */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           {/* Command Palette Trigger (Cmd+K) */}
           <button
             type="button"
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center justify-between w-56 h-8 px-2.5 rounded-[8px] bg-white border border-[#E4E1D8] text-[13px] text-[#6A707C] hover:border-[#D2CEC2] hover:text-[#12141A] shadow-hairline transition-colors"
+            className="hidden sm:flex items-center justify-between w-60 h-9 px-3 rounded-[12px] bg-white border border-[#E6E2D8] text-[14px] text-[#666C78] hover:border-[#D2CEC2] hover:text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04)] transition-all"
           >
             <div className="flex items-center gap-2">
-              <Search className="h-3.5 w-3.5 text-[#6A707C]" />
-              <span className="text-[12px]">Search or jump to...</span>
+              <Search className="h-4 w-4 text-[#666C78]" />
+              <span className="text-[14px]">Search or jump to...</span>
             </div>
-            <kbd className="inline-flex items-center rounded border border-[#E4E1D8] bg-[#EFEDE7] px-1.5 py-0.5 text-[10px] text-[#6A707C]">
+            <kbd className="inline-flex items-center rounded-[6px] border border-[#E6E2D8] bg-[#F7F5F0] px-2 py-0.5 text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
               ⌘K
             </kbd>
           </button>
@@ -235,7 +235,7 @@ export function Topbar() {
             <button
               type="button"
               onClick={() => setNotificationsOpen((prev) => !prev)}
-              className="relative flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#E4E1D8] bg-white text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
+              className="relative flex h-9 w-9 items-center justify-center rounded-[12px] border border-[#E6E2D8] bg-white text-[#454B57] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-all shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
@@ -251,16 +251,16 @@ export function Topbar() {
                   className="fixed inset-0 z-40"
                   onClick={() => setNotificationsOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 z-50 w-80 rounded-[14px] border border-[#E4E1D8] bg-white p-3 shadow-overlay animate-reveal text-[#12141A]">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#E4E1D8] mb-2">
-                    <span className="text-[13px] font-medium text-[#12141A]">
+                <div className="absolute right-0 top-full mt-2 z-50 w-88 rounded-[20px] border border-[#E6E2D8] bg-white p-3.5 shadow-overlay animate-reveal text-[#12141A]">
+                  <div className="flex items-center justify-between pb-2.5 border-b border-[#E6E2D8] mb-2">
+                    <span className="text-[14px] font-medium text-[#12141A]">
                       Notifications
                     </span>
                     {unreadCount > 0 && (
                       <button
                         type="button"
                         onClick={markAllNotificationsAsRead}
-                        className="text-[11px] text-[#FF5A1F] hover:underline"
+                        className="text-[13px] text-[#FF5A1F] hover:underline"
                       >
                         Mark all as read
                       </button>
@@ -273,19 +273,19 @@ export function Topbar() {
                         href={n.href}
                         onClick={() => setNotificationsOpen(false)}
                         className={cn(
-                          "block p-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors text-left",
+                          "block p-2.5 rounded-[12px] hover:bg-[#F7F5F0] transition-colors text-left",
                           !n.read && "bg-[#FFF1EA]/60"
                         )}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-[12px] font-medium text-[#12141A]">
+                          <span className="text-[13px] font-medium text-[#12141A]">
                             {n.title}
                           </span>
-                          <span className="text-[10px] text-[#6A707C]">
+                          <span className="text-[13px] text-[#666C78]">
                             {n.time}
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#4B515D] mt-0.5 truncate">
+                        <p className="text-[13px] text-[#454B57] mt-0.5 truncate">
                           {n.subtitle}
                         </p>
                       </Link>
@@ -301,11 +301,11 @@ export function Topbar() {
             <button
               type="button"
               onClick={() => setOrgDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 h-8 px-2.5 rounded-[8px] border border-[#E4E1D8] bg-white text-[12px] font-medium text-[#12141A] hover:bg-[#EFEDE7] transition-colors shadow-hairline"
+              className="flex items-center gap-2 h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-white text-[14px] font-medium text-[#12141A] hover:bg-[#F7F5F0] transition-colors shadow-xs"
             >
-              <Building2 className="h-3.5 w-3.5 text-[#6A707C]" />
-              <span className="max-w-[120px] truncate">{currentOrg.name}</span>
-              <ChevronDown className="h-3 w-3 text-[#6A707C]" />
+              <Building2 className="h-4 w-4 text-[#666C78]" />
+              <span className="max-w-[140px] truncate">{currentOrg.name}</span>
+              <ChevronDown className="h-3.5 w-3.5 text-[#666C78]" />
             </button>
 
             {/* Workspace Dropdown */}
@@ -315,8 +315,8 @@ export function Topbar() {
                   className="fixed inset-0 z-40"
                   onClick={() => setOrgDropdownOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 z-50 w-52 rounded-[14px] border border-[#E4E1D8] bg-white p-1.5 shadow-overlay text-[#12141A] animate-reveal">
-                  <div className="px-2 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                <div className="absolute right-0 top-full mt-2 z-50 w-56 rounded-[16px] border border-[#E6E2D8] bg-white p-2 shadow-overlay text-[#12141A] animate-reveal">
+                  <div className="px-2.5 py-1 text-[13px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
                     Workspaces
                   </div>
                   {organizations.map((org) => {
@@ -332,15 +332,15 @@ export function Topbar() {
                           }
                         }}
                         className={cn(
-                          "flex items-center justify-between w-full px-2.5 py-1.5 rounded-[6px] text-[13px] text-left transition-colors",
+                          "flex items-center justify-between w-full px-3 py-2 rounded-[8px] text-[14px] text-left transition-colors",
                           isSelected
-                            ? "bg-[#EFEDE7] text-[#12141A] font-medium"
-                            : "text-[#4B515D] hover:bg-[#F6F5F1] hover:text-[#12141A]"
+                            ? "bg-[#F7F5F0] text-[#12141A] font-medium"
+                            : "text-[#454B57] hover:bg-[#F7F5F0] hover:text-[#12141A]"
                         )}
                       >
                         <span className="truncate">{org.name}</span>
                         {isSelected && (
-                          <Check className="h-3.5 w-3.5 text-[#FF5A1F] shrink-0" />
+                          <Check className="h-4 w-4 text-[#FF5A1F] shrink-0" />
                         )}
                       </button>
                     );
@@ -384,7 +384,7 @@ export function Topbar() {
             <div className="max-h-80 overflow-y-auto p-2 space-y-3">
               {searchResults.leads.length > 0 && (
                 <div>
-                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                  <div className="px-3 py-1 text-[12px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
                     Opportunities
                   </div>
                   {searchResults.leads.map((lead) => (
@@ -392,21 +392,21 @@ export function Topbar() {
                       key={lead.id}
                       href={`/app/${currentOrg.slug}/leads?leadId=${lead.id}`}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
+                      className="flex items-center justify-between px-3.5 py-2.5 rounded-[12px] hover:bg-[#F7F5F0] transition-colors"
                     >
-                      <div className="flex items-center gap-2 truncate">
-                        <Filter className="h-3.5 w-3.5 text-[#FF5A1F]" />
-                        <span className="text-[13px] font-medium text-[#12141A] truncate">
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Filter className="h-4 w-4 text-[#12B886]" />
+                        <span className="text-[14px] font-medium text-[#12141A] truncate">
                           {lead.title}
                         </span>
                         {lead.contact_name && (
-                          <span className="text-[12px] text-[#6A707C]">
+                          <span className="text-[13px] text-[#666C78]">
                             ({lead.contact_name})
                           </span>
                         )}
                       </div>
-                      <span className="text-[12px] font-medium text-[#0F7B5A] font-variant-numeric tabular-nums">
-                        ₹{(lead.estimated_value || 0).toLocaleString()}
+                      <span className="text-[14px] font-medium text-[#0A7A53] font-variant-numeric tabular-nums">
+                        {formatINR(lead.estimated_value || 0)}
                       </span>
                     </Link>
                   ))}
@@ -415,7 +415,7 @@ export function Topbar() {
 
               {searchResults.contacts.length > 0 && (
                 <div>
-                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                  <div className="px-3 py-1 text-[12px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
                     Contacts
                   </div>
                   {searchResults.contacts.map((contact) => (
@@ -423,15 +423,15 @@ export function Topbar() {
                       key={contact.id}
                       href={`/app/${currentOrg.slug}/contacts?contactId=${contact.id}`}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
+                      className="flex items-center justify-between px-3.5 py-2.5 rounded-[12px] hover:bg-[#F7F5F0] transition-colors"
                     >
-                      <div className="flex items-center gap-2 truncate">
-                        <Users className="h-3.5 w-3.5 text-[#4B515D]" />
-                        <span className="text-[13px] font-medium text-[#12141A]">
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Users className="h-4 w-4 text-[#1FA2E8]" />
+                        <span className="text-[14px] font-medium text-[#12141A]">
                           {contact.first_name} {contact.last_name || ""}
                         </span>
                       </div>
-                      <span className="text-[12px] text-[#6A707C] font-variant-numeric tabular-nums">
+                      <span className="text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
                         {contact.phone}
                       </span>
                     </Link>
@@ -441,7 +441,7 @@ export function Topbar() {
 
               {searchResults.pages.length > 0 && (
                 <div>
-                  <div className="px-2.5 py-1 text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+                  <div className="px-3 py-1 text-[12px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
                     Navigation
                   </div>
                   {searchResults.pages.map((page) => (
@@ -449,12 +449,12 @@ export function Topbar() {
                       key={page.href}
                       href={page.href}
                       onClick={() => setCommandPaletteOpen(false)}
-                      className="flex items-center justify-between px-3 py-2 rounded-[8px] hover:bg-[#F6F5F1] transition-colors"
+                      className="flex items-center justify-between px-3.5 py-2.5 rounded-[12px] hover:bg-[#F7F5F0] transition-colors"
                     >
-                      <span className="text-[13px] font-medium text-[#12141A]">
+                      <span className="text-[14px] font-medium text-[#12141A]">
                         {page.name}
                       </span>
-                      <span className="text-[11px] text-[#6A707C]">Jump</span>
+                      <span className="text-[13px] text-[#666C78]">Jump</span>
                     </Link>
                   ))}
                 </div>
@@ -462,7 +462,7 @@ export function Topbar() {
             </div>
 
             {/* Footer */}
-            <div className="px-4 py-2 bg-[#EFEDE7] border-t border-[#E4E1D8] flex items-center justify-between text-[11px] text-[#6A707C]">
+            <div className="px-5 py-2.5 bg-[#EFEDE7] border-t border-[#E6E2D8] flex items-center justify-between text-[13px] text-[#666C78]">
               <span>Navigate with arrow keys</span>
               <span>ESC to dismiss</span>
             </div>

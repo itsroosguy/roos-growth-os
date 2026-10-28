@@ -1,6 +1,49 @@
-# Changelog — Roos StudioX Business OS "Quiet Instrument, One Flame" Full UI Reset
+# Changelog — Roos StudioX Business OS
 
 All notable architectural, visual, and experiential changes to the Roos StudioX CRM & WhatsApp Business Operating System are documented in this file.
+
+---
+
+## [Revision 2: The "2027 Pass"] — 2026-10-28
+### Complete Transformation to 2027 Design Standard across All 15 Routes
+- **Tokens & Semantic Meaning**:
+  - Implemented the authoritative "Color is Meaning" palette: Flame (`#FF5A1F`), Ultramarine (`#3B5BFD`), Emerald (`#12B886`), Amber (`#F5A524`), Sky (`#1FA2E8`), Violet (`#7C4DFF`), Rose (`#E5484D`).
+  - Added categorical pipeline stage progression: Inbound Slate, Contacted Sky, Qualified Ultramarine, Proposal Amber, Won Emerald, Lost Rose.
+  - Implemented fluid rem typography rooted at `clamp(15px, 0.4vw + 10.5px, 18px)`: `hero-metric` (5.0rem), `metric-xl` (3.5rem), `display` (2.25rem), `metric` (2.0rem), `title` (1.25rem), `label-lg`/`label` (1.0625rem / 1.0rem), `body` (0.9375rem), `small` (0.875rem), `meta` (0.8125rem), `eyebrow` (0.75rem).
+  - Enforced hard floor: Zero text < 13px computed. Nothing actionable < 14px.
+  - Introduced 2027 Radii System: 12px controls, 20px cards (`card-2027`), 28px heroes/drawers (`hero-card-dark`), full capsules.
+  - Added 2-layer ambient soft shadows (`0 1px 2px rgba(11,13,18,.04), 0 8px 24px -12px rgba(11,13,18,.12)`).
+  - Added Indian currency grouping helper `formatINR` (e.g. `₹4,20,000`).
+- **Shell & Navigation Rebuilt**:
+  - Replaced edge-to-edge sidebar with **inset floating dark panel** (`rounded-[24px]`, `p-3` margin letting warm canvas visibly flow around all four edges, `0 12px 36px -8px rgba(11,13,18,0.35)` shadow, top inner highlight).
+  - Fixed ~900px height overflow: 42px rows, 24px category gaps, collapsed configuration group by default, hidden scrollbar with edge fades.
+  - Eradicated stray "R / B" glyph artifact next to official logo by removing duplicate adjacent HTML text spans.
+  - Active nav item: 36px rounded-square chip in module's hue tint with duotone icon and 3px sliding Flame bar.
+  - Elevated topbar to 56px with breadcrumbs, command palette search, and Indian currency results.
+- **Overview Re-architected (5-Row Bento)**:
+  - Row 0: Time-aware real greeting ("Good evening, Praveen. Rahul Mehta has been waiting 2 hours.") + period selector + single Flame CTA ("New opportunity").
+  - Row 1: Today strip with 4 interactive 72px chips in module hues (Waiting [ultramarine], Due today [amber], Overdue [rose/emerald], In proposal [emerald]). Filters queue below on click.
+  - Row 2: Left 7-col Next Best Action card (avatar, waiting timer, real inbound message, violet AI reply preview, Flame CTA, actions) + Right 5-col Revenue Hero (ink surface, 28px radius, flame glow, 5rem metric with AnimatedNumber, proportional stage bar from real open stage values, Won shown separately below in emerald).
+  - Row 3: Up next queue + Coming up follow-ups with one-click completion & undo toast.
+  - Row 4: Deals worth a look (open deals only, never Won) + Collapsed recent activity feed.
+- **Flagship Routes Elevated**:
+  - **Shared Inbox**: Left thread list on canvas, center thread on white raised panel, chat bubbles (Inbound white, Outbound ultramarine `#EAEEFF`, Internal note amber `#FFF3D6`), larger 15px body text, pinned bottom composer with violet AI reply bar and primary flame Send button.
+  - **Sales Pipeline**: Categorical stage colors, headers with colored dots and `formatINR` values, stuck-time badges, drag-and-drop target indicators.
+  - **Contacts**: Sky identity, search-first 40px table rows, deterministic colored avatars with initials, consent filter pills, text floor ≥ 13px.
+  - **Tasks / Agenda**: Amber identity, Overdue / Today / Upcoming / Completed groups, 20px cards, one-click completion with undo toast.
+  - **Broadcasts**: Violet identity, campaign cards with status tints, recipient counts, delivery rates, real costs in `formatINR`.
+  - **Templates**: Violet identity, simulated smartphone preview drawer, variable tags.
+  - **Automations**: Amber identity, human-readable "When → If → Then" rule chains, 20px card radius, real switches.
+  - **Reports**: Emerald & stage colors, one-sentence takeaways above each chart, proportional funnel bars, SLA response brackets.
+  - **Team Roster**: Sky identity, deterministic colored avatars, plain-language enterprise roles, text floor ≥ 13px.
+  - **WhatsApp API**: Ultramarine / slate identity, 760px settings shell, real toggle switches, sticky save bar.
+  - **AI Engine**: Violet identity, model selector, temperature slider, prompt editor.
+  - **Integrations**: Slate neutrals, canonical `RestrictedState` explaining routing mismatch.
+  - **Subscription**: Emerald identity, clear progress bars ("4 of 5 used (At limit)"), clean tier upgrade CTAs.
+  - **Organisation Details**: Slate neutrals, 760px settings shell, real inputs, sticky save bar.
+- **Verification**:
+  - 144 of 144 unit and integration tests passing. 0 TypeScript errors.
+  - Full DOM typography audit passing across all 15 routes: 0 non-Google Sans fonts, max weight ≤ 600, 0 italics, 0 monospace, 0 text < 13px, 0 interactive < 14px.
 
 ---
 

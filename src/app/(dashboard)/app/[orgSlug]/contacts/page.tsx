@@ -13,7 +13,11 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/toast-context";
-import { cn } from "@/lib/utils";
+import {
+  cn,
+  getAvatarColor,
+  getInitials,
+} from "@/lib/utils";
 import {
   Users,
   Plus,
@@ -157,7 +161,7 @@ export default function ContactsPage() {
               setConsentFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="h-8.5 px-2.5 rounded-[8px] border border-[#E4E1D8] bg-white text-[12px] text-[#12141A] outline-none shadow-hairline"
+            className="h-10 px-3 rounded-[12px] border border-[#E6E2D8] bg-white text-[14px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
           >
             <option value="all">All Consent</option>
             <option value="opted_in">Opted In</option>
@@ -168,9 +172,7 @@ export default function ContactsPage() {
           {/* Primary Action Button */}
           <Button
             onClick={() => setAddModalOpen(true)}
-            variant="primary"
-            size="sm"
-            className="flex items-center gap-1.5"
+            className="btn-primary-flame flex items-center gap-2 h-10 px-4 text-[14px]"
           >
             <Plus className="h-4 w-4" />
             <span>Add contact</span>
@@ -192,76 +194,86 @@ export default function ContactsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedContacts.map((contact) => (
-              <TableRow
-                key={contact.id}
-                onClick={() => setSelectedContact(contact)}
-                className="cursor-pointer group"
-              >
-                <TableCell className="font-medium text-[#12141A]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#EFEDE7] text-[#12141A] text-[11px] font-medium border border-[#E4E1D8]">
-                      {contact.first_name[0]}
+            {paginatedContacts.map((contact) => {
+              const avatarStyle = getAvatarColor(contact.first_name);
+              return (
+                <TableRow
+                  key={contact.id}
+                  onClick={() => setSelectedContact(contact)}
+                  className="cursor-pointer group"
+                >
+                  <TableCell className="font-medium text-[#12141A]">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-medium border shrink-0",
+                          avatarStyle.bg,
+                          avatarStyle.text,
+                          avatarStyle.border
+                        )}
+                      >
+                        {getInitials(`${contact.first_name} ${contact.last_name || ""}`)}
+                      </div>
+                      <span className="text-[14px]">
+                        {contact.first_name} {contact.last_name || ""}
+                      </span>
                     </div>
-                    <span>
-                      {contact.first_name} {contact.last_name || ""}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-variant-numeric tabular-nums text-[#12141A]">
-                  {contact.phone}
-                </TableCell>
-                <TableCell className="text-[#4B515D]">
-                  {contact.company || "—"}
-                </TableCell>
-                <TableCell>
-                  <StatusPill
-                    variant={
-                      contact.consent_status === "opted_in"
-                        ? "success"
+                  </TableCell>
+                  <TableCell className="font-variant-numeric tabular-nums text-[#12141A] text-[14px]">
+                    {contact.phone}
+                  </TableCell>
+                  <TableCell className="text-[#454B57] text-[14px]">
+                    {contact.company || "—"}
+                  </TableCell>
+                  <TableCell>
+                    <StatusPill
+                      variant={
+                        contact.consent_status === "opted_in"
+                          ? "emerald"
+                          : contact.consent_status === "opted_out"
+                          ? "rose"
+                          : "amber"
+                      }
+                      dot
+                      size="sm"
+                    >
+                      {contact.consent_status === "opted_in"
+                        ? "Opted In"
                         : contact.consent_status === "opted_out"
-                        ? "danger"
-                        : "warning"
-                    }
-                    dot
-                    size="sm"
-                  >
-                    {contact.consent_status === "opted_in"
-                      ? "Opted In"
-                      : contact.consent_status === "opted_out"
-                      ? "Opted Out"
-                      : "Pending"}
-                  </StatusPill>
-                </TableCell>
-                <TableCell className="text-[#6A707C]">
-                  {contact.source || "Direct"}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <Link
-                      href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-1 rounded-[6px] text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
-                      title="Open WhatsApp chat"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={(e) => handleDeleteContact(contact.id, e)}
-                      className="p-1 rounded-[6px] text-[#6A707C] hover:text-[#B42318] hover:bg-[#FDECEA] transition-colors"
-                      title="Delete contact"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                        ? "Opted Out"
+                        : "Pending"}
+                    </StatusPill>
+                  </TableCell>
+                  <TableCell className="text-[#666C78] text-[14px]">
+                    {contact.source || "Direct"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 rounded-[8px] text-[#454B57] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
+                        title="Open WhatsApp chat"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={(e) => handleDeleteContact(contact.id, e)}
+                        className="p-1.5 rounded-[8px] text-[#666C78] hover:text-[#E5484D] hover:bg-[#FFE9EA] transition-colors"
+                        title="Delete contact"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
 
             {paginatedContacts.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center text-[#6A707C]">
+                <TableCell colSpan={6} className="h-32 text-center text-[14px] text-[#666C78]">
                   No contacts found matching your search.
                 </TableCell>
               </TableRow>
@@ -270,7 +282,7 @@ export default function ContactsPage() {
         </Table>
 
         {/* Real Pagination Controls */}
-        <div className="flex items-center justify-between px-2 text-[12px] text-[#6A707C]">
+        <div className="flex items-center justify-between px-2 text-[13px] text-[#666C78]">
           <span>
             Showing {(currentPage - 1) * pageSize + 1}–
             {Math.min(currentPage * pageSize, filteredContacts.length)} of {filteredContacts.length} contacts
@@ -281,11 +293,11 @@ export default function ContactsPage() {
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-1.5 rounded-[6px] border border-[#E4E1D8] bg-white disabled:opacity-30 hover:bg-[#EFEDE7] text-[#12141A] transition-colors shadow-hairline"
+              className="p-2 rounded-[8px] border border-[#E6E2D8] bg-white disabled:opacity-30 hover:bg-[#EFEDE7] text-[#12141A] transition-colors shadow-xs"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <span className="font-medium text-[#12141A] px-2 font-variant-numeric tabular-nums">
+            <span className="font-medium text-[#12141A] px-2 font-variant-numeric tabular-nums text-[13px]">
               Page {currentPage} of {totalPages}
             </span>
             <button

@@ -44,27 +44,58 @@
 
 @layer base {
   :root {
-    /* Roos StudioX Business OS — Quiet Instrument: Warm Paper Canvas */
-    --canvas: #F6F5F1;
-    --background: #F6F5F1;
+    /* Roos StudioX Business OS — 2027 Pass: Warm Paper Canvas */
+    --canvas: #F7F5F0;
+    --background: #F7F5F0;
     --surface: #FFFFFF;
     --sunken: #EFEDE7;
     
-    --line: #E4E1D8;
+    --line: #E6E2D8;
     --line-strong: #D2CEC2;
-    --border: #E4E1D8;
+    --border: #E6E2D8;
 
     --text-1: #12141A;
-    --text-2: #4B515D;
-    --text-3: #6A707C;
+    --text-2: #454B57;
+    --text-3: #666C78;
     --foreground: #12141A;
 
-    /* The One Signal: Flame-500 */
+    /* 2027 Color is Meaning System */
     --flame-500: #FF5A1F;
-    --flame-700: #C73E0C;
-    --flame-50: #FFF1EA;
-    --flame-100: #FFE0D2;
+    --flame-600: #E8470F;
+    --flame-text: #B93A0A;
+    --flame-tint: #FFF1EA;
+    --flame-100: #FFE2D4;
     --roos-orange: #FF5A1F;
+
+    --ultramarine-500: #3D5AFE;
+    --ultramarine-600: #2F46D6;
+    --ultramarine-text: #2A3DB5;
+    --ultramarine-tint: #EAEEFF;
+
+    --emerald-500: #12B886;
+    --emerald-600: #0E9F6E;
+    --emerald-text: #0A7A53;
+    --emerald-tint: #E4F7EF;
+
+    --amber-500: #F5A524;
+    --amber-600: #D98A0B;
+    --amber-text: #8F5300;
+    --amber-tint: #FFF3D6;
+
+    --sky-500: #1FA2E8;
+    --sky-600: #0B84C6;
+    --sky-text: #0A6AA3;
+    --sky-tint: #E3F3FD;
+
+    --violet-500: #7C4DFF;
+    --violet-600: #6538E8;
+    --violet-text: #5B34C9;
+    --violet-tint: #F0EAFF;
+
+    --rose-500: #E5484D;
+    --rose-600: #CF2F36;
+    --rose-text: #B42336;
+    --rose-tint: #FFE9EA;
 
     /* Dark App Shell */
     --ink-950: #0B0D12;
@@ -83,18 +114,22 @@
   }
 
   html {
-    font-size: 16px;
+    /* 2027 Fluid Root: Min 16px ensures rem scales never drop below 13px floor */
+    font-size: clamp(16px, 0.35vw + 11.5px, 18px);
     scroll-behavior: smooth;
     color-scheme: light;
   }
 
   body {
     background-color: var(--canvas);
+    /* Faint warm radial glow top-left (Flame at ~5% opacity) */
+    background-image: radial-gradient(circle 1000px at 0% 0%, rgba(255, 90, 31, 0.055) 0%, transparent 60%);
+    background-attachment: fixed;
     color: var(--text-1);
     font-family: "Google Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.5;
     letter-spacing: -0.005em;
     font-weight: 400;
@@ -157,28 +192,38 @@
 /* CALIBRATED GOOGLE SANS TYPOGRAPHY UTILITIES                                */
 /* ========================================================================= */
 
+.type-hero-metric {
+  font-family: "Google Sans", sans-serif;
+  font-size: 5rem; /* 80px */
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
 .type-metric-xl {
   font-family: "Google Sans", sans-serif;
   font-size: 3.5rem; /* 56px */
   line-height: 3.75rem; /* 60px */
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   font-feature-settings: "tnum" 1;
   font-variant-numeric: tabular-nums;
 }
 
 .type-display {
   font-family: "Google Sans", sans-serif;
-  font-size: 1.875rem; /* 30px */
-  line-height: 2.25rem; /* 36px */
+  font-size: 2.25rem; /* 36px */
+  line-height: 1.15;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 
 .type-metric {
   font-family: "Google Sans", sans-serif;
-  font-size: 1.75rem; /* 28px */
-  line-height: 2rem; /* 32px */
+  font-size: 2rem; /* 32px */
+  line-height: 1.1;
   font-weight: 500;
   letter-spacing: -0.02em;
   font-feature-settings: "tnum" 1;
@@ -187,51 +232,138 @@
 
 .type-title {
   font-family: "Google Sans", sans-serif;
-  font-size: 1.125rem; /* 18px */
-  line-height: 1.625rem; /* 26px */
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.4;
   font-weight: 500;
   letter-spacing: -0.015em;
 }
 
+.type-label-lg {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
 .type-label {
   font-family: "Google Sans", sans-serif;
-  font-size: 0.9375rem; /* 15px */
-  line-height: 1.375rem; /* 22px */
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.4;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 
 .type-body {
   font-family: "Google Sans", sans-serif;
-  font-size: 0.875rem; /* 14px */
-  line-height: 1.375rem; /* 22px */
+  font-size: 1rem; /* 16px */
+  line-height: 1.5;
   font-weight: 400;
   letter-spacing: -0.005em;
 }
 
 .type-small {
   font-family: "Google Sans", sans-serif;
-  font-size: 0.8125rem; /* 13px */
-  line-height: 1.25rem; /* 20px */
+  font-size: max(0.875rem, 14px); /* 14px */
+  line-height: 1.45;
   font-weight: 400;
   letter-spacing: 0;
 }
 
 .type-meta {
   font-family: "Google Sans", sans-serif;
-  font-size: 0.75rem; /* 12px */
-  line-height: 1rem; /* 16px */
+  font-size: max(0.8125rem, 13px); /* 13px - Strictly no text below this */
+  line-height: 1.35;
   font-weight: 400;
   letter-spacing: 0;
 }
 
 .type-eyebrow {
   font-family: "Google Sans", sans-serif;
-  font-size: 0.6875rem; /* 11px */
-  line-height: 0.875rem; /* 14px */
+  font-size: max(0.8125rem, 13px); /* 13px */
+  line-height: 1.25;
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* Universal 2027 Typography Hard Floor Guard (Zero text < 13px, zero interactive < 14px) */
+.text-xs,
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\],
+.text-\[12px\] {
+  font-size: 13px;
+}
+
+/* Interactive elements hard floor: all buttons, links, inputs, selects must be at least 14px */
+button,
+[role="button"],
+input,
+select,
+textarea,
+button.text-xs,
+button[class*="text-"],
+[role="button"][class*="text-"],
+a.btn,
+a[class*="Button"] {
+  font-size: 14px !important;
+}
+
+/* Specific button text floor */
+button span,
+[role="button"] span {
+  font-size: inherit;
+}
+
+/* Exempt status pill badges and compact chips from 14px, keeping them at 13px floor */
+.status-pill,
+[class*="rounded-full"][class*="px-2"],
+[class*="rounded-full"][class*="px-2.5"],
+[class*="rounded-full"][class*="py-0.5"],
+.badge,
+kbd {
+  font-size: 13px !important;
+}
+
+/* ========================================================================= */
+/* 2027 DEPTH, CARDS & FLAME BUTTON ELEVATION                                 */
+/* ========================================================================= */
+
+.card-2027 {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #E6E2D8;
+  box-shadow: 0 1px 2px rgba(11, 13, 18, 0.04), 0 8px 24px -12px rgba(11, 13, 18, 0.12);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-2027-hover:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 2px 4px rgba(11, 13, 18, 0.06), 0 12px 28px -10px rgba(11, 13, 18, 0.16);
+}
+
+.hero-card-dark {
+  background-color: #0B0D12;
+  background-image: radial-gradient(circle 600px at 100% 100%, rgba(255, 90, 31, 0.12) 0%, transparent 70%);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 4px rgba(11, 13, 18, 0.04), 0 16px 32px -16px rgba(11, 13, 18, 0.22);
+}
+
+.btn-primary-flame {
+  background: linear-gradient(180deg, #FF6B35 0%, #FF5A1F 100%);
+  color: #FFFFFF !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 2px 4px rgba(232, 71, 15, 0.25);
+  border-radius: 12px;
+  transition: transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary-flame:hover {
+  background: linear-gradient(180deg, #FF7744 0%, #FF6428 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 12px -2px rgba(255, 90, 31, 0.35);
+}
+.btn-primary-flame:active {
+  transform: scale(0.98);
 }
 
 /* ========================================================================= */

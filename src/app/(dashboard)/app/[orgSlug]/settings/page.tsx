@@ -42,18 +42,18 @@ export default function SettingsPage() {
 
       {/* Workspace Profile */}
       <form onSubmit={handleSave}>
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
-          <div className="p-5 border-b border-[#E5E5E7]">
-            <h2 className="text-base font-semibold text-[#0D0D0E]">Workspace Profile</h2>
-            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+        <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
+          <div className="p-6 border-b border-[#E6E2D8]">
+            <h2 className="text-[18px] font-medium text-[#12141A]">Workspace Profile</h2>
+            <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Basic identifying information for this organisation.
             </p>
           </div>
 
-          <div className="p-5 space-y-4">
+          <div className="p-6 space-y-5">
             {saved && (
-              <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 font-semibold flex items-center space-x-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <div className="rounded-[12px] bg-[#E6FBF2] p-4 border border-[#B8F5D8] text-[14px] text-[#0A7A53] font-medium flex items-center space-x-2">
+                <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
                 <span>Organisation settings updated successfully!</span>
               </div>
             )}
@@ -64,25 +64,25 @@ export default function SettingsPage() {
               onChange={(e) => setOrgName(e.target.value)}
               disabled={!isAdmin}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] rounded-xl text-xs"
+              className="bg-[#F7F5F0] border-[#E6E2D8] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] rounded-[12px] text-[14px]"
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#0D0D0E]">
+              <label className="block text-[14px] font-medium text-[#12141A]">
                 Workspace URL Identifier (Slug)
               </label>
-              <div className="flex h-10 items-center rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 text-xs tabular-nums font-semibold text-[#0D0D0E]">
+              <div className="flex h-10 items-center rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] px-3.5 text-[14px] tabular-nums font-medium text-[#12141A]">
                 /app/{currentOrg.slug}
               </div>
-              <p className="text-[11px] text-[#8E8E93]">
+              <p className="text-[13px] text-[#666C78]">
                 Slugs are immutable to preserve external links, webhook callbacks, and tenant isolation.
               </p>
             </div>
           </div>
 
           {isAdmin && (
-            <div className="p-4 bg-[#F7F7F8] border-t border-[#E5E5E7] flex justify-end">
-              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl shadow-2xs text-xs">
+            <div className="p-4 bg-[#FAF9F5] border-t border-[#E6E2D8] flex justify-end">
+              <Button type="submit" variant="primary" className="rounded-[12px] text-[14px] h-10 px-4">
                 Save Changes
               </Button>
             </div>

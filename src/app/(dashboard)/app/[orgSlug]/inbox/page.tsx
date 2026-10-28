@@ -22,7 +22,7 @@ import { Drawer } from "@/components/ui/drawer";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useMounted } from "@/lib/use-mounted";
 import { useToast } from "@/components/ui/toast-context";
-import { cn } from "@/lib/utils";
+import { cn, formatINR, getAvatarColor, getInitials } from "@/lib/utils";
 import {
   MessageSquare,
   Send,
@@ -331,35 +331,35 @@ function InboxContent() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-100px)] rounded-[14px] border border-[#E4E1D8] bg-white shadow-hairline overflow-hidden select-none animate-page-enter">
+    <div className="flex h-[calc(100vh-100px)] -m-4 sm:-m-6 md:-m-10 overflow-hidden bg-[#F7F5F0] select-none animate-page-enter">
       {/* ========================================================================= */}
-      {/* 1. LEFT PANE: CONVERSATION LIST (340px)                                    */}
+      {/* 1. LEFT PANE: CONVERSATION LIST (ON CANVAS, NO WHITE CONTAINER)            */}
       {/* ========================================================================= */}
-      <div className="w-[340px] shrink-0 border-r border-[#E4E1D8] flex flex-col bg-[#FFFFFF]">
+      <div className="w-[340px] shrink-0 border-r border-[#E6E2D8] flex flex-col bg-transparent">
         {/* Search Header */}
-        <div className="p-3 border-b border-[#E4E1D8]">
+        <div className="p-3.5 border-b border-[#E6E2D8]">
           <div className="relative flex items-center">
-            <Search className="absolute left-2.5 h-3.5 w-3.5 text-[#6A707C]" />
+            <Search className="absolute left-3 h-4 w-4 text-[#666C78]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search conversations..."
-              className="h-8 w-full rounded-[6px] border border-[#E4E1D8] bg-[#EFEDE7] pl-8 pr-3 text-[12px] text-[#12141A] placeholder:text-[#6A707C] focus:bg-white focus:border-[#FF5A1F] focus:outline-none"
+              className="h-9 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[13px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#3D5AFE] focus:outline-none shadow-[0_1px_2px_rgba(11,13,18,0.03)]"
             />
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex items-center justify-between pt-2.5 text-[11px] font-medium text-[#6A707C]">
+          <div className="flex items-center justify-between pt-3 text-[13px] font-medium text-[#666C78]">
             {(["all", "mine", "unassigned", "unread", "closed"] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setFilterTab(tab)}
                 className={cn(
-                  "px-2 py-0.5 rounded-[4px] capitalize transition-colors",
+                  "px-2 py-1 rounded-[8px] capitalize transition-colors",
                   filterTab === tab
-                    ? "bg-[#EFEDE7] text-[#12141A] font-medium"
+                    ? "bg-white text-[#12141A] font-medium shadow-[0_1px_2px_rgba(11,13,18,0.04)] border border-[#E6E2D8]"
                     : "hover:text-[#12141A]"
                 )}
               >
@@ -370,7 +370,7 @@ function InboxContent() {
         </div>
 
         {/* Conversation List Rows */}
-        <div className="flex-1 overflow-y-auto divide-y divide-[#E4E1D8] custom-light-scroll">
+        <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-light-scroll">
           {filteredConversations.map((c) => {
             const isSelected = c.id === activeConversationId;
             const timeDisplay = new Date(c.last_message_at).toLocaleTimeString([], {
@@ -383,32 +383,32 @@ function InboxContent() {
                 key={c.id}
                 onClick={() => setActiveConversationId(c.id)}
                 className={cn(
-                  "p-3.5 transition-colors duration-140 cursor-pointer text-left relative",
+                  "p-3 rounded-[16px] transition-all duration-140 cursor-pointer text-left relative",
                   isSelected
-                    ? "bg-[#F6F5F1] text-[#12141A]"
-                    : "hover:bg-[#F6F5F1]/60 text-[#12141A]"
+                    ? "bg-white text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_20px_-10px_rgba(11,13,18,0.12)] border border-[#E6E2D8]"
+                    : "hover:bg-white/60 text-[#12141A] border border-transparent"
                 )}
               >
-                {/* 3px Active Indicator Bar */}
+                {/* 3px Active Indicator Bar (Ultramarine) */}
                 {isSelected && (
-                  <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#FF5A1F]" />
+                  <span className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r bg-[#3D5AFE]" />
                 )}
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-medium text-[#12141A] truncate">
+                  <span className="text-[14px] font-medium text-[#12141A] truncate">
                     {c.contact_name || c.contact_phone}
                   </span>
-                  <span className="text-[11px] text-[#6A707C] font-variant-numeric tabular-nums shrink-0">
+                  <span className="text-[13px] text-[#666C78] font-variant-numeric tabular-nums shrink-0">
                     {timeDisplay}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mt-1 gap-2">
-                  <p className="text-[12px] text-[#4B515D] truncate leading-tight">
+                  <p className="text-[13px] text-[#454B57] truncate leading-tight">
                     {c.last_message_text || "No message preview"}
                   </p>
                   {c.unread_count > 0 && (
-                    <span className="h-4 min-w-[16px] px-1 rounded-full bg-[#FF5A1F] text-white text-[10px] font-medium flex items-center justify-center shrink-0">
+                    <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FF5A1F] text-white text-[12px] font-medium flex items-center justify-center shrink-0">
                       {c.unread_count}
                     </span>
                   )}
@@ -418,7 +418,7 @@ function InboxContent() {
           })}
 
           {filteredConversations.length === 0 && (
-            <div className="p-8 text-center text-[12px] text-[#6A707C]">
+            <div className="p-8 text-center text-[13px] text-[#666C78]">
               No conversations in this view.
             </div>
           )}
@@ -426,22 +426,34 @@ function InboxContent() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. CENTER PANE: ACTIVE THREAD & PINNED COMPOSER                           */}
+      {/* 2. CENTER PANE: ACTIVE THREAD ON WHITE RAISED PANEL                       */}
       {/* ========================================================================= */}
-      <div className="flex flex-1 flex-col min-w-0 bg-[#F6F5F1]">
+      <div className="flex flex-1 flex-col min-w-0 bg-white rounded-[24px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden m-2.5">
         {activeConversation ? (
           <>
             {/* Thread Header */}
-            <div className="flex h-[52px] shrink-0 items-center justify-between px-5 border-b border-[#E4E1D8] bg-white">
+            <div className="flex h-[56px] shrink-0 items-center justify-between px-6 border-b border-[#E6E2D8] bg-white">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EFEDE7] text-[#12141A] text-[13px] font-medium border border-[#E4E1D8]">
-                  {activeConversation.contact_name ? activeConversation.contact_name[0] : "C"}
-                </div>
+                {(() => {
+                  const avatarColor = getAvatarColor(activeConversation.contact_name || "Contact");
+                  return (
+                    <div
+                      className={cn(
+                        "flex h-9 w-9 items-center justify-center rounded-full border text-[14px] font-medium shadow-xs",
+                        avatarColor.bg,
+                        avatarColor.text,
+                        avatarColor.border
+                      )}
+                    >
+                      {getInitials(activeConversation.contact_name || "Contact")}
+                    </div>
+                  );
+                })()}
                 <div>
-                  <h3 className="text-[14px] font-medium text-[#12141A] leading-tight">
+                  <h3 className="text-[15px] font-medium text-[#12141A] leading-tight">
                     {activeConversation.contact_name || activeConversation.contact_phone}
                   </h3>
-                  <span className="text-[11px] text-[#6A707C] font-variant-numeric tabular-nums">
+                  <span className="text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
                     {activeConversation.contact_phone}
                   </span>
                 </div>
@@ -473,21 +485,21 @@ function InboxContent() {
             </div>
 
             {/* 24-Hour Meta SLA Status Line */}
-            <div className="flex h-7 shrink-0 items-center justify-between px-5 bg-[#EFEDE7] border-b border-[#E4E1D8] text-[11px] text-[#4B515D]">
-              <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0F7B5A]" />
-                <span>Meta Customer Service Window: Active</span>
+            <div className="flex h-8 shrink-0 items-center justify-between px-6 bg-[#F7F5F0] border-b border-[#E6E2D8] text-[13px] text-[#454B57]">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#12B886]" />
+                <span className="font-medium">Meta Customer Service Window: Active</span>
               </div>
-              <span className="text-[#6A707C]">18h remaining to reply freely</span>
+              <span className="text-[#666C78]">18h remaining to reply freely</span>
             </div>
 
             {/* Message Thread Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 custom-light-scroll">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-light-scroll bg-[#FAF9F5]">
               {messageGroups.map((group) => (
                 <div key={group.dateLabel} className="space-y-3">
                   {/* Accurate Date Separator */}
                   <div className="flex items-center justify-center my-3">
-                    <span className="px-2.5 py-0.5 rounded-full border border-[#E4E1D8] bg-white text-[11px] text-[#6A707C]">
+                    <span className="px-3 py-1 rounded-full border border-[#E6E2D8] bg-white text-[13px] text-[#666C78] shadow-xs">
                       {group.dateLabel}
                     </span>
                   </div>
@@ -503,15 +515,15 @@ function InboxContent() {
                     if (isNote) {
                       return (
                         <div key={msg.id} className="flex justify-center my-2">
-                          <div className="max-w-md p-3 rounded-[8px] bg-[#FFF1EA] border border-[#FFE0D2] text-[12px] text-[#C73E0C]">
+                          <div className="max-w-lg p-4 rounded-[16px] bg-[#FFF3D6] border border-[#FFE5A3] text-[14px] text-[#8F5300] shadow-xs">
                             <div className="flex items-center gap-1.5 font-medium mb-1">
-                              <Lock className="h-3 w-3" />
+                              <Lock className="h-3.5 w-3.5" />
                               <span>Internal Staff Note • {msg.sender_name || "Staff"}</span>
                             </div>
-                            <p className="text-[12px] text-[#12141A]">
+                            <p className="text-[14px] text-[#12141A] leading-relaxed">
                               {msg.body}
                             </p>
-                            <span className="text-[10px] text-[#6A707C] block mt-1 text-right">
+                            <span className="text-[12px] text-[#8F5300] block mt-1.5 text-right font-variant-numeric tabular-nums">
                               {timeOnly}
                             </span>
                           </div>
@@ -526,21 +538,21 @@ function InboxContent() {
                       >
                         <div
                           className={cn(
-                            "max-w-md rounded-[12px] p-3 text-[13px] leading-relaxed shadow-hairline border",
+                            "max-w-lg rounded-[20px] p-4 text-[15px] leading-relaxed border transition-all",
                             isClient
-                              ? "bg-white text-[#12141A] border-[#E4E1D8] rounded-bl-[2px]"
-                              : "bg-[#EFEDE7] text-[#12141A] border-[#D2CEC2] rounded-br-[2px]"
+                              ? "bg-white text-[#12141A] border-[#E6E2D8] rounded-bl-[4px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+                              : "bg-[#EAEEFF] text-[#12141A] border-[#D3DCFF] rounded-br-[4px]"
                           )}
                         >
                           <p>{msg.body}</p>
                           <div
                             className={cn(
-                              "flex items-center gap-1 mt-1 text-[10px] text-[#6A707C]",
+                              "flex items-center gap-1.5 mt-1.5 text-[12px] text-[#666C78] font-variant-numeric tabular-nums",
                               isClient ? "justify-start" : "justify-end"
                             )}
                           >
                             <span>{timeOnly}</span>
-                            {!isClient && <CheckCheck className="h-3 w-3 text-[#0F7B5A]" />}
+                            {!isClient && <CheckCheck className="h-3.5 w-3.5 text-[#3D5AFE]" />}
                           </div>
                         </div>
                       </div>
@@ -552,18 +564,18 @@ function InboxContent() {
             </div>
 
             {/* Pinned Composer at Bottom */}
-            <div className="shrink-0 border-t border-[#E4E1D8] bg-white p-3 space-y-2">
+            <div className="shrink-0 border-t border-[#E6E2D8] bg-white p-4 space-y-3">
               {/* Mode Tabs */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1 rounded-[6px] bg-[#EFEDE7] p-0.5 text-[11px] font-medium">
+                <div className="flex items-center gap-1 rounded-[10px] bg-[#EFEDE7] p-1 text-[13px] font-medium">
                   <button
                     type="button"
                     onClick={() => setComposerMode("whatsapp")}
                     className={cn(
-                      "px-2.5 py-1 rounded-[4px] transition-colors",
+                      "px-3 py-1 rounded-[8px] transition-colors",
                       composerMode === "whatsapp"
-                        ? "bg-white text-[#12141A] shadow-hairline"
-                        : "text-[#6A707C] hover:text-[#12141A]"
+                        ? "bg-white text-[#12141A] shadow-sm font-medium"
+                        : "text-[#666C78] hover:text-[#12141A]"
                     )}
                   >
                     WhatsApp Message
@@ -572,10 +584,10 @@ function InboxContent() {
                     type="button"
                     onClick={() => setComposerMode("note")}
                     className={cn(
-                      "px-2.5 py-1 rounded-[4px] transition-colors",
+                      "px-3 py-1 rounded-[8px] transition-colors",
                       composerMode === "note"
-                        ? "bg-white text-[#12141A] shadow-hairline"
-                        : "text-[#6A707C] hover:text-[#12141A]"
+                        ? "bg-white text-[#12141A] shadow-sm font-medium"
+                        : "text-[#666C78] hover:text-[#12141A]"
                     )}
                   >
                     Internal Note
@@ -588,9 +600,9 @@ function InboxContent() {
                     type="button"
                     onClick={handleGenerateAiReply}
                     disabled={aiGenerating}
-                    className="flex items-center gap-1.5 text-[11px] font-medium text-[#4B515D] hover:text-[#12141A] transition-colors"
+                    className="flex items-center gap-1.5 text-[13px] font-medium text-[#7C4DFF] hover:text-[#6538E8] transition-colors bg-[#F0EAFF] px-2.5 py-1 rounded-[8px] border border-[#D9C9FF]"
                   >
-                    <Sparkles className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                    <Sparkles className="h-4 w-4 text-[#7C4DFF]" />
                     <span>{aiGenerating ? "Drafting..." : "AI Assist"}</span>
                   </button>
                 )}
@@ -609,7 +621,7 @@ function InboxContent() {
                     }
                   }}
                   placeholder={`Reply to ${activeConversation.contact_name || activeConversation.contact_phone} (Enter to send, Shift+Enter for new line)...`}
-                  className="w-full resize-none rounded-[8px] border border-[#E4E1D8] bg-[#EFEDE7] p-2.5 text-[13px] text-[#12141A] placeholder:text-[#6A707C] focus:bg-white focus:border-[#FF5A1F] focus:outline-none transition-colors"
+                  className="w-full resize-none rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] p-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:bg-white focus:border-[#3D5AFE] focus:outline-none transition-colors"
                 />
               ) : (
                 <textarea
@@ -623,7 +635,7 @@ function InboxContent() {
                     }
                   }}
                   placeholder="Record private internal note for team members (visible only to staff)..."
-                  className="w-full resize-none rounded-[8px] border border-[#FFE0D2] bg-[#FFF1EA] p-2.5 text-[13px] text-[#12141A] placeholder:text-[#C73E0C] focus:bg-white focus:border-[#FF5A1F] focus:outline-none transition-colors"
+                  className="w-full resize-none rounded-[12px] border border-[#FFE5A3] bg-[#FFF3D6] p-3 text-[14px] text-[#12141A] placeholder:text-[#8F5300] focus:bg-white focus:border-[#F5A524] focus:outline-none transition-colors"
                 />
               )}
 
@@ -633,9 +645,9 @@ function InboxContent() {
                   <button
                     type="button"
                     onClick={() => setTemplateDrawerOpen(true)}
-                    className="flex items-center gap-1 px-2 py-1 rounded-[6px] hover:bg-[#EFEDE7] hover:text-[#12141A] text-[11px] font-medium transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] hover:bg-[#F7F5F0] hover:text-[#12141A] text-[14px] font-medium transition-colors cursor-pointer"
                   >
-                    <FileText className="h-3.5 w-3.5" />
+                    <FileText className="h-4 w-4" />
                     <span>Templates</span>
                   </button>
                   <button
@@ -649,42 +661,40 @@ function InboxContent() {
 
                 <Button
                   onClick={composerMode === "whatsapp" ? () => handleSendMessage() : () => handleSendInternalNote()}
-                  variant="primary"
-                  size="sm"
                   isLoading={isSending}
-                  className="flex items-center gap-1.5"
+                  className="btn-primary-flame flex items-center gap-2 h-10 px-5 text-[14px]"
                 >
-                  <Send className="h-3.5 w-3.5" />
+                  <Send className="h-4 w-4" />
                   <span>Send</span>
                 </Button>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex flex-1 items-center justify-center p-8 text-center text-[#6A707C]">
+          <div className="flex flex-1 items-center justify-center p-8 text-center text-[#666C78]">
             Select a conversation to start messaging.
           </div>
         )}
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. RIGHT PANE: CUSTOMER & DEAL CONTEXT (340px Collapsible)                 */}
+      {/* 3. RIGHT PANE: QUIET CUSTOMER & DEAL CONTEXT (340px Collapsible)           */}
       {/* ========================================================================= */}
       {contextPaneOpen && activeConversation && (
-        <div className="w-[340px] shrink-0 border-l border-[#E4E1D8] bg-white flex flex-col overflow-y-auto p-4 space-y-6 custom-light-scroll">
+        <div className="w-[340px] shrink-0 border-l border-[#E6E2D8] bg-[#FAF9F5] flex flex-col overflow-y-auto p-5 space-y-6 custom-light-scroll">
           {/* Contact Details Section */}
           <div className="space-y-3">
-            <h4 className="text-[11px] font-medium tracking-[0.06em] text-[#6A707C] uppercase">
+            <h4 className="type-eyebrow text-[#666C78]">
               Customer Information
             </h4>
-            <div className="p-3 rounded-[8px] bg-[#EFEDE7] space-y-2 text-[12px]">
-              <div className="flex items-center justify-between text-[#4B515D]">
+            <div className="p-4 rounded-[16px] bg-white border border-[#E6E2D8] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+              <div className="flex items-center justify-between text-[#454B57]">
                 <span>Contact Name</span>
                 <span className="font-medium text-[#12141A]">
                   {activeConversation.contact_name || "Enterprise Client"}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[#4B515D]">
+              <div className="flex items-center justify-between text-[#454B57]">
                 <span>WhatsApp</span>
                 <span className="font-medium text-[#12141A] font-variant-numeric tabular-nums">
                   {activeConversation.contact_phone}
@@ -702,35 +712,35 @@ function InboxContent() {
           {/* Linked Deal Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-[11px] font-medium tracking-[0.06em] text-[#6A707C] uppercase">
+              <h4 className="type-eyebrow text-[#666C78]">
                 Linked Opportunity
               </h4>
               <button
                 type="button"
                 onClick={() => setLeadModalOpen(true)}
-                className="text-[11px] text-[#FF5A1F] hover:underline flex items-center gap-1 font-medium"
+                className="text-[13px] text-[#FF5A1F] hover:underline flex items-center gap-1 font-medium"
               >
-                <Plus className="h-3 w-3" />
+                <Plus className="h-3.5 w-3.5" />
                 <span>Add Deal</span>
               </button>
             </div>
 
             {linkedLead ? (
-              <div className="p-3 rounded-[8px] border border-[#E4E1D8] space-y-2 text-[12px]">
+              <div className="p-4 rounded-[16px] bg-white border border-[#E6E2D8] space-y-2 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-[#12141A] truncate">
                     {linkedLead.title}
                   </span>
-                  <StatusPill variant="neutral" size="sm">
+                  <StatusPill variant="emerald" size="sm">
                     {linkedLead.stage}
                   </StatusPill>
                 </div>
-                <div className="text-[16px] font-medium text-[#0F7B5A] font-variant-numeric tabular-nums">
-                  ₹{(linkedLead.estimated_value || 0).toLocaleString()}
+                <div className="type-metric text-[#0A7A53] font-variant-numeric tabular-nums">
+                  {formatINR(linkedLead.estimated_value || 0)}
                 </div>
               </div>
             ) : (
-              <p className="text-[12px] text-[#6A707C]">
+              <p className="text-[13px] text-[#666C78]">
                 No opportunity linked yet.
               </p>
             )}
@@ -739,33 +749,33 @@ function InboxContent() {
           {/* Linked Tasks Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-[11px] font-medium tracking-[0.06em] text-[#6A707C] uppercase">
+              <h4 className="type-eyebrow text-[#666C78]">
                 Action Tasks
               </h4>
               <button
                 type="button"
                 onClick={() => setTaskModalOpen(true)}
-                className="text-[11px] text-[#FF5A1F] hover:underline flex items-center gap-1 font-medium"
+                className="text-[13px] text-[#FF5A1F] hover:underline flex items-center gap-1 font-medium"
               >
-                <Plus className="h-3 w-3" />
+                <Plus className="h-3.5 w-3.5" />
                 <span>Add Task</span>
               </button>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {linkedTasks.map((t) => (
                 <div
                   key={t.id}
-                  className="p-2.5 rounded-[8px] border border-[#E4E1D8] flex items-center justify-between text-[12px]"
+                  className="p-3 rounded-[14px] bg-white border border-[#E6E2D8] flex items-center justify-between text-[13px] shadow-xs"
                 >
-                  <span className="truncate text-[#12141A] font-medium">{t.title}</span>
-                  <span className="text-[11px] text-[#6A707C] shrink-0">{t.priority}</span>
+                  <span className="font-medium text-[#12141A] truncate">{t.title}</span>
+                  <span className="text-[12px] text-[#8F5300] bg-[#FFF3D6] px-2 py-0.5 rounded-full border border-[#FFE5A3] shrink-0">
+                    {t.priority}
+                  </span>
                 </div>
               ))}
               {linkedTasks.length === 0 && (
-                <p className="text-[12px] text-[#6A707C]">
-                  No pending follow-up tasks.
-                </p>
+                <p className="text-[13px] text-[#666C78]">Zero open tasks.</p>
               )}
             </div>
           </div>

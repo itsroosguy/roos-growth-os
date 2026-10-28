@@ -12,7 +12,7 @@ import {
   CampaignStatus,
   AudienceFilterCriteria,
 } from "@/lib/campaigns/types";
-import { formatDate, formatCurrency } from "@/lib/utils";
+import { formatDate, formatINR } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -214,7 +214,7 @@ export default function CampaignsPage() {
       totalCampaigns: all.length,
       totalSent,
       deliveryRate: `${deliveryRate}%`,
-      totalSpent: `₹${totalSpent.toFixed(2)}`,
+      totalSpent: formatINR(totalSpent),
     };
   }, [allOrgCampaigns]);
 
@@ -281,33 +281,34 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E5E7EB]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E6E2D8]">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
+            <h1 className="type-display text-[#12141A]">
               Campaigns &amp; Broadcasts
             </h1>
-            <span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs sm:text-sm font-semibold px-3.5 py-1 text-[#FF7A1A] shadow-2xs tabular-nums">
+            <span className="rounded-full bg-[#F4F0FF] border border-[#E0D4FC] text-[13px] font-medium px-3.5 py-1 text-[#6938EF] tabular-nums">
               Controlled Delivery
             </span>
           </div>
-          <p className="text-sm text-[#525866] font-normal mt-1">
+          <p className="type-body text-[#454B57] mt-1">
             Compliant broadcast engine, opt-in suppression checks, and live Meta Cloud API delivery tracking.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/templates`}>
-            <Button size="sm" variant="outline" className="rounded-xl border-[#E5E7EB] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-medium text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer h-10 px-3.5">
-              <FileText className="h-3.5 w-3.5 text-[#525866]" />
+            <Button size="sm" variant="outline" className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4">
+              <FileText className="h-4 w-4 text-[#666C78]" />
               <span>Manage Templates</span>
             </Button>
           </Link>
 
           <Button
             size="sm"
+            variant="primary"
             onClick={handleOpenWizard}
-            className="rounded-xl text-xs sm:text-sm bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-medium flex items-center gap-1.5 shadow-2xs cursor-pointer h-10 px-4"
+            className="rounded-[12px] text-[14px] font-medium flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New Campaign</span>
@@ -350,74 +351,74 @@ export default function CampaignsPage() {
         <button
           type="button"
           onClick={() => setStatusFilter("all")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             statusFilter === "all"
-              ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
-              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0B0D12] text-white shadow-xs"
+              : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
           }`}
         >
           <span>All Campaigns</span>
-          <span className="tabular-nums text-[11px] opacity-80">({allOrgCampaigns.length})</span>
+          <span className="tabular-nums text-[13px] opacity-80">({allOrgCampaigns.length})</span>
         </button>
         <button
           type="button"
           onClick={() => setStatusFilter("draft")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             statusFilter === "draft"
-              ? "bg-[#0D0D0E] text-white shadow-xs font-semibold"
-              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0B0D12] text-white shadow-xs"
+              : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
           }`}
         >
           <span>Drafts</span>
-          <span className="tabular-nums text-[11px] opacity-80">({draftsCount})</span>
+          <span className="tabular-nums text-[13px] opacity-80">({draftsCount})</span>
         </button>
         <button
           type="button"
           onClick={() => setStatusFilter("scheduled")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             statusFilter === "scheduled"
-              ? "bg-amber-600 text-white shadow-xs font-semibold"
-              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#8F5300] text-white shadow-xs"
+              : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
           }`}
         >
           <span>Scheduled</span>
-          <span className="tabular-nums text-[11px] opacity-80">({scheduledCount})</span>
+          <span className="tabular-nums text-[13px] opacity-80">({scheduledCount})</span>
         </button>
         <button
           type="button"
           onClick={() => setStatusFilter("processing")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             statusFilter === "processing"
-              ? "bg-emerald-600 text-white shadow-xs font-semibold"
-              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0A7A53] text-white shadow-xs"
+              : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
           }`}
         >
           <span>Active</span>
-          <span className="tabular-nums text-[11px] opacity-80">({activeCount})</span>
+          <span className="tabular-nums text-[13px] opacity-80">({activeCount})</span>
         </button>
         <button
           type="button"
           onClick={() => setStatusFilter("completed")}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+          className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
             statusFilter === "completed"
-              ? "bg-emerald-700 text-white shadow-xs font-semibold"
-              : "bg-white border border-[#E5E7EB] text-[#525866] hover:text-[#0D0D0E] hover:bg-[#F7F7F8]"
+              ? "bg-[#0A7A53] text-white shadow-xs"
+              : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
           }`}
         >
           <span>Completed</span>
-          <span className="tabular-nums text-[11px] opacity-80">({completedCount})</span>
+          <span className="tabular-nums text-[13px] opacity-80">({completedCount})</span>
         </button>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="p-3.5 rounded-2xl border border-[#E5E7EB] bg-white shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="p-4 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#717680]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search campaigns by name..."
-            className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-[#E5E7EB] bg-[#F7F7F8] text-[#0D0D0E] placeholder:text-[#717680] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-xs transition-all"
+            className="w-full pl-10 pr-4 py-2.5 text-[14px] font-medium rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] text-[#12141A] placeholder:text-[#666C78] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs transition-all"
           />
         </div>
 
@@ -425,7 +426,7 @@ export default function CampaignsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as CampaignStatus | "all")}
-            className="rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-4 py-2 text-xs sm:text-sm font-semibold text-[#0D0D0E] focus:outline-none focus:border-[#FF7A1A] focus:bg-white shadow-2xs cursor-pointer"
+            className="rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] px-4 py-2.5 text-[14px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="completed">Completed</option>
@@ -439,7 +440,7 @@ export default function CampaignsPage() {
             <button
               type="button"
               onClick={() => setStatusFilter("all")}
-              className="text-xs font-semibold text-[#FF7A1A] bg-[#FFF4EC] border border-[#FF7A1A]/30 px-3 py-2 rounded-xl hover:bg-[#FFE8D6] transition-colors cursor-pointer shadow-2xs"
+              className="text-[14px] font-medium text-[#FF5A1F] bg-[#FFF0EB] border border-[#FF5A1F]/30 px-3 py-2 rounded-[12px] hover:bg-[#FFE0D4] transition-colors cursor-pointer shadow-xs"
             >
               Reset
             </button>
@@ -448,23 +449,23 @@ export default function CampaignsPage() {
       </div>
 
       {/* Campaigns Table */}
-      <div className="rounded-2xl border border-[#E5E7EB] bg-white overflow-hidden shadow-2xs">
+      <div className="rounded-[20px] border border-[#E6E2D8] bg-white overflow-hidden shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)]">
         <Table>
-          <TableHeader className="bg-[#F8F9FA]">
-            <TableRow className="border-b border-[#E5E7EB]">
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Campaign Name</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Template &amp; Type</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Status</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Audience / Progress</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Cost</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Created</TableHead>
-              <TableHead className="text-right text-[11px] font-semibold uppercase tracking-wider text-[#525866] py-3.5">Actions</TableHead>
+          <TableHeader className="bg-[#FAF9F5]">
+            <TableRow className="border-b border-[#E6E2D8]">
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Campaign Name</TableHead>
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Template &amp; Type</TableHead>
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Audience / Progress</TableHead>
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Cost</TableHead>
+              <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Created</TableHead>
+              <TableHead className="text-right text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {campaigns.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-sm text-[#525866] font-normal">
+                <TableCell colSpan={7} className="text-center py-12 text-[14px] text-[#666C78] font-normal">
                   No campaigns found. Click &quot;New Campaign&quot; to launch your first controlled broadcast.
                 </TableCell>
               </TableRow>
@@ -477,17 +478,17 @@ export default function CampaignsPage() {
                     : 0;
 
                 return (
-                  <TableRow key={camp.id} className="border-b border-[#E5E7EB]/70 hover:bg-[#FFF4EC]/15 transition-colors">
+                  <TableRow key={camp.id} className="border-b border-[#E6E2D8]/70 hover:bg-[#F7F5F0]/70 transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3 py-1">
-                        <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] text-[#FF7A1A] border border-[#FFE1CC] flex items-center justify-center shrink-0 shadow-2xs">
-                          <Megaphone className="h-4 w-4" />
+                        <div className="h-10 w-10 rounded-[12px] bg-[#F4F0FF] text-[#7C4DFF] border border-[#E0D4FC] flex items-center justify-center shrink-0 shadow-xs">
+                          <Megaphone className="h-5 w-5" />
                         </div>
                         <div>
-                          <span className="font-semibold text-sm text-[#0D0D0E] block">
+                          <span className="font-medium text-[15px] text-[#12141A] block">
                             {camp.name}
                           </span>
-                          <span className="text-xs text-[#525866] font-normal">
+                          <span className="text-[13px] text-[#666C78] font-normal">
                             By {camp.created_by_name}
                           </span>
                         </div>
@@ -496,30 +497,30 @@ export default function CampaignsPage() {
 
                     <TableCell>
                       <div>
-                        <span className="tabular-nums text-xs font-medium text-[#0D0D0E] block">
+                        <span className="tabular-nums text-[14px] font-medium text-[#12141A] block">
                           {camp.template_name}
                         </span>
-                        <Badge variant="neutral" className="text-[10px] uppercase font-medium px-2 py-0.5 mt-0.5 border border-[#E5E7EB] bg-[#F7F7F8] text-[#525866]">
+                        <Badge variant="neutral" className="text-[12px] uppercase font-medium px-2 py-0.5 mt-0.5 border border-[#E6E2D8] bg-[#F7F5F0] text-[#666C78]">
                           {camp.template_category}
                         </Badge>
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      <Badge variant={statusCfg.badgeVariant} className="text-[11px] uppercase font-medium px-2.5 py-0.5">
+                      <Badge variant={statusCfg.badgeVariant} className="text-[12px] uppercase font-medium px-2.5 py-0.5">
                         {statusCfg.label}
                       </Badge>
                     </TableCell>
 
                     <TableCell>
-                      <div className="w-44 space-y-1.5">
-                        <div className="flex justify-between text-xs font-medium text-[#0D0D0E]">
-                          <span className="tabular-nums text-[11px] text-[#525866]">{camp.sent_count} / {camp.total_recipients} sent</span>
-                          <span className="tabular-nums font-medium text-[#0D0D0E]">{progressPercent}%</span>
+                      <div className="w-48 space-y-1.5">
+                        <div className="flex justify-between text-[13px] font-medium text-[#12141A]">
+                          <span className="tabular-nums text-[13px] text-[#666C78]">{camp.sent_count} / {camp.total_recipients} sent</span>
+                          <span className="tabular-nums font-medium text-[#12141A]">{progressPercent}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-[#F4F4F5] rounded-full overflow-hidden border border-[#E4E4E7]">
+                        <div className="h-2 w-full bg-[#E6E2D8] rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-emerald-600 transition-all rounded-full"
+                            className="h-full bg-[#12B886] transition-all rounded-full"
                             style={{ width: `${progressPercent}%` }}
                           />
                         </div>
@@ -527,13 +528,13 @@ export default function CampaignsPage() {
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-sm font-semibold tabular-nums text-[#0D0D0E]">
-                        ₹{camp.actual_cost > 0 ? camp.actual_cost.toFixed(2) : camp.estimated_cost.toFixed(2)}
+                      <span className="text-[14px] font-medium tabular-nums text-[#12141A]">
+                        {formatINR(camp.actual_cost > 0 ? camp.actual_cost : camp.estimated_cost)}
                       </span>
                     </TableCell>
 
                     <TableCell>
-                      <span className="text-xs font-normal text-[#525866]">
+                      <span className="text-[13px] font-normal text-[#666C78]">
                         {formatDate(camp.created_at)}
                       </span>
                     </TableCell>
@@ -544,7 +545,7 @@ export default function CampaignsPage() {
                         {camp.status === "processing" && (
                           <button
                             onClick={() => handlePause(camp.id)}
-                            className="p-1.5 rounded-xl text-amber-700 hover:bg-amber-50 cursor-pointer"
+                            className="p-2 rounded-[10px] text-[#8F5300] hover:bg-[#FFF3D6] cursor-pointer"
                             title="Pause sending"
                           >
                             <PauseCircle className="h-4 w-4" />
@@ -553,7 +554,7 @@ export default function CampaignsPage() {
                         {camp.status === "paused" && (
                           <button
                             onClick={() => handleResume(camp.id)}
-                            className="p-1.5 rounded-xl text-emerald-600 hover:bg-emerald-50 cursor-pointer"
+                            className="p-2 rounded-[10px] text-[#0A7A53] hover:bg-[#E6FBF2] cursor-pointer"
                             title="Resume sending"
                           >
                             <PlayCircle className="h-4 w-4" />
@@ -562,16 +563,16 @@ export default function CampaignsPage() {
                         {(camp.status === "scheduled" || camp.status === "paused") && (
                           <button
                             onClick={() => handleCancel(camp.id)}
-                            className="p-1.5 rounded-xl text-rose-600 hover:bg-rose-50 cursor-pointer"
+                            className="p-2 rounded-[10px] text-[#E5484D] hover:bg-[#FFE9EA] cursor-pointer"
                             title="Cancel campaign"
                           >
                             <XCircle className="h-4 w-4" />
                           </button>
                         )}
 
-                        <Link href={`/app/${orgSlug}/campaigns/${camp.id}`}>
-                          <Button size="sm" variant="ghost" className="h-8 text-xs font-medium text-[#0D0D0E] hover:text-[#FF7A1A] hover:bg-[#FFF4EC] rounded-xl">
-                            <Eye className="h-3.5 w-3.5 mr-1 text-[#525866]" /> Report
+                        <Link href={`/app/${orgSlug}/campaigns/${camp.id}`} className="text-[14px]">
+                          <Button size="sm" variant="ghost" className="h-9 text-[14px] font-medium text-[#12141A] hover:text-[#7C4DFF] hover:bg-[#F4F0FF] rounded-[10px]">
+                            <Eye className="h-4 w-4 mr-1 text-[#666C78]" /> Report
                           </Button>
                         </Link>
                       </div>

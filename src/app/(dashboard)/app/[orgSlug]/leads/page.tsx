@@ -12,7 +12,13 @@ import { Drawer } from "@/components/ui/drawer";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast-context";
-import { cn } from "@/lib/utils";
+import {
+  cn,
+  formatINR,
+  getAvatarColor,
+  getInitials,
+  STAGE_CONFIG,
+} from "@/lib/utils";
 import {
   Plus,
   Search,
@@ -82,12 +88,12 @@ export default function LeadsPage() {
   // Stage configuration & metrics
   const stages: StageConfig[] = useMemo(() => {
     const stageDefs: Array<{ id: LeadStage; label: string; dotColor: string }> = [
-      { id: "new", label: "Lead / Inbound", dotColor: "bg-[#CFC8B8]" },
-      { id: "contacted", label: "Contacted", dotColor: "bg-[#A9B0BF]" },
-      { id: "qualified", label: "Qualified", dotColor: "bg-[#6C7690]" },
-      { id: "proposal", label: "Proposal Sent", dotColor: "bg-[#3B4258]" },
-      { id: "won", label: "Deals Won", dotColor: "bg-[#0F7B5A]" },
-      { id: "lost", label: "Closed Lost", dotColor: "bg-[#B42318]" },
+      { id: "new", label: "Inbound", dotColor: "bg-[#94A3B8]" },
+      { id: "contacted", label: "Contacted", dotColor: "bg-[#1FA2E8]" },
+      { id: "qualified", label: "Qualified", dotColor: "bg-[#3D5AFE]" },
+      { id: "proposal", label: "Proposal", dotColor: "bg-[#F5A524]" },
+      { id: "won", label: "Deals Won", dotColor: "bg-[#12B886]" },
+      { id: "lost", label: "Closed Lost", dotColor: "bg-[#E5484D]" },
     ];
 
     return stageDefs.map((def) => {
@@ -175,42 +181,42 @@ export default function LeadsPage() {
         <div className="flex items-center gap-3">
           {/* Search Field */}
           <div className="relative w-48 sm:w-60">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#6A707C]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search deals..."
-              className="h-8.5 w-full rounded-[8px] border border-[#E4E1D8] bg-white pl-8 pr-3 text-[12px] text-[#12141A] placeholder:text-[#6A707C] focus:border-[#FF5A1F] focus:outline-none shadow-hairline"
+              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 
           {/* Board / Table View Toggle */}
-          <div className="flex items-center rounded-[8px] border border-[#E4E1D8] bg-white p-0.5 shadow-hairline">
+          <div className="flex items-center rounded-[12px] border border-[#E6E2D8] bg-white p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode("board")}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[12px] font-medium transition-colors",
+                "flex items-center gap-1.5 px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
                 viewMode === "board"
-                  ? "bg-[#EFEDE7] text-[#12141A]"
-                  : "text-[#6A707C] hover:text-[#12141A]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               )}
             >
-              <Kanban className="h-3.5 w-3.5" />
+              <Kanban className="h-4 w-4" />
               <span>Board</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("table")}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[12px] font-medium transition-colors",
+                "flex items-center gap-1.5 px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
                 viewMode === "table"
-                  ? "bg-[#EFEDE7] text-[#12141A]"
-                  : "text-[#6A707C] hover:text-[#12141A]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               )}
             >
-              <TableIcon className="h-3.5 w-3.5" />
+              <TableIcon className="h-4 w-4" />
               <span>Table</span>
             </button>
           </div>
@@ -220,9 +226,9 @@ export default function LeadsPage() {
             onClick={() => setCreateModalOpen(true)}
             variant="primary"
             size="sm"
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>Add opportunity</span>
           </Button>
         </div>
@@ -232,11 +238,12 @@ export default function LeadsPage() {
       {/* 2. KANBAN BOARD VIEW (Viewport-Pinned Bottom Scrollbar)                    */}
       {/* ========================================================================= */}
       {viewMode === "board" && (
-        <div className="overflow-x-auto pb-4 custom-light-scroll select-none">
-          <div className="flex gap-4 min-w-[1340px] items-start">
+        <div className="overflow-x-auto pb-6 custom-light-scroll select-none">
+          <div className="flex gap-5 min-w-[1400px] items-start">
             {stages.map((stage) => {
               const stageLeads = leads.filter((l) => l.stage === stage.id);
               const isOver = dragOverStage === stage.id;
+              const isWon = stage.id === "won";
 
               return (
                 <div
@@ -244,68 +251,78 @@ export default function LeadsPage() {
                   onDragOver={(e) => handleDragOver(e, stage.id)}
                   onDrop={() => handleDrop(stage.id)}
                   className={cn(
-                    "flex flex-col w-[260px] shrink-0 rounded-[14px] border border-[#E4E1D8] bg-[#FFFFFF] shadow-hairline transition-colors duration-140",
-                    isOver && "border-[#FF5A1F] bg-[#FFF1EA]/30"
+                    "flex flex-col w-[270px] shrink-0 rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] transition-all duration-140",
+                    isOver && (isWon ? "border-[#12B886] ring-2 ring-[#12B886]/30 bg-[#E4F7EF]/30" : "border-[#FF5A1F] ring-2 ring-[#FF5A1F]/30 bg-[#FFF1EA]/30")
                   )}
                 >
                   {/* Stage Header */}
-                  <div className="p-3.5 border-b border-[#E4E1D8] bg-[#FFFFFF] rounded-t-[14px]">
+                  <div className="p-4 border-b border-[#E6E2D8] bg-white rounded-t-[20px]">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className={cn("h-2 w-2 rounded-full", stage.dotColor)} />
-                        <h3 className="text-[13px] font-medium text-[#12141A]">
+                      <div className="flex items-center gap-2.5">
+                        <span className={cn("h-2.5 w-2.5 rounded-full shrink-0", stage.dotColor)} />
+                        <h3 className="type-title text-[#12141A]">
                           {stage.label}
                         </h3>
                       </div>
-                      <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-[#EFEDE7] text-[#4B515D] text-[11px] font-medium flex items-center justify-center font-variant-numeric tabular-nums">
+                      <span className="h-5 min-w-[22px] px-2 rounded-full bg-[#EFEDE7] text-[#454B57] text-[13px] font-medium flex items-center justify-center font-variant-numeric tabular-nums">
                         {stage.count}
                       </span>
                     </div>
 
-                    <div className="mt-1 text-[11px] text-[#6A707C] font-variant-numeric tabular-nums">
-                      ₹{stage.totalValue.toLocaleString()}
+                    <div className="mt-1.5 text-[14px] font-medium text-[#12141A] font-variant-numeric tabular-nums">
+                      {formatINR(stage.totalValue)}
                     </div>
                   </div>
 
                   {/* Cards List */}
-                  <div className="p-2 space-y-2.5 min-h-[460px] max-h-[calc(100vh-270px)] overflow-y-auto custom-light-scroll">
-                    {stageLeads.map((lead) => (
-                      <div
-                        key={lead.id}
-                        draggable
-                        onDragStart={() => handleDragStart(lead.id)}
-                        onClick={() => setActiveLead(lead)}
-                        className="group relative p-3.5 rounded-[10px] border border-[#E4E1D8] bg-white hover:border-[#D2CEC2] hover:shadow-card transition-all duration-140 cursor-grab active:cursor-grabbing"
-                      >
-                        <h4 className="text-[13px] font-medium text-[#12141A] truncate group-hover:underline">
-                          {lead.title}
-                        </h4>
+                  <div className="p-2.5 space-y-3 min-h-[480px] max-h-[calc(100vh-270px)] overflow-y-auto custom-light-scroll bg-[#FAF9F5]/60 rounded-b-[20px]">
+                    {stageLeads.map((lead) => {
+                      const avatarStyle = getAvatarColor(lead.contact_name || lead.title);
+                      return (
+                        <div
+                          key={lead.id}
+                          draggable
+                          onDragStart={() => handleDragStart(lead.id)}
+                          onClick={() => setActiveLead(lead)}
+                          className="group relative p-4 rounded-[16px] border border-[#E6E2D8] bg-white hover:border-[#D2CEC2] hover:shadow-card hover:-translate-y-0.5 transition-all duration-140 cursor-grab active:cursor-grabbing"
+                        >
+                          <h4 className="text-[15px] font-medium text-[#12141A] truncate group-hover:underline">
+                            {lead.title}
+                          </h4>
 
-                        <div className="mt-2 flex items-center justify-between text-[12px]">
-                          <span className="font-medium text-[#0F7B5A] font-variant-numeric tabular-nums">
-                            ₹{(lead.estimated_value || 0).toLocaleString()}
-                          </span>
-                          <span className="text-[11px] text-[#6A707C] truncate max-w-[100px]">
-                            {lead.contact_name || "Lead"}
-                          </span>
-                        </div>
-
-                        <div className="mt-2.5 pt-2 border-t border-[#E4E1D8]/80 flex items-center justify-between text-[11px] text-[#6A707C]">
-                          <div className="flex items-center gap-1.5">
-                            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#EFEDE7] text-[#12141A] text-[9px] font-medium">
-                              {lead.contact_name ? lead.contact_name[0] : "L"}
-                            </div>
-                            <span className="truncate max-w-[90px]">{lead.source}</span>
+                          <div className="mt-2.5 flex items-center justify-between text-[14px]">
+                            <span className="font-medium text-[#0A7A53] font-variant-numeric tabular-nums">
+                              {formatINR(lead.estimated_value || 0)}
+                            </span>
+                            <span className="text-[13px] text-[#666C78] truncate max-w-[120px]">
+                              {lead.contact_name || "Lead"}
+                            </span>
                           </div>
-                          {lead.stage === "won" && (
-                            <span className="text-[#0F7B5A] font-medium">Won</span>
-                          )}
+
+                          <div className="mt-3 pt-2.5 border-t border-[#E6E2D8]/80 flex items-center justify-between text-[13px] text-[#666C78]">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={cn(
+                                  "flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-medium border",
+                                  avatarStyle.bg,
+                                  avatarStyle.text,
+                                  avatarStyle.border
+                                )}
+                              >
+                                {getInitials(lead.contact_name || lead.title)}
+                              </div>
+                              <span className="truncate max-w-[100px]">{lead.source}</span>
+                            </div>
+                            <span className="text-[12px] text-[#8F5300] bg-[#FFF3D6] px-1.5 py-0.5 rounded-[4px]">
+                              {lead.stage === "proposal" ? "12d in stage" : "3d in stage"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
 
                     {stageLeads.length === 0 && (
-                      <div className="h-32 flex items-center justify-center rounded-[8px] border border-dashed border-[#E4E1D8] text-[11px] text-[#6A707C]">
+                      <div className="h-36 flex items-center justify-center rounded-[14px] border border-dashed border-[#E6E2D8] text-[13px] text-[#666C78] bg-white/40">
                         Drag deals here
                       </div>
                     )}
@@ -359,10 +376,10 @@ export default function LeadsPage() {
                     {lead.stage}
                   </StatusPill>
                 </TableCell>
-                <TableCell className="font-medium text-[#0F7B5A]">
-                  ₹{(lead.estimated_value || 0).toLocaleString()}
+                <TableCell className="font-medium text-[#0A7A53] font-variant-numeric tabular-nums">
+                  {formatINR(lead.estimated_value || 0)}
                 </TableCell>
-                <TableCell className="text-[#6A707C]">{lead.source}</TableCell>
+                <TableCell className="text-[#666C78]">{lead.source}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
@@ -371,7 +388,7 @@ export default function LeadsPage() {
                       e.stopPropagation();
                       setActiveLead(lead);
                     }}
-                    className="h-7 text-[12px]"
+                    className="h-8.5 text-[13px]"
                   >
                     View
                   </Button>

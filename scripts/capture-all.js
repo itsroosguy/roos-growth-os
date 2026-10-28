@@ -16,6 +16,7 @@ if (!fs.existsSync(outDir)) {
 
 const viewports = [
   { width: 2560, height: 1440, isMobile: false },
+  { width: 1920, height: 1080, isMobile: false },
   { width: 1440, height: 900, isMobile: false },
   { width: 1280, height: 800, isMobile: false },
   { width: 1024, height: 768, isMobile: false },

@@ -70,54 +70,52 @@ export default function AISettingsPage() {
       orgSlug={currentOrg.slug}
       title="AI Assistant &amp; Copilot"
       description="Configure model persona, response tone, and token consumption limits."
-      badge={<span className="rounded-full bg-[#FFF4EC] border border-[#FF7A1A]/30 text-xs font-medium px-2.5 py-0.5 text-[#FF7A1A] tabular-nums">Gemini 1.5 Flash</span>}
+      badge={<span className="rounded-full bg-[#F4F0FF] border border-[#E0D4FC] text-[13px] font-medium px-3 py-0.5 text-[#7C4DFF] tabular-nums">Gemini 1.5 Flash</span>}
     >
       <div className="space-y-6">
 
       {saved && (
-        <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center space-x-2 shadow-2xs">
-          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-          <span className="font-semibold">AI configuration and safety settings updated successfully!</span>
+        <div className="rounded-[12px] bg-[#E6FBF2] p-4 border border-[#B8F5D8] text-[14px] text-[#0A7A53] flex items-center space-x-2 shadow-xs">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-[#0A7A53]" />
+          <span className="font-medium">AI configuration and safety settings updated successfully!</span>
         </div>
       )}
 
       {/* Main Settings Form */}
       <form onSubmit={handleSave} className="space-y-6">
         {/* Master AI Toggle & Provider Status */}
-        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
-            <div className="flex items-center space-x-2">
-              <Bot className="h-5 w-5 text-[#FF7A1A]" />
-              <h2 className="text-base font-semibold text-[#0D0D0E]">Master AI Assistance Control</h2>
+        <div className="border border-[#E6E2D8] bg-white rounded-[20px] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E6E2D8]">
+            <div className="flex items-center space-x-2.5">
+              <Bot className="h-5 w-5 text-[#7C4DFF]" />
+              <h2 className="text-[18px] font-medium text-[#12141A]">Master AI Assistance Control</h2>
             </div>
             <Badge
               variant={isEnabled ? "success" : "neutral"}
-              className="text-[10px] uppercase font-medium"
+              className="text-[13px] uppercase font-medium"
             >
               {isEnabled ? "Enabled" : "Disabled"}
             </Badge>
           </div>
-          <p className="text-xs text-[#8E8E93] font-medium">
+          <p className="text-[13px] text-[#666C78] font-normal">
             When disabled, all inbox reply suggestions, lead intelligence panels, and automated summaries are switched off completely.
           </p>
 
           <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+            <div className="flex items-center justify-between p-4 rounded-[14px] bg-[#F7F5F0] border border-[#E6E2D8]">
               <div>
-                <p className="text-xs font-semibold text-[#0D0D0E]">
+                <p className="text-[14px] font-medium text-[#12141A]">
                   Enable AI Assistant for Workspace
                 </p>
-                <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">
+                <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                   Allows staff agents to generate grounded replies and CRM qualification insights.
                 </p>
               </div>
               <Button
                 type="button"
-                variant={isEnabled ? "default" : "secondary"}
+                variant={isEnabled ? "primary" : "secondary"}
                 size="sm"
-                className={`text-xs h-8 font-semibold rounded-xl cursor-pointer ${
-                  isEnabled ? "bg-[#FF7A1A] hover:bg-[#FF8833] text-white" : "bg-[#E5E5E7] text-[#0D0D0E]"
-                }`}
+                className="text-[14px] h-9 px-4 font-medium rounded-[10px] cursor-pointer"
                 onClick={() => setIsEnabled(!isEnabled)}
                 disabled={!isAdmin}
               >
@@ -125,22 +123,22 @@ export default function AISettingsPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
-                <span className="text-[#8E8E93] block mb-1 font-medium text-[11px] uppercase tracking-wider">Active AI Model</span>
-                <span className="font-semibold text-[#0D0D0E] tabular-nums text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[13px]">
+              <div className="p-3.5 bg-[#F7F5F0] rounded-[12px] border border-[#E6E2D8]">
+                <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Active AI Model</span>
+                <span className="font-medium text-[#12141A] tabular-nums text-[14px]">
                   Google Gemini 1.5 Flash
                 </span>
-                <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
+                <span className="text-[13px] text-[#666C78] block mt-0.5 font-normal">
                   Low latency (~200ms) with grounded contextual retrieval
                 </span>
               </div>
-              <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E5E7]">
-                <span className="text-[#8E8E93] block mb-1 font-medium text-[11px] uppercase tracking-wider">Integration Mode</span>
-                <span className="font-semibold text-[#0D0D0E] tabular-nums text-sm">
+              <div className="p-3.5 bg-[#F7F5F0] rounded-[12px] border border-[#E6E2D8]">
+                <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Integration Mode</span>
+                <span className="font-medium text-[#12141A] tabular-nums text-[14px]">
                   Local Sandbox / Free Tier
                 </span>
-                <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
+                <span className="text-[13px] text-[#666C78] block mt-0.5 font-normal">
                   Zero paid API costs incurred during development
                 </span>
               </div>
@@ -149,21 +147,21 @@ export default function AISettingsPage() {
         </div>
 
         {/* Brand Persona & Tone Configuration */}
-        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
-          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
-            <Sparkles className="h-5 w-5 text-[#FF7A1A]" />
-            <h2 className="text-base font-semibold text-[#0D0D0E]">Brand Tone &amp; Response Sizing</h2>
+        <div className="border border-[#E6E2D8] bg-white rounded-[20px] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4">
+          <div className="flex items-center space-x-2.5 pb-4 border-b border-[#E6E2D8]">
+            <Sparkles className="h-5 w-5 text-[#7C4DFF]" />
+            <h2 className="text-[18px] font-medium text-[#12141A]">Brand Tone &amp; Response Sizing</h2>
           </div>
-          <p className="text-xs text-[#8E8E93] font-medium">
+          <p className="text-[13px] text-[#666C78] font-normal">
             Guide how generated replies communicate with WhatsApp customers.
           </p>
 
           <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-medium text-[#0D0D0E] mb-2">
+              <label className="block text-[14px] font-medium text-[#12141A] mb-2.5">
                 Preferred Communication Tone
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {(
                   [
                     { id: "friendly", label: "Friendly & Warm", desc: "Approachable, conversational" },
@@ -176,24 +174,24 @@ export default function AISettingsPage() {
                     type="button"
                     key={t.id}
                     onClick={() => setTone(t.id)}
-                    className={`p-3 text-left rounded-xl border text-xs transition-all cursor-pointer ${
+                    className={`p-3.5 text-left rounded-[12px] border text-[14px] transition-all cursor-pointer ${
                       tone === t.id
-                        ? "border-[#FF7A1A] bg-[#FFF4EC] text-[#0D0D0E] font-semibold shadow-2xs"
-                        : "border-[#E5E5E7] bg-[#F7F7F8] hover:bg-white text-[#8E8E93]"
+                        ? "border-[#7C4DFF] bg-[#F4F0FF] text-[#12141A] font-medium shadow-xs"
+                        : "border-[#E6E2D8] bg-[#F7F5F0] hover:bg-white text-[#666C78]"
                     }`}
                   >
-                    <span className="block font-semibold text-[#0D0D0E]">{t.label}</span>
-                    <span className="text-[10px] text-[#8E8E93] font-medium">{t.desc}</span>
+                    <span className="block font-medium text-[#12141A]">{t.label}</span>
+                    <span className="text-[13px] text-[#666C78] font-normal mt-0.5 block">{t.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             <div className="pt-2">
-              <label className="block text-xs font-medium text-[#0D0D0E] mb-1.5">
+              <label className="block text-[14px] font-medium text-[#12141A] mb-2">
                 Maximum Suggested Reply Length
               </label>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-4">
                 <input
                   type="range"
                   min={50}
@@ -201,13 +199,13 @@ export default function AISettingsPage() {
                   step={25}
                   value={maxLength}
                   onChange={(e) => setMaxLength(Number(e.target.value))}
-                  className="w-full h-1.5 bg-[#E5E5E7] rounded-lg cursor-pointer accent-[#FF7A1A]"
+                  className="w-full h-2 bg-[#E6E2D8] rounded-lg cursor-pointer accent-[#7C4DFF]"
                 />
-                <span className="text-xs tabular-nums font-semibold text-[#0D0D0E] w-20 text-right">
+                <span className="text-[14px] tabular-nums font-medium text-[#12141A] w-24 text-right shrink-0">
                   {maxLength} words
                 </span>
               </div>
-              <p className="text-[11px] text-[#8E8E93] mt-1 font-medium">
+              <p className="text-[13px] text-[#666C78] mt-1.5 font-normal">
                 WhatsApp messages read best when concise and directly answering customer inquiries.
               </p>
             </div>
@@ -215,12 +213,12 @@ export default function AISettingsPage() {
         </div>
 
         {/* Feature Switches */}
-        <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
-          <div className="flex items-center space-x-2 pb-3 border-b border-[#E5E5E7]">
-            <Sliders className="h-5 w-5 text-[#FF7A1A]" />
-            <h2 className="text-base font-semibold text-[#0D0D0E]">Granular Feature Permissions</h2>
+        <div className="border border-[#E6E2D8] bg-white rounded-[20px] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4">
+          <div className="flex items-center space-x-2.5 pb-4 border-b border-[#E6E2D8]">
+            <Sliders className="h-5 w-5 text-[#7C4DFF]" />
+            <h2 className="text-[18px] font-medium text-[#12141A]">Granular Feature Permissions</h2>
           </div>
-          <p className="text-xs text-[#8E8E93] font-medium">
+          <p className="text-[13px] text-[#666C78] font-normal">
             Toggle specific AI capabilities on or off independently.
           </p>
 
@@ -253,18 +251,18 @@ export default function AISettingsPage() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] text-xs"
+                className="flex items-center justify-between p-4 rounded-[14px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px]"
               >
                 <div>
-                  <span className="font-semibold text-[#0D0D0E]">{f.title}</span>
-                  <p className="text-[11px] text-[#8E8E93] font-medium mt-0.5">{f.description}</p>
+                  <span className="font-medium text-[#12141A] block">{f.title}</span>
+                  <p className="text-[13px] text-[#666C78] font-normal mt-0.5">{f.description}</p>
                 </div>
                 <Button
                   type="button"
                   variant={f.checked ? "outline" : "secondary"}
                   size="sm"
-                  className={`h-7 text-xs font-semibold rounded-lg cursor-pointer ${
-                    f.checked ? "border-[#FF7A1A]/40 text-[#FF7A1A] bg-[#FFF4EC]" : "text-[#8E8E93]"
+                  className={`h-9 px-4 text-[14px] font-medium rounded-[10px] cursor-pointer shrink-0 ml-4 ${
+                    f.checked ? "border-[#7C4DFF]/40 text-[#7C4DFF] bg-[#F4F0FF]" : "text-[#666C78]"
                   }`}
                   onClick={f.onChange}
                   disabled={!isEnabled || !isAdmin}
@@ -276,8 +274,8 @@ export default function AISettingsPage() {
           </div>
 
           {isAdmin && (
-            <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
-              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs">
+            <div className="flex justify-end border-t border-[#E6E2D8] pt-4">
+              <Button type="submit" className="bg-[#FF5500] hover:bg-[#E04B00] text-white font-medium rounded-[12px] text-[14px] h-10 px-5 shadow-xs cursor-pointer">
                 Save AI Configuration
               </Button>
             </div>
@@ -286,49 +284,49 @@ export default function AISettingsPage() {
       </form>
 
       {/* Usage Quota & Cost Tracking */}
-      <div className="border border-[#E5E5E7] bg-white rounded-2xl p-6 shadow-2xs space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
-          <div className="flex items-center space-x-2">
-            <Zap className="h-5 w-5 text-[#FF7A1A]" />
-            <h2 className="text-base font-semibold text-[#0D0D0E]">Token Quota &amp; Cost Tracking</h2>
+      <div className="border border-[#E6E2D8] bg-white rounded-[20px] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4">
+        <div className="flex items-center justify-between pb-4 border-b border-[#E6E2D8]">
+          <div className="flex items-center space-x-2.5">
+            <Zap className="h-5 w-5 text-[#7C4DFF]" />
+            <h2 className="text-[18px] font-medium text-[#12141A]">Token Quota &amp; Cost Tracking</h2>
           </div>
-          <Badge variant="neutral" className="text-xs tabular-nums font-medium">
+          <Badge variant="neutral" className="text-[13px] tabular-nums font-medium">
             Monthly Budget Cap
           </Badge>
         </div>
-        <p className="text-xs text-[#8E8E93] font-medium">
+        <p className="text-[13px] text-[#666C78] font-normal">
           Live token consumption reconciled for {currentOrg.name}.
         </p>
 
         <div className="space-y-4 pt-2">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Total Generations</span>
-              <span className="text-xl font-semibold tabular-nums text-[#0D0D0E]">{usage.totalRequests}</span>
-              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">This month</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-[13px]">
+            <div className="p-4 bg-[#F7F5F0] border border-[#E6E2D8] rounded-[14px]">
+              <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Total Generations</span>
+              <span className="text-[24px] font-medium tabular-nums text-[#12141A]">{usage.totalRequests}</span>
+              <span className="text-[13px] text-[#666C78] block mt-1 font-normal">This month</span>
             </div>
-            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Tokens Consumed</span>
-              <span className="text-xl font-semibold text-[#0D0D0E] tabular-nums">
+            <div className="p-4 bg-[#F7F5F0] border border-[#E6E2D8] rounded-[14px]">
+              <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Tokens Consumed</span>
+              <span className="text-[24px] font-medium text-[#12141A] tabular-nums">
                 {usage.totalTokens.toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
+              <span className="text-[13px] text-[#666C78] block mt-1 font-normal">
                 of {settings.monthly_token_quota.toLocaleString("en-IN")} quota
               </span>
             </div>
-            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Remaining Quota</span>
-              <span className="text-xl font-semibold text-emerald-600 tabular-nums">
+            <div className="p-4 bg-[#F7F5F0] border border-[#E6E2D8] rounded-[14px]">
+              <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Remaining Quota</span>
+              <span className="text-[24px] font-medium text-[#0A7A53] tabular-nums">
                 {usage.remainingQuota.toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">Tokens available</span>
+              <span className="text-[13px] text-[#666C78] block mt-1 font-normal">Tokens available</span>
             </div>
-            <div className="p-3.5 bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl">
-              <span className="text-[#8E8E93] block mb-0.5 font-medium text-[11px] uppercase tracking-wider">Estimated Cost</span>
-              <span className="text-xl font-semibold tabular-nums text-[#FF7A1A]">
+            <div className="p-4 bg-[#F7F5F0] border border-[#E6E2D8] rounded-[14px]">
+              <span className="text-[#666C78] block mb-1 font-medium text-[13px] uppercase tracking-wider">Estimated Cost</span>
+              <span className="text-[24px] font-medium tabular-nums text-[#7C4DFF]">
                 ₹{usage.estimatedCostInr.toFixed(4)}
               </span>
-              <span className="text-[10px] text-[#8E8E93] block mt-0.5 font-medium">
+              <span className="text-[13px] text-[#666C78] block mt-1 font-normal">
                 At Gemini 1.5 Flash rates
               </span>
             </div>
@@ -336,15 +334,15 @@ export default function AISettingsPage() {
 
           {/* Progress bar */}
           <div>
-            <div className="flex justify-between text-[11px] text-[#8E8E93] font-medium mb-1">
+            <div className="flex justify-between text-[13px] text-[#666C78] font-normal mb-1.5">
               <span>Monthly Token Consumption ({tokenUsagePercentage}%)</span>
-              <span>
+              <span className="tabular-nums">
                 {usage.totalTokens.toLocaleString("en-IN")} / {settings.monthly_token_quota.toLocaleString("en-IN")} tokens
               </span>
             </div>
-            <div className="w-full h-2 bg-[#E5E5E7] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E6E2D8] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#FF7A1A] transition-all rounded-full"
+                className="h-full bg-[#7C4DFF] transition-all rounded-full"
                 style={{ width: `${tokenUsagePercentage}%` }}
               />
             </div>
@@ -352,49 +350,49 @@ export default function AISettingsPage() {
 
           {/* Recent Generation Logs */}
           <div className="pt-2">
-            <span className="text-xs font-semibold text-[#0D0D0E] block mb-2">
+            <span className="text-[14px] font-medium text-[#12141A] block mb-2.5">
               Recent AI Generation Audit Trail
             </span>
             {usage.logs.length === 0 ? (
-              <p className="text-xs text-[#8E8E93] py-4 text-center font-medium">
+              <p className="text-[13px] text-[#666C78] py-4 text-center font-normal">
                 No AI requests generated in this period.
               </p>
             ) : (
-              <div className="overflow-x-auto rounded-xl border border-[#E5E5E7]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F7F7F8]">
-                    <tr className="border-b border-[#E5E5E7] text-[#8E8E93] font-medium uppercase text-[11px] tracking-wider">
-                      <th className="py-2.5 px-3">Time</th>
-                      <th className="py-2.5 px-3">Feature</th>
-                      <th className="py-2.5 px-3">Tokens (In / Out)</th>
-                      <th className="py-2.5 px-3">Latency</th>
-                      <th className="py-2.5 px-3">Est. Cost</th>
-                      <th className="py-2.5 px-3">Status</th>
+              <div className="overflow-x-auto rounded-[14px] border border-[#E6E2D8]">
+                <table className="w-full text-left text-[13px]">
+                  <thead className="bg-[#F7F5F0]">
+                    <tr className="border-b border-[#E6E2D8] text-[#666C78] font-medium uppercase text-[13px] tracking-wider">
+                      <th className="py-3 px-3.5">Time</th>
+                      <th className="py-3 px-3.5">Feature</th>
+                      <th className="py-3 px-3.5">Tokens (In / Out)</th>
+                      <th className="py-3 px-3.5">Latency</th>
+                      <th className="py-3 px-3.5">Est. Cost</th>
+                      <th className="py-3 px-3.5">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E5E7]">
+                  <tbody className="divide-y divide-[#E6E2D8]">
                     {usage.logs.slice(0, 5).map((log) => (
-                      <tr key={log.id} className="hover:bg-[#F7F7F8]/80 transition-colors">
-                        <td className="py-2.5 px-3 tabular-nums text-[#8E8E93]">
+                      <tr key={log.id} className="hover:bg-[#F7F5F0]/80 transition-colors">
+                        <td className="py-3 px-3.5 tabular-nums text-[#666C78]">
                           {new Date(log.created_at).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="py-2.5 px-3 font-semibold text-[#0D0D0E] capitalize">
+                        <td className="py-3 px-3.5 font-medium text-[#12141A] capitalize">
                           {log.feature.replace("_", " ")}
                         </td>
-                        <td className="py-2.5 px-3 tabular-nums text-[#8E8E93]">
+                        <td className="py-3 px-3.5 tabular-nums text-[#666C78]">
                           {log.input_tokens} / {log.output_tokens}
                         </td>
-                        <td className="py-2.5 px-3 tabular-nums text-[#8E8E93]">
+                        <td className="py-3 px-3.5 tabular-nums text-[#666C78]">
                           {log.latency_ms}ms
                         </td>
-                        <td className="py-2.5 px-3 tabular-nums font-semibold text-[#0D0D0E]">
+                        <td className="py-3 px-3.5 tabular-nums font-medium text-[#12141A]">
                           ₹{Number(log.estimated_cost_inr).toFixed(4)}
                         </td>
-                        <td className="py-2.5 px-3">
-                          <Badge variant="success" className="text-[10px]">
+                        <td className="py-3 px-3.5">
+                          <Badge variant="success" className="text-[13px]">
                             {log.status}
                           </Badge>
                         </td>

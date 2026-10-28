@@ -109,27 +109,27 @@ export default function AutomationsPage() {
   return (
     <div className="space-y-6 animate-page-enter">
       {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E4E1D8] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 pb-5 border-b border-[#E6E2D8] sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-[28px] sm:text-[30px] font-medium leading-[36px] tracking-[-0.02em] text-[#12141A]">
+          <h1 className="type-display text-[#12141A]">
             Automations
           </h1>
-          <p className="mt-1 text-[13px] text-[#4B515D]">
+          <p className="type-body text-[#454B57] mt-1">
             {rules.length} trigger-action workflows for lead routing, customer SLAs, and automated WhatsApp responses
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Tab Selector */}
-          <div className="flex items-center rounded-[8px] border border-[#E4E1D8] bg-white p-0.5 shadow-hairline">
+          <div className="flex items-center rounded-[12px] border border-[#E6E2D8] bg-white p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setActiveTab("workflows")}
               className={cn(
-                "px-3 py-1 rounded-[6px] text-[12px] font-medium transition-colors",
+                "px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
                 activeTab === "workflows"
-                  ? "bg-[#EFEDE7] text-[#12141A]"
-                  : "text-[#6A707C] hover:text-[#12141A]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               )}
             >
               Active Workflows
@@ -138,10 +138,10 @@ export default function AutomationsPage() {
               type="button"
               onClick={() => setActiveTab("history")}
               className={cn(
-                "px-3 py-1 rounded-[6px] text-[12px] font-medium transition-colors",
+                "px-3.5 py-1.5 rounded-[9px] text-[14px] font-medium transition-colors cursor-pointer",
                 activeTab === "history"
-                  ? "bg-[#EFEDE7] text-[#12141A]"
-                  : "text-[#6A707C] hover:text-[#12141A]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               )}
             >
               Execution History
@@ -152,9 +152,9 @@ export default function AutomationsPage() {
             onClick={() => toast("Workflow builder available in next update", { type: "info" })}
             variant="primary"
             size="sm"
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New workflow</span>
           </Button>
         </div>
@@ -170,18 +170,18 @@ export default function AutomationsPage() {
             return (
               <div
                 key={rule.id}
-                className="p-5 rounded-[14px] border border-[#E4E1D8] bg-white shadow-hairline space-y-4 hover:border-[#D2CEC2] transition-colors"
+                className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4 hover:border-[#D2CEC2] transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#EFEDE7] text-[#12141A] border border-[#E4E1D8]">
-                      <Zap className="h-4 w-4 text-[#FF5A1F]" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3] shadow-xs">
+                      <Zap className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-[15px] font-medium text-[#12141A]">
+                      <h3 className="text-[16px] font-medium text-[#12141A]">
                         {rule.name}
                       </h3>
-                      <p className="text-[12px] text-[#4B515D] mt-0.5">
+                      <p className="text-[13px] text-[#666C78] mt-0.5">
                         {rule.description || "Automatic workspace execution rule"}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export default function AutomationsPage() {
 
                   <div className="flex items-center gap-3">
                     <StatusPill
-                      variant={rule.is_active ? "success" : "neutral"}
+                      variant={rule.is_active ? "emerald" : "slate"}
                       dot
                       size="sm"
                     >
@@ -203,29 +203,29 @@ export default function AutomationsPage() {
                 </div>
 
                 {/* Human-Readable Chain: When -> If -> Then */}
-                <div className="p-3.5 rounded-[10px] bg-[#EFEDE7] border border-[#E4E1D8] text-[13px] space-y-1.5">
+                <div className="p-4 rounded-[14px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-[#12141A]">When:</span>
-                    <span className="text-[#4B515D]">{whenText}</span>
+                    <span className="font-medium text-[#12141A] w-14 shrink-0">When:</span>
+                    <span className="text-[#454B57]">{whenText}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-[#12141A]">If:</span>
-                    <span className="text-[#4B515D]">All lead validation and consent conditions are met</span>
+                    <span className="font-medium text-[#12141A] w-14 shrink-0">If:</span>
+                    <span className="text-[#454B57]">All lead validation and consent conditions are met</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-[#12141A]">Then:</span>
-                    <span className="text-[#0F7B5A] font-medium">{thenText}</span>
+                    <span className="font-medium text-[#12141A] w-14 shrink-0">Then:</span>
+                    <span className="text-[#0A7A53] font-medium">{thenText}</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#E4E1D8] flex items-center justify-between text-[11px] text-[#6A707C]">
+                <div className="pt-2 border-t border-[#E6E2D8] flex items-center justify-between text-[13px] text-[#666C78]">
                   <span>Trigger: {rule.trigger_type}</span>
                   <button
                     type="button"
                     onClick={() => handleTestTrigger(rule)}
-                    className="flex items-center gap-1.5 text-[#12141A] hover:text-[#FF5A1F] font-medium transition-colors"
+                    className="flex items-center gap-1.5 text-[#12141A] hover:text-[#FF5A1F] font-medium transition-colors cursor-pointer"
                   >
-                    <Play className="h-3 w-3 text-[#FF5A1F]" />
+                    <Play className="h-3.5 w-3.5 text-[#FF5A1F]" />
                     <span>Test Workflow in Sandbox</span>
                   </button>
                 </div>
@@ -237,8 +237,8 @@ export default function AutomationsPage() {
 
       {/* 3. EXECUTION HISTORY */}
       {activeTab === "history" && (
-        <div className="rounded-[14px] border border-[#E4E1D8] bg-white shadow-hairline overflow-hidden divide-y divide-[#E4E1D8]">
-          <div className="p-4 bg-[#EFEDE7] text-[11px] font-medium text-[#6A707C] uppercase tracking-[0.06em]">
+        <div className="rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden divide-y divide-[#E6E2D8]">
+          <div className="p-4 bg-[#FAF9F5] text-[13px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
             Recent Workflow Runs
           </div>
           {executions.map((exec) => (

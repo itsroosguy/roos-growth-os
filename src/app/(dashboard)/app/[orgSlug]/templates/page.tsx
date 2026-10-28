@@ -78,32 +78,32 @@ export default function TemplatesPage() {
   return (
     <div className="space-y-6 animate-page-enter">
       {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E4E1D8] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 pb-5 border-b border-[#E6E2D8] sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-[28px] sm:text-[30px] font-medium leading-[36px] tracking-[-0.02em] text-[#12141A]">
+          <h1 className="type-display text-[#12141A]">
             Templates
           </h1>
-          <p className="mt-1 text-[13px] text-[#4B515D]">
+          <p className="type-body text-[#454B57] mt-1">
             {templates.length} pre-approved WhatsApp Cloud API templates for broadcasting and instant agent responses
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="relative w-56 sm:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#6A707C]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search templates..."
-              className="h-8.5 w-full rounded-[8px] border border-[#E4E1D8] bg-white pl-8 pr-3 text-[12px] text-[#12141A] placeholder:text-[#6A707C] focus:border-[#FF5A1F] focus:outline-none shadow-hairline"
+              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="h-8.5 px-2.5 rounded-[8px] border border-[#E4E1D8] bg-white text-[12px] text-[#12141A] outline-none shadow-hairline"
+            className="h-10 px-3 rounded-[12px] border border-[#E6E2D8] bg-white text-[14px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
           >
             <option value="all">All Categories</option>
             <option value="utility">Utility</option>
@@ -115,29 +115,29 @@ export default function TemplatesPage() {
             onClick={() => setCreateOpen(true)}
             variant="primary"
             size="sm"
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New template</span>
           </Button>
         </div>
       </div>
 
       {/* 2. TEMPLATES MASTER GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((tpl) => (
           <div
             key={tpl.id}
             onClick={() => setSelectedTemplate(tpl)}
-            className="group p-4 rounded-[14px] border border-[#E4E1D8] bg-white hover:border-[#D2CEC2] shadow-hairline transition-all duration-140 cursor-pointer space-y-3 flex flex-col justify-between"
+            className="group p-5 rounded-[20px] border border-[#E6E2D8] bg-white hover:border-[#D2CEC2] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] transition-all duration-140 cursor-pointer space-y-4 flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[14px] font-medium text-[#12141A] group-hover:underline font-sans">
+                <span className="text-[16px] font-medium text-[#12141A] group-hover:underline">
                   {tpl.name}
                 </span>
                 <StatusPill
-                  variant={tpl.status === "APPROVED" ? "success" : "warning"}
+                  variant={tpl.status === "APPROVED" ? "emerald" : "amber"}
                   dot
                   size="sm"
                 >
@@ -145,20 +145,20 @@ export default function TemplatesPage() {
                 </StatusPill>
               </div>
 
-              <div className="flex items-center gap-2 mt-1 text-[11px] text-[#6A707C]">
+              <div className="flex items-center gap-2 mt-1.5 text-[13px] text-[#666C78]">
                 <span className="capitalize">{tpl.category}</span>
                 <span>•</span>
                 <span>{tpl.language}</span>
               </div>
 
-              <p className="mt-3 text-[12px] text-[#4B515D] line-clamp-3 bg-[#EFEDE7] p-2.5 rounded-[8px] border border-[#E4E1D8]">
+              <p className="mt-3.5 text-[14px] text-[#454B57] line-clamp-3 bg-[#F7F5F0] p-3.5 rounded-[12px] border border-[#E6E2D8] leading-relaxed">
                 {tpl.body_content}
               </p>
             </div>
 
-            <div className="pt-2 border-t border-[#E4E1D8] flex items-center justify-between text-[11px] text-[#6A707C]">
+            <div className="pt-3 border-t border-[#E6E2D8] flex items-center justify-between text-[13px] text-[#666C78]">
               <span>Click to view phone preview</span>
-              <Smartphone className="h-3.5 w-3.5 text-[#6A707C] group-hover:text-[#FF5A1F] transition-colors" />
+              <Smartphone className="h-4 w-4 text-[#666C78] group-hover:text-[#7C4DFF] transition-colors" />
             </div>
           </div>
         ))}
@@ -173,53 +173,53 @@ export default function TemplatesPage() {
       >
         <div className="space-y-6">
           {/* Simulated Smartphone Container */}
-          <div className="mx-auto max-w-[280px] rounded-[24px] border-4 border-[#1B1F29] bg-[#EFEAE2] p-3 shadow-overlay space-y-3">
+          <div className="mx-auto max-w-[300px] rounded-[32px] border-4 border-[#1B1F29] bg-[#EFEAE2] p-4 shadow-overlay space-y-3.5">
             {/* Phone Top Notch */}
-            <div className="mx-auto h-3 w-20 rounded-full bg-[#1B1F29]" />
+            <div className="mx-auto h-3.5 w-24 rounded-full bg-[#1B1F29]" />
 
             {/* Chat Bubble Simulation */}
-            <div className="rounded-[10px] bg-white p-3 shadow-hairline text-[12px] text-[#12141A] leading-relaxed border border-[#E4E1D8]">
+            <div className="rounded-[14px] bg-white p-3.5 shadow-xs text-[14px] text-[#12141A] leading-relaxed border border-[#E6E2D8]">
               {selectedTemplate?.header_text && (
-                <div className="font-medium text-[#12141A] mb-1">
+                <div className="font-medium text-[#12141A] mb-1.5 text-[14px]">
                   {selectedTemplate.header_text}
                 </div>
               )}
               <p className="whitespace-pre-wrap">{selectedTemplate?.body_content}</p>
               {selectedTemplate?.footer_text && (
-                <div className="mt-2 text-[10px] text-[#6A707C] border-t border-[#E4E1D8] pt-1">
+                <div className="mt-2 text-[13px] text-[#666C78] border-t border-[#E6E2D8] pt-1.5">
                   {selectedTemplate.footer_text}
                 </div>
               )}
-              <div className="mt-1 text-right text-[9px] text-[#6A707C]">
+              <div className="mt-1.5 text-right text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
                 12:45 PM • Read
               </div>
             </div>
           </div>
 
-          <div className="space-y-2 text-[13px]">
-            <div className="flex items-center justify-between py-1.5 border-b border-[#E4E1D8]">
-              <span className="text-[#4B515D]">Category</span>
+          <div className="space-y-2.5 text-[14px]">
+            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+              <span className="text-[#666C78]">Category</span>
               <span className="font-medium text-[#12141A] capitalize">{selectedTemplate?.category}</span>
             </div>
-            <div className="flex items-center justify-between py-1.5 border-b border-[#E4E1D8]">
-              <span className="text-[#4B515D]">Meta Template Status</span>
-              <StatusPill variant={selectedTemplate?.status === "APPROVED" ? "success" : "warning"} size="sm">
+            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+              <span className="text-[#666C78]">Meta Template Status</span>
+              <StatusPill variant={selectedTemplate?.status === "APPROVED" ? "emerald" : "amber"} size="sm">
                 {selectedTemplate?.status}
               </StatusPill>
             </div>
-            <div className="flex items-center justify-between py-1.5 border-b border-[#E4E1D8]">
-              <span className="text-[#4B515D]">Language</span>
+            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+              <span className="text-[#666C78]">Language</span>
               <span className="font-medium text-[#12141A]">{selectedTemplate?.language}</span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#E4E1D8] flex items-center justify-between">
+          <div className="pt-4 border-t border-[#E6E2D8] flex items-center justify-between">
             <Link href={`/app/${orgSlug}/campaigns?template=${selectedTemplate?.name}`}>
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" className="rounded-[12px] text-[14px] h-10 px-4">
                 Use in Broadcast
               </Button>
             </Link>
-            <Button variant="secondary" size="sm" onClick={() => setSelectedTemplate(null)}>
+            <Button variant="secondary" size="sm" onClick={() => setSelectedTemplate(null)} className="rounded-[12px] text-[14px] h-10 px-4">
               Close Preview
             </Button>
           </div>

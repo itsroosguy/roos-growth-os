@@ -3,22 +3,30 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const statusPillVariants = cva(
-  "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border select-none transition-colors",
+  "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[13px] font-medium border select-none transition-colors",
   {
     variants: {
       variant: {
-        neutral: "bg-[#EFEDE7] text-[#4B515D] border-[#E4E1D8]",
-        success: "bg-[#E6F4EE] text-[#0F7B5A] border-[#C7EADB]",
-        warning: "bg-[#FBF0DC] text-[#A8650A] border-[#F5E0B8]",
-        danger: "bg-[#FDECEA] text-[#B42318] border-[#F8D0CC]",
-        attention: "bg-[#FFF1EA] text-[#C73E0C] border-[#FFE0D2]",
-        info: "bg-[#E8EEFD] text-[#2F55D4] border-[#D0DCFA]",
-        dark: "bg-[#1B1F29] text-[#A3A9B6] border-[#242A38]",
+        neutral: "bg-[#EFEDE7] text-[#454B57] border-[#E6E2D8]",
+        slate: "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1]",
+        success: "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]",
+        emerald: "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]",
+        warning: "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]",
+        amber: "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]",
+        danger: "bg-[#FFE9EA] text-[#B42336] border-[#FFCCD0]",
+        rose: "bg-[#FFE9EA] text-[#B42336] border-[#FFCCD0]",
+        attention: "bg-[#FFF1EA] text-[#B93A0A] border-[#FFE2D4]",
+        flame: "bg-[#FFF1EA] text-[#B93A0A] border-[#FFE2D4]",
+        ultramarine: "bg-[#EAEEFF] text-[#2A3DB5] border-[#D3DCFF]",
+        info: "bg-[#EAEEFF] text-[#2A3DB5] border-[#D3DCFF]",
+        sky: "bg-[#E3F3FD] text-[#0A6AA3] border-[#BFE3FA]",
+        violet: "bg-[#F0EAFF] text-[#5B34C9] border-[#D9C9FF]",
+        dark: "bg-[#1B1F29] text-[#F4F5F7] border-[#242A38]",
       },
       size: {
-        default: "text-[11px] px-2 py-0.5",
-        sm: "text-[10px] px-1.5 py-0.2",
-        lg: "text-xs px-2.5 py-1",
+        default: "text-[13px] px-2.5 py-0.5",
+        sm: "text-[13px] px-2 py-0.5",
+        lg: "text-[14px] px-3 py-1",
       },
     },
     defaultVariants: {

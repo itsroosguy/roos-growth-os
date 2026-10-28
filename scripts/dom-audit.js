@@ -147,6 +147,8 @@ async function runAudit() {
               const weight = parseInt(comp.fontWeight, 10);
               const style = comp.fontStyle;
               const font = comp.fontFamily;
+              const fontSize = parseFloat(comp.fontSize);
+              const isInteractive = ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) || el.getAttribute('role') === 'button';
 
               const isMono = comp.fontFamily.toLowerCase().includes('mono') || 
                              comp.fontFamily.toLowerCase().includes('courier') ||
@@ -195,6 +197,30 @@ async function runAudit() {
                   detail: 'Computed font-family: ' + font + ' (must resolve to Google Sans)'
                 });
               }
+
+              // Rule 5: 2027 Typography Floor (Zero text < 13px for visible rendered text)
+              // Only check visible leaf elements with actual text content
+              if (el.children.length === 0 && rect.width > 0 && rect.height > 0 && fontSize < 12.5) {
+                violations.push({
+                  type: 'FONT_SIZE_BELOW_FLOOR',
+                  tag: el.tagName,
+                  className: el.className ? String(el.className).slice(0, 50) : '',
+                  textSnippet: text.slice(0, 35),
+                  detail: 'Computed font-size: ' + fontSize + 'px (hard floor: min 13px)'
+                });
+              }
+
+              // Rule 6: Zero Interactive Text < 14px (exempting inline count pills and kbd shortcuts)
+              const isPillOrKbd = el.tagName === 'KBD' || el.classList.contains('status-pill') || (el.className && String(el.className).includes('rounded-full'));
+              if (isInteractive && !isPillOrKbd && rect.width > 0 && rect.height > 0 && fontSize < 13.5) {
+                violations.push({
+                  type: 'INTERACTIVE_FONT_SIZE_BELOW_FLOOR',
+                  tag: el.tagName,
+                  className: el.className ? String(el.className).slice(0, 50) : '',
+                  textSnippet: text.slice(0, 35),
+                  detail: 'Interactive element font-size: ' + fontSize + 'px (must be >= 14px)'
+                });
+              }
             }
 
             const orangePercent = viewportArea > 0 ? (orangePixelArea / viewportArea) * 100 : 0;
@@ -211,6 +237,9 @@ async function runAudit() {
         auditReport.push({ route: r.name, status: 'PASS', violations: [], orangePercent });
       } else {
         console.log(`FAILED (${violations.length} violations / ${inspectedCount} text nodes / Orange pixel area: ${orangePercent}%)`);
+        for (const v of violations.slice(0, 5)) {
+          console.log(`   -> [${v.type}] <${v.tag}> "${v.textSnippet}": ${v.detail}`);
+        }
         totalViolations += violations.length;
         auditReport.push({ route: r.name, status: 'FAIL', violations, orangePercent });
       }

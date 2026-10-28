@@ -45,6 +45,7 @@ import {
   Landmark,
 } from "lucide-react";
 import { useMounted } from "@/lib/use-mounted";
+import { formatINR } from "@/lib/utils";
 
 export default function SubscriptionPage() {
   const { currentOrg, isOwner, userRole, canAccessFunds } = useTenant();
@@ -145,33 +146,33 @@ export default function SubscriptionPage() {
       orgSlug={currentOrg.slug}
       title="Subscription & Usage"
       description={`Manage plan tier, quota consumption, and review unit economics for ${currentOrg.name}.`}
-      badge={<span className="rounded-full bg-emerald-50 border border-emerald-200 text-xs uppercase font-medium px-2 py-0.5 text-emerald-700">{subscription.status}</span>}
+      badge={<span className="rounded-full bg-[#E6FBF2] border border-[#B8F5D8] text-[13px] uppercase font-medium px-3 py-0.5 text-[#0A7A53]">{subscription.status}</span>}
     >
       <div className="space-y-6">
 
         {/* Monthly / Annual Toggle */}
         <div className="flex justify-end pb-2">
-          <div className="flex items-center bg-[#F7F7F8] border border-[#E5E5E7] rounded-xl p-1 shadow-2xs">
+          <div className="flex items-center bg-[#F7F5F0] border border-[#E6E2D8] rounded-[12px] p-1 shadow-xs">
             <button
               onClick={() => setInterval("monthly")}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 text-[13px] font-medium rounded-[9px] transition-all cursor-pointer ${
                 interval === "monthly"
-                  ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
-                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setInterval("yearly")}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`px-3.5 py-1.5 text-[13px] font-medium rounded-[9px] transition-all flex items-center space-x-1.5 cursor-pointer ${
                 interval === "yearly"
-                  ? "bg-[#24180E] text-[#FF7A1A] shadow-2xs border border-[#FF7A1A]/30"
-                  : "text-[#8E8E93] hover:text-[#0D0D0E]"
+                  ? "bg-[#0B0D12] text-white shadow-xs"
+                  : "text-[#666C78] hover:text-[#12141A]"
               }`}
             >
               <span>Annual</span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-full">
+              <span className="text-[12px] bg-[#E6FBF2] text-[#0A7A53] border border-[#B8F5D8] font-medium px-2 py-0.5 rounded-full">
                 Save ~17%
               </span>
             </button>
@@ -179,42 +180,42 @@ export default function SubscriptionPage() {
         </div>
 
       {feedbackMessage && (
-        <div className="rounded-xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between shadow-2xs">
+        <div className="rounded-[12px] bg-[#E6FBF2] p-4 border border-[#B8F5D8] text-[14px] text-[#0A7A53] flex items-center justify-between shadow-xs">
           <div className="flex items-center space-x-2">
-            <Check className="h-4 w-4 shrink-0 text-emerald-600" />
-            <span className="font-semibold">{feedbackMessage}</span>
+            <Check className="h-4 w-4 shrink-0 text-[#0A7A53]" />
+            <span className="font-medium">{feedbackMessage}</span>
           </div>
-          <button onClick={() => setFeedbackMessage(null)} className="font-semibold underline ml-4 hover:text-emerald-950 cursor-pointer">
+          <button onClick={() => setFeedbackMessage(null)} className="font-medium underline ml-4 hover:text-[#0A7A53] cursor-pointer">
             Dismiss
           </button>
         </div>
       )}
 
       {/* Active Subscription Overview Card */}
-      <div className="bg-white rounded-2xl border border-[#E5E5E7] p-6 shadow-2xs">
+      <div className="bg-white rounded-[20px] border border-[#E6E2D8] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="space-y-1">
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
               Current Plan
             </span>
-            <div className="text-2xl sm:text-3xl font-semibold text-[#0D0D0E] tracking-tight">
+            <div className="type-title text-[#12141A]">
               {currentPlanDef.name}
             </div>
-            <p className="text-xs sm:text-sm text-[#FF7A1A] font-semibold tabular-nums">
-              ₹{interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr} /{" "}
+            <p className="text-[15px] text-[#FF5A1F] font-medium tabular-nums">
+              {formatINR(interval === "yearly" ? currentPlanDef.yearlyPriceInr : currentPlanDef.monthlyPriceInr)} /{" "}
               {interval === "yearly" ? "year" : "month"}
             </p>
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
               Billing Cycle
             </span>
-            <div className="text-sm sm:text-base font-semibold text-[#0D0D0E] capitalize flex items-center space-x-1.5">
-              <Clock className="h-4 w-4 text-[#FF7A1A]" />
+            <div className="text-[15px] font-medium text-[#12141A] capitalize flex items-center space-x-1.5">
+              <Clock className="h-4 w-4 text-[#FF5A1F]" />
               <span>{subscription.billing_interval} interval</span>
             </div>
-            <p className="text-xs text-[#8E8E93] font-medium">
+            <p className="text-[13px] text-[#666C78] font-normal">
               Renews on {new Date(subscription.current_period_end).toLocaleDateString("en-IN", {
                 month: "short",
                 day: "numeric",
@@ -224,14 +225,14 @@ export default function SubscriptionPage() {
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-medium text-[#8E8E93] uppercase tracking-wider">
+            <span className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
               Payment Method
             </span>
-            <div className="text-sm sm:text-base font-semibold text-[#0D0D0E] flex items-center space-x-1.5">
-              <CreditCard className="h-4 w-4 text-emerald-600" />
+            <div className="text-[15px] font-medium text-[#12141A] flex items-center space-x-1.5">
+              <CreditCard className="h-4 w-4 text-[#12B886]" />
               <span>UPI AutoPay / e-Mandate</span>
             </div>
-            <p className="text-xs text-[#8E8E93] font-medium">
+            <p className="text-[13px] text-[#666C78] font-normal">
               India-compliant Razorpay Gateway
             </p>
           </div>
