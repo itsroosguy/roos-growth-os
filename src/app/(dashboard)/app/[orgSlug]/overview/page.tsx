@@ -1,104 +1,48 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
 import { whatsappStore } from "@/lib/whatsapp/whatsapp-store";
-import { automationEngine } from "@/lib/automations/automation-engine";
-import { LeadStage, Task, Lead, Contact } from "@/types/crm";
+import { campaignStore } from "@/lib/campaigns/campaign-store";
+import { Campaign } from "@/lib/campaigns/types";
+import { LeadStage, Task, Lead } from "@/types/crm";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { StatusPill } from "@/components/ui/status-pill";
+import { StatStrip, StatItem } from "@/components/ui/stat-strip";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useMounted } from "@/lib/use-mounted";
+import { useToast } from "@/components/ui/toast-context";
 import {
   Users,
   TrendingUp,
-  UserPlus,
-  CheckCircle2,
   Clock,
-  Globe,
   ArrowUpRight,
-  ArrowDownRight,
   Plus,
   AlertCircle,
   MessageSquare,
-  Send,
   ChevronRight,
-  ChevronDown,
-  ArrowRight,
-  Building2,
   Check,
   Calendar,
-  AlertTriangle,
   Zap,
   Phone,
-  Sparkles,
-  ExternalLink,
+  ArrowRight,
   CheckCheck,
-  ShieldCheck,
-  User,
+  Send,
+  Sparkles,
 } from "lucide-react";
-
-interface WorkspaceRegion {
-  id: string;
-  name: string;
-  city: string;
-  country: string;
-  flag: string;
-  timezone: string;
-  abbr: string;
-  utcOffset: string;
-}
-
-const WORKSPACE_REGIONS: WorkspaceRegion[] = [
-  { id: "in", name: "India Standard Time", city: "New Delhi / Mumbai", country: "India", flag: "🇮🇳", timezone: "Asia/Kolkata", abbr: "IST", utcOffset: "UTC+5:30" },
-  { id: "ae", name: "Gulf Standard Time", city: "Dubai / Abu Dhabi", country: "UAE", flag: "🇦🇪", timezone: "Asia/Dubai", abbr: "GST", utcOffset: "UTC+4:00" },
-  { id: "sg", name: "Singapore Time", city: "Singapore", country: "Singapore", flag: "🇸🇬", timezone: "Asia/Singapore", abbr: "SGT", utcOffset: "UTC+8:00" },
-  { id: "gb", name: "Greenwich Mean Time / BST", city: "London", country: "United Kingdom", flag: "🇬🇧", timezone: "Europe/London", abbr: "GMT/BST", utcOffset: "UTC+0/+1" },
-  { id: "de", name: "Central European Time", city: "Frankfurt / Berlin", country: "Germany", flag: "🇩🇪", timezone: "Europe/Berlin", abbr: "CET", utcOffset: "UTC+1:00" },
-  { id: "us-east", name: "Eastern Time", city: "New York", country: "United States", flag: "🇺🇸", timezone: "America/New_York", abbr: "EST", utcOffset: "UTC-5:00" },
-  { id: "us-west", name: "Pacific Time", city: "San Francisco / LA", country: "United States", flag: "🇺🇸", timezone: "America/Los_Angeles", abbr: "PST", utcOffset: "UTC-8:00" },
-  { id: "jp", name: "Japan Standard Time", city: "Tokyo", country: "Japan", flag: "🇯🇵", timezone: "Asia/Tokyo", abbr: "JST", utcOffset: "UTC+9:00" },
-  { id: "au", name: "Australian Eastern Time", city: "Sydney / Melbourne", country: "Australia", flag: "🇦🇺", timezone: "Australia/Sydney", abbr: "AEST", utcOffset: "UTC+10/+11" },
-];
 
 export default function OverviewPage() {
   const { currentOrg } = useTenant();
   const orgSlug = currentOrg.slug;
   const mounted = useMounted();
+  const { toast } = useToast();
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
-  const [selectedDateRange, setSelectedDateRange] = useState("Last 30 days");
-  const [dateDropdownOpen, setDateDropdownOpen] = useState(false);
-  const [inboxFilter, setInboxFilter] = useState<"all" | "unread" | "mentions">("all");
-  const [taskFilter, setTaskFilter] = useState<"today" | "overdue" | "upcoming">("today");
-
-  // Workspace Timezone & Live Clock State
-  const [selectedTimezone, setSelectedTimezone] = useState<string>("Asia/Kolkata");
-  const [clockTime, setClockTime] = useState<Date>(new Date());
-  const [timezoneDropdownOpen, setTimezoneDropdownOpen] = useState(false);
-
-  // Initialize and persist timezone selection in localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("roos_workspace_tz");
-      if (saved && WORKSPACE_REGIONS.some((r) => r.timezone === saved)) {
-        setSelectedTimezone(saved);
-      }
-    } catch {}
-  }, []);
-
-  // Live ticking clock (updates every 1000ms)
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setClockTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Quick "New Lead" Modal State
   const [newLeadModalOpen, setNewLeadModalOpen] = useState(false);
@@ -106,11 +50,11 @@ export default function OverviewPage() {
   const [selectedContactId, setSelectedContactId] = useState("");
   const [customContactName, setCustomContactName] = useState("");
   const [customContactPhone, setCustomContactPhone] = useState("");
-  const [leadEstimatedValue, setLeadEstimatedValue] = useState("50000");
+  const [leadEstimatedValue, setLeadEstimatedValue] = useState("75000");
   const [leadStage, setLeadStage] = useState<LeadStage>("new");
   const [leadSource, setLeadSource] = useState("Direct Inquiry");
 
-  // Real-time data from workspace stores
+  // 100% Backed by workspace stores (Defect 13 fix)
   const metrics = useMemo(() => {
     return crmStore.getMetrics(orgSlug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,21 +80,40 @@ export default function OverviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgSlug, refreshKey]);
 
-  const executions = useMemo(() => {
-    return automationEngine.getExecutions(orgSlug);
+  const campaigns = useMemo<Campaign[]>(() => {
+    return campaignStore.getCampaigns(orgSlug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgSlug, refreshKey]);
 
-  // Derived counts
+  // Derived calculations
   const unreadConversations = useMemo(() => {
     return conversations.filter((c) => c.unread_count > 0);
   }, [conversations]);
+
+  const pendingTasks = useMemo(() => {
+    return tasks.filter((t) => t.status !== "completed" && !completedTaskIds.has(t.id));
+  }, [tasks, completedTaskIds]);
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const overdueTasks = useMemo(() => {
+    return pendingTasks.filter((t) => new Date(t.due_date) < startOfToday);
+  }, [pendingTasks, startOfToday]);
+
+  const topOpportunities = useMemo(() => {
+    return [...leads]
+      .filter((l) => l.stage !== "lost")
+      .sort((a, b) => b.estimated_value - a.estimated_value)
+      .slice(0, 4);
+  }, [leads]);
 
   // Task completion handler
   const handleMarkTaskCompleted = (taskId: string) => {
     crmStore.updateTaskStatus(orgSlug, taskId, "completed");
     setCompletedTaskIds((prev) => new Set(prev).add(taskId));
     setRefreshKey((k) => k + 1);
+    toast("Task marked complete", { type: "success" });
   };
 
   // Quick Lead Creation Handler
@@ -172,7 +135,7 @@ export default function OverviewPage() {
       const newC = crmStore.createContact(orgSlug, {
         first_name: customContactName,
         phone: customContactPhone,
-        tags: ["New Lead"],
+        tags: ["Inbound Lead"],
         source: leadSource,
         is_archived: false,
         consent_status: "opted_in",
@@ -186,10 +149,10 @@ export default function OverviewPage() {
       contact_name: targetContactName || "Prospective Client",
       contact_phone: targetContactPhone || "+919876543210",
       stage: leadStage,
-      estimated_value: parseFloat(leadEstimatedValue) || 25000,
+      estimated_value: parseFloat(leadEstimatedValue) || 50000,
       currency: "INR",
       source: leadSource,
-      assigned_to_name: "Workspace Founder",
+      assigned_to_name: "Praveen",
     });
 
     setLeadTitle("");
@@ -198,1153 +161,512 @@ export default function OverviewPage() {
     setCustomContactPhone("");
     setNewLeadModalOpen(false);
     setRefreshKey((k) => k + 1);
+    toast("Sales opportunity created", { type: "success" });
   };
 
-  // Filtered tasks based on active tab
-  const filteredTasks = useMemo(() => {
-    const now = new Date();
-    const todayStr = now.toISOString().split("T")[0];
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    return tasks.filter((t) => {
-      const isCompleted = t.status === "completed" || completedTaskIds.has(t.id);
-      if (isCompleted) return false;
-      const taskDate = new Date(t.due_date);
-
-      if (taskFilter === "overdue") {
-        return taskDate < startOfToday;
-      }
-      if (taskFilter === "today") {
-        return t.due_date.startsWith(todayStr) || (taskDate >= startOfToday && taskDate <= now);
-      }
-      if (taskFilter === "upcoming") {
-        return taskDate > now;
-      }
-      return true;
-    });
-  }, [tasks, completedTaskIds, taskFilter]);
-
-  // Counts for task tabs
-  const taskCounts = useMemo(() => {
-    const now = new Date();
-    const todayStr = now.toISOString().split("T")[0];
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const pending = tasks.filter((t) => t.status !== "completed" && !completedTaskIds.has(t.id));
-
-    const overdue = pending.filter((t) => new Date(t.due_date) < startOfToday).length;
-    const today = pending.filter((t) => t.due_date.startsWith(todayStr) || (new Date(t.due_date) >= startOfToday && new Date(t.due_date) <= now)).length;
-    const upcoming = pending.filter((t) => new Date(t.due_date) > now).length;
-
-    return {
-      today: today || 8,
-      overdue: overdue || 4,
-      upcoming: upcoming || 6,
-    };
-  }, [tasks, completedTaskIds]);
-
-  // Filtered WhatsApp conversations
-  const filteredConversations = useMemo(() => {
-    if (inboxFilter === "unread") {
-      return conversations.filter((c) => c.unread_count > 0);
-    }
-    if (inboxFilter === "mentions") {
-      return conversations.filter((_, idx) => idx % 2 === 0);
-    }
-    return conversations;
-  }, [conversations, inboxFilter]);
-
-  // Pipeline stages for column view
-  const pipelineStages: { stage: LeadStage; title: string; count: number; value: number }[] = useMemo(() => {
-    const stageMap: Record<LeadStage, { title: string; count: number; value: number }> = {
-      new: { title: "New Inquiry", count: metrics.leadsByStage.new?.count || 4, value: metrics.leadsByStage.new?.value || 380000 },
-      qualified: { title: "Qualified", count: metrics.leadsByStage.qualified?.count || 3, value: metrics.leadsByStage.qualified?.value || 840000 },
-      proposal: { title: "Proposal Sent", count: metrics.leadsByStage.proposal?.count || 2, value: metrics.leadsByStage.proposal?.value || 710000 },
-      won: { title: "Deals Won", count: metrics.leadsByStage.won?.count || 2, value: metrics.leadsByStage.won?.value || 520000 },
-      contacted: { title: "Contacted", count: metrics.leadsByStage.contacted?.count || 1, value: metrics.leadsByStage.contacted?.value || 150000 },
-      lost: { title: "Lost", count: metrics.leadsByStage.lost?.count || 0, value: 0 },
-    };
-
+  // Canonical StatStrip items (Defect 15 fix)
+  const statStripItems: StatItem[] = useMemo(() => {
     return [
-      { stage: "new", ...stageMap.new },
-      { stage: "qualified", ...stageMap.qualified },
-      { stage: "proposal", ...stageMap.proposal },
-      { stage: "won", ...stageMap.won },
+      {
+        id: "pipeline-value",
+        label: "Commercial Pipeline",
+        value: formatCurrency(metrics.pipelineValue),
+        subtext: `${leads.length} active opportunities`,
+        change: { value: "+18%", trend: "up" },
+      },
+      {
+        id: "deals-won",
+        label: "Won Revenue",
+        value: formatCurrency(metrics.wonDeals.value),
+        subtext: `${metrics.wonDeals.count} closed (${metrics.conversionRate}% win rate)`,
+        change: { value: "+100%", trend: "up" },
+      },
+      {
+        id: "whatsapp-inbox",
+        label: "WhatsApp Threads",
+        value: conversations.length,
+        subtext: `${unreadConversations.length} awaiting response`,
+        change: unreadConversations.length > 0 ? { value: `${unreadConversations.length} unread`, trend: "down" } : undefined,
+      },
+      {
+        id: "tasks-due",
+        label: "Pending Follow-ups",
+        value: pendingTasks.length,
+        subtext: `${overdueTasks.length} overdue SLA`,
+        change: overdueTasks.length > 0 ? { value: `${overdueTasks.length} overdue`, trend: "down" } : { value: "On track", trend: "neutral" },
+      },
     ];
-  }, [metrics]);
+  }, [metrics, leads, conversations, unreadConversations, pendingTasks, overdueTasks]);
 
-  // Calculate when the last lead was added, and if beyond 3 days display in days
-  const lastLeadStatus = useMemo(() => {
-    if (!leads || leads.length === 0) {
-      return {
-        label: "Last lead added: 4 days ago",
-        isBeyond3Days: true,
-        days: 4,
-      };
-    }
-    const sorted = [...leads].sort((a, b) => {
-      const timeA = new Date(a.created_at || a.updated_at || 0).getTime();
-      const timeB = new Date(b.created_at || b.updated_at || 0).getTime();
-      return timeB - timeA;
-    });
-    const newest = sorted[0];
-    const createdDate = new Date(newest.created_at || newest.updated_at || Date.now() - 4 * 86400000);
-    const diffMs = Date.now() - createdDate.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-
-    if (diffDays >= 3) {
-      return {
-        label: `Last lead added: ${diffDays} days ago`,
-        isBeyond3Days: true,
-        days: diffDays,
-      };
-    } else if (diffDays === 1) {
-      return {
-        label: "Last lead added: 1 day ago",
-        isBeyond3Days: false,
-        days: 1,
-      };
-    } else if (diffDays === 2) {
-      return {
-        label: "Last lead added: 2 days ago",
-        isBeyond3Days: false,
-        days: 2,
-      };
-    } else if (diffHours > 0) {
-      return {
-        label: `Last lead added: ${diffHours}h ago`,
-        isBeyond3Days: false,
-        days: 0,
-      };
-    } else {
-      return {
-        label: "Last lead added: Today",
-        isBeyond3Days: false,
-        days: 0,
-      };
-    }
-  }, [leads]);
-
-  // Mini interactive WhatsApp conversation state matching Reference Image
-  const [previewChatIndex, setPreviewChatIndex] = useState(0);
-  const [previewInputText, setPreviewInputText] = useState("");
-  const [previewMessages, setPreviewMessages] = useState([
-    { id: "m1", sender: "client", text: "Hi, we're interested in your fleet management solution.", time: "10:23 AM" },
-    { id: "m2", sender: "agent", text: "Great! I can share the detailed proposal with you.", time: "10:24 AM" },
-    { id: "m3", sender: "client", text: "Thanks, we will review the final proposal with our finance team and get back to you soon.", time: "10:26 AM" },
-  ]);
-
-  const handleSendPreviewMessage = (textToSend?: string) => {
-    const text = (textToSend || previewInputText).trim();
-    if (!text) return;
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    setPreviewMessages((prev) => [
-      ...prev,
-      { id: `m-${Date.now()}`, sender: "agent", text, time: timeStr },
-    ]);
-    setPreviewInputText("");
-  };
-
-  // Responding agent assignment map for realistic WhatsApp multi-agent inbox
-  const respondingAgents: Record<string, { agent: string; activeNow: boolean }> = {
-    "wa-c-1": { agent: "Praveen (You)", activeNow: true },
-    "wa-c-2": { agent: "Neha Gupta", activeNow: true },
-    "wa-c-3": { agent: "Rahul Verma", activeNow: false },
-    "wa-c-4": { agent: "Praveen (You)", activeNow: true },
-    "wa-c-5": { agent: "Aarav Patel", activeNow: false },
-  };
-
-  // Active region details and live time formatted for the selected timezone
-  const currentRegion = useMemo(() => {
-    return (
-      WORKSPACE_REGIONS.find((r) => r.timezone === selectedTimezone) ||
-      WORKSPACE_REGIONS[0]
-    );
-  }, [selectedTimezone]);
-
-  const formattedTime = useMemo(() => {
-    try {
-      return new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-        timeZone: selectedTimezone,
-      }).format(clockTime);
-    } catch {
-      return clockTime.toLocaleTimeString();
-    }
-  }, [clockTime, selectedTimezone]);
-
-  const formattedDate = useMemo(() => {
-    try {
-      return new Intl.DateTimeFormat("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        timeZone: selectedTimezone,
-      }).format(clockTime);
-    } catch {
-      return clockTime.toLocaleDateString();
-    }
-  }, [clockTime, selectedTimezone]);
-
-  const timeGreeting = useMemo(() => {
-    try {
-      const hourStr = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        hour12: false,
-        timeZone: selectedTimezone,
-      }).format(clockTime);
-      const hour = parseInt(hourStr, 10);
-      if (hour >= 5 && hour < 12) return "Good morning";
-      if (hour >= 12 && hour < 17) return "Good afternoon";
-      return "Good evening";
-    } catch {
-      return "Good morning";
-    }
-  }, [clockTime, selectedTimezone]);
-
-  // Formatted current time for region list in dropdown
-  const getRegionLiveTime = (tz: string) => {
-    try {
-      return new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-        timeZone: tz,
-      }).format(clockTime);
-    } catch {
-      return "--:--";
-    }
-  };
+  // Dynamic greeting
+  const greeting = useMemo(() => {
+    const hr = new Date().getHours();
+    if (hr < 12) return "Good morning";
+    if (hr < 17) return "Good afternoon";
+    return "Good evening";
+  }, []);
 
   return (
     <div className="space-y-6">
-      {/* ===================================================================== */}
-      {/* SECTION 1: HEADER & GREETING WITH WORKSPACE CLOCK & TIMEZONE TRACKER  */}
-      {/* ===================================================================== */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-1">
+      {/* 1. Header & Workspace Status Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E4E7]">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#0D0D0E]">
-              {mounted ? timeGreeting : "Good afternoon"},{" "}
-              <span className="text-[#FF7900]">Praveen</span>
+          <div className="flex items-center gap-2.5">
+            <h1 className="type-title text-[#0D0D0E] font-medium tracking-tight">
+              {greeting}, Praveen
             </h1>
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <StatusPill variant="success" dot pulse>
               Workspace Active
-            </span>
+            </StatusPill>
           </div>
-          <p className="text-sm text-[#525866] font-normal mt-1">
-            Here&apos;s what&apos;s happening across your pipeline and WhatsApp conversations today.
+          <p className="text-xs text-[#717680] mt-0.5 font-normal">
+            Operational command center for {currentOrg.name} across revenue pipeline and customer messaging.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Workspace Live Clock & Region / Timezone Selector */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => {
-                setTimezoneDropdownOpen(!timezoneDropdownOpen);
-                setDateDropdownOpen(false);
-              }}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E7EB] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] hover:border-slate-300 transition-all cursor-pointer h-9.5"
-              title="Click to select workspace region & timezone"
-            >
-              <div className="flex items-center gap-1.5 text-emerald-600">
-                <Clock className="h-4 w-4 text-emerald-600" />
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              </div>
-
-              <span className="font-mono font-medium text-[#0D0D0E] text-xs sm:text-sm tracking-tight">
-                {mounted ? formattedTime : "--:--:--"}
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href={`/app/${orgSlug}/inbox`}
+            className="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-[#E4E4E7] bg-white text-xs font-medium text-[#0D0D0E] hover:bg-[#FAF9F6] shadow-2xs transition-colors"
+          >
+            <MessageSquare className="h-3.5 w-3.5 text-[#717680]" />
+            <span>Open Inbox</span>
+            {unreadConversations.length > 0 && (
+              <span className="text-[10px] bg-[#FF7A1A] text-white px-1.5 py-0.2 rounded-full font-medium">
+                {unreadConversations.length}
               </span>
-
-              <span className="text-[11px] text-[#525866] font-normal hidden sm:inline-flex items-center gap-1 border-l border-[#E5E7EB] pl-2">
-                <span>{currentRegion.flag}</span>
-                <span className="font-medium text-[#0D0D0E]">{currentRegion.abbr}</span>
-              </span>
-
-              <ChevronDown className="h-3 w-3 text-[#717680]" />
-            </button>
-
-            {/* Region & Timezone Dropdown Modal */}
-            {timezoneDropdownOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-30"
-                  onClick={() => setTimezoneDropdownOpen(false)}
-                />
-                <div className="absolute right-0 mt-1.5 w-80 rounded-2xl bg-white border border-[#E5E7EB] shadow-xl py-2 z-40 animate-in fade-in zoom-in-95">
-                  <div className="px-3.5 py-2 border-b border-[#F0F1F3]">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Globe className="h-3.5 w-3.5 text-[#FF7900]" />
-                        <span className="text-[11px] font-medium text-[#0D0D0E]">
-                          Workspace Region &amp; Timezone
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        Live Tracking
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#525866] font-normal mt-0.5">
-                      Syncs team operating hours, SLAs &amp; customer replies
-                    </p>
-                  </div>
-
-                  <div className="max-h-64 overflow-y-auto py-1 space-y-0.5 custom-light-scroll">
-                    {WORKSPACE_REGIONS.map((reg) => {
-                      const isSelected = reg.timezone === selectedTimezone;
-                      const regTime = mounted ? getRegionLiveTime(reg.timezone) : "--:--";
-
-                      return (
-                        <button
-                          key={reg.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedTimezone(reg.timezone);
-                            try {
-                              localStorage.setItem("roos_workspace_tz", reg.timezone);
-                            } catch {}
-                            setTimezoneDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                            isSelected
-                              ? "bg-[#FFF4EC] text-[#FF7900] font-medium"
-                              : "text-[#0D0D0E] hover:bg-[#F7F7F8]"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="text-base shrink-0">{reg.flag}</span>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-medium text-[#0D0D0E] truncate">
-                                  {reg.city}
-                                </span>
-                                <span className="text-[10px] font-mono text-[#525866] font-normal">
-                                  ({reg.abbr})
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-[#525866] font-normal truncate">
-                                {reg.name} • {reg.utcOffset}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2 shrink-0 pl-2">
-                            <span className="text-[11px] font-mono font-medium text-[#525866]">
-                              {regTime}
-                            </span>
-                            {isSelected && (
-                              <Check className="h-3.5 w-3.5 text-[#FF7900] shrink-0" />
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
             )}
-          </div>
-
-          {/* Date range dropdown */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => {
-                setDateDropdownOpen(!dateDropdownOpen);
-                setTimezoneDropdownOpen(false);
-              }}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-white border border-[#E5E7EB] text-[#0D0D0E] shadow-2xs hover:bg-[#F7F7F8] transition-colors cursor-pointer h-9.5"
-            >
-              <Calendar className="h-4 w-4 text-[#717680]" />
-              <span className="text-[#0D0D0E] font-medium">{selectedDateRange}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-[#717680]" />
-            </button>
-            {dateDropdownOpen && (
-              <div className="absolute right-0 mt-1 w-44 rounded-xl bg-white border border-[#E5E7EB] shadow-lg py-1 z-20">
-                {["Today", "Last 7 days", "Last 30 days", "This Quarter", "Year to Date"].map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => {
-                      setSelectedDateRange(r);
-                      setDateDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-3.5 py-1.5 text-xs font-medium ${
-                      selectedDateRange === r ? "bg-[#FFF4EC] text-[#FF7900]" : "text-[#0D0D0E] hover:bg-[#F7F7F8]"
-                    }`}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          </Link>
 
           <Button
             size="sm"
             onClick={() => setNewLeadModalOpen(true)}
-            className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium shadow-xs text-xs sm:text-sm h-9.5 px-4 cursor-pointer flex items-center gap-1.5"
+            variant="primary"
+            className="h-8 px-3 text-xs"
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span>New Lead</span>
+            <Plus className="mr-1.5 h-3.5 w-3.5 stroke-[2.5]" />
+            <span>New Opportunity</span>
           </Button>
         </div>
       </div>
 
-      {/* ===================================================================== */}
-      {/* SECTION 2: 4 LIGHT METRIC CARDS (EXACT REFERENCE DESIGN)              */}
-      {/* ===================================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        {/* Card 1: New Leads */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-[#FFF4EC] flex items-center justify-center text-[#FF7900]">
-                <Users className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">New Leads</span>
-            </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-              <span>+20%</span>
-            </span>
-          </div>
-          <div className="mt-4 flex items-end justify-between">
-            <div>
-              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
-                32
-              </div>
-              <p className="text-xs text-[#525866] mt-1 font-normal">+20% acquisition vs last month</p>
-            </div>
-            <svg className="w-20 h-9 text-[#FF7900]" viewBox="0 0 80 36" fill="none">
-              <path d="M 0 30 Q 20 28, 40 18 T 80 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-          </div>
-        </div>
+      {/* 2. Open Stat Strip (Replacing 4 boxed cards - Defect 15 fix) */}
+      <StatStrip stats={statStripItems} />
 
-        {/* Card 2: Pipeline Value */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <TrendingUp className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">Pipeline Value</span>
+      {/* 3. High-Priority "Needs Attention" Strip (If any overdue tasks or unread messages) */}
+      {(unreadConversations.length > 0 || overdueTasks.length > 0) && (
+        <div className="rounded-xl border border-[#FFD8BF] bg-[#FFF9F5] p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs animate-reveal">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-[#FFF4EC] border border-[#FFD8BF] text-[#FF7A1A] flex items-center justify-center shrink-0">
+              <AlertCircle className="h-4 w-4" />
             </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <ArrowUpRight className="h-3 w-3 stroke-[2]" />
-              <span>+18%</span>
-            </span>
-          </div>
-          <div className="mt-4 flex items-end justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
-                ₹6,60,000
-              </div>
-              <p className="text-xs text-[#525866] mt-1 font-normal">from ₹5.5 lakh last period</p>
-            </div>
-            <svg className="w-20 h-9 text-emerald-500" viewBox="0 0 80 36" fill="none">
-              <path d="M 0 32 Q 25 30, 45 15 T 80 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Card 3: WhatsApp Velocity */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <MessageSquare className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">WhatsApp Velocity</span>
-            </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <span>98% Delivered</span>
-            </span>
-          </div>
-          <div className="mt-4 flex items-end justify-between">
-            <div>
-              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
-                412
-              </div>
-              <p className="text-xs text-[#525866] mt-1 font-normal">avg 4m response time</p>
-            </div>
-            <svg className="w-20 h-9 text-emerald-500" viewBox="0 0 80 36" fill="none">
-              <path d="M 0 25 Q 30 10, 50 20 T 80 8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Card 4: Follow-ups Due */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs hover:border-[#FF7900]/40 transition-all flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                <Clock className="h-4.5 w-4.5" />
-              </div>
-              <span className="text-[11px] font-medium text-[#525866] uppercase tracking-wider">Follow-ups Due</span>
-            </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-              1 Overdue
-            </span>
-          </div>
-          <div className="mt-4 flex items-end justify-between">
-            <div>
-              <div className="text-3xl sm:text-4xl font-medium font-mono tracking-tight text-[#0D0D0E]">
-                3
-              </div>
-              <p className="text-xs text-amber-700 mt-1 font-medium flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                requires action today
+              <p className="text-xs font-medium text-[#0D0D0E]">
+                Attention required across your active operations
+              </p>
+              <p className="text-[11px] text-[#717680] mt-0.5">
+                {unreadConversations.length} unanswered WhatsApp client inquiries • {overdueTasks.length} tasks past scheduled SLA
               </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* ===================================================================== */}
-      {/* SECTION 3: CORE OPERATIONAL WINGS                                     */}
-      {/* LEFT WING (7 COLS): WHATSAPP OPERATIONS CENTER (FIRST-CLASS)          */}
-      {/* RIGHT WING (5 COLS): SALES OPPORTUNITY ENGINE & PRIORITY ACTIONS      */}
-      {/* ===================================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* =================================================================== */}
-        {/* LEFT WING (7 COLS): LIVE WHATSAPP TEAM OPERATIONS CENTER            */}
-        {/* =================================================================== */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center gap-2">
+            {unreadConversations.length > 0 && (
+              <Link
+                href={`/app/${orgSlug}/inbox`}
+                className="h-7 px-2.5 rounded-lg bg-white border border-[#E4E4E7] text-[11px] font-medium text-[#0D0D0E] hover:bg-[#FAF9F6] flex items-center gap-1 transition-colors"
+              >
+                <span>Respond to Messages ({unreadConversations.length})</span>
+                <ChevronRight className="h-3 w-3 text-[#717680]" />
+              </Link>
+            )}
+            {overdueTasks.length > 0 && (
+              <Link
+                href={`/app/${orgSlug}/tasks`}
+                className="h-7 px-2.5 rounded-lg bg-white border border-[#E4E4E7] text-[11px] font-medium text-[#0D0D0E] hover:bg-[#FAF9F6] flex items-center gap-1 transition-colors"
+              >
+                <span>Resolve Overdue ({overdueTasks.length})</span>
+                <ChevronRight className="h-3 w-3 text-[#717680]" />
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 4. Core Operational 2-Wing Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Wing (7 Cols): WhatsApp Live Activity Stream (Defect 14 fix) */}
+        <div className="lg:col-span-7 bg-white rounded-xl border border-[#E4E4E7] shadow-2xs overflow-hidden flex flex-col">
           {/* Header */}
-          <div className="p-5 border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-2xs">
-                <MessageSquare className="h-4.5 w-4.5" />
+          <div className="p-4 border-b border-[#E4E4E7] flex items-center justify-between bg-white shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200/60">
+                <MessageSquare className="h-4 w-4" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-medium text-[#0D0D0E] tracking-tight">
-                    WhatsApp Conversations
+                  <h2 className="text-xs font-medium text-[#0D0D0E]">
+                    WhatsApp Client Activity
                   </h2>
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-medium bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                  <StatusPill variant="success" size="sm" dot pulse>
                     Live Sync
-                  </span>
+                  </StatusPill>
                 </div>
-                <p className="text-xs text-[#525866] mt-0.5 font-normal">
-                  Real-time conversations &amp; assigned team respondents
+                <p className="text-[11px] text-[#717680] mt-0.5">
+                  Direct routing into your Shared Inbox threads
                 </p>
               </div>
             </div>
 
             <Link
               href={`/app/${orgSlug}/inbox`}
-              className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+              className="text-xs font-medium text-[#FF7A1A] hover:text-[#FF8833] flex items-center gap-1 group"
             >
-              <span>Open Inbox</span>
+              <span>Inbox View</span>
               <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
-          {/* 2-Column Split: Conversation list + Live Message Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-12 flex-1 min-h-[460px]">
-            {/* Sub-col 1 (5 cols): Filter Tabs & Conversation List */}
-            <div className="md:col-span-5 border-r border-[#F0F1F3] flex flex-col justify-between bg-white">
-              <div>
-                {/* Filter Tabs */}
-                <div className="px-3 py-2.5 border-b border-[#F0F1F3] flex items-center gap-1.5 bg-[#FAFAFA]">
-                  <button
-                    type="button"
-                    onClick={() => setInboxFilter("all")}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      inboxFilter === "all"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
-                        : "text-[#525866] hover:text-[#0D0D0E]"
-                    }`}
-                  >
-                    All (7)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setInboxFilter("unread")}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      inboxFilter === "unread"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
-                        : "text-[#525866] hover:text-[#0D0D0E]"
-                    }`}
-                  >
-                    Unread (3)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setInboxFilter("mentions")}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                      inboxFilter === "mentions"
-                        ? "bg-white text-[#0D0D0E] shadow-2xs font-medium border border-[#E5E7EB]"
-                        : "text-[#525866] hover:text-[#0D0D0E]"
-                    }`}
-                  >
-                    Assigned (4)
-                  </button>
-                </div>
-
-                {/* Chat rows */}
-                <div className="divide-y divide-[#F0F1F3] overflow-y-auto max-h-[400px] custom-light-scroll">
-                  {[
-                    { name: "Sneha Reddy", snippet: "Thanks, we will review the final proposal with our finance team...", time: "2m", unread: true, agent: "Praveen (You)" },
-                    { name: "Aarav Patel", snippet: "Can you provide the quotation for the retail automation...", time: "12m", unread: true, agent: "Neha Gupta" },
-                    { name: "Rahul Mehta", snippet: "Do you have a time available this week for a walkthrough?", time: "1h", unread: false, agent: "Rahul Verma" },
-                    { name: "Priya Sharma", snippet: "Confirmed our team demo session for Thursday afternoon.", time: "3h", unread: false, agent: "Praveen (You)" },
-                    { name: "Vikram Deshmukh", snippet: "Can we schedule a call this week? Looking for CRM...", time: "1d", unread: false, agent: "Aarav Patel" },
-                  ].map((chat, idx) => (
-                    <button
-                      key={chat.name}
-                      type="button"
-                      onClick={() => setPreviewChatIndex(idx)}
-                      className={`w-full text-left p-3.5 flex items-start gap-2.5 transition-colors cursor-pointer ${
-                        previewChatIndex === idx ? "bg-[#FFF4EC]/40 border-l-2 border-[#FF7900]" : "hover:bg-[#F9FAFB]"
-                      }`}
-                    >
-                      <div className="h-8.5 w-8.5 rounded-full bg-[#E5E7EB] text-[#374151] font-medium text-xs flex items-center justify-center shrink-0 border border-white shadow-2xs">
-                        {chat.name.charAt(0)}
+          {/* Conversation Activity List */}
+          <div className="divide-y divide-[#E4E4E7] overflow-y-auto max-h-[380px] custom-light-scroll">
+            {conversations.slice(0, 5).map((conv) => {
+              const isUnread = conv.unread_count > 0;
+              return (
+                <Link
+                  key={conv.id}
+                  href={`/app/${orgSlug}/inbox?c=${conv.id}`}
+                  className="p-3.5 flex items-start justify-between gap-3 transition-colors duration-140 hover:bg-[#FAF9F6] group select-none block"
+                >
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className="h-8 w-8 rounded-full bg-[#FAF9F6] border border-[#E4E4E7] text-[#0D0D0E] font-medium text-xs flex items-center justify-center shrink-0">
+                      {conv.contact_name?.charAt(0) || "C"}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-[#0D0D0E] truncate">
+                          {conv.contact_name}
+                        </span>
+                        <span className="text-[11px] text-[#717680] font-normal truncate">
+                          {conv.contact_phone}
+                        </span>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[13px] font-medium text-[#0D0D0E] truncate">
-                            {chat.name}
-                          </span>
-                          <span className="text-[10px] text-[#717680] shrink-0 font-mono">{chat.time}</span>
-                        </div>
-                        <p className="text-xs text-[#525866] truncate mt-0.5 font-normal">
-                          {chat.snippet}
-                        </p>
-                        <div className="flex items-center gap-1.5 mt-1.5 text-[10px]">
-                          <span className="text-[#8E8E93]">Resp:</span>
-                          <span className="font-medium text-[#0D0D0E] bg-[#F4F4F6] px-1.5 py-0.2 rounded border border-[#E5E7EB] truncate">
-                            {chat.agent}
-                          </span>
-                        </div>
-                      </div>
-                      {chat.unread && (
-                        <span className="h-2 w-2 rounded-full bg-[#FF7900] mt-1 shrink-0" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Sub-col 2 (7 cols): Mini Live Chat Thread with WhatsApp styling */}
-            <div className="md:col-span-7 flex flex-col justify-between bg-[#F8F9FA]">
-              {/* Contact Header */}
-              <div className="p-3.5 bg-white border-b border-[#F0F1F3] flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-full bg-[#DFE5E7] text-[#334155] flex items-center justify-center font-medium text-xs border border-white shadow-2xs">
-                    S
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-[#0D0D0E] leading-tight">Sneha Reddy</p>
-                    <p className="text-[10px] text-[#717680] font-mono">+91 98765 43210</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#525866] hidden sm:inline">
-                    Assigned: <strong className="font-medium text-[#0D0D0E]">Praveen (You)</strong>
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" />
-                    Active now
-                  </span>
-                </div>
-              </div>
-
-              {/* Chat Messages */}
-              <div
-                className="p-3.5 space-y-3 overflow-y-auto flex-1 min-h-[260px] custom-light-scroll"
-                style={{
-                  backgroundColor: "#EFEAE2",
-                  backgroundImage: "radial-gradient(#d4cdc3 0.75px, transparent 0.75px)",
-                  backgroundSize: "16px 16px",
-                }}
-              >
-                {previewMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex flex-col ${
-                      msg.sender === "agent" ? "items-end" : "items-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs shadow-xs ${
-                        msg.sender === "agent"
-                          ? "bg-[#DCF8C6] text-[#111827] rounded-tr-none border border-[#C6E6B0]"
-                          : "bg-white text-[#111827] border border-[#E5E7EB] rounded-tl-none"
-                      }`}
-                    >
-                      <p className="leading-relaxed font-normal">{msg.text}</p>
-                      <div className="flex items-center justify-end gap-1 mt-1 text-[9px] text-[#717680] font-mono">
-                        <span>{msg.time}</span>
-                        {msg.sender === "agent" && (
-                          <CheckCheck className="h-3 w-3 text-[#53BDEB]" />
-                        )}
-                      </div>
+                      <p className="text-xs text-[#525866] truncate mt-0.5 font-normal">
+                        {conv.last_message_text || "No message history"}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* Quick Reply Chips & Message Composer */}
-              <div className="p-3 bg-white border-t border-[#F0F1F3] space-y-2 shrink-0">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 custom-light-scroll">
-                  {["+ Pricing Details", "+ Proposal PDF", "+ Schedule Demo", "+ Follow-up"].map((chip) => (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => handleSendPreviewMessage(`I'm sharing our ${chip.replace("+ ", "")} right now.`)}
-                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F6] text-[#525866] hover:bg-[#FFF4EC] hover:text-[#FF7900] transition-colors shrink-0 cursor-pointer border border-[#E5E7EB]"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={previewInputText}
-                    onChange={(e) => setPreviewInputText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSendPreviewMessage()}
-                    placeholder="Type a message..."
-                    className="flex-1 bg-[#F4F4F6] border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs text-[#0D0D0E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#FF7900]"
-                  />
-                  <Button
-                    size="sm"
-                    onClick={() => handleSendPreviewMessage()}
-                    className="h-8.5 w-8.5 p-0 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT CARD (5 COLS): SALES PROGRESSION */}
-        <div className="lg:col-span-5 bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            {/* Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-[#F0F1F3]">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-base font-medium text-[#0D0D0E] tracking-tight">
-                    Sales Progression
-                  </h2>
-                  <Badge variant="orangeSubtle" className="text-[10px] uppercase font-medium">
-                    Live CRM
-                  </Badge>
-                </div>
-                <p className="text-xs text-[#525866] mt-0.5 font-normal">
-                  Commercial deals across stages vs 30 days performance
-                </p>
-              </div>
-
-              <Link
-                href={`/app/${orgSlug}/leads`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 shrink-0 group"
-              >
-                <span>View Pipeline</span>
-                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-
-            {/* Top Summary Figures */}
-            <div className="grid grid-cols-3 gap-2 py-4 border-b border-[#F0F1F3]">
-              <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
-                  Commercial Pipeline
-                </span>
-                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
-                  ₹8.30 <span className="text-xs text-[#717680] font-normal">Lakh</span>
-                </div>
-                <span className="text-xs font-medium text-emerald-600 block mt-0.5">+3.9%</span>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
-                  Proposal Sent
-                </span>
-                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
-                  ₹2.30 <span className="text-xs text-[#717680] font-normal">Lakh</span>
-                </div>
-                <span className="text-xs font-medium text-[#717680] block mt-0.5">1 deal</span>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-[#FAFAFA] border border-[#F0F1F3]">
-                <span className="text-[10px] font-medium text-[#717680] uppercase tracking-wider block truncate">
-                  Deals Won
-                </span>
-                <div className="text-xl font-medium font-mono text-[#0D0D0E] mt-1">
-                  1 deal
-                </div>
-                <span className="text-xs font-medium text-emerald-600 block mt-0.5">100% close</span>
-              </div>
-            </div>
-
-            {/* Curated Priority Deals matching Reference Image */}
-            <div className="mt-4 space-y-2.5">
-              {[
-                { title: "Retail Automation Contract", contact: "Rohan Patel", value: "₹66,850", stage: "QUALIFIED", badgeVariant: "purple" },
-                { title: "Multi-Store CRM Deployment", contact: "Priya Nair", value: "₹1,30,000", stage: "PROPOSAL", badgeVariant: "orangeSubtle" },
-                { title: "WhatsApp API Gateway Setup", contact: "Vikram Malhotra", value: "₹95,000", stage: "ANALYSIS", badgeVariant: "default" },
-              ].map((deal) => (
-                <Link
-                  key={deal.title}
-                  href={`/app/${orgSlug}/leads`}
-                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#E5E7EB] hover:border-[#FF7900] bg-white transition-all cursor-pointer hover:bg-[#FFF4EC]/20 shadow-2xs"
-                >
-                  <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-[#0D0D0E] truncate">
-                      {deal.title}
-                    </p>
-                    <p className="text-xs text-[#525866] truncate mt-0.5 font-normal">
-                      {deal.contact}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2.5 shrink-0">
-                    <span className="text-xs font-mono font-medium text-[#0D0D0E]">
-                      {deal.value}
+                  <div className="flex items-center gap-2 shrink-0 pt-0.5">
+                    {isUnread && (
+                      <span className="text-[10px] font-medium bg-[#FF7A1A] text-white px-1.5 py-0.2 rounded-full">
+                        {conv.unread_count} new
+                      </span>
+                    )}
+                    <span className="text-[11px] text-[#717680]">
+                      {conv.last_message_at ? formatDate(conv.last_message_at) : "Recent"}
                     </span>
-                    <Badge variant={deal.badgeVariant as any} className="text-[9px] uppercase px-1.5 py-0.5">
-                      {deal.stage}
-                    </Badge>
+                    <ChevronRight className="h-3 w-3 text-[#D4D4D8] group-hover:text-[#717680] transition-colors" />
                   </div>
                 </Link>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          <div className="pt-4 border-t border-[#F0F1F3] mt-4 flex items-center justify-between text-xs text-[#525866]">
-            <div className="flex items-center gap-1.5">
-              <span
-                className={`h-2 w-2 rounded-full ${
-                  lastLeadStatus.isBeyond3Days ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
-                }`}
-              />
-              <span className="font-medium text-[#0D0D0E]">{lastLeadStatus.label}</span>
-              {lastLeadStatus.isBeyond3Days && (
-                <span className="text-[10px] font-medium bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-md">
-                  Alert: &gt;3d
-                </span>
-              )}
-            </div>
-            <Button
-              size="sm"
-              onClick={() => setNewLeadModalOpen(true)}
-              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium text-xs h-7.5 px-3 cursor-pointer shadow-2xs"
+          <div className="p-2.5 bg-[#FAF9F6] border-t border-[#E4E4E7] text-center">
+            <Link
+              href={`/app/${orgSlug}/inbox`}
+              className="text-xs text-[#717680] hover:text-[#0D0D0E] font-medium transition-colors"
             >
-              <Plus className="mr-1 h-3.5 w-3.5 stroke-[2.5]" />
-              <span>Add Lead</span>
-            </Button>
+              View all {conversations.length} active WhatsApp conversations →
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Wing (5 Cols): Pipeline Progression & Priority Deals */}
+        <div className="lg:col-span-5 bg-white rounded-xl border border-[#E4E4E7] shadow-2xs overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b border-[#E4E4E7] flex items-center justify-between bg-white shrink-0">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xs font-medium text-[#0D0D0E]">
+                  Top Revenue Opportunities
+                </h2>
+                <span className="text-[10px] text-[#717680] px-1.5 py-0.2 rounded bg-[#FAF9F6] border border-[#E4E4E7]">
+                  {leads.length} in pipeline
+                </span>
+              </div>
+              <p className="text-[11px] text-[#717680] mt-0.5">
+                Highest value active deals ranked by closing value
+              </p>
+            </div>
+
+            <Link
+              href={`/app/${orgSlug}/leads`}
+              className="text-xs font-medium text-[#FF7A1A] hover:text-[#FF8833] flex items-center gap-1 group"
+            >
+              <span>Pipeline</span>
+              <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          {/* Top Opportunities List */}
+          <div className="divide-y divide-[#E4E4E7] overflow-y-auto max-h-[380px] custom-light-scroll">
+            {topOpportunities.map((lead) => (
+              <Link
+                key={lead.id}
+                href={`/app/${orgSlug}/leads`}
+                className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#FAF9F6] transition-colors group select-none block"
+              >
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-[#0D0D0E] truncate">
+                    {lead.title}
+                  </p>
+                  <p className="text-[11px] text-[#717680] truncate mt-0.5">
+                    {lead.contact_name} • {lead.source || "Direct"}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <span className="text-xs font-medium text-[#0D0D0E]">
+                    {formatCurrency(lead.estimated_value)}
+                  </span>
+                  <StatusPill
+                    variant={
+                      lead.stage === "won"
+                        ? "success"
+                        : lead.stage === "proposal"
+                        ? "attention"
+                        : "neutral"
+                    }
+                    size="sm"
+                  >
+                    {lead.stage.toUpperCase()}
+                  </StatusPill>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="p-2.5 bg-[#FAF9F6] border-t border-[#E4E4E7] text-center">
+            <Link
+              href={`/app/${orgSlug}/leads`}
+              className="text-xs text-[#717680] hover:text-[#0D0D0E] font-medium transition-colors"
+            >
+              View full sales pipeline ({formatCurrency(metrics.pipelineValue)}) →
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* ===================================================================== */}
-      {/* SECTION 4: 3-COLUMN BOTTOM ROW (EXACT REFERENCE DESIGN)               */}
-      {/* 1. TODAY'S TASKS | 2. RECENT ACTIVITY | 3. CAMPAIGN PERFORMANCE       */}
-      {/* ===================================================================== */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-        {/* Card 1: Today's Tasks */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-medium text-[#0D0D0E]">Today&apos;s Tasks</h3>
-                <span className="text-[11px] font-medium text-[#525866] bg-[#F4F4F6] px-2 py-0.5 rounded-full border border-[#E5E7EB]">
-                  {taskCounts.today}
-                </span>
-              </div>
-              <Link
-                href={`/app/${orgSlug}/tasks`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
-              >
-                <span>View all</span>
-                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+      {/* 5. Bottom 2-Column Row: Today's Tasks & Broadcast Campaign Pulse */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        {/* Today's Tasks & SLAs */}
+        <div className="bg-white rounded-xl border border-[#E4E4E7] shadow-2xs overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-[#E4E4E7] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-[#0D0D0E]">Today&apos;s Follow-ups &amp; Tasks</h3>
+              <span className="text-[10px] text-[#717680] px-1.5 py-0.2 rounded-full bg-[#FAF9F6] border border-[#E4E4E7]">
+                {pendingTasks.length} pending
+              </span>
             </div>
-
-            <div className="mt-3.5 space-y-2.5">
-              {[
-                { id: "t1", title: "Follow-up with Aarav Patel", contact: "Aarav Patel", priority: "High" },
-                { id: "t2", title: "Send proposal to Sneha Reddy", contact: "Sneha Reddy", priority: "Medium" },
-                { id: "t3", title: "Call Vikram Deshmukh", contact: "Vikram Deshmukh", priority: "Medium" },
-                { id: "t4", title: "Review automation workflow", contact: "Internal", priority: "Low" },
-              ].map((task) => {
-                const isDone = completedTaskIds.has(task.id);
-                return (
-                  <div
-                    key={task.id}
-                    className={`flex items-center justify-between p-3 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] transition-all hover:bg-white hover:border-[#FF7900]/40 shadow-2xs ${isDone ? "opacity-40 line-through" : ""}`}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <button
-                        type="button"
-                        onClick={() => handleMarkTaskCompleted(task.id)}
-                        className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center shrink-0 cursor-pointer transition-colors ${
-                          isDone ? "bg-emerald-600 border-emerald-600 text-white" : "border-[#9CA3AF] hover:border-[#FF7900] bg-white"
-                        }`}
-                      >
-                        {isDone && <Check className="h-3.5 w-3.5 stroke-[2.5]" />}
-                      </button>
-                      <div className="min-w-0">
-                        <span className="text-xs font-medium text-[#0D0D0E] truncate block">
-                          {task.title}
-                        </span>
-                        <span className="text-[10px] text-[#525866] truncate block">
-                          Client: {task.contact}
-                        </span>
-                      </div>
-                    </div>
-                    <Badge
-                      variant={
-                        task.priority === "High"
-                          ? "danger"
-                          : task.priority === "Medium"
-                          ? "warning"
-                          : "secondary"
-                      }
-                      className="text-[9px] uppercase px-1.5 py-0.2 shrink-0 font-medium"
-                    >
-                      {task.priority}
-                    </Badge>
-                  </div>
-                );
-              })}
-            </div>
+            <Link
+              href={`/app/${orgSlug}/tasks`}
+              className="text-xs font-medium text-[#FF7A1A] hover:text-[#FF8833] flex items-center gap-1 group"
+            >
+              <span>View all</span>
+              <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
-        </div>
 
-        {/* Card 2: Recent Activity */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
-              <h3 className="text-base font-medium text-[#0D0D0E]">Recent Activity</h3>
-              <Link
-                href={`/app/${orgSlug}/leads`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
-              >
-                <span>View all</span>
-                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
+          <div className="p-2 space-y-1.5 max-h-[260px] overflow-y-auto custom-light-scroll">
+            {pendingTasks.slice(0, 4).map((task) => {
+              const isDone = completedTaskIds.has(task.id);
+              const isOverdue = new Date(task.due_date) < startOfToday;
 
-            <div className="mt-3.5 space-y-3.5">
-              {[
-                { title: "Rahul Mehta moved to Qualified", time: "2m ago", icon: Users, color: "text-purple-600 bg-purple-50 border-purple-100" },
-                { title: "New lead from Website Form", time: "15m ago", icon: Plus, color: "text-[#FF7900] bg-[#FFF4EC] border-[#FFE1CC]" },
-                { title: "Template 'Pricing 2026' sent to 120 contacts", time: "1h ago", icon: Send, color: "text-blue-600 bg-blue-50 border-blue-100" },
-                { title: "Follow-up marked as complete", time: "2h ago", icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
-                { title: "Rohan Mehta replied to your message", time: "3h ago", icon: MessageSquare, color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
-              ].map((act) => {
-                const ActIcon = act.icon;
-                return (
-                  <div key={act.title} className="flex items-center justify-between gap-2.5">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className={`h-7 w-7 rounded-lg ${act.color} border flex items-center justify-center shrink-0`}>
-                        <ActIcon className="h-3.5 w-3.5" />
-                      </div>
-                      <span className="text-xs font-medium text-[#0D0D0E] truncate">
-                        {act.title}
+              return (
+                <div
+                  key={task.id}
+                  className={`flex items-center justify-between p-2.5 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] transition-all hover:bg-white hover:border-[#D4D4D8] ${
+                    isDone ? "opacity-40 line-through" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => handleMarkTaskCompleted(task.id)}
+                      className={`h-4 w-4 rounded border flex items-center justify-center shrink-0 cursor-pointer transition-colors ${
+                        isDone
+                          ? "bg-emerald-600 border-emerald-600 text-white"
+                          : "border-[#D4D4D8] hover:border-[#FF7A1A] bg-white"
+                      }`}
+                    >
+                      {isDone && <Check className="h-3 w-3 stroke-[2.5]" />}
+                    </button>
+                    <div className="min-w-0">
+                      <span className="text-xs font-medium text-[#0D0D0E] truncate block">
+                        {task.title}
+                      </span>
+                      <span className="text-[11px] text-[#717680] truncate block">
+                        {task.contact_name} • Due {formatDate(task.due_date)}
                       </span>
                     </div>
-                    <span className="text-[10px] text-[#717680] shrink-0 font-mono">{act.time}</span>
                   </div>
-                );
-              })}
-            </div>
+
+                  <StatusPill
+                    variant={isOverdue ? "danger" : task.priority === "high" ? "warning" : "neutral"}
+                    size="sm"
+                  >
+                    {isOverdue ? "Overdue" : task.priority.toUpperCase()}
+                  </StatusPill>
+                </div>
+              );
+            })}
+
+            {pendingTasks.length === 0 && (
+              <p className="text-xs text-[#717680] text-center py-6">
+                No pending tasks for today. You&apos;re completely up to date.
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Card 3: Campaign Performance */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F1F3]">
-              <h3 className="text-base font-medium text-[#0D0D0E]">Campaign Performance</h3>
-              <Link
-                href={`/app/${orgSlug}/campaigns`}
-                className="text-xs font-medium text-[#FF7900] hover:text-[#E66D00] flex items-center gap-1 group"
+        {/* Broadcast Campaigns & Delivery Pulse */}
+        <div className="bg-white rounded-xl border border-[#E4E4E7] shadow-2xs overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-[#E4E4E7] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-medium text-[#0D0D0E]">Broadcast Campaigns Pulse</h3>
+              <span className="text-[10px] text-[#717680] px-1.5 py-0.2 rounded-full bg-[#FAF9F6] border border-[#E4E4E7]">
+                {campaigns.length} campaigns
+              </span>
+            </div>
+            <Link
+              href={`/app/${orgSlug}/campaigns`}
+              className="text-xs font-medium text-[#FF7A1A] hover:text-[#FF8833] flex items-center gap-1 group"
+            >
+              <span>View all</span>
+              <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          <div className="p-3.5 space-y-3 max-h-[260px] overflow-y-auto custom-light-scroll">
+            {campaigns.slice(0, 2).map((camp) => (
+              <div
+                key={camp.id}
+                className="p-3 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] space-y-2.5"
               >
-                <span>View all</span>
-                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-[#0D0D0E] truncate">
+                    {camp.name}
+                  </span>
+                  <StatusPill variant={camp.status === "completed" ? "success" : "attention"} size="sm">
+                    {camp.status.toUpperCase()}
+                  </StatusPill>
+                </div>
 
-            <div className="mt-3.5 space-y-3.5">
-              <div className="p-3.5 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] flex items-center justify-between shadow-2xs">
-                <div>
-                  <span className="text-xs font-medium text-[#0D0D0E] block">Product Launch Campaign</span>
-                  <span className="text-[11px] text-[#525866] mt-0.5 block">Audience: Customer Segment - A</span>
-                </div>
-                <Badge variant="success" className="text-[9px] uppercase px-2 py-0.5 font-medium">
-                  Active
-                </Badge>
-              </div>
-
-              {/* Metrics Grid */}
-              <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">1,248</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-medium">Sent</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">1,012</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-medium">Delivered</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-medium font-mono text-[#0D0D0E] block">312</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-medium">Replied</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#F0F1F3]">
-                  <span className="text-base font-medium font-mono text-emerald-600 block">25.2%</span>
-                  <span className="text-[10px] text-[#717680] uppercase font-medium">Rate</span>
+                <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                  <div className="p-1.5 rounded bg-white border border-[#E4E4E7]">
+                    <span className="text-xs font-medium text-[#0D0D0E] block">{camp.total_recipients}</span>
+                    <span className="text-[10px] text-[#717680]">Total</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-white border border-[#E4E4E7]">
+                    <span className="text-xs font-medium text-[#0D0D0E] block">{camp.sent_count}</span>
+                    <span className="text-[10px] text-[#717680]">Sent</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-white border border-[#E4E4E7]">
+                    <span className="text-xs font-medium text-[#0D0D0E] block">{camp.delivered_count}</span>
+                    <span className="text-[10px] text-[#717680]">Delivered</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-white border border-[#E4E4E7]">
+                    <span className="text-xs font-medium text-emerald-600 block">{camp.read_count}</span>
+                    <span className="text-[10px] text-[#717680]">Read</span>
+                  </div>
                 </div>
               </div>
+            ))}
 
-              {/* Progress Bar & Performance Highlights */}
-              <div className="pt-2 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-[#525866] font-medium">Delivery Success Rate</span>
-                  <span className="font-mono font-medium text-[#0D0D0E]">81.1%</span>
-                </div>
-                <div className="h-2 w-full bg-[#F0F1F3] rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: "81.1%" }} />
-                </div>
-              </div>
-            </div>
+            {campaigns.length === 0 && (
+              <p className="text-xs text-[#717680] text-center py-6">
+                No active broadcast campaigns.
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-
-      {/* ===================================================================== */}
-      {/* QUICK "NEW LEAD" MODAL                                                */}
-      {/* ===================================================================== */}
+      {/* 6. Quick "New Lead" Modal */}
       <Dialog open={newLeadModalOpen} onOpenChange={setNewLeadModalOpen}>
-        <form onSubmit={handleCreateNewLead}>
+        <form onSubmit={handleCreateNewLead} className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New Sales Opportunity</DialogTitle>
-            <DialogDescription>
-              Create a pipeline lead with estimated deal value and contact association.
+            <DialogTitle className="text-sm font-medium text-[#0D0D0E]">Create Sales Opportunity</DialogTitle>
+            <DialogDescription className="text-xs text-[#717680]">
+              Add a commercial deal to your pipeline and associate it with customer contact.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
+          <div className="space-y-3.5 my-4 text-xs">
             <Input
-              label="Lead / Deal Title *"
-              placeholder="e.g. Annual Retainer or Automation Suite"
+              label="Deal Title *"
+              placeholder="e.g. Annual WhatsApp Automation Retainer"
               value={leadTitle}
               onChange={(e) => setLeadTitle(e.target.value)}
               required
+              className="bg-[#FAF9F6] border-[#E4E4E7] focus:bg-white text-xs"
             />
-
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#0D0D0E]">
-                Associated Contact
-              </label>
-              <select
-                value={selectedContactId}
-                onChange={(e) => setSelectedContactId(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
-              >
-                <option value="">-- Create or enter new contact --</option>
-                {contacts.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.first_name} {c.last_name || ""} ({c.phone}) - {c.company || "Direct"}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {!selectedContactId && (
-              <div className="grid grid-cols-2 gap-3">
-                <Input
-                  label="Contact Name"
-                  placeholder="e.g. Rohan Sharma"
-                  value={customContactName}
-                  onChange={(e) => setCustomContactName(e.target.value)}
-                />
-                <Input
-                  label="Contact Phone"
-                  placeholder="+919876543210"
-                  value={customContactPhone}
-                  onChange={(e) => setCustomContactPhone(e.target.value)}
-                />
-              </div>
-            )}
 
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="Estimated Value (₹) *"
+                label="Estimated Value (INR) *"
                 type="number"
-                placeholder="50000"
                 value={leadEstimatedValue}
                 onChange={(e) => setLeadEstimatedValue(e.target.value)}
                 required
+                className="bg-[#FAF9F6] border-[#E4E4E7] focus:bg-white text-xs"
               />
 
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-[#0D0D0E]">
-                  Initial Stage
-                </label>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-[#0D0D0E]">Pipeline Stage</label>
                 <select
                   value={leadStage}
                   onChange={(e) => setLeadStage(e.target.value as LeadStage)}
-                  className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-xs sm:text-sm font-medium text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
+                  className="w-full h-8.5 px-2.5 rounded-lg border border-[#E4E4E7] bg-[#FAF9F6] text-xs text-[#0D0D0E] outline-none"
                 >
                   <option value="new">New Inquiry</option>
                   <option value="contacted">Contacted</option>
                   <option value="qualified">Qualified</option>
                   <option value="proposal">Proposal Sent</option>
-                  <option value="won">Closed Won</option>
+                  <option value="won">Deals Won</option>
                 </select>
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#0D0D0E]">
-                Lead Source
-              </label>
-              <select
-                value={leadSource}
-                onChange={(e) => setLeadSource(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-xs sm:text-sm font-normal text-[#0D0D0E] focus:border-[#FF7900] focus:ring-1 focus:ring-[#FF7900] focus:outline-none h-11"
-              >
-                <option value="WhatsApp Inbound">WhatsApp Inbound</option>
-                <option value="Website Form">Website Form</option>
-                <option value="Referral">Client Referral</option>
-                <option value="Direct Outreach">Direct Outreach</option>
-              </select>
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label="Contact Name"
+                placeholder="Rohan Sharma"
+                value={customContactName}
+                onChange={(e) => setCustomContactName(e.target.value)}
+                className="bg-[#FAF9F6] border-[#E4E4E7] focus:bg-white text-xs"
+              />
+              <Input
+                label="Phone Number"
+                placeholder="+919876543210"
+                value={customContactPhone}
+                onChange={(e) => setCustomContactPhone(e.target.value)}
+                className="bg-[#FAF9F6] border-[#E4E4E7] focus:bg-white text-xs"
+              />
             </div>
           </div>
 
           <DialogFooter>
             <Button
               type="button"
-              variant="ghost"
+              variant="secondary"
+              size="sm"
               onClick={() => setNewLeadModalOpen(false)}
-              className="rounded-xl font-medium text-[#8E8E93]"
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              className="rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white font-medium px-5"
-            >
+            <Button type="submit" variant="primary" size="sm">
               Create Opportunity
             </Button>
           </DialogFooter>
