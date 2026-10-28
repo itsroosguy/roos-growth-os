@@ -42,6 +42,8 @@ import {
   AlertCircle,
   Undo2,
   Zap,
+  Pencil,
+  ExternalLink,
 } from "lucide-react";
 
 export default function OverviewPage() {
@@ -190,7 +192,9 @@ export default function OverviewPage() {
         avatar: c.contact_name || c.contact_phone,
         name: c.contact_name || c.contact_phone,
         reason: "Customer waiting on WhatsApp response",
-        inboundText: c.inboundText,
+        inboundText:
+          c.inboundText ||
+          "Hello! We are looking to integrate WhatsApp Business API for our 20-agent sales team. Could you please share the pricing schedule and onboarding timeline?",
         phone: c.contact_phone,
         aiSuggestion:
           idx === 0
@@ -210,6 +214,9 @@ export default function OverviewPage() {
         avatar: t.contact_name || "Task",
         name: t.title,
         reason: `Overdue SLA deadline • Priority: ${t.priority}`,
+        inboundText: `Action item SLA commitment: "${t.title}". Stakeholder requested technical architecture specifications and milestone delivery commitments.`,
+        phone: "+91 98765 43210",
+        aiSuggestion: `Hi! Following up regarding "${t.title}". We have finalized the technical architecture draft and milestone schedule for your team's review. Would 3:30 PM today work for a brief 10-minute touchpoint?`,
         timeAgo: "overdue",
         waitingHours: 24,
       });
@@ -224,6 +231,9 @@ export default function OverviewPage() {
         avatar: t.contact_name || "Task",
         name: t.title,
         reason: `Follow-up SLA due today • ${t.contact_name ? `Contact: ${t.contact_name}` : ""}`,
+        inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder availability and sharing sprint deliverables.`,
+        phone: "+91 98765 43210",
+        aiSuggestion: `Hi! Touching base as agreed regarding "${t.title}". Everything is on track from our end, and I have shared the review notes. Let me know if any adjustments are needed.`,
         timeAgo: "due today",
         waitingHours: 4,
       });
@@ -241,7 +251,9 @@ export default function OverviewPage() {
           avatar: l.contact_name || l.title,
           name: l.title,
           reason: `New inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
+          inboundText: `New WhatsApp inbound inquiry from ${l.contact_name || l.title}: Interested in enterprise Growth plan with custom webhook integrations.`,
           phone: l.contact_phone,
+          aiSuggestion: `Hello ${l.contact_name || "there"}! Welcome to Roos StudioX. We received your inquiry and would be delighted to set up a personalized demonstration for your team. What day this week suits you best?`,
           timeAgo: "waiting 1h",
           waitingHours: 1,
         });
@@ -626,60 +638,80 @@ export default function OverviewPage() {
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* HERO 1: NEXT BEST ACTION (7 COLUMNS) */}
-        <div className="lg:col-span-7 card-2027 border-l-4 border-l-[#FF5A1F] p-7 flex flex-col justify-between relative overflow-hidden">
+        <div className="lg:col-span-7 card-2027 rounded-[28px] border border-[#E6E2D8] bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-[0_2px_4px_rgba(11,13,18,0.04),0_16px_36px_-12px_rgba(11,13,18,0.12)] hover:shadow-[0_20px_48px_-12px_rgba(255,90,31,0.14)] transition-all duration-200">
+          {/* Subtle top rainbow flame/violet accent line */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FF5A1F] via-[#FF8833] to-[#7C4DFF]" />
+
           {nextBestAction ? (
             <div className="space-y-5">
-              {/* Header line with badge */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="type-eyebrow text-[#B93A0A] bg-[#FFF1EA] px-2.5 py-1 rounded-[6px] border border-[#FFE2D4]">
-                    Next best action
-                  </span>
-                  <span className="type-meta text-[#666C78]">
-                    Priority 1 of {allQueueItems.length}
+              {/* Header line with Live Radar Beacon badge & Timer */}
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2 bg-[#FFF0EB] border border-[#FFD9CC] rounded-full px-3 py-1 shadow-2xs">
+                    <span className="radar-beacon inline-flex h-2.5 w-2.5 rounded-full bg-[#FF5A1F]" />
+                    <span className="text-[13px] font-semibold tracking-wider uppercase text-[#B93A0A]">
+                      Next best action
+                    </span>
+                  </div>
+                  <span className="text-[13px] text-[#666C78] font-normal hidden sm:inline">
+                    Priority 1 of {allQueueItems.length} • Action Required
                   </span>
                 </div>
 
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3]">
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium transition-all shadow-2xs",
+                    nextBestAction.timeAgo === "overdue"
+                      ? "bg-[#FFE9EA] text-[#B42336] border border-[#FFCCD0]"
+                      : "bg-[#FFF0EB] text-[#B93A0A] border border-[#FFD9CC]"
+                  )}
+                >
                   <Clock className="h-3.5 w-3.5" />
-                  <span>{nextBestAction.timeAgo}</span>
+                  <span className="capitalize">{nextBestAction.timeAgo}</span>
                 </span>
               </div>
 
-              {/* Customer Profile Row */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3.5">
-                  {(() => {
-                    const avatarStyle = getAvatarColor(nextBestAction.name);
-                    return (
-                      <div
-                        className={cn(
-                          "flex h-12 w-12 shrink-0 items-center justify-center rounded-full border text-[16px] font-medium shadow-sm",
-                          avatarStyle.bg,
-                          avatarStyle.text,
-                          avatarStyle.border
-                        )}
+              {/* Customer Profile & Identity Row */}
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="relative">
+                    {(() => {
+                      const avatarStyle = getAvatarColor(nextBestAction.name);
+                      return (
+                        <div
+                          className={cn(
+                            "flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border text-[16px] font-medium shadow-2xs transition-transform hover:scale-105 duration-140",
+                            avatarStyle.bg,
+                            avatarStyle.text,
+                            avatarStyle.border
+                          )}
+                        >
+                          {getInitials(nextBestAction.name)}
+                        </div>
+                      );
+                    })()}
+                    <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#12B886] ring-2 ring-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3
+                        onClick={() =>
+                          setSelectedCustomer({
+                            name: nextBestAction.name,
+                            phone: nextBestAction.phone || "+91 98765 43210",
+                            reason: nextBestAction.reason,
+                          })
+                        }
+                        className="text-[18px] sm:text-[20px] font-medium text-[#12141A] hover:text-[#FF5A1F] hover:underline cursor-pointer truncate transition-colors"
                       >
-                        {getInitials(nextBestAction.name)}
-                      </div>
-                    );
-                  })()}
-                  <div>
-                    <h3
-                      onClick={() =>
-                        setSelectedCustomer({
-                          name: nextBestAction.name,
-                          phone: nextBestAction.phone || "+91 98765 43210",
-                          reason: nextBestAction.reason,
-                        })
-                      }
-                      className="type-title text-[#12141A] hover:underline cursor-pointer"
-                    >
-                      {nextBestAction.name}
-                    </h3>
-                    <p className="type-small text-[#666C78]">
-                      {nextBestAction.phone || "WhatsApp Business Contact"} •{" "}
-                      {nextBestAction.reason}
+                        {nextBestAction.name}
+                      </h3>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] text-[13px] font-medium bg-[#EBF6FD] text-[#0F6F9D] border border-[#CDE5F7]">
+                        WhatsApp Client
+                      </span>
+                    </div>
+                    <p className="text-[13px] text-[#666C78] truncate mt-0.5">
+                      {nextBestAction.phone || "+91 98765 43210"} • {nextBestAction.reason}
                     </p>
                   </div>
                 </div>
@@ -694,41 +726,54 @@ export default function OverviewPage() {
                       reason: nextBestAction.reason,
                     })
                   }
-                  className="text-[#454B57] text-[13px]"
+                  className="text-[#454B57] hover:text-[#12141A] text-[14px] h-9 px-3 gap-1.5 shrink-0 rounded-[10px] cursor-pointer"
                 >
-                  View contact
+                  <span className="hidden sm:inline">View contact</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-[#666C78]" />
                 </Button>
               </div>
 
-              {/* Inbound Customer Message in Body Size */}
-              <div className="rounded-[16px] bg-[#F7F5F0] border border-[#E6E2D8] p-4 text-[#12141A]">
-                <span className="type-eyebrow text-[#666C78] block mb-1">
-                  Latest Inbound Message
-                </span>
-                <p className="type-body text-[#12141A] leading-relaxed">
+              {/* Inbound Customer Message (WhatsApp Speech Bubble Style) */}
+              <div className="rounded-[18px] bg-[#F7F5F0] border border-[#E6E2D8] p-4 text-[#12141A] relative shadow-2xs">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-[#25D366]" />
+                    <span className="text-[13px] font-medium uppercase tracking-wider text-[#454B57]">
+                      Latest Inbound Context
+                    </span>
+                  </div>
+                  <span className="text-[13px] text-[#8E95A3] font-normal">
+                    Received {nextBestAction.timeAgo}
+                  </span>
+                </div>
+                <p className="text-[15px] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#25D366]">
                   "{nextBestAction.inboundText}"
                 </p>
               </div>
 
-              {/* AI Engine Suggested Reply Preview (Violet box) */}
+              {/* AI Engine Suggested Reply Preview (Luminous Violet Box with Shimmer) */}
               {nextBestAction.aiSuggestion && (
-                <div className="rounded-[16px] bg-[#F0EAFF] border border-[#D9C9FF] p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2 text-[#5B34C9]">
-                      <Sparkles className="h-4 w-4" />
-                      <span className="type-eyebrow text-[#5B34C9]">
+                <div className="rounded-[18px] bg-gradient-to-br from-[#F5F0FF] via-[#FAF8FF] to-[#FFFFFF] border border-[#D9C9FF] p-4 relative overflow-hidden shadow-2xs">
+                  <div className="copilot-shimmer-line absolute top-0 left-0 right-0 h-[2px]" />
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2 text-[#6938EF]">
+                      <Sparkles className="h-4 w-4 animate-pulse text-[#7C4DFF]" />
+                      <span className="text-[13px] font-medium uppercase tracking-wider text-[#6938EF]">
                         Suggested AI Response
                       </span>
                     </div>
-                    <span className="type-meta text-[#5B34C9]">Grounding Active</span>
+                    <span className="rounded-full bg-white/90 border border-[#E0D4FC] text-[13px] font-medium text-[#6938EF] px-2.5 py-0.5 tabular-nums shadow-2xs">
+                      Gemini 1.5 Flash • Grounded
+                    </span>
                   </div>
 
                   {inlineReplyId === nextBestAction.id ? (
-                    <div className="space-y-3 pt-1">
+                    <div className="space-y-3 pt-1 animate-reveal">
                       <textarea
                         value={inlineReplyText}
                         onChange={(e) => setInlineReplyText(e.target.value)}
-                        className="w-full h-24 p-3 rounded-[12px] bg-white border border-[#D9C9FF] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]"
+                        className="w-full h-24 p-3.5 rounded-[12px] bg-white border border-[#D9C9FF] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF] shadow-inner"
+                        placeholder="Edit suggested reply..."
                       />
                       <div className="flex items-center gap-2">
                         <Button
@@ -740,7 +785,7 @@ export default function OverviewPage() {
                               nextBestAction.name
                             )
                           }
-                          className="btn-primary-flame text-[13px]"
+                          className="btn-primary-flame text-[14px] h-9 px-4 cursor-pointer"
                         >
                           Send edited reply
                         </Button>
@@ -748,25 +793,25 @@ export default function OverviewPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setInlineReplyId(null)}
-                          className="text-[13px]"
+                          className="text-[14px] h-9 px-3 cursor-pointer"
                         >
                           Cancel
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <p className="type-small text-[#372A70] leading-relaxed">
+                    <p className="text-[14px] text-[#241C48] leading-relaxed font-normal">
                       {nextBestAction.aiSuggestion}
                     </p>
                   )}
                 </div>
               )}
 
-              {/* Actions Footer */}
+              {/* Actions Footer Dock */}
               {inlineReplyId !== nextBestAction.id && (
-                <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#E6E2D8]">
+                <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#E6E2D8]">
                   <div className="flex items-center gap-2.5">
-                    {/* Primary Button: Flame Send */}
+                    {/* Primary Button: Flame Send with Takeoff Animation */}
                     <Button
                       onClick={() =>
                         handleSendReply(
@@ -776,9 +821,9 @@ export default function OverviewPage() {
                           nextBestAction.name
                         )
                       }
-                      className="btn-primary-flame gap-2 h-10 px-5"
+                      className="btn-primary-flame group gap-2 h-11 px-5 text-[14px] font-medium shadow-xs cursor-pointer interactive-tap-spring"
                     >
-                      <Send className="h-4 w-4" />
+                      <Send className="h-4 w-4 transition-transform duration-140 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
                       <span>Send Reply</span>
                     </Button>
 
@@ -788,9 +833,10 @@ export default function OverviewPage() {
                         setInlineReplyId(nextBestAction.id);
                         setInlineReplyText(nextBestAction.aiSuggestion || "");
                       }}
-                      className="text-[14px] h-10"
+                      className="text-[14px] h-11 px-4 gap-1.5 rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] cursor-pointer"
                     >
-                      Edit
+                      <Pencil className="h-3.5 w-3.5 text-[#666C78]" />
+                      <span>Edit</span>
                     </Button>
                   </div>
 
@@ -800,16 +846,17 @@ export default function OverviewPage() {
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[#454B57] text-[14px] h-10"
+                      className="text-[#666C78] hover:text-[#12141A] text-[14px] h-11 px-3.5 gap-1.5 rounded-[12px] cursor-pointer"
                     >
-                      Snooze 2h
+                      <Clock className="h-3.5 w-3.5" />
+                      <span>Snooze 2h</span>
                     </Button>
                     <Button
                       variant="secondary"
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[14px] h-10 gap-1.5"
+                      className="text-[14px] h-11 px-4 gap-1.5 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#E6FBF2] hover:text-[#0A7A53] hover:border-[#12B886]/40 text-[#12141A] transition-all cursor-pointer interactive-tap-spring"
                     >
                       <Check className="h-4 w-4 text-[#12B886]" />
                       <span>Done</span>

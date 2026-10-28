@@ -112,7 +112,7 @@ The sidebar is an inset floating dark panel (`#0B0D12`):
 
 | Route | Module Identity | Hero Component | Layout Structure |
 | :--- | :--- | :--- | :--- |
-| **Overview** | Flame & Multi-Hue | Next Best Action (7-col) + Revenue Hero (5-col) | 5-row Bento: Greeting → Today Strip (Black `#0B0D12` chips: Red negative, Green positive, Orange others) → Heroes → Up Next / Coming Up → Deals / Activity |
+| **Overview** | Flame & Multi-Hue | Next Best Action (7-col Animated Radar & Shimmer Hero) + Revenue Hero (5-col) | 5-row Bento: Greeting → Today Strip (Black `#0B0D12` chips) → Heroes (Live Radar Beacon, WhatsApp bubble, Copilot shimmer) → Up Next / Coming Up → Deals / Activity |
 | **Shared Inbox** | Ultramarine (`#3B5BFD`) | Thread Canvas & Pinned AI Composer | 3-pane viewport height: Thread list on canvas → Thread on white panel → Contact drawer |
 | **Sales Pipeline** | Categorical Stages | Visual Kanban Board + Stage Columns | Stage headers with colored dots, lead cards with stuck time and owner avatars |
 | **Contacts** | Sky (`#1FA2E8`) | Search-First Contact Directory | Search & filter bar, 40px table rows, deterministic avatar colors, consent status pills |
