@@ -505,19 +505,16 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         collapsed ? "w-[76px]" : "w-[272px]"
       )}
     >
-      {/* 1. TOP LOGO BLOCK (68px) - Clean, untouched logo, zero stray text glyphs */}
+      {/* 1. TOP LOGO BLOCK (68px) - Perfectly center-aligned logo */}
       <div
         className={cn(
-          "flex h-[68px] shrink-0 items-center border-b border-[#1B1F29]/60 rounded-t-[24px]",
-          collapsed ? "justify-center px-2 relative" : "justify-between px-4"
+          "relative flex h-[68px] shrink-0 items-center justify-center border-b border-[#1B1F29]/60 rounded-t-[24px] px-4",
+          collapsed && "px-2"
         )}
       >
         <Link
           href={`/app/${orgSlug}/overview`}
-          className={cn(
-            "flex items-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px] hover:opacity-90 transition-opacity",
-            collapsed && "justify-center"
-          )}
+          className="flex items-center justify-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px] hover:opacity-90 transition-opacity"
           title="ROOS STUDIOX"
         >
           <RoosLogo collapsed={collapsed} size={collapsed ? "sm" : "md"} className="shrink-0" />
@@ -528,10 +525,10 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           type="button"
           onClick={toggleCollapsed}
           className={cn(
-            "hidden lg:flex items-center justify-center rounded-[8px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] cursor-pointer",
+            "hidden lg:flex items-center justify-center rounded-[8px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] cursor-pointer absolute top-1/2 -translate-y-1/2",
             collapsed
-              ? "absolute -right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-[#1B1F29] border border-[#2E3545] shadow-md z-30 hover:bg-[#FF5A1F] hover:border-[#FF5A1F] hover:text-white"
-              : "h-7 w-7"
+              ? "-right-3 h-6 w-6 rounded-full bg-[#1B1F29] border border-[#2E3545] shadow-md z-30 hover:bg-[#FF5A1F] hover:border-[#FF5A1F] hover:text-white"
+              : "right-3 h-7 w-7"
           )}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
