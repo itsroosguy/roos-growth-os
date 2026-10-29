@@ -77,7 +77,6 @@ export default function ReportsPage() {
           <Button
             onClick={handleExport}
             variant="secondary"
-            size="sm"
             className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
           >
             <Download className="h-4 w-4" />

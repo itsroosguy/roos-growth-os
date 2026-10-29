@@ -221,43 +221,38 @@ export default function TeamAndCredentialsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E6E2D8]">
         <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="type-display text-[#12141A]">
-              Access Credentials &amp; Team Governance
-            </h1>
-            <span className="rounded-full bg-[#EBF6FD] border border-[#BCE1F9] text-[13px] font-medium px-3.5 py-1 text-[#0F6F9D] tabular-nums">
-              Admin Dispatched
-            </span>
-          </div>
+          <h1 className="text-[2.25rem] font-medium leading-[1.15] text-[#12141A] tracking-[-0.02em]">
+            Team &amp; Access
+          </h1>
           <p className="type-body text-[#454B57] mt-1">
-            Level 1 Administrators control multi-level staff clearance, cryptographic invitation tokens, and decoupled liability matrices.
+            Invite teammates, manage member roles, and issue integration API keys.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5 shrink-0">
           {isAdmin ? (
             <>
               <Button
                 onClick={() => setInviteModalOpen(true)}
                 variant="primary"
-                className="rounded-[12px] font-medium text-[14px] h-10 px-4 cursor-pointer flex items-center gap-1.5 shadow-xs"
+                className="h-10 px-4 cursor-pointer flex items-center gap-2"
               >
-                <Send className="h-4 w-4" />
-                <span>Dispatch Multi-Level Account</span>
+                <UserPlus className="h-4 w-4" />
+                <span>Invite Member</span>
               </Button>
               <Button
                 onClick={() => setNewCredModalOpen(true)}
                 variant="outline"
-                className="rounded-[12px] border-[#E6E2D8] bg-white text-[#12141A] font-medium text-[14px] h-10 px-3.5 hover:bg-[#F7F5F0] cursor-pointer shadow-xs"
+                className="h-10 px-3.5 hover:bg-[#F7F5F0] cursor-pointer flex items-center gap-2"
               >
-                <KeyRound className="mr-1 h-4 w-4 text-[#666C78]" />
-                API Token
+                <KeyRound className="h-4 w-4 text-[#666C78]" />
+                <span>API Token</span>
               </Button>
             </>
           ) : (
             <div className="rounded-[12px] bg-[#FFF3D6] border border-[#FFE5A3] px-3.5 py-2 text-[13px] text-[#8F5300] font-medium flex items-center gap-1.5">
               <Lock className="h-4 w-4 text-[#8F5300]" />
-              <span>Admin Authority Required to Dispatch Accounts</span>
+              <span>Admin access required to invite members</span>
             </div>
           )}
         </div>
@@ -268,15 +263,15 @@ export default function TeamAndCredentialsPage() {
         stats={[
           {
             id: "members",
-            label: "Total Team",
+            label: "Team Members",
             value: members.length,
-            subtext: "Active workspace roster",
+            subtext: "Active in workspace",
           },
           {
             id: "invites",
-            label: "Pending Dispatches",
+            label: "Pending Invites",
             value: pendingCount,
-            change: { value: "Awaiting token accept", trend: "neutral" },
+            change: { value: `${pendingCount} awaiting accept`, trend: "neutral" },
           },
           {
             id: "credentials",
@@ -286,9 +281,9 @@ export default function TeamAndCredentialsPage() {
           },
           {
             id: "governance",
-            label: "Role Governance",
+            label: "Workspace Plan",
             value: "Enterprise",
-            change: { value: "Decoupled liability", trend: "up" },
+            change: { value: "All seats active", trend: "up" },
           },
         ]}
       />
@@ -305,7 +300,7 @@ export default function TeamAndCredentialsPage() {
           )}
         >
           <Mail className="h-4 w-4" />
-          <span>Email Dispatches &amp; Tokens ({pendingCount} pending)</span>
+          <span>Pending Invitations ({pendingCount})</span>
         </button>
         <button
           onClick={() => setActiveTab("roster")}

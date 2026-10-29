@@ -91,54 +91,52 @@ export default function SettingsPage() {
       </form>
 
       {/* AI Copilot & Business Grounding Knowledge */}
-      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
-        <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-          <Sparkles className="h-5 w-5 text-[#FF7A1A]" />
+      <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
+        <div className="p-6 border-b border-[#E6E2D8] flex items-center space-x-2.5">
+          <Sparkles className="h-5 w-5 text-[#FF5A1F]" />
           <div>
-            <h2 className="text-base font-semibold text-[#0D0D0E]">AI Assistant &amp; Business Knowledge</h2>
-            <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+            <h2 className="text-[18px] font-medium text-[#12141A]">AI Assistant &amp; Business Knowledge</h2>
+            <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Configure tone, model parameters, and ground AI reply suggestions in your verified company profile.
             </p>
           </div>
         </div>
 
-        <div className="p-5 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+        <div className="p-6 space-y-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8]">
             <div>
-              <p className="text-sm font-semibold text-[#0D0D0E]">
+              <p className="text-[14px] font-medium text-[#12141A]">
                 AI Copilot Settings &amp; Model Controls
               </p>
-              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              <p className="text-[13px] text-[#666C78] mt-0.5">
                 Toggle automated draft suggestions, configure tone, and track token usage.
               </p>
             </div>
             <Link href={`/app/${currentOrg.slug}/settings/ai`}>
               <Button
                 variant="outline"
-                size="sm"
-                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
+                className="h-9 px-3.5 border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[13px] rounded-[10px]"
               >
                 Configure AI Settings
               </Button>
             </Link>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8]">
             <div>
-              <p className="text-sm font-semibold text-[#0D0D0E]">
+              <p className="text-[14px] font-medium text-[#12141A]">
                 Business Knowledge &amp; FAQs Profile
               </p>
-              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              <p className="text-[13px] text-[#666C78] mt-0.5">
                 Manage official products, operating hours, and FAQs used to prevent AI hallucinations.
               </p>
             </div>
             <Link href={`/app/${currentOrg.slug}/settings/business-profile`}>
               <Button
                 variant="outline"
-                size="sm"
-                className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
+                className="h-9 px-3.5 border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[13px] rounded-[10px]"
               >
-                Edit Business Profile
+                Manage Profile
               </Button>
             </Link>
           </div>
@@ -147,32 +145,31 @@ export default function SettingsPage() {
 
       {/* Platform Administration (Owner Only) */}
       {isOwner && (
-        <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
-          <div className="p-5 border-b border-[#E5E5E7] flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-[#FF7A1A]" />
+        <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
+          <div className="p-6 border-b border-[#E6E2D8] flex items-center space-x-2.5">
+            <Building2 className="h-5 w-5 text-[#FF5A1F]" />
             <div>
-              <h2 className="text-base font-semibold text-[#0D0D0E]">Platform Administration</h2>
-              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              <h2 className="text-[18px] font-medium text-[#12141A]">Platform Administration</h2>
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                 Authorized operator console for multi-tenant oversight, quota overrides, and subscription health.
               </p>
             </div>
           </div>
 
-          <div className="p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7]">
+          <div className="p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8]">
               <div>
-                <p className="text-sm font-semibold text-[#0D0D0E]">
+                <p className="text-[14px] font-medium text-[#12141A]">
                   Operator Management Console
                 </p>
-                <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+                <p className="text-[13px] text-[#666C78] mt-0.5">
                   Manage tenant states, review payment events, and audit bonus quota grants.
                 </p>
               </div>
               <Link href={`/app/${currentOrg.slug}/settings/admin`}>
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E] font-semibold text-xs rounded-xl"
+                  className="h-9 px-3.5 border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[13px] rounded-[10px]"
                 >
                   Open Admin Console
                 </Button>
@@ -183,24 +180,24 @@ export default function SettingsPage() {
       )}
 
       {/* Danger Zone (Owner Only) */}
-      <div className="bg-white rounded-2xl border border-rose-200 shadow-2xs overflow-hidden">
-        <div className="p-5 border-b border-rose-100 flex items-center space-x-2 text-rose-600">
-          <AlertTriangle className="h-5 w-5 text-rose-600" />
+      <div className="bg-white rounded-[20px] border border-[#FDC8CA] shadow-[0_1px_2px_rgba(11,13,18,.04)] overflow-hidden">
+        <div className="p-6 border-b border-[#FDC8CA] flex items-center space-x-2.5 text-[#E5484D]">
+          <AlertTriangle className="h-5 w-5 text-[#E5484D]" />
           <div>
-            <h2 className="text-base font-semibold text-rose-700">Danger Zone</h2>
-            <p className="text-xs text-rose-600 font-normal mt-0.5">
+            <h2 className="text-[18px] font-medium text-[#B42336]">Danger Zone</h2>
+            <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Irreversible actions for this workspace. Only the Owner can perform these operations.
             </p>
           </div>
         </div>
 
-        <div className="p-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-rose-50 border border-rose-200">
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[14px] bg-[#FFE9EA] border border-[#FDC8CA]">
             <div>
-              <p className="text-sm font-semibold text-rose-950">
+              <p className="text-[14px] font-medium text-[#B42336]">
                 Delete this organisation
               </p>
-              <p className="text-xs text-rose-800 mt-0.5">
+              <p className="text-[13px] text-[#666C78] mt-0.5">
                 Permanently delete all contacts, leads, conversations, and settings.
               </p>
             </div>
@@ -208,14 +205,14 @@ export default function SettingsPage() {
               variant="danger"
               disabled={!isOwner}
               onClick={() => alert("Deletion confirmation required in production.")}
-              className="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl"
+              className="h-9 px-3.5 text-[13px] font-medium rounded-[10px]"
             >
               Delete Workspace
             </Button>
           </div>
           {!isOwner && (
-            <p className="text-xs text-[#8E8E93] mt-2 font-medium">
-              You are currently signed in as <span className="font-medium uppercase text-[#0D0D0E]">{userRole}</span>. Contact the workspace Owner to request deletion.
+            <p className="text-[13px] text-[#666C78] mt-2 font-normal">
+              You are currently signed in as <span className="font-medium uppercase text-[#12141A]">{userRole}</span>. Contact the workspace Owner to request deletion.
             </p>
           )}
         </div>

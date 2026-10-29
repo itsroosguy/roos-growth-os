@@ -275,7 +275,7 @@ export default function AISettingsPage() {
 
           {isAdmin && (
             <div className="flex justify-end border-t border-[#E6E2D8] pt-4">
-              <Button type="submit" className="bg-[#FF5500] hover:bg-[#E04B00] text-white font-medium rounded-[12px] text-[14px] h-10 px-5 shadow-xs cursor-pointer">
+              <Button type="submit" variant="primary" className="font-medium rounded-[12px] text-[14px] h-10 px-5 shadow-xs cursor-pointer">
                 Save AI Configuration
               </Button>
             </div>

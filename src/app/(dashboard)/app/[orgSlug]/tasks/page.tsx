@@ -10,7 +10,7 @@ import { StatusPill } from "@/components/ui/status-pill";
 import { Drawer } from "@/components/ui/drawer";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/toast-context";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import {
   CheckSquare,
   Plus,
@@ -197,7 +197,7 @@ export default function TasksPage() {
               isOverdue ? "text-[#B42336] font-medium" : "text-[#666C78]"
             )}
           >
-            {task.due_date}
+            {formatDate(task.due_date)}
           </span>
         </div>
       </div>

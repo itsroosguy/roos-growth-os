@@ -141,7 +141,7 @@ export default function ContactsPage() {
         <div className="flex items-center gap-3">
           {/* Search Input */}
           <div className="relative w-56 sm:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#6A707C]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
             <input
               type="text"
               value={searchQuery}
@@ -150,7 +150,7 @@ export default function ContactsPage() {
                 setCurrentPage(1);
               }}
               placeholder="Search contacts..."
-              className="h-8.5 w-full rounded-[8px] border border-[#E4E1D8] bg-white pl-8 pr-3 text-[12px] text-[#12141A] placeholder:text-[#6A707C] focus:border-[#FF5A1F] focus:outline-none shadow-hairline"
+              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 

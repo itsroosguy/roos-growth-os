@@ -82,23 +82,18 @@ export default function BusinessProfileSettingsPage() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E7]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E6E2D8]">
         <div>
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0D0D0E]">
-              Business Knowledge &amp; Grounding Profile
-            </h1>
-            <Badge variant="orangeSubtle" className="text-xs tabular-nums font-medium">
-              Anti-Hallucination Grounding
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-[#8E8E93] font-medium mt-1">
+          <h1 className="text-[2.25rem] font-medium leading-[1.15] text-[#12141A] tracking-[-0.02em]">
+            Business Knowledge Profile
+          </h1>
+          <p className="type-body text-[#454B57] mt-1">
             Verified company facts, approved pricing, and FAQs used to ground AI responses for {currentOrg.name}.
           </p>
         </div>
 
         <Link href={`/app/${currentOrg.slug}/settings/ai`}>
-          <Button variant="outline" size="sm" className="text-xs font-semibold rounded-xl border-[#E5E5E7] bg-white hover:bg-[#F7F7F8] text-[#0D0D0E]">
+          <Button variant="outline" className="h-10 px-4 text-[14px] font-medium rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] shadow-xs cursor-pointer">
             Back to AI Settings
           </Button>
         </Link>
@@ -309,8 +304,8 @@ export default function BusinessProfileSettingsPage() {
           </div>
 
           {isAdmin && (
-            <div className="flex justify-end border-t border-[#E5E5E7] pt-4">
-              <Button type="submit" className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs">
+            <div className="flex justify-end border-t border-[#E6E2D8] pt-4">
+              <Button type="submit" variant="primary" className="h-10 px-5 text-[14px] font-medium rounded-[12px] shadow-xs cursor-pointer">
                 Save Business Profile
               </Button>
             </div>

@@ -114,7 +114,6 @@ export default function TemplatesPage() {
           <Button
             onClick={() => setCreateOpen(true)}
             variant="primary"
-            size="sm"
             className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />

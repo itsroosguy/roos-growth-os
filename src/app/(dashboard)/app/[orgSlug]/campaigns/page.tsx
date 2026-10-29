@@ -293,14 +293,13 @@ export default function CampaignsPage() {
 
         <div className="flex items-center gap-2.5">
           <Link href={`/app/${orgSlug}/templates`}>
-            <Button size="sm" variant="outline" className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4">
+            <Button variant="outline" className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4">
               <FileText className="h-4 w-4 text-[#666C78]" />
               <span>Manage Templates</span>
             </Button>
           </Link>
 
           <Button
-            size="sm"
             variant="primary"
             onClick={handleOpenWizard}
             className="rounded-[12px] text-[14px] font-medium flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4"

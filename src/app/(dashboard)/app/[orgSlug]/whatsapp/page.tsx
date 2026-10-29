@@ -139,16 +139,15 @@ export default function WhatsAppSettingsPage() {
           <div className="flex justify-end pb-2">
             <Button
               variant={connection.status === "connected" ? "outline" : "primary"}
-              size="sm"
               onClick={handleToggleConnection}
-              className={`rounded-[12px] shadow-xs font-medium text-[14px] h-10 px-4 ${
+              className={`rounded-[12px] shadow-xs font-medium text-[14px] h-10 px-4 flex items-center gap-2 ${
                 connection.status === "connected"
                   ? "border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A]"
                   : ""
               }`}
             >
-              <Power className="mr-1.5 h-4 w-4" />
-              {connection.status === "connected" ? "Disable WhatsApp" : "Connect WhatsApp"}
+              <Power className="h-4 w-4" />
+              <span>{connection.status === "connected" ? "Disable WhatsApp" : "Connect WhatsApp"}</span>
             </Button>
           </div>
         )}
