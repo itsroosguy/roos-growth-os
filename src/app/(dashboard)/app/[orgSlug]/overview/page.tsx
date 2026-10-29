@@ -14,6 +14,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
 import { BriefingLine } from "@/components/overview/briefing-line";
 import { DayRail } from "@/components/overview/day-rail";
+import { AppleNotificationBanner } from "@/components/overview/apple-notification-banner";
 import { NewOpportunityModal } from "@/components/crm/new-opportunity-modal";
 import {
   cn,
@@ -644,118 +645,140 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 1: TODAY STRIP (2x2 GRID, 50% WIDTH, TIGHT AND PROPORTIONAL)           */}
+      {/* ROW 1: TODAY STRIP (LEFT) + APPLE OS NOTIFICATION (RIGHT)                 */}
       {/* ========================================================================= */}
-      <div className="w-full lg:max-w-[540px] grid grid-cols-2 gap-3">
-        {/* 1. Waiting on you (Ultramarine) */}
-        <button
-          type="button"
-          onClick={() =>
-            setTodayFilter(todayFilter === "waiting" ? "all" : "waiting")
-          }
-          className={cn(
-            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
-            todayFilter === "waiting"
-              ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20 shadow-xs"
-              : "bg-white border-[#E6E2D8] hover:border-[#3D5AFE]/40 hover:bg-[#FAFCFF] shadow-xs"
-          )}
-        >
-          <div>
-            <span className="text-[12px] font-medium text-[#2A3DB5] block">
-              Waiting on you
-            </span>
-            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
-              {unreadConversations.length}
-            </span>
-          </div>
-          <span className="h-2.5 w-2.5 rounded-full bg-[#3D5AFE] ring-4 ring-[#3D5AFE]/15 shrink-0" />
-        </button>
-
-        {/* 2. Due today (Amber) */}
-        <button
-          type="button"
-          onClick={() =>
-            setTodayFilter(todayFilter === "due_today" ? "all" : "due_today")
-          }
-          className={cn(
-            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
-            todayFilter === "due_today"
-              ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20 shadow-xs"
-              : "bg-white border-[#E6E2D8] hover:border-[#F5A524]/40 hover:bg-[#FFFDF9] shadow-xs"
-          )}
-        >
-          <div>
-            <span className="text-[12px] font-medium text-[#8F5300] block">
-              Due today
-            </span>
-            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
-              {todayTasks.length}
-            </span>
-          </div>
-          <span className="h-2.5 w-2.5 rounded-full bg-[#F5A524] ring-4 ring-[#F5A524]/15 shrink-0" />
-        </button>
-
-        {/* 3. Overdue (Rose if > 0, otherwise calm Emerald "On track") */}
-        {overdueTasks.length > 0 ? (
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Left: 2x2 Today Strip (5 cols on xl, 6 cols on lg) */}
+        <div className="lg:col-span-6 xl:col-span-5 grid grid-cols-2 gap-3">
+          {/* 1. Waiting on you (Ultramarine) */}
           <button
             type="button"
             onClick={() =>
-              setTodayFilter(todayFilter === "overdue" ? "all" : "overdue")
+              setTodayFilter(todayFilter === "waiting" ? "all" : "waiting")
             }
             className={cn(
               "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
-              todayFilter === "overdue"
-                ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20 shadow-xs"
-                : "bg-white border-[#FDC8CA] hover:bg-[#FFF5F5] shadow-xs"
+              todayFilter === "waiting"
+                ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20 shadow-xs"
+                : "bg-white border-[#E6E2D8] hover:border-[#3D5AFE]/40 hover:bg-[#FAFCFF] shadow-xs"
             )}
           >
             <div>
-              <span className="text-[12px] font-medium text-[#B42336] block">
-                Overdue
+              <span className="text-[12px] font-medium text-[#2A3DB5] block">
+                Waiting on you
               </span>
-              <span className="text-[1.875rem] font-medium leading-none text-[#E5484D] tabular-nums mt-1 block">
-                {overdueTasks.length}
+              <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+                {unreadConversations.length}
               </span>
             </div>
-            <span className="h-2.5 w-2.5 rounded-full bg-[#E5484D] ring-4 ring-[#E5484D]/20 animate-pulse shrink-0" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#3D5AFE] ring-4 ring-[#3D5AFE]/15 shrink-0" />
           </button>
-        ) : (
-          <div className="h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border border-[#BDECD7] bg-[#E4F7EF] text-left shadow-xs">
+
+          {/* 2. Due today (Amber) */}
+          <button
+            type="button"
+            onClick={() =>
+              setTodayFilter(todayFilter === "due_today" ? "all" : "due_today")
+            }
+            className={cn(
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              todayFilter === "due_today"
+                ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20 shadow-xs"
+                : "bg-white border-[#E6E2D8] hover:border-[#F5A524]/40 hover:bg-[#FFFDF9] shadow-xs"
+            )}
+          >
+            <div>
+              <span className="text-[12px] font-medium text-[#8F5300] block">
+                Due today
+              </span>
+              <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+                {todayTasks.length}
+              </span>
+            </div>
+            <span className="h-2.5 w-2.5 rounded-full bg-[#F5A524] ring-4 ring-[#F5A524]/15 shrink-0" />
+          </button>
+
+          {/* 3. Overdue (Rose if > 0, otherwise calm Emerald "On track") */}
+          {overdueTasks.length > 0 ? (
+            <button
+              type="button"
+              onClick={() =>
+                setTodayFilter(todayFilter === "overdue" ? "all" : "overdue")
+              }
+              className={cn(
+                "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+                todayFilter === "overdue"
+                  ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20 shadow-xs"
+                  : "bg-white border-[#FDC8CA] hover:bg-[#FFF5F5] shadow-xs"
+              )}
+            >
+              <div>
+                <span className="text-[12px] font-medium text-[#B42336] block">
+                  Overdue
+                </span>
+                <span className="text-[1.875rem] font-medium leading-none text-[#E5484D] tabular-nums mt-1 block">
+                  {overdueTasks.length}
+                </span>
+              </div>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#E5484D] ring-4 ring-[#E5484D]/20 animate-pulse shrink-0" />
+            </button>
+          ) : (
+            <div className="h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border border-[#BDECD7] bg-[#E4F7EF] text-left shadow-xs">
+              <div>
+                <span className="text-[12px] font-medium text-[#0A7A53] block">
+                  Overdue
+                </span>
+                <span className="text-[1.125rem] font-medium leading-none text-[#0A7A53] mt-2 block">
+                  On track
+                </span>
+              </div>
+              <Check className="h-4 w-4 text-[#0A7A53] shrink-0" />
+            </div>
+          )}
+
+          {/* 4. In proposal (Emerald) */}
+          <button
+            type="button"
+            onClick={() =>
+              setTodayFilter(todayFilter === "proposal" ? "all" : "proposal")
+            }
+            className={cn(
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              todayFilter === "proposal"
+                ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20 shadow-xs"
+                : "bg-white border-[#E6E2D8] hover:border-[#12B886]/40 hover:bg-[#F8FCFA] shadow-xs"
+            )}
+          >
             <div>
               <span className="text-[12px] font-medium text-[#0A7A53] block">
-                Overdue
+                In proposal
               </span>
-              <span className="text-[1.125rem] font-medium leading-none text-[#0A7A53] mt-2 block">
-                On track
+              <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+                {proposalLeads.length}
               </span>
             </div>
-            <Check className="h-4 w-4 text-[#0A7A53] shrink-0" />
-          </div>
-        )}
+            <span className="h-2.5 w-2.5 rounded-full bg-[#12B886] ring-4 ring-[#12B886]/15 shrink-0" />
+          </button>
+        </div>
 
-        {/* 4. In proposal (Emerald) */}
-        <button
-          type="button"
-          onClick={() =>
-            setTodayFilter(todayFilter === "proposal" ? "all" : "proposal")
-          }
-          className={cn(
-            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
-            todayFilter === "proposal"
-              ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20 shadow-xs"
-              : "bg-white border-[#E6E2D8] hover:border-[#12B886]/40 hover:bg-[#F8FCFA] shadow-xs"
-          )}
-        >
-          <div>
-            <span className="text-[12px] font-medium text-[#0A7A53] block">
-              In proposal
-            </span>
-            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
-              {proposalLeads.length}
-            </span>
-          </div>
-          <span className="h-2.5 w-2.5 rounded-full bg-[#12B886] ring-4 ring-[#12B886]/15 shrink-0" />
-        </button>
+        {/* Right: Apple OS Live Activity / Notification Banner */}
+        <div className="lg:col-span-6 xl:col-span-7 flex flex-col">
+          <AppleNotificationBanner
+            orgSlug={orgSlug}
+            notifications={unreadConversations}
+            onReply={(convId, text) => {
+              const conv = unreadConversations.find((c) => c.id === convId);
+              handleSendReply(convId, text, conv?.contact_name || "Customer");
+            }}
+            onDismiss={(convId) => {
+              setResolvedQueueIds((prev) => new Set(prev).add(`conv-${convId}`));
+              toast("Notification dismissed", {
+                message: "Conversation cleared from live activity.",
+                type: "info",
+              });
+            }}
+          />
+        </div>
       </div>
 
       {/* ========================================================================= */}
