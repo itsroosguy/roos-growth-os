@@ -35,6 +35,8 @@ import {
   ExternalLink,
   Sparkles,
   ChevronDown,
+  Calendar,
+  X,
 } from "lucide-react";
 
 interface ContextualSuggestion {
@@ -181,7 +183,12 @@ export default function OverviewPage() {
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [resolvedQueueIds, setResolvedQueueIds] = useState<Set<string>>(new Set());
-  const [period, setPeriod] = useState<"30d" | "7d" | "all">("30d");
+  const [period, setPeriod] = useState<"month" | "yearly" | "all" | "custom">("month");
+  const [customPickerOpen, setCustomPickerOpen] = useState(false);
+  const [customRange, setCustomRange] = useState({
+    start: new Date(Date.now() - 30 * 86400000).toISOString().split("T")[0],
+    end: new Date().toISOString().split("T")[0],
+  });
   const [todayFilter, setTodayFilter] = useState<
     "all" | "waiting" | "due_today" | "overdue" | "proposal"
   >("all");
@@ -607,28 +614,141 @@ export default function OverviewPage() {
 
         <div className="flex items-center gap-3 shrink-0 pt-1">
           {/* Period Selector */}
-          <div className="inline-flex rounded-[12px] bg-white border border-[#E6E2D8] p-1 shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+          <div className="relative inline-flex rounded-[12px] bg-white border border-[#E6E2D8] p-1 shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
             {(
               [
-                { id: "30d", label: "This Month" },
-                { id: "7d", label: "This Quarter" },
+                { id: "month", label: "This Month" },
+                { id: "yearly", label: "Yearly" },
                 { id: "all", label: "All Time" },
+                { id: "custom", label: "Custom" },
               ] as const
             ).map((opt) => (
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => setPeriod(opt.id)}
+                onClick={() => {
+                  setPeriod(opt.id);
+                  if (opt.id === "custom") {
+                    setCustomPickerOpen((prev) => !prev);
+                  } else {
+                    setCustomPickerOpen(false);
+                  }
+                }}
                 className={cn(
-                  "px-3 py-1 text-[13px] font-medium rounded-[8px] transition-all duration-140 cursor-pointer",
+                  "px-3 py-1 text-[13px] font-medium rounded-[8px] transition-all duration-140 cursor-pointer flex items-center gap-1.5",
                   period === opt.id
                     ? "bg-[#12141A] text-white shadow-xs"
                     : "text-[#666C78] hover:text-[#12141A] hover:bg-[#F7F5F0]"
                 )}
               >
-                {opt.label}
+                <span>{opt.label}</span>
+                {opt.id === "custom" && (
+                  <Calendar className="h-3 w-3 opacity-70" />
+                )}
               </button>
             ))}
+
+            {/* Custom Date Range Popover */}
+            {customPickerOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setCustomPickerOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 z-50 w-[290px] p-4 rounded-[16px] bg-white border border-[#E6E2D8] shadow-[0_12px_32px_-8px_rgba(11,13,18,0.14),0_1px_2px_rgba(11,13,18,0.04)] animate-emil-reveal">
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F0ECE1]">
+                    <span className="text-[13px] font-medium text-[#12141A]">
+                      Custom Date Range
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCustomPickerOpen(false)}
+                      className="h-5 w-5 rounded-full hover:bg-black/[0.06] text-[#8C93A0] hover:text-[#12141A] flex items-center justify-center transition-colors cursor-pointer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <div>
+                      <label className="text-[11px] font-medium text-[#666C78] block mb-1">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={customRange.start}
+                        onChange={(e) =>
+                          setCustomRange((prev) => ({ ...prev, start: e.target.value }))
+                        }
+                        className="w-full h-8 px-2.5 rounded-[8px] bg-[#F7F5F0] border border-[#E6E2D8] text-[12px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/20 focus:border-[#FF5A1F]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-medium text-[#666C78] block mb-1">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={customRange.end}
+                        onChange={(e) =>
+                          setCustomRange((prev) => ({ ...prev, end: e.target.value }))
+                        }
+                        className="w-full h-8 px-2.5 rounded-[8px] bg-[#F7F5F0] border border-[#E6E2D8] text-[12px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/20 focus:border-[#FF5A1F]"
+                      />
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div className="flex items-center gap-1.5 pt-1">
+                      {[
+                        { label: "Last 7d", days: 7 },
+                        { label: "Last 30d", days: 30 },
+                        { label: "Last 90d", days: 90 },
+                      ].map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            const end = new Date().toISOString().split("T")[0];
+                            const start = new Date(Date.now() - preset.days * 86400000)
+                              .toISOString()
+                              .split("T")[0];
+                            setCustomRange({ start, end });
+                          }}
+                          className="flex-1 py-1 text-[11px] font-medium rounded-[6px] bg-[#F7F5F0] hover:bg-[#EAE6DC] text-[#454B57] hover:text-[#12141A] transition-colors cursor-pointer text-center"
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setCustomPickerOpen(false)}
+                        className="h-7 px-3 text-[12px] font-medium text-[#666C78] hover:text-[#12141A] cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPeriod("custom");
+                          setCustomPickerOpen(false);
+                          toast("Custom range applied", {
+                            message: `${customRange.start} to ${customRange.end}`,
+                            type: "info",
+                          });
+                        }}
+                        className="h-7 px-3 rounded-[8px] bg-[#12141A] hover:bg-[#1B1F29] text-white text-[12px] font-medium transition-colors cursor-pointer"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Flame Primary Action Button */}
