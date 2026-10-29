@@ -1,7 +1,68 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
+// ============================================================================
+// TEMPORARY AUTH BYPASS CONFIGURATION
+// When set to `true`:
+// - Anyone visiting the site (root '/', '/login', '/signup', etc.) is seamlessly
+//   and immediately routed to the dashboard (`/app/acme-corp/overview`).
+// - All workspace routes (`/app/*`) are completely accessible with zero login prompt.
+// - Demo session cookies are set automatically so all workspace features work seamlessly.
+// - ZERO login code, forms, or pages are deleted.
+// - To restore the standard login & authentication flow at any time, simply set this to `false`.
+// ============================================================================
+export const TEMPORARY_BYPASS_AUTH = true;
+
 export async function middleware(request: NextRequest) {
+  // --------------------------------------------------------------------------
+  // 1. TEMPORARY AUTH BYPASS (Active when testing online without login)
+  // --------------------------------------------------------------------------
+  if (TEMPORARY_BYPASS_AUTH) {
+    const isAuthRoute =
+      request.nextUrl.pathname === "/" ||
+      request.nextUrl.pathname.startsWith("/login") ||
+      request.nextUrl.pathname.startsWith("/signup") ||
+      request.nextUrl.pathname.startsWith("/reset-password");
+
+    if (isAuthRoute) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/app/acme-corp/overview";
+      const redirectResponse = NextResponse.redirect(url);
+
+      // Inject active session cookies for smooth seamless access
+      redirectResponse.cookies.set("roos_session", "true", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        sameSite: "lax",
+      });
+      redirectResponse.cookies.set("roos_user_role", "owner", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
+      return redirectResponse;
+    }
+
+    // For all dashboard/app routes, allow immediate access and ensure session cookie exists
+    const response = NextResponse.next();
+    if (!request.cookies.get("roos_session")) {
+      response.cookies.set("roos_session", "true", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
+      response.cookies.set("roos_user_role", "owner", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
+    }
+    return response;
+  }
+
+  // --------------------------------------------------------------------------
+  // 2. STANDARD AUTHENTICATION LOGIC (Active when TEMPORARY_BYPASS_AUTH = false)
+  // --------------------------------------------------------------------------
   // Immediately redirect root / to /login
   if (request.nextUrl.pathname === "/") {
     const url = request.nextUrl.clone();
