@@ -283,16 +283,11 @@ export default function CampaignsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E6E2D8]">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="type-display text-[#12141A]">
-              Campaigns &amp; Broadcasts
-            </h1>
-            <span className="rounded-full bg-[#F4F0FF] border border-[#E0D4FC] text-[13px] font-medium px-3.5 py-1 text-[#6938EF] tabular-nums">
-              Controlled Delivery
-            </span>
-          </div>
+          <h1 className="type-display text-[#12141A]">
+            Broadcasts
+          </h1>
           <p className="type-body text-[#454B57] mt-1">
-            Compliant broadcast engine, opt-in suppression checks, and live Meta Cloud API delivery tracking.
+            Meta Cloud WhatsApp broadcasts with audience segmentation, live cost estimation, and delivery metrics.
           </p>
         </div>
 

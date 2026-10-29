@@ -1,50 +1,38 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
 import { whatsappStore } from "@/lib/whatsapp/whatsapp-store";
 import { campaignStore } from "@/lib/campaigns/campaign-store";
-import { LeadStage, Task, Lead, Contact } from "@/types/crm";
+import { calendarStore } from "@/lib/calendar/calendar-store";
+import { LeadStage, Task, Lead } from "@/types/crm";
 import { Button } from "@/components/ui/button";
-import { StatusPill } from "@/components/ui/status-pill";
-import { Input } from "@/components/ui/input";
 import { Drawer } from "@/components/ui/drawer";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
-import { MeetingsHeroCard } from "@/components/calendar/meetings-hero-card";
+import { BriefingLine } from "@/components/overview/briefing-line";
+import { DayRail } from "@/components/overview/day-rail";
 import {
   cn,
   formatINR,
   getAvatarColor,
   getInitials,
-  formatRelativeTime,
   STAGE_CONFIG,
 } from "@/lib/utils";
 import {
   Plus,
-  MessageSquare,
-  CheckCircle2,
-  Filter,
   Check,
-  ChevronDown,
-  ChevronRight,
   Send,
   Clock,
-  User,
   ArrowRight,
-  X,
-  Phone,
-  Building2,
-  Calendar,
-  Sparkles,
   TrendingUp,
-  AlertCircle,
   Undo2,
-  Zap,
   Pencil,
   ExternalLink,
+  Sparkles,
+  ChevronDown,
 } from "lucide-react";
 
 export default function OverviewPage() {
@@ -63,7 +51,6 @@ export default function OverviewPage() {
   // Quick reply popover / inline edit state
   const [inlineReplyId, setInlineReplyId] = useState<string | null>(null);
   const [inlineReplyText, setInlineReplyText] = useState("");
-  const [actionSuccessToast, setActionSuccessToast] = useState<string | null>(null);
 
   // Customer Drawer State
   const [selectedCustomer, setSelectedCustomer] = useState<{
@@ -76,13 +63,7 @@ export default function OverviewPage() {
   // Deal Drawer State
   const [selectedDeal, setSelectedDeal] = useState<Lead | null>(null);
 
-  // Client mounted state to guard hydration
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // New Opportunity Modal/Drawer State
+  // New Opportunity Modal State
   const [newDealOpen, setNewDealOpen] = useState(false);
   const [dealTitle, setDealTitle] = useState("");
   const [dealValue, setDealValue] = useState("65000");
@@ -93,11 +74,13 @@ export default function OverviewPage() {
   // Undo task storage
   const [lastCompletedTask, setLastCompletedTask] = useState<Task | null>(null);
 
+  // Refs for smooth scroll
+  const heroRef = useRef<HTMLDivElement>(null);
+  const dayRailRef = useRef<HTMLDivElement>(null);
+
   // Live Data Store Access
-  const metrics = useMemo(() => crmStore.getMetrics(orgSlug), [orgSlug, refreshKey]);
   const leads = useMemo(() => crmStore.getLeads(orgSlug), [orgSlug, refreshKey]);
   const tasks = useMemo(() => crmStore.getTasks(orgSlug), [orgSlug, refreshKey]);
-  const contacts = useMemo(() => crmStore.getContacts(orgSlug), [orgSlug, refreshKey]);
   const conversations = useMemo(
     () => whatsappStore.getConversations(orgSlug),
     [orgSlug, refreshKey]
@@ -106,33 +89,18 @@ export default function OverviewPage() {
     () => campaignStore.getCampaigns(orgSlug),
     [orgSlug, refreshKey]
   );
-
-  // 1. Unanswered conversations that have legitimate customer inbound messages
-  const unreadConversations = useMemo(() => {
-    return conversations
-      .filter((c) => c.unread_count > 0 && !resolvedQueueIds.has(`conv-${c.id}`))
-      .map((c) => {
-        const msgs = whatsappStore.getMessages(c.id);
-        const inboundMsgs = msgs.filter((m) => m.sender_type === "customer");
-        const lastInbound = inboundMsgs[inboundMsgs.length - 1];
-        return {
-          ...c,
-          // True inbound message content (never outbound automated template)
-          inboundText:
-            lastInbound?.body ||
-            (c.last_message_text && !c.last_message_text.startsWith("Hello")
-              ? c.last_message_text
-              : "Inquiring about package customization and enterprise team onboarding terms."),
-        };
-      });
-  }, [conversations, resolvedQueueIds]);
-
-  const proposalDeals = useMemo(
-    () => leads.filter((l) => l.stage === "proposal"),
-    [leads]
+  const meetings = useMemo(
+    () => calendarStore.getMeetings(orgSlug),
+    [orgSlug, refreshKey]
   );
 
-  // Stable start/end of today
+  // Today's boundaries for tasks & meetings
+  const todayDateStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const todayMeetings = useMemo(
+    () => meetings.filter((m) => m.date === todayDateStr || !m.date),
+    [meetings, todayDateStr]
+  );
+
   const startOfToday = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -145,6 +113,26 @@ export default function OverviewPage() {
     return d;
   }, []);
 
+  // 1. Unanswered conversations
+  const unreadConversations = useMemo(() => {
+    return conversations
+      .filter((c) => c.unread_count > 0 && !resolvedQueueIds.has(`conv-${c.id}`))
+      .map((c) => {
+        const msgs = whatsappStore.getMessages(c.id);
+        const inboundMsgs = msgs.filter((m) => m.sender_type === "customer");
+        const lastInbound = inboundMsgs[inboundMsgs.length - 1];
+        return {
+          ...c,
+          inboundText:
+            lastInbound?.body ||
+            c.last_message_text ||
+            "Hello! We are looking to integrate WhatsApp Business API for our 20-agent sales team. Could you please share the pricing schedule and onboarding timeline?",
+          waitingHours: 2,
+        };
+      });
+  }, [conversations, resolvedQueueIds]);
+
+  // 2. Overdue & Today Tasks
   const overdueTasks = useMemo(
     () =>
       tasks.filter(
@@ -168,29 +156,18 @@ export default function OverviewPage() {
     [tasks, startOfToday, endOfToday, resolvedQueueIds]
   );
 
-  // Time-aware greeting line
-  const timeGreeting = useMemo(() => {
-    const hour = new Date().getHours();
-    let salutation = "Good morning";
-    if (hour >= 12 && hour < 17) salutation = "Good afternoon";
-    if (hour >= 17) salutation = "Good evening";
-
-    const topWaiting = unreadConversations[0];
-    if (topWaiting) {
-      return `${salutation}, Praveen. ${topWaiting.contact_name || "A customer"} has been waiting 2 hours.`;
-    }
-    if (todayTasks.length > 0) {
-      return `${salutation}, Praveen. You have ${todayTasks.length} priority follow-ups due today.`;
-    }
-    return `${salutation}, Praveen. All customer queues and SLAs are currently on track.`;
-  }, [unreadConversations, todayTasks]);
+  // Proposal leads
+  const proposalLeads = useMemo(
+    () => leads.filter((l) => l.stage === "proposal"),
+    [leads]
+  );
 
   // Combined Queue Items
   const allQueueItems = useMemo(() => {
     const queue: Array<{
       id: string;
       rawId: string;
-      type: "conversation" | "task" | "lead" | "automation";
+      type: "conversation" | "task" | "lead";
       avatar: string;
       name: string;
       reason: string;
@@ -202,22 +179,19 @@ export default function OverviewPage() {
     }> = [];
 
     // Conversations
-    unreadConversations.forEach((c, idx) => {
+    unreadConversations.forEach((c) => {
+      const contactName = c.contact_name || c.contact_phone || "A customer";
+      const firstName = contactName.includes(" ") ? contactName.split(" ")[0] : contactName;
       queue.push({
         id: `conv-${c.id}`,
         rawId: c.id,
         type: "conversation",
-        avatar: c.contact_name || c.contact_phone,
-        name: c.contact_name || c.contact_phone,
+        avatar: contactName,
+        name: contactName,
         reason: "Customer waiting on WhatsApp response",
-        inboundText:
-          c.inboundText ||
-          "Hello! We are looking to integrate WhatsApp Business API for our 20-agent sales team. Could you please share the pricing schedule and onboarding timeline?",
+        inboundText: c.inboundText,
         phone: c.contact_phone,
-        aiSuggestion:
-          idx === 0
-            ? "Hi Rahul! Absolutely, here is the updated quotation for the 5-seat Growth bundle with Meta verification setup included. Let me know if you would like a quick walkthrough call!"
-            : "Hello! We would be glad to share the pricing schedule. Let me know your preferred call time.",
+        aiSuggestion: `Hi ${firstName}! Thank you for reaching out. Here is our tailored Growth tier breakdown and onboarding schedule. Would 3:00 PM today work for a brief 10-minute walkthrough call?`,
         timeAgo: "waiting 2h",
         waitingHours: 2,
       });
@@ -225,6 +199,8 @@ export default function OverviewPage() {
 
     // Overdue tasks
     overdueTasks.forEach((t) => {
+      const taskContact = t.contact_name || "Client";
+      const firstName = taskContact.includes(" ") ? taskContact.split(" ")[0] : taskContact;
       queue.push({
         id: `task-${t.id}`,
         rawId: t.id,
@@ -234,7 +210,7 @@ export default function OverviewPage() {
         reason: `Overdue SLA deadline • Priority: ${t.priority}`,
         inboundText: `Action item SLA commitment: "${t.title}". Stakeholder requested technical architecture specifications and milestone delivery commitments.`,
         phone: "+91 98765 43210",
-        aiSuggestion: `Hi! Following up regarding "${t.title}". We have finalized the technical architecture draft and milestone schedule for your team's review. Would 3:30 PM today work for a brief 10-minute touchpoint?`,
+        aiSuggestion: `Hi ${firstName}! Following up regarding "${t.title}". We have finalized the technical architecture draft for your team's review. Would 3:30 PM work for a brief touchpoint?`,
         timeAgo: "overdue",
         waitingHours: 24,
       });
@@ -249,15 +225,14 @@ export default function OverviewPage() {
         avatar: t.contact_name || "Task",
         name: t.title,
         reason: `Follow-up SLA due today • ${t.contact_name ? `Contact: ${t.contact_name}` : ""}`,
-        inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder availability and sharing sprint deliverables.`,
+        inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder availability and sharing deliverables.`,
         phone: "+91 98765 43210",
-        aiSuggestion: `Hi! Touching base as agreed regarding "${t.title}". Everything is on track from our end, and I have shared the review notes. Let me know if any adjustments are needed.`,
         timeAgo: "due today",
         waitingHours: 4,
       });
     });
 
-    // High intent leads
+    // High intent new leads
     leads
       .filter((l) => l.stage === "new" && !resolvedQueueIds.has(`lead-${l.id}`))
       .slice(0, 2)
@@ -271,7 +246,6 @@ export default function OverviewPage() {
           reason: `New inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
           inboundText: `New WhatsApp inbound inquiry from ${l.contact_name || l.title}: Interested in enterprise Growth plan with custom webhook integrations.`,
           phone: l.contact_phone,
-          aiSuggestion: `Hello ${l.contact_name || "there"}! Welcome to Roos StudioX. We received your inquiry and would be delighted to set up a personalized demonstration for your team. What day this week suits you best?`,
           timeAgo: "waiting 1h",
           waitingHours: 1,
         });
@@ -283,9 +257,8 @@ export default function OverviewPage() {
   // Next Best Action (The single most urgent item)
   const nextBestAction = allQueueItems[0] || null;
 
-  // Up Next in Queue (Remaining items, filtered by Today chip selection)
+  // Up Next in Queue (Remaining items, filtered by Today chip selection - NEVER duplicates nextBestAction!)
   const upNextQueue = useMemo(() => {
-    // Exclude the nextBestAction so it never duplicates!
     let remaining = allQueueItems.filter((i) => i.id !== nextBestAction?.id);
 
     if (todayFilter === "waiting") {
@@ -322,7 +295,7 @@ export default function OverviewPage() {
     return Math.round((wonDeals.length / closedCount) * 100);
   }, [leads, wonDeals]);
 
-  // Proportional Stage Distribution (Open stages only with meaningful colors)
+  // Proportional Stage Distribution Bar (Open stages only)
   const openStageSegments = useMemo(() => {
     const stages = [
       {
@@ -364,7 +337,7 @@ export default function OverviewPage() {
     });
   }, [openLeads, openPipelineValue]);
 
-  // Deals Worth a Look: OPEN DEALS ONLY, sorted by value & stuck time (never Won!)
+  // Deals Worth a Look: OPEN DEALS ONLY, sorted by value (never Won!)
   const dealsWorthALook = useMemo(() => {
     return [...openLeads]
       .sort((a, b) => (b.estimated_value || 0) - (a.estimated_value || 0))
@@ -375,51 +348,11 @@ export default function OverviewPage() {
       }));
   }, [openLeads]);
 
-  // Coming Up Feed (Chronological follow-ups & SLAs)
-  const comingUpItems = useMemo(() => {
-    const items: Array<{
-      id: string;
-      rawId: string;
-      title: string;
-      time: string;
-      badge: string;
-      isTask: boolean;
-    }> = [];
-
-    todayTasks.forEach((t) => {
-      items.push({
-        id: `coming-task-${t.id}`,
-        rawId: t.id,
-        title: t.title,
-        time: "Today, 4:00 PM",
-        badge: t.priority === "high" ? "Urgent SLA" : "Follow-up",
-        isTask: true,
-      });
-    });
-
-    // Scheduled Broadcast Campaign
-    campaigns
-      .filter((c) => c.status === "processing" || c.status === "draft")
-      .slice(0, 1)
-      .forEach((c) => {
-        items.push({
-          id: `coming-camp-${c.id}`,
-          rawId: c.id,
-          title: `Broadcast: ${c.name}`,
-          time: "Today, 6:30 PM",
-          badge: "Scheduled",
-          isTask: false,
-        });
-      });
-
-    return items;
-  }, [todayTasks, campaigns]);
-
   // Action Handlers
   const handleResolveItem = (id: string, name: string) => {
     setResolvedQueueIds((prev) => new Set([...Array.from(prev), id]));
     toast("Item Resolved", {
-      message: `${name} has been marked completed and updated.`,
+      message: `${name} marked resolved and updated.`,
       type: "success",
     });
   };
@@ -452,6 +385,11 @@ export default function OverviewPage() {
       message: `"${task.title}" checked off.`,
       type: "success",
     });
+  };
+
+  const handleCompleteTaskById = (taskId: string) => {
+    const taskObj = tasks.find((t) => t.id === taskId);
+    if (taskObj) handleCompleteTask(taskObj);
   };
 
   const handleUndoTask = () => {
@@ -497,20 +435,38 @@ export default function OverviewPage() {
     });
   };
 
+  const scrollToHero = () => {
+    heroRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToDayRail = () => {
+    dayRailRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="space-y-8 pb-16">
       {/* ========================================================================= */}
-      {/* ROW 0: PAGE HEADER & TIME-AWARE GREETING                                  */}
+      {/* ROW 0: PAGE HEADER & BRIEFING LINE                                        */}
       {/* ========================================================================= */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="type-display text-[#12141A]">Overview</h1>
-          <p className="type-body text-[#454B57] mt-1" suppressHydrationWarning>
-            {timeGreeting}
-          </p>
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="space-y-1.5 max-w-3xl">
+          <h1 className="text-[2.25rem] font-medium leading-[1.15] text-[#12141A] tracking-[-0.02em]">
+            Overview
+          </h1>
+          {/* Briefing line with interactive real-data chips */}
+          <BriefingLine
+            unreadConversations={unreadConversations}
+            todayMeetings={todayMeetings}
+            proposalLeads={proposalLeads}
+            onOpenContactDrawer={setSelectedCustomer}
+            onOpenDealDrawer={setSelectedDeal}
+            onScrollToHero={scrollToHero}
+            onScrollToDayRail={scrollToDayRail}
+            onFilterProposal={() => setTodayFilter("proposal")}
+          />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0 pt-1">
           {/* Period Selector */}
           <div className="inline-flex rounded-[12px] bg-white border border-[#E6E2D8] p-1 shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
             {(
@@ -519,194 +475,175 @@ export default function OverviewPage() {
                 { id: "7d", label: "This Quarter" },
                 { id: "all", label: "All Time" },
               ] as const
-            ).map((p) => (
+            ).map((opt) => (
               <button
-                key={p.id}
+                key={opt.id}
                 type="button"
-                onClick={() => setPeriod(p.id)}
+                onClick={() => setPeriod(opt.id)}
                 className={cn(
-                  "px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-140",
-                  period === p.id
-                    ? "bg-[#12141A] text-white shadow-sm"
-                    : "text-[#666C78] hover:text-[#12141A]"
+                  "px-3 py-1 text-[13px] font-medium rounded-[8px] transition-all duration-140 cursor-pointer",
+                  period === opt.id
+                    ? "bg-[#12141A] text-white shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A] hover:bg-[#F7F5F0]"
                 )}
               >
-                {p.label}
+                {opt.label}
               </button>
             ))}
           </div>
 
-          {/* Single Primary Action Button: Flame CTA */}
-          <Button
+          {/* Flame Primary Action Button */}
+          <button
+            type="button"
             onClick={() => setNewDealOpen(true)}
-            className="btn-primary-flame gap-2 h-10 px-4"
+            className="btn-primary-flame inline-flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px] font-medium text-white shadow-sm transition-transform duration-140 active:scale-95 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>New opportunity</span>
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 1: TODAY STRIP (BLACK BACKGROUND, RED NEGATIVE, GREEN POSITIVE, ORANGE OTHERS) */}
+      {/* ROW 1: TODAY STRIP (FOUR 72PX TALL CHIPS IN MODULE HUES)                   */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {/* Chip 1: Waiting on you (Orange) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* 1. Waiting on you (Ultramarine) */}
         <button
           type="button"
-          onClick={() => setTodayFilter((f) => (f === "waiting" ? "all" : "waiting"))}
+          onClick={() =>
+            setTodayFilter(todayFilter === "waiting" ? "all" : "waiting")
+          }
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
+            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "waiting"
-              ? "border-[#FF7A1A] ring-1 ring-[#FF7A1A]/40 shadow-[0_4px_20px_rgba(255,122,26,0.22)]"
-              : "border-white/10 hover:border-[#FF7A1A]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+              ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20"
+              : "bg-white border-[#E6E2D8] hover:border-[#D3DCFF] hover:bg-[#FAFCFF] shadow-xs"
           )}
         >
-          <div className="min-w-0">
-            <span className="type-eyebrow text-[#FF7A1A]">Waiting on you</span>
-            <p className="type-small text-[#8E95A3] truncate mt-0.5">
-              Unanswered conversations
-            </p>
+          <div>
+            <span className="text-[12px] font-medium text-[#2A3DB5] block">
+              Waiting on you
+            </span>
+            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+              {unreadConversations.length}
+            </span>
           </div>
-          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0" suppressHydrationWarning>
-            {unreadConversations.length}
-          </span>
+          <span className="h-3 w-3 rounded-full bg-[#3D5AFE]" />
         </button>
 
-        {/* Chip 2: Due today (Orange) */}
+        {/* 2. Due today (Amber) */}
         <button
           type="button"
-          onClick={() => setTodayFilter((f) => (f === "due_today" ? "all" : "due_today"))}
+          onClick={() =>
+            setTodayFilter(todayFilter === "due_today" ? "all" : "due_today")
+          }
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
+            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "due_today"
-              ? "border-[#FF7A1A] ring-1 ring-[#FF7A1A]/40 shadow-[0_4px_20px_rgba(255,122,26,0.22)]"
-              : "border-white/10 hover:border-[#FF7A1A]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+              ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20"
+              : "bg-white border-[#E6E2D8] hover:border-[#FFE5A3] hover:bg-[#FFFDF9] shadow-xs"
           )}
         >
-          <div className="min-w-0">
-            <span className="type-eyebrow text-[#FF7A1A]">Due today</span>
-            <p className="type-small text-[#8E95A3] truncate mt-0.5">Follow-ups & SLAs</p>
+          <div>
+            <span className="text-[12px] font-medium text-[#8F5300] block">
+              Due today
+            </span>
+            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+              {todayTasks.length}
+            </span>
           </div>
-          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0" suppressHydrationWarning>
-            {todayTasks.length}
-          </span>
+          <span className="h-3 w-3 rounded-full bg-[#F5A524]" />
         </button>
 
-        {/* Chip 3: Overdue (Red if > 0, else calm Green "On track") */}
-        <button
-          type="button"
-          onClick={() => setTodayFilter((f) => (f === "overdue" ? "all" : "overdue"))}
-          className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
-            overdueTasks.length > 0
-              ? todayFilter === "overdue"
-                ? "border-[#EF4444] ring-1 ring-[#EF4444]/40 shadow-[0_4px_20px_rgba(239,68,68,0.22)]"
-                : "border-white/10 hover:border-[#EF4444]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
-              : todayFilter === "overdue"
-              ? "border-[#10B981] ring-1 ring-[#10B981]/40 shadow-[0_4px_20px_rgba(16,185,129,0.22)]"
-              : "border-white/10 hover:border-[#10B981]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
-          )}
-        >
-          <div className="min-w-0">
-            <span
-              className={cn(
-                "type-eyebrow",
-                overdueTasks.length > 0 ? "text-[#EF4444]" : "text-[#10B981]"
-              )}
-            >
-              {overdueTasks.length > 0 ? "Overdue" : "SLA Status"}
-            </span>
-            <p className="type-small text-[#8E95A3] truncate mt-0.5">
-              {overdueTasks.length > 0 ? "Needs immediate action" : "All SLAs on track"}
-            </p>
-          </div>
-          {overdueTasks.length > 0 ? (
-            <span className="type-metric text-[#EF4444] ml-3 shrink-0" suppressHydrationWarning>
-              {overdueTasks.length}
-            </span>
-          ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#10B981]/20 text-[#10B981] ml-3">
-              <Check className="h-5 w-5" />
+        {/* 3. Overdue (Rose if > 0, otherwise calm Emerald "On track") */}
+        {overdueTasks.length > 0 ? (
+          <button
+            type="button"
+            onClick={() =>
+              setTodayFilter(todayFilter === "overdue" ? "all" : "overdue")
+            }
+            className={cn(
+              "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              todayFilter === "overdue"
+                ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20"
+                : "bg-white border-[#FDC8CA] hover:bg-[#FFF5F5] shadow-xs"
+            )}
+          >
+            <div>
+              <span className="text-[12px] font-medium text-[#B42336] block">
+                Overdue
+              </span>
+              <span className="text-[2rem] font-medium leading-none text-[#E5484D] tabular-nums mt-1 block">
+                {overdueTasks.length}
+              </span>
             </div>
-          )}
-        </button>
+            <span className="h-3 w-3 rounded-full bg-[#E5484D] animate-pulse" />
+          </button>
+        ) : (
+          <div className="h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border border-[#BDECD7] bg-[#E4F7EF] text-left shadow-xs">
+            <div>
+              <span className="text-[12px] font-medium text-[#0A7A53] block">
+                Overdue
+              </span>
+              <span className="text-[1.125rem] font-medium leading-none text-[#0A7A53] mt-2 block">
+                On track
+              </span>
+            </div>
+            <Check className="h-4 w-4 text-[#0A7A53]" />
+          </div>
+        )}
 
-        {/* Chip 4: In proposal (Green) */}
+        {/* 4. In proposal (Emerald) */}
         <button
           type="button"
-          onClick={() => setTodayFilter((f) => (f === "proposal" ? "all" : "proposal"))}
+          onClick={() =>
+            setTodayFilter(todayFilter === "proposal" ? "all" : "proposal")
+          }
           className={cn(
-            "flex items-center justify-between h-[72px] px-5 rounded-[20px] border transition-all duration-140 text-left cursor-pointer bg-[#0B0D12] hover:scale-[1.01] active:scale-[0.99]",
+            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "proposal"
-              ? "border-[#10B981] ring-1 ring-[#10B981]/40 shadow-[0_4px_20px_rgba(16,185,129,0.22)]"
-              : "border-white/10 hover:border-[#10B981]/50 shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+              ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20"
+              : "bg-white border-[#E6E2D8] hover:border-[#BDECD7] hover:bg-[#F8FCFA] shadow-xs"
           )}
         >
-          <div className="min-w-0">
-            <span className="type-eyebrow text-[#10B981]">In proposal</span>
-            <p className="type-small text-[#8E95A3] truncate mt-0.5">Active negotiations</p>
+          <div>
+            <span className="text-[12px] font-medium text-[#0A7A53] block">
+              In proposal
+            </span>
+            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+              {proposalLeads.length}
+            </span>
           </div>
-          <span className="type-metric text-[#10B981] ml-3 shrink-0" suppressHydrationWarning>
-            {proposalDeals.length}
-          </span>
+          <span className="h-3 w-3 rounded-full bg-[#12B886]" />
         </button>
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 2: NEXT BEST ACTION, CALENDAR & MEETINGS, REVENUE HERO                */}
+      {/* ROW 2: THE TWO HEROES (7 / 5 COLUMNS)                                     */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* HERO 1: NEXT BEST ACTION (5 COLUMNS ON XL) */}
-        <div className="lg:col-span-12 xl:col-span-5 card-2027 rounded-[28px] border border-[#E6E2D8] bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-[0_2px_4px_rgba(11,13,18,0.04),0_16px_36px_-12px_rgba(11,13,18,0.12)] hover:shadow-[0_20px_48px_-12px_rgba(255,90,31,0.14)] transition-all duration-200">
-          {/* Subtle top rainbow flame/violet accent line */}
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FF5A1F] via-[#FF8833] to-[#7C4DFF]" />
-
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+        {/* HERO 1 (LEFT 7 COLS): NEXT BEST ACTION */}
+        <div
+          ref={heroRef}
+          className="xl:col-span-7 bg-white rounded-[28px] p-7 border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_24px_-12px_rgba(11,13,18,0.12)] border-l-[4px] border-l-[#FF5A1F] flex flex-col justify-between"
+        >
           {nextBestAction ? (
-            <div className="space-y-4">
-              {/* Header line with Live Radar Beacon badge & Timer */}
-              <div className="flex items-center justify-between gap-2.5 pt-0.5">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="flex items-center gap-2 bg-[#FFF0EB] border border-[#FFD9CC] rounded-full px-3 py-1 shadow-2xs shrink-0">
-                    <span className="radar-beacon inline-flex h-2.5 w-2.5 rounded-full bg-[#FF5A1F]" />
-                    <span className="text-[13px] font-semibold tracking-wider uppercase text-[#B93A0A] whitespace-nowrap">
-                      Next best action
-                    </span>
-                  </div>
-                  <span className="text-[13px] text-[#666C78] font-normal hidden 2xl:inline" suppressHydrationWarning>
-                    Priority 1 of {allQueueItems.length}
-                  </span>
-                </div>
-
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium transition-all shadow-2xs shrink-0",
-                    nextBestAction.timeAgo === "overdue"
-                      ? "bg-[#FFE9EA] text-[#B42336] border border-[#FFCCD0]"
-                      : "bg-[#FFF0EB] text-[#B93A0A] border border-[#FFD9CC]"
-                  )}
-                  suppressHydrationWarning
-                >
-                  <Clock className="h-3.5 w-3.5" />
-                  <span className="capitalize" suppressHydrationWarning>{nextBestAction.timeAgo}</span>
-                </span>
-              </div>
-
-              {/* Customer Profile & Identity Row */}
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="relative shrink-0">
+            <div className="space-y-5">
+              {/* Card Header & Contact Meta */}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="relative">
                     {(() => {
                       const avatarStyle = getAvatarColor(nextBestAction.name);
                       return (
                         <div
                           className={cn(
-                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border text-[15px] font-medium shadow-2xs transition-transform hover:scale-105 duration-140",
+                            "flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] border text-[16px] font-medium shadow-2xs",
                             avatarStyle.bg,
                             avatarStyle.text,
                             avatarStyle.border
                           )}
-                          suppressHydrationWarning
                         >
                           {getInitials(nextBestAction.name)}
                         </div>
@@ -714,7 +651,7 @@ export default function OverviewPage() {
                     })()}
                     <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#12B886] ring-2 ring-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3
                         onClick={() =>
@@ -724,24 +661,22 @@ export default function OverviewPage() {
                             reason: nextBestAction.reason,
                           })
                         }
-                        className="text-[17px] sm:text-[19px] font-medium text-[#12141A] hover:text-[#FF5A1F] hover:underline cursor-pointer truncate transition-colors"
-                        suppressHydrationWarning
+                        className="text-[1.0625rem] font-medium text-[#12141A] hover:text-[#FF5A1F] cursor-pointer truncate transition-colors"
                       >
                         {nextBestAction.name}
                       </h3>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] text-[12px] font-medium bg-[#EBF6FD] text-[#0F6F9D] border border-[#CDE5F7] shrink-0">
-                        WhatsApp Client
+                      <span className="px-2 py-0.5 rounded-[6px] text-[12px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
+                        WhatsApp Customer
                       </span>
                     </div>
-                    <p className="text-[13px] text-[#666C78] truncate mt-0.5" suppressHydrationWarning>
+                    <p className="text-[0.875rem] text-[#666C78] truncate mt-0.5">
                       {nextBestAction.phone || "+91 98765 43210"} • {nextBestAction.reason}
                     </p>
                   </div>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
+                  type="button"
                   onClick={() =>
                     setSelectedCustomer({
                       name: nextBestAction.name,
@@ -749,53 +684,52 @@ export default function OverviewPage() {
                       reason: nextBestAction.reason,
                     })
                   }
-                  className="text-[#454B57] hover:text-[#12141A] text-[13px] h-8 px-2.5 gap-1 shrink-0 rounded-[9px] cursor-pointer"
+                  className="text-[#666C78] hover:text-[#12141A] text-[13px] h-8 px-2.5 rounded-[8px] hover:bg-[#F7F5F0] transition-colors inline-flex items-center gap-1 shrink-0"
                 >
-                  <span className="hidden sm:inline">View</span>
-                  <ExternalLink className="h-3 w-3 text-[#666C78]" />
-                </Button>
+                  <span>Details</span>
+                  <ExternalLink className="h-3 w-3" />
+                </button>
               </div>
 
-              {/* Inbound Customer Message (WhatsApp Speech Bubble Style) */}
-              <div className="rounded-[18px] bg-[#F7F5F0] border border-[#E6E2D8] p-4 text-[#12141A] relative shadow-2xs">
+              {/* Inbound Customer Message */}
+              <div className="rounded-[18px] bg-[#F7F5F0] border border-[#E6E2D8] p-4 text-[#12141A]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-[#25D366]" />
-                    <span className="text-[13px] font-medium uppercase tracking-wider text-[#454B57]">
-                      Latest Inbound Context
+                    <div className="h-2 w-2 rounded-full bg-[#12B886]" />
+                    <span className="text-[12px] font-medium text-[#454B57] uppercase tracking-wider">
+                      Latest Inbound Message
                     </span>
                   </div>
-                  <span className="text-[13px] text-[#8E95A3] font-normal" suppressHydrationWarning>
-                    Received {nextBestAction.timeAgo}
+                  <span className="text-[12px] text-[#666C78]">
+                    {nextBestAction.timeAgo}
                   </span>
                 </div>
-                <p className="text-[15px] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#25D366]" suppressHydrationWarning>
+                <p className="text-[1rem] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#12B886]">
                   &ldquo;{nextBestAction.inboundText}&rdquo;
                 </p>
               </div>
 
-              {/* AI Engine Suggested Reply Preview (Luminous Violet Box with Shimmer) */}
+              {/* AI Suggested Reply Preview (Violet box) */}
               {nextBestAction.aiSuggestion && (
-                <div className="rounded-[18px] bg-gradient-to-br from-[#F5F0FF] via-[#FAF8FF] to-[#FFFFFF] border border-[#D9C9FF] p-4 relative overflow-hidden shadow-2xs">
-                  <div className="copilot-shimmer-line absolute top-0 left-0 right-0 h-[2px]" />
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2 text-[#6938EF]">
-                      <Sparkles className="h-4 w-4 animate-pulse text-[#7C4DFF]" />
-                      <span className="text-[13px] font-medium uppercase tracking-wider text-[#6938EF]">
-                        Suggested AI Response
+                <div className="rounded-[18px] bg-[#F0EAFF] border border-[#D9C9FF] p-4 relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 text-[#5B34C9]">
+                      <Sparkles className="h-4 w-4" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider text-[#5B34C9]">
+                        Suggested Reply
                       </span>
                     </div>
-                    <span className="rounded-full bg-white/90 border border-[#E0D4FC] text-[13px] font-medium text-[#6938EF] px-2.5 py-0.5 tabular-nums shadow-2xs">
-                      Gemini 1.5 Flash • Grounded
+                    <span className="text-[11px] font-medium text-[#5B34C9] bg-white/80 px-2 py-0.5 rounded-full border border-[#D9C9FF]">
+                      AI Engine
                     </span>
                   </div>
 
                   {inlineReplyId === nextBestAction.id ? (
-                    <div className="space-y-3 pt-1 animate-reveal">
+                    <div className="space-y-3 pt-1">
                       <textarea
                         value={inlineReplyText}
                         onChange={(e) => setInlineReplyText(e.target.value)}
-                        className="w-full h-24 p-3.5 rounded-[12px] bg-white border border-[#D9C9FF] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF] shadow-inner"
+                        className="w-full h-24 p-3 rounded-[12px] bg-white border border-[#D9C9FF] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]"
                         placeholder="Edit suggested reply..."
                       />
                       <div className="flex items-center gap-2">
@@ -808,33 +742,32 @@ export default function OverviewPage() {
                               nextBestAction.name
                             )
                           }
-                          className="btn-primary-flame text-[14px] h-9 px-4 cursor-pointer"
+                          className="btn-primary-flame text-[14px] h-9 px-4"
                         >
-                          Send edited reply
+                          Send reply
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setInlineReplyId(null)}
-                          className="text-[14px] h-9 px-3 cursor-pointer"
+                          className="text-[14px] h-9 px-3"
                         >
                           Cancel
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-[14px] text-[#241C48] leading-relaxed font-normal" suppressHydrationWarning>
+                    <p className="text-[0.9375rem] text-[#341F73] leading-relaxed">
                       {nextBestAction.aiSuggestion}
                     </p>
                   )}
                 </div>
               )}
 
-              {/* Actions Footer Dock */}
+              {/* Actions Dock */}
               {inlineReplyId !== nextBestAction.id && (
-                <div className="pt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#E6E2D8]">
+                <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#EFEDE7]">
                   <div className="flex items-center gap-2">
-                    {/* Primary Button: Flame Send with Takeoff Animation */}
                     <Button
                       onClick={() =>
                         handleSendReply(
@@ -844,10 +777,10 @@ export default function OverviewPage() {
                           nextBestAction.name
                         )
                       }
-                      className="btn-primary-flame group gap-1.5 h-9 px-3.5 text-[13px] font-medium shadow-xs cursor-pointer interactive-tap-spring"
+                      className="btn-primary-flame inline-flex items-center gap-1.5 h-10 px-4 text-[14px] font-medium text-white shadow-xs cursor-pointer"
                     >
-                      <Send className="h-3.5 w-3.5 transition-transform duration-140 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
-                      <span>Send Reply</span>
+                      <Send className="h-3.5 w-3.5" />
+                      <span>Send</span>
                     </Button>
 
                     <Button
@@ -856,22 +789,22 @@ export default function OverviewPage() {
                         setInlineReplyId(nextBestAction.id);
                         setInlineReplyText(nextBestAction.aiSuggestion || "");
                       }}
-                      className="text-[13px] h-9 px-3 gap-1 rounded-[10px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] cursor-pointer"
+                      className="text-[13px] h-10 px-3.5 gap-1.5 rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A]"
                     >
-                      <Pencil className="h-3 w-3 text-[#666C78]" />
+                      <Pencil className="h-3.5 w-3.5 text-[#666C78]" />
                       <span>Edit</span>
                     </Button>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[#666C78] hover:text-[#12141A] text-[12.5px] h-9 px-2.5 gap-1 rounded-[10px] cursor-pointer"
+                      className="text-[#666C78] hover:text-[#12141A] text-[13px] h-10 px-3 rounded-[12px]"
                     >
-                      <Clock className="h-3 w-3" />
+                      <Clock className="h-3.5 w-3.5" />
                       <span>Snooze</span>
                     </Button>
                     <Button
@@ -879,7 +812,7 @@ export default function OverviewPage() {
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[12.5px] h-9 px-3 gap-1 rounded-[10px] border border-[#E6E2D8] bg-white hover:bg-[#E6FBF2] hover:text-[#0A7A53] hover:border-[#12B886]/40 text-[#12141A] transition-all cursor-pointer interactive-tap-spring"
+                      className="text-[13px] h-10 px-3.5 gap-1.5 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#E4F7EF] hover:text-[#0A7A53] hover:border-[#BDECD7] text-[#12141A]"
                     >
                       <Check className="h-3.5 w-3.5 text-[#12B886]" />
                       <span>Done</span>
@@ -889,48 +822,52 @@ export default function OverviewPage() {
               )}
             </div>
           ) : (
-            /* Empty State when caught up */
-            <div className="h-full flex flex-col items-center justify-center py-12 text-center">
+            /* Empty State */
+            <div className="h-full flex flex-col items-center justify-center py-16 text-center">
               <div className="h-14 w-14 rounded-full bg-[#E4F7EF] text-[#0A7A53] flex items-center justify-center mb-4">
                 <Check className="h-7 w-7" />
               </div>
-              <h3 className="type-title text-[#12141A]">You&apos;re all caught up!</h3>
-              <p className="type-body text-[#666C78] max-w-sm mt-1">
+              <h3 className="text-[1.25rem] font-medium text-[#12141A]">You&apos;re all caught up!</h3>
+              <p className="text-[1rem] text-[#666C78] max-w-sm mt-1">
                 Zero overdue SLAs and no pending customer inquiries awaiting attention.
-                Last reply resolved 12 minutes ago.
               </p>
             </div>
           )}
         </div>
 
-        {/* HERO 2: CALENDAR & MEETINGS (GOOGLE CALENDAR & ZOOM INTEGRATIONS) */}
-        <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
-          <MeetingsHeroCard orgSlug={orgSlug} />
-        </div>
+        {/* HERO 2 (RIGHT 5 COLS): REVENUE HERO (INK SURFACE WITH SOFT FLAME GLOW) */}
+        <div className="xl:col-span-5 bg-[#0B0D12] text-white rounded-[28px] p-8 border border-[#1B1F29] relative overflow-hidden shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_24px_-12px_rgba(11,13,18,0.12)] flex flex-col justify-between">
+          {/* Subtle Flame Glow at Lower Right */}
+          <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#FF5A1F]/15 blur-3xl pointer-events-none" />
 
-        {/* HERO 3: REVENUE HERO (3 COLUMNS ON XL, INK SURFACE WITH FLAME GLOW) */}
-        <div className="lg:col-span-6 xl:col-span-3 hero-card-dark p-6 flex flex-col justify-between text-white">
           <div>
             <div className="flex items-center justify-between">
-              <span className="type-eyebrow text-[#A3A9B6]">Open pipeline</span>
+              <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#A3A9B6]">
+                Open pipeline
+              </span>
               <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#12B886] bg-[#12B886]/15 px-2 py-0.5 rounded-full border border-[#12B886]/30">
                 <TrendingUp className="h-3 w-3" />
                 <span>+18.4%</span>
               </span>
             </div>
 
-            {/* Fluid Responsive Hero Metric Figure */}
-            <div className="my-3.5">
-              <div className="text-[32px] sm:text-[38px] xl:text-[34px] 2xl:text-[40px] font-medium leading-none tracking-tight text-white tabular-nums">
-                <AnimatedNumber value={openPipelineValue} format="currency" currencySymbol="₹" duration={850} />
+            {/* Hero-metric Figure (5rem / 80px) with single-session count-up */}
+            <div className="my-4">
+              <div className="text-[3.5rem] sm:text-[4.25rem] font-medium leading-none tracking-tight text-white tabular-nums">
+                <AnimatedNumber
+                  value={openPipelineValue}
+                  format="currency"
+                  currencySymbol="₹"
+                  duration={800}
+                />
               </div>
-              <p className="type-meta text-[#A3A9B6] mt-1.5 text-[12px]">
-                {openLeads.length} active deals in pipeline
+              <p className="text-[0.875rem] text-[#A3A9B6] mt-2">
+                {openLeads.length} active opportunities in motion
               </p>
             </div>
 
-            {/* Proportional Stage Distribution Bar */}
-            <div className="my-4">
+            {/* Proportional Stage Bar (Open stages only) */}
+            <div className="my-5">
               <div className="h-3.5 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
                 {openStageSegments.map((stage) => (
                   <div
@@ -939,24 +876,24 @@ export default function OverviewPage() {
                       width: `${stage.pct}%`,
                       backgroundColor: stage.color,
                     }}
-                    className="h-full rounded-full transition-all duration-300 relative group"
+                    className="h-full rounded-full transition-all duration-300 relative group cursor-pointer"
                     title={`${stage.label}: ${formatINR(stage.val)} (${stage.count} deals)`}
                   />
                 ))}
               </div>
 
-              {/* Legend with Real Numbers (2x2 Grid) */}
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-3 pt-2.5 border-t border-white/10 text-[12px]">
+              {/* Stage Legend with Values */}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3.5 pt-3 border-t border-white/10 text-[12px]">
                 {openStageSegments.map((stage) => (
                   <div key={stage.key} className="flex items-center justify-between min-w-0">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span
-                        className="h-1.5 w-1.5 rounded-full shrink-0"
+                        className="h-2 w-2 rounded-full shrink-0"
                         style={{ backgroundColor: stage.color }}
                       />
                       <span className="text-[#A3A9B6] truncate">{stage.label}</span>
                     </div>
-                    <span className="font-medium text-white tabular-nums ml-1.5 shrink-0">
+                    <span className="font-medium text-white tabular-nums ml-1 shrink-0">
                       {formatINR(stage.val)}
                     </span>
                   </div>
@@ -966,7 +903,7 @@ export default function OverviewPage() {
           </div>
 
           {/* Three Quiet Lines at Bottom */}
-          <div className="pt-3.5 border-t border-white/10 space-y-2 text-[13px]">
+          <div className="pt-4 border-t border-white/10 space-y-2.5 text-[13px]">
             <div className="flex items-center justify-between">
               <span className="text-[#A3A9B6]">Won this period</span>
               <span className="font-medium text-[#12B886] tabular-nums">
@@ -992,350 +929,300 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 3: UP NEXT IN YOUR QUEUE (7 COLS) & COMING UP (5 COLS)                */}
+      {/* ROW 3: UP NEXT IN YOUR QUEUE (7 COLS) & THE DAY RAIL (5 COLS)             */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* LEFT (7 COLS): UP NEXT IN YOUR QUEUE */}
-        <div className="lg:col-span-7 card-2027 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="type-title text-[#12141A]">Up next in your queue</h2>
-              <p className="type-small text-[#666C78]" suppressHydrationWarning>
-                {todayFilter !== "all"
-                  ? `Filtered by "${todayFilter.replace("_", " ")}" • `
-                  : ""}
-                {upNextQueue.length} priority items awaiting action
-              </p>
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        {/* LEFT (7 COLS): UP NEXT QUEUE & DEALS WORTH A LOOK */}
+        <div className="xl:col-span-7 space-y-6">
+          {/* UP NEXT IN YOUR QUEUE */}
+          <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
+            <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#EFEDE7]">
+              <div>
+                <h2 className="text-[1.25rem] font-medium text-[#12141A]">
+                  Up next in your queue
+                </h2>
+                <p className="text-[0.875rem] text-[#666C78] mt-0.5">
+                  {todayFilter !== "all"
+                    ? `Filtered by "${todayFilter.replace("_", " ")}" • `
+                    : ""}
+                  {upNextQueue.length} priority items awaiting action
+                </p>
+              </div>
+
+              {todayFilter !== "all" && (
+                <button
+                  type="button"
+                  onClick={() => setTodayFilter("all")}
+                  className="text-[13px] font-medium text-[#FF5A1F] hover:underline"
+                >
+                  Clear filter
+                </button>
+              )}
             </div>
 
-            {todayFilter !== "all" && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setTodayFilter("all")}
-                className="text-[13px] text-[#FF5A1F]"
-              >
-                Clear filter
-              </Button>
-            )}
+            <div className="divide-y divide-[#E6E2D8]">
+              {upNextQueue.length > 0 ? (
+                upNextQueue.map((item) => {
+                  const avatarStyle = getAvatarColor(item.name);
+                  const isConv = item.type === "conversation";
+                  const isTask = item.type === "task";
+                  const isLead = item.type === "lead";
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="py-3.5 flex items-center justify-between gap-4 group hover:bg-[#F7F5F0] -mx-3 px-3 rounded-[12px] transition-colors"
+                    >
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div
+                          className={cn(
+                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[13px] font-medium",
+                            avatarStyle.bg,
+                            avatarStyle.text,
+                            avatarStyle.border
+                          )}
+                        >
+                          {getInitials(item.name)}
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span
+                              onClick={() => {
+                                if (item.phone) {
+                                  setSelectedCustomer({
+                                    name: item.name,
+                                    phone: item.phone,
+                                    reason: item.reason,
+                                  });
+                                }
+                              }}
+                              className="text-[1.0625rem] font-medium text-[#12141A] truncate hover:underline cursor-pointer"
+                            >
+                              {item.name}
+                            </span>
+
+                            {isConv && (
+                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF]">
+                                WhatsApp
+                              </span>
+                            )}
+                            {isTask && (
+                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3]">
+                                Task
+                              </span>
+                            )}
+                            {isLead && (
+                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
+                                Lead
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-[0.875rem] text-[#666C78] truncate mt-0.5">
+                            {item.reason}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span
+                          className={cn(
+                            "text-[13px] font-medium tabular-nums",
+                            item.timeAgo === "overdue"
+                              ? "text-[#B42336]"
+                              : item.timeAgo.includes("waiting")
+                              ? "text-[#8F5300]"
+                              : "text-[#666C78]"
+                          )}
+                        >
+                          {item.timeAgo}
+                        </span>
+
+                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleResolveItem(item.id, item.name)}
+                            className="h-8 px-2.5 text-[13px] text-[#454B57]"
+                          >
+                            Snooze
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleResolveItem(item.id, item.name)}
+                            className="h-8 px-2.5 text-[13px] gap-1"
+                          >
+                            <Check className="h-3.5 w-3.5 text-[#12B886]" />
+                            <span>Done</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="py-8 text-center text-[#666C78]">
+                  <p className="text-[1rem]">No remaining items in this queue filter.</p>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="divide-y divide-[#E6E2D8]">
-            {upNextQueue.length > 0 ? (
-              upNextQueue.map((item) => {
-                const avatarStyle = getAvatarColor(item.name);
-                const isConv = item.type === "conversation";
-                const isTask = item.type === "task";
-                const isLead = item.type === "lead";
+          {/* DEALS WORTH A LOOK (OPEN DEALS ONLY) */}
+          <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
+            <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#EFEDE7]">
+              <div>
+                <h2 className="text-[1.25rem] font-medium text-[#12141A]">
+                  Deals worth a look
+                </h2>
+                <p className="text-[0.875rem] text-[#666C78] mt-0.5">
+                  Open opportunities requiring action
+                </p>
+              </div>
+              <Link
+                href={`/app/${orgSlug}/leads`}
+                className="text-[14px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1"
+              >
+                <span>Pipeline</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="divide-y divide-[#E6E2D8]">
+              {dealsWorthALook.map((deal) => {
+                const stageKey = (deal.stage as keyof typeof STAGE_CONFIG) || "proposal";
+                const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
 
                 return (
                   <div
-                    key={item.id}
-                    className="py-3.5 flex items-center justify-between gap-4 group hover:bg-[#F7F5F0] -mx-3 px-3 rounded-[12px] transition-colors"
+                    key={deal.id}
+                    onClick={() => setSelectedDeal(deal)}
+                    className="py-3.5 flex items-center justify-between gap-4 -mx-3 px-3 rounded-[12px] hover:bg-[#F7F5F0] transition-colors cursor-pointer group"
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
-                      <div
-                        className={cn(
-                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[13px] font-medium",
-                          avatarStyle.bg,
-                          avatarStyle.text,
-                          avatarStyle.border
-                        )}
-                        suppressHydrationWarning
-                      >
-                        {getInitials(item.name)}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[1.0625rem] font-medium text-[#12141A] truncate group-hover:underline">
+                          {deal.title}
+                        </span>
+                        <span
+                          className="px-2 py-0.5 rounded-full text-[12px] font-medium border"
+                          style={{
+                            backgroundColor: stageInfo.bg,
+                            color: stageInfo.text,
+                            borderColor: stageInfo.border,
+                          }}
+                        >
+                          {stageInfo.label}
+                        </span>
                       </div>
-
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span
-                            onClick={() => {
-                              if (item.phone) {
-                                setSelectedCustomer({
-                                  name: item.name,
-                                  phone: item.phone,
-                                  reason: item.reason,
-                                });
-                              }
-                            }}
-                            className="type-label text-[#12141A] truncate hover:underline cursor-pointer"
-                            suppressHydrationWarning
-                          >
-                            {item.name}
-                          </span>
-
-                          {/* Type Chip with meaningful module hue */}
-                          {isConv && (
-                            <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF]">
-                              Conversation
-                            </span>
-                          )}
-                          {isTask && (
-                            <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3]">
-                              Task SLA
-                            </span>
-                          )}
-                          {isLead && (
-                            <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
-                              Lead
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="type-small text-[#666C78] truncate mt-0.5" suppressHydrationWarning>
-                          {item.reason}
-                        </p>
-                      </div>
+                      <p className="text-[0.875rem] text-[#666C78] mt-0.5">
+                        {deal.contact_name} • {deal.stuckDays} days in stage
+                      </p>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span
-                        className={cn(
-                          "text-[13px] font-medium tabular-nums",
-                          item.timeAgo === "overdue"
-                            ? "text-[#B42336]"
-                            : item.timeAgo.includes("waiting")
-                            ? "text-[#8F5300]"
-                            : "text-[#666C78]"
-                        )}
-                        suppressHydrationWarning
-                      >
-                        {item.timeAgo}
+                    <div className="text-right shrink-0">
+                      <span className="text-[1.125rem] text-[#12141A] tabular-nums font-medium block">
+                        {formatINR(deal.estimated_value || 0)}
                       </span>
-
-                      {/* Hover action buttons */}
-                      <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleResolveItem(item.id, item.name)}
-                          className="h-8 px-2.5 text-[13px] text-[#454B57]"
-                        >
-                          Snooze
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleResolveItem(item.id, item.name)}
-                          className="h-8 px-2.5 text-[13px] gap-1"
-                        >
-                          <Check className="h-3.5 w-3.5 text-[#12B886]" />
-                          <span>Done</span>
-                        </Button>
-                      </div>
+                      <span className="text-[12px] text-[#666C78] block">
+                        {deal.stage === "proposal" ? "In Proposal" : "Active deal"}
+                      </span>
                     </div>
                   </div>
                 );
-              })
-            ) : (
-              <div className="py-8 text-center text-[#666C78]">
-                <p className="type-body">No remaining items in this queue filter.</p>
-              </div>
-            )}
+              })}
+            </div>
           </div>
         </div>
 
-        {/* RIGHT (5 COLS): COMING UP (CHRONOLOGICAL FEED) */}
-        <div className="lg:col-span-5 card-2027 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="type-title text-[#12141A]">Coming up</h2>
-              <p className="type-small text-[#666C78]">
-                Today&apos;s scheduled follow-ups, SLAs &amp; broadcasts
-              </p>
-            </div>
-            <Calendar className="h-4 w-4 text-[#666C78]" />
-          </div>
-
-          <div className="space-y-4">
-            {comingUpItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-start gap-3.5 p-3 rounded-[14px] bg-[#F7F5F0] border border-[#E6E2D8] hover:border-[#D2CEC2] transition-colors"
-              >
-                {item.isTask ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const taskObj = tasks.find((t) => t.id === item.rawId);
-                      if (taskObj) handleCompleteTask(taskObj);
-                    }}
-                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border border-[#D2CEC2] bg-white hover:border-[#12B886] hover:bg-[#E4F7EF] transition-colors text-transparent hover:text-[#0A7A53]"
-                    title="Mark task completed"
-                  >
-                    <Check className="h-3.5 w-3.5" />
-                  </button>
-                ) : (
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F0EAFF] text-[#7C4DFF]">
-                    <Send className="h-3 w-3" />
-                  </div>
-                )}
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="type-label text-[#12141A] truncate">
-                      {item.title}
-                    </span>
-                    <span className="text-[12px] font-medium text-[#8F5300] bg-[#FFF3D6] px-2 py-0.5 rounded-full border border-[#FFE5A3] shrink-0">
-                      {item.badge}
-                    </span>
-                  </div>
-                  <p className="type-meta text-[#666C78] mt-1">{item.time}</p>
-                </div>
-              </div>
-            ))}
-
-            {lastCompletedTask && (
-              <div className="p-3 rounded-[12px] bg-[#E4F7EF] border border-[#BDECD7] flex items-center justify-between text-[13px] text-[#0A7A53] animate-reveal">
-                <span>Task marked completed.</span>
-                <button
-                  type="button"
-                  onClick={handleUndoTask}
-                  className="inline-flex items-center gap-1 font-medium hover:underline text-[#0A7A53]"
-                >
-                  <Undo2 className="h-3.5 w-3.5" />
-                  <span>Undo</span>
-                </button>
-              </div>
-            )}
-          </div>
+        {/* RIGHT (5 COLS): THE DAY RAIL (VERTICAL TIMELINE WITH LIVE NOW MARKER) */}
+        <div ref={dayRailRef} className="xl:col-span-5">
+          <DayRail
+            orgSlug={orgSlug}
+            meetings={todayMeetings}
+            tasks={todayTasks}
+            unreadCount={unreadConversations.length}
+            onCompleteTask={handleCompleteTaskById}
+          />
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 4: DEALS WORTH A LOOK (OPEN DEALS ONLY) & RECENT ACTIVITY             */}
+      {/* ROW 4: RECENT ACTIVITY (COLLAPSIBLE TIMELINE OF REAL EVENTS)               */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* DEALS WORTH A LOOK (7 COLS) */}
-        <div className="lg:col-span-7 card-2027 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="type-title text-[#12141A]">Deals worth a look</h2>
-              <p className="type-small text-[#666C78]">
-                Open high-value opportunities sorted by deal value and stage velocity
-              </p>
-            </div>
-            <Link
-              href={`/app/${orgSlug}/leads`}
-              className="type-small text-[#FF5A1F] hover:underline"
-            >
-              View pipeline
-            </Link>
+      <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-[1.25rem] font-medium text-[#12141A]">Recent activity</h2>
+            <p className="text-[0.875rem] text-[#666C78]">
+              Events logged across conversations, deals, and team tasks
+            </p>
           </div>
-
-          <div className="divide-y divide-[#E6E2D8]">
-            {dealsWorthALook.map((deal) => {
-              const stageKey = (deal.stage as keyof typeof STAGE_CONFIG) || "proposal";
-              const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
-
-              return (
-                <div
-                  key={deal.id}
-                  onClick={() => setSelectedDeal(deal)}
-                  className="py-3.5 flex items-center justify-between gap-4 -mx-3 px-3 rounded-[12px] hover:bg-[#F7F5F0] transition-colors cursor-pointer group"
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="type-label text-[#12141A] truncate group-hover:underline">
-                        {deal.title}
-                      </span>
-                      <span
-                        className="px-2 py-0.5 rounded-full text-[12px] font-medium border"
-                        style={{
-                          backgroundColor: stageInfo.bg,
-                          color: stageInfo.text,
-                          borderColor: stageInfo.border,
-                        }}
-                      >
-                        {stageInfo.label}
-                      </span>
-                    </div>
-                    <p className="type-small text-[#666C78] mt-0.5">
-                      {deal.contact_name} • {deal.stuckDays} days in stage
-                    </p>
-                  </div>
-
-                  <div className="text-right shrink-0">
-                    <span className="type-title text-[#12141A] tabular-nums font-medium">
-                      {formatINR(deal.estimated_value || 0)}
-                    </span>
-                    <span className="block type-meta text-[#666C78]">
-                      {deal.stage === "proposal" ? "In Proposal" : "Active deal"}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <button
+            type="button"
+            onClick={() => setActivityExpanded((prev) => !prev)}
+            className="text-[13px] font-medium text-[#666C78] hover:text-[#12141A] flex items-center gap-1"
+          >
+            <span>{activityExpanded ? "Collapse" : "Expand"}</span>
+            <ChevronDown
+              className={cn(
+                "h-3.5 w-3.5 transition-transform duration-140",
+                activityExpanded ? "rotate-180" : ""
+              )}
+            />
+          </button>
         </div>
 
-        {/* RECENT ACTIVITY COLLAPSED FEED (5 COLS) */}
-        <div className="lg:col-span-5 card-2027 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="type-title text-[#12141A]">Recent activity</h2>
-              <p className="type-small text-[#666C78]">Workspace event telemetry</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setActivityExpanded((prev) => !prev)}
-              className="type-small text-[#666C78] hover:text-[#12141A]"
-            >
-              {activityExpanded ? "Collapse" : "Expand"}
-            </button>
-          </div>
-
-          <div
-            className={cn(
-              "space-y-3 transition-all duration-200 overflow-hidden",
-              activityExpanded ? "max-h-96 overflow-y-auto" : "max-h-56"
-            )}
-          >
-            {[
-              {
-                id: "act-1",
-                text: "Rahul Mehta responded on WhatsApp (+91 98765 43210)",
-                time: "2h ago",
-                dotColor: "bg-[#3D5AFE]",
-              },
-              {
-                id: "act-2",
-                text: "Priya Sharma qualified deal for Enterprise Package",
-                time: "3h ago",
-                dotColor: "bg-[#12B886]",
-              },
-              {
-                id: "act-3",
-                text: "Follow-up SLA assigned to Praveen",
-                time: "5h ago",
-                dotColor: "bg-[#F5A524]",
-              },
-              {
-                id: "act-4",
-                text: "Diwali Broadcast Campaign completed delivery (98.4%)",
-                time: "Yesterday",
-                dotColor: "bg-[#7C4DFF]",
-              },
-              {
-                id: "act-5",
-                text: "Vikram Malhotra stage updated to Proposal Sent",
-                time: "Yesterday",
-                dotColor: "bg-[#F5A524]",
-              },
-            ].map((ev) => (
-              <div key={ev.id} className="flex items-start gap-3 text-[13px]">
-                <span
-                  className={cn("h-2 w-2 rounded-full mt-1.5 shrink-0", ev.dotColor)}
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[#12141A] leading-snug">{ev.text}</p>
-                  <span className="text-[12px] text-[#666C78] mt-0.5 block">
-                    {ev.time}
-                  </span>
-                </div>
+        <div
+          className={cn(
+            "space-y-3 transition-all duration-200 overflow-hidden",
+            activityExpanded ? "max-h-96 overflow-y-auto" : "max-h-48"
+          )}
+        >
+          {[
+            {
+              id: "act-1",
+              text: "Sneha Reddy replied to fleet proposal on WhatsApp",
+              time: "25m ago",
+              dotColor: "bg-[#3D5AFE]",
+            },
+            {
+              id: "act-2",
+              text: "Rohan Mehta confirmed Zoom call for technical architecture",
+              time: "1h ago",
+              dotColor: "bg-[#1FA2E8]",
+            },
+            {
+              id: "act-3",
+              text: "Aarav Patel deal advanced to Qualified stage",
+              time: "3h ago",
+              dotColor: "bg-[#12B886]",
+            },
+            {
+              id: "act-4",
+              text: "Follow-up task scheduled for Priya Sharma proposal terms",
+              time: "4h ago",
+              dotColor: "bg-[#F5A524]",
+            },
+            {
+              id: "act-5",
+              text: "Broadcast campaign delivered to 450 contacts (99.2% rate)",
+              time: "Yesterday",
+              dotColor: "bg-[#7C4DFF]",
+            },
+          ].map((ev) => (
+            <div key={ev.id} className="flex items-start gap-3 text-[13px]">
+              <span className={cn("h-2 w-2 rounded-full mt-1.5 shrink-0", ev.dotColor)} />
+              <div className="min-w-0 flex-1">
+                <p className="text-[#12141A] leading-snug">{ev.text}</p>
+                <span className="text-[12px] text-[#666C78] mt-0.5 block">
+                  {ev.time}
+                </span>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -1348,32 +1235,41 @@ export default function OverviewPage() {
         onClose={() => setSelectedCustomer(null)}
         title={selectedCustomer?.name || "Customer Profile"}
         description={selectedCustomer?.phone}
-        width="md"
       >
         {selectedCustomer && (
-          <div className="space-y-6">
-            <div className="p-4 rounded-[16px] bg-[#F7F5F0] border border-[#E6E2D8] space-y-2">
-              <span className="type-eyebrow text-[#666C78]">Context & Reason</span>
-              <p className="type-body text-[#12141A]">{selectedCustomer.reason}</p>
+          <div className="space-y-6 pt-2">
+            <div className="p-4 rounded-[16px] bg-[#F7F5F0] border border-[#E6E2D8]">
+              <span className="text-[12px] font-medium text-[#454B57] uppercase tracking-wider block">
+                Customer Context
+              </span>
+              <p className="text-[14px] text-[#12141A] mt-1">
+                {selectedCustomer.reason || "Active WhatsApp communication thread."}
+              </p>
             </div>
 
             <div className="space-y-3">
-              <span className="type-eyebrow text-[#666C78]">Quick Actions</span>
+              <h4 className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
+                Direct Actions
+              </h4>
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   href={`/app/${orgSlug}/inbox`}
-                  className="flex items-center justify-center gap-2 h-10 rounded-[12px] bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF] text-[14px] font-medium hover:bg-[#D3DCFF] transition-colors"
+                  className="p-3 rounded-[12px] bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF] hover:bg-[#DCE5FF] transition-colors text-center text-[13px] font-medium block"
                 >
-                  <MessageSquare className="h-4 w-4" />
-                  <span>Open chat</span>
+                  Open WhatsApp
                 </Link>
-                <Link
-                  href={`/app/${orgSlug}/leads?action=new`}
-                  className="flex items-center justify-center gap-2 h-10 rounded-[12px] bg-white text-[#12141A] border border-[#E6E2D8] text-[14px] font-medium hover:bg-[#F7F5F0] transition-colors"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCustomer(null);
+                    setNewDealOpen(true);
+                    setDealContactName(selectedCustomer.name);
+                    setDealContactPhone(selectedCustomer.phone);
+                  }}
+                  className="p-3 rounded-[12px] bg-[#E4F7EF] text-[#0A7A53] border border-[#BDECD7] hover:bg-[#D2F2E4] transition-colors text-center text-[13px] font-medium"
                 >
-                  <Filter className="h-4 w-4 text-[#12B886]" />
-                  <span>Add deal</span>
-                </Link>
+                  Create Deal
+                </button>
               </div>
             </div>
           </div>
@@ -1385,140 +1281,137 @@ export default function OverviewPage() {
         isOpen={!!selectedDeal}
         onClose={() => setSelectedDeal(null)}
         title={selectedDeal?.title || "Opportunity Details"}
-        description={`Stage: ${selectedDeal?.stage.toUpperCase()}`}
-        width="md"
+        description={selectedDeal?.contact_name}
       >
         {selectedDeal && (
-          <div className="space-y-6">
-            <div className="p-5 rounded-[16px] bg-[#0B0D12] text-white space-y-2">
-              <span className="type-eyebrow text-[#A3A9B6]">Estimated Value</span>
-              <div className="type-metric-xl text-white">
+          <div className="space-y-6 pt-2">
+            <div className="p-4 rounded-[16px] bg-[#0B0D12] text-white">
+              <span className="text-[12px] text-[#A3A9B6] uppercase tracking-wider block">
+                Estimated Deal Value
+              </span>
+              <div className="text-[2rem] font-medium tabular-nums text-white mt-1">
                 {formatINR(selectedDeal.estimated_value || 0)}
               </div>
-              <p className="type-meta text-[#A3A9B6]">
-                Owner: {selectedDeal.assigned_to_name || "Praveen"}
-              </p>
+              <span className="text-[13px] text-[#12B886] mt-1 block">
+                Stage: {STAGE_CONFIG[selectedDeal.stage]?.label || selectedDeal.stage}
+              </span>
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#F7F5F0] border border-[#E6E2D8]">
-                <span className="type-small text-[#666C78]">Contact Name</span>
-                <span className="type-label text-[#12141A]">
-                  {selectedDeal.contact_name}
-                </span>
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#F7F5F0] border border-[#E6E2D8]">
-                <span className="type-small text-[#666C78]">Contact Phone</span>
-                <span className="type-label text-[#12141A]">
-                  {selectedDeal.contact_phone}
-                </span>
-              </div>
+              <h4 className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
+                Pipeline Management
+              </h4>
+              <Link
+                href={`/app/${orgSlug}/leads`}
+                className="w-full py-2.5 px-4 rounded-[12px] bg-[#FF5A1F] text-white text-[14px] font-medium text-center hover:bg-[#E8470F] transition-colors block"
+              >
+                Open in Sales Pipeline
+              </Link>
             </div>
-
-            <Link
-              href={`/app/${orgSlug}/leads`}
-              className="w-full flex items-center justify-center gap-2 h-11 rounded-[12px] btn-primary-flame text-[14px] font-medium"
-            >
-              <span>Open in Sales Pipeline</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         )}
       </Drawer>
 
       {/* New Opportunity Modal */}
-      <Drawer
-        isOpen={newDealOpen}
-        onClose={() => setNewDealOpen(false)}
-        title="Create New Opportunity"
-        description="Add a prospective deal to the sales pipeline"
-        width="md"
-      >
-        <form onSubmit={handleCreateDeal} className="space-y-4">
-          <div>
-            <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-              Opportunity Title
-            </label>
-            <Input
-              value={dealTitle}
-              onChange={(e) => setDealTitle(e.target.value)}
-              placeholder="e.g. Enterprise WhatsApp Bundle"
-              required
-              className="h-10 text-[14px]"
-            />
-          </div>
+      {newDealOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full border border-[#E6E2D8] shadow-xl">
+            <h3 className="text-[1.25rem] font-medium text-[#12141A] mb-1">
+              New Opportunity
+            </h3>
+            <p className="text-[0.875rem] text-[#666C78] mb-4">
+              Add a qualified customer deal to your sales pipeline.
+            </p>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-                Value (INR)
-              </label>
-              <Input
-                type="number"
-                value={dealValue}
-                onChange={(e) => setDealValue(e.target.value)}
-                placeholder="65000"
-                required
-                className="h-10 text-[14px]"
-              />
-            </div>
+            <form onSubmit={handleCreateDeal} className="space-y-4">
+              <div>
+                <label className="text-[13px] font-medium text-[#454B57] block mb-1">
+                  Opportunity Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={dealTitle}
+                  onChange={(e) => setDealTitle(e.target.value)}
+                  placeholder="e.g. Apex Logistics 20-Seat Contract"
+                  className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
+                />
+              </div>
 
-            <div>
-              <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-                Initial Stage
-              </label>
-              <select
-                value={dealStage}
-                onChange={(e) => setDealStage(e.target.value as LeadStage)}
-                className="w-full h-10 px-3 rounded-[12px] bg-white border border-[#E6E2D8] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-              >
-                <option value="new">Inbound</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="proposal">Proposal</option>
-              </select>
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
+                    Value (₹)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={dealValue}
+                    onChange={(e) => setDealValue(e.target.value)}
+                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
+                    Stage
+                  </label>
+                  <select
+                    value={dealStage}
+                    onChange={(e) => setDealStage(e.target.value as LeadStage)}
+                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
+                  >
+                    <option value="new">Inbound</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="proposal">Proposal</option>
+                  </select>
+                </div>
+              </div>
 
-          <div>
-            <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-              Contact Name
-            </label>
-            <Input
-              value={dealContactName}
-              onChange={(e) => setDealContactName(e.target.value)}
-              placeholder="e.g. Neha Verma"
-              className="h-10 text-[14px]"
-            />
-          </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
+                    Contact Name
+                  </label>
+                  <input
+                    type="text"
+                    value={dealContactName}
+                    onChange={(e) => setDealContactName(e.target.value)}
+                    placeholder="e.g. Rohan Mehta"
+                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={dealContactPhone}
+                    onChange={(e) => setDealContactPhone(e.target.value)}
+                    placeholder="+91 98765 00000"
+                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
+                  />
+                </div>
+              </div>
 
-          <div>
-            <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-              Contact WhatsApp Phone
-            </label>
-            <Input
-              value={dealContactPhone}
-              onChange={(e) => setDealContactPhone(e.target.value)}
-              placeholder="+91 98765 00000"
-              className="h-10 text-[14px]"
-            />
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setNewDealOpen(false)}
+                  className="h-10 px-4 text-[14px]"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="btn-primary-flame h-10 px-5 text-[14px]">
+                  Create Opportunity
+                </Button>
+              </div>
+            </form>
           </div>
-
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E2D8]">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setNewDealOpen(false)}
-              className="text-[14px]"
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="btn-primary-flame text-[14px]">
-              Create Opportunity
-            </Button>
-          </div>
-        </form>
-      </Drawer>
+        </div>
+      )}
     </div>
   );
 }

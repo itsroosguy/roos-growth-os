@@ -22,6 +22,25 @@ export function formatCurrency(amount: number, currency: string = "INR"): string
 export const formatINR = formatCurrency;
 
 /**
+ * Compact Indian currency formatting for briefing sentences & tight chips (e.g. ₹1.5L, ₹4.2Cr, ₹85k)
+ */
+export function formatCompactINR(amount: number): string {
+  if (amount >= 10000000) {
+    const cr = amount / 10000000;
+    return `₹${cr % 1 === 0 ? cr : cr.toFixed(1)}Cr`;
+  }
+  if (amount >= 100000) {
+    const lk = amount / 100000;
+    return `₹${lk % 1 === 0 ? lk : lk.toFixed(1)}L`;
+  }
+  if (amount >= 1000) {
+    const k = amount / 1000;
+    return `₹${k % 1 === 0 ? k : k.toFixed(0)}k`;
+  }
+  return `₹${amount}`;
+}
+
+/**
  * Format date for display
  */
 export function formatDate(dateString: string | Date): string {
@@ -93,6 +112,7 @@ export function formatRelativeTime(dateInput: string | Date): string {
  * 2027 Pipeline Stage Color Scale (Categorical meaning)
  */
 export const STAGE_CONFIG = {
+  new: { label: "Inbound", color: "#94A3B8", bg: "#F1F5F9", text: "#475569", border: "#CBD5E1" },
   inbound: { label: "Inbound", color: "#94A3B8", bg: "#F1F5F9", text: "#475569", border: "#CBD5E1" },
   lead: { label: "Lead", color: "#94A3B8", bg: "#F1F5F9", text: "#475569", border: "#CBD5E1" },
   contacted: { label: "Contacted", color: "#1FA2E8", bg: "#E3F3FD", text: "#0A6AA3", border: "#BFE3FA" },

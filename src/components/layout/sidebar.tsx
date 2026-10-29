@@ -446,6 +446,21 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         } else if (key === "t") {
           e.preventDefault();
           router.push(`/app/${orgSlug}/tasks`);
+        } else if (key === "b") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/campaigns`);
+        } else if (key === "a") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/automations`);
+        } else if (key === "r") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/reports`);
+        } else if (key === "m") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/team`);
+        } else if (key === "s") {
+          e.preventDefault();
+          router.push(`/app/${orgSlug}/settings`);
         }
         lastKey = "";
         return;

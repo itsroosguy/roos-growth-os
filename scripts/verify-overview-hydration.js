@@ -85,10 +85,20 @@ async function main() {
 
   console.log('HYDRATION CHECK RESULT:', JSON.stringify(check.result.value, null, 2));
 
-  // Also capture the screenshot to verify visually that zero red error toast is present in bottom-left
-  const snap = await send(ws, 'Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync('/Users/roosstudiox/.gemini/antigravity/brain/79603c97-561b-4418-9da7-26c0f84fdbe6/overview-clean-no-error.png', Buffer.from(snap.data, 'base64'));
+  // 1. Capture top view
+  const snap1 = await send(ws, 'Page.captureScreenshot', { format: 'png' });
+  fs.writeFileSync('/Users/roosstudiox/.gemini/antigravity/brain/79603c97-561b-4418-9da7-26c0f84fdbe6/overview-clean-no-error.png', Buffer.from(snap1.data, 'base64'));
   console.log('Saved overview-clean-no-error.png');
+
+  // 2. Scroll down to capture The Day Rail & Lower Rows
+  await send(ws, 'Runtime.evaluate', {
+    expression: 'window.scrollTo({ top: 620, behavior: "instant" })'
+  });
+  await new Promise(r => setTimeout(r, 600));
+
+  const snap2 = await send(ws, 'Page.captureScreenshot', { format: 'png' });
+  fs.writeFileSync('/Users/roosstudiox/.gemini/antigravity/brain/79603c97-561b-4418-9da7-26c0f84fdbe6/overview-day-rail.png', Buffer.from(snap2.data, 'base64'));
+  console.log('Saved overview-day-rail.png');
 
   chrome.kill();
   process.exit(0);
