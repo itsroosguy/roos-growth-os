@@ -37,6 +37,8 @@ import {
   ChevronDown,
   Calendar,
   X,
+  Zap,
+  MessageSquare,
 } from "lucide-react";
 
 interface ContextualSuggestion {
@@ -173,6 +175,64 @@ function getReplySuggestionForContext(
     standard: `Hi ${firstName}! Thank you for reaching out to Roos StudioX. I would be happy to help with this. Would you like to hop on a quick 10-minute call, or shall I share details right here?`,
     shorter: `Hi ${firstName}! Thanks for reaching out. How can I best assist you today?`,
     direct: `Hi ${firstName}, I can help you with this right away. What are your specific requirements?`,
+  };
+}
+
+function getActionContextMeta(item: QueueItem): {
+  eyebrow: string;
+  badge: string;
+  subtitle: string;
+  impactTag: string;
+} {
+  const name = item.name.includes(" ") ? item.name.split(" ")[0] : item.name;
+  const topic = item.suggestion?.topic?.toLowerCase() || "";
+  const inbound = (item.inboundText || "").toLowerCase();
+
+  if (topic.includes("proposal") || inbound.includes("proposal") || inbound.includes("finance")) {
+    return {
+      eyebrow: "Priority Action Required",
+      badge: "AI Copilot Primed",
+      subtitle: `${name} is reviewing the fleet proposal with finance — follow up now to maintain momentum and close the deal.`,
+      impactTag: "Fast reply = 4.2x close rate",
+    };
+  }
+  if (topic.includes("quote") || topic.includes("quotation") || inbound.includes("quote") || inbound.includes("quotation")) {
+    return {
+      eyebrow: "Commercial Quote Delivery",
+      badge: "High Buyer Intent",
+      subtitle: `${name} requested a solution quotation — send specs promptly to lock in customer interest.`,
+      impactTag: "High conversion impact",
+    };
+  }
+  if (topic.includes("demo") || inbound.includes("demo") || inbound.includes("trial")) {
+    return {
+      eyebrow: "Live Demo Scheduling",
+      badge: "Time-Sensitive SLA",
+      subtitle: `${name} requested a live walkthrough — confirm a slot while buyer enthusiasm is peak.`,
+      impactTag: "Replies < 1h convert 3.8x faster",
+    };
+  }
+  if (item.type === "task") {
+    return {
+      eyebrow: "Milestone SLA Checkpoint",
+      badge: "Commitment Due",
+      subtitle: `Action item SLA commitment for ${name} — confirm deliverables to uphold client trust.`,
+      impactTag: "Protects SLA delivery",
+    };
+  }
+  if (item.type === "lead") {
+    return {
+      eyebrow: "New Inbound Opportunity",
+      badge: "Ready for Qualification",
+      subtitle: `New WhatsApp lead inquiry from ${name} — engage immediately to establish first-responder advantage.`,
+      impactTag: "First responders win 78% of deals",
+    };
+  }
+  return {
+    eyebrow: "Priority Customer Follow-up",
+    badge: "AI Copilot Primed",
+    subtitle: `Active WhatsApp customer awaiting response — 1-click contextual AI draft ready to send.`,
+    impactTag: "Fast reply = 4.2x close rate",
   };
 }
 
@@ -897,7 +957,44 @@ export default function OverviewPage() {
         >
           {nextBestAction ? (
             <div className="space-y-6">
-              {/* Card Header & Contact Meta */}
+              {/* Card Top Intelligence Header (Apple OS / Linear style) */}
+              {(() => {
+                const meta = getActionContextMeta(nextBestAction);
+                return (
+                  <div className="flex items-center justify-between pb-4.5 border-b border-[#F0ECE1]">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Apple-style squircle with warm flame glow */}
+                      <div className="h-8 w-8 rounded-[9px] bg-gradient-to-br from-[#FF5A1F] to-[#E5484D] text-white flex items-center justify-center shadow-xs shrink-0">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h2 className="text-[15px] font-semibold text-[#12141A] tracking-[-0.015em]">
+                            {meta.eyebrow}
+                          </h2>
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#FF5A1F] bg-[#FFF0EB] border border-[#FFD8CC] px-2.5 py-0.5 rounded-full">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F] animate-pulse" />
+                            {meta.badge}
+                          </span>
+                        </div>
+                        <p className="text-[12px] font-normal text-[#666C78] mt-0.5 truncate leading-tight">
+                          {meta.subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="hidden sm:flex items-center gap-2 shrink-0 ml-3">
+                      <span className="text-[11.5px] font-medium text-[#0A7A53] bg-[#E4F7EF] border border-[#BDECD7] px-3 py-1 rounded-[8px] inline-flex items-center gap-1.5 shadow-2xs">
+                        <Zap className="h-3.5 w-3.5 text-[#12B886]" />
+                        <span>{meta.impactTag}</span>
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Contact Meta Row */}
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3.5 min-w-0">
                   {(() => {
@@ -962,11 +1059,16 @@ export default function OverviewPage() {
                 </div>
               </div>
 
-              {/* Inbound Customer Message (Direct, commanding 24px, no nested box) */}
+              {/* Inbound Customer Message (Direct, commanding, with channel context) */}
               <div className="pt-1 pb-1">
-                <span className="text-[12px] font-medium text-[#666C78] block mb-2">
-                  Customer message
-                </span>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11.5px] font-medium uppercase tracking-[0.05em] text-[#666C78] flex items-center gap-1.5">
+                    <MessageSquare className="h-3 w-3 text-[#3D5AFE]" />
+                    Customer message
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-[#8C93A0]" />
+                  <span className="text-[11px] font-normal text-[#8C93A0]">via WhatsApp</span>
+                </div>
                 <p className="text-[22px] md:text-[24px] text-[#12141A] font-normal leading-[1.35] tracking-[-0.015em]">
                   &ldquo;{nextBestAction.inboundText}&rdquo;
                 </p>
@@ -977,9 +1079,10 @@ export default function OverviewPage() {
                 <div className="rounded-[16px] bg-[#FAF8FE] border border-[#E9E4F7] p-4.5 space-y-3">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-medium text-[#5B34C9]">
-                        Suggested reply
-                      </span>
+                      <div className="flex items-center gap-1.5 text-[13px] font-medium text-[#5B34C9]">
+                        <Sparkles className="h-3.5 w-3.5 text-[#7C4DFF]" />
+                        <span>Suggested reply</span>
+                      </div>
                       <span className="text-[11px] text-[#7C4DFF] bg-[#F0EAFF] px-2 py-0.5 rounded-full font-medium">
                         {nextBestAction.suggestion.topic}
                       </span>
