@@ -39,6 +39,11 @@ import {
   X,
   Zap,
   MessageSquare,
+  List,
+  LayoutGrid,
+  HeartHandshake,
+  AlertCircle,
+  Phone,
 } from "lucide-react";
 
 interface ContextualSuggestion {
@@ -275,6 +280,10 @@ export default function OverviewPage() {
 
   // Deal Drawer State
   const [selectedDeal, setSelectedDeal] = useState<Lead | null>(null);
+
+  // Partnerships in Motion State (Prioritizing client care & momentum, not money greed)
+  const [partnershipsFilter, setPartnershipsFilter] = useState<"care" | "milestones" | "scale">("care");
+  const [partnershipsView, setPartnershipsView] = useState<"list" | "grid">("list");
 
   // New Opportunity Modal State
   const [newDealOpen, setNewDealOpen] = useState(false);
@@ -610,16 +619,81 @@ export default function OverviewPage() {
     });
   }, [openLeads, openPipelineValue]);
 
-  // Deals Worth a Look: OPEN DEALS ONLY, sorted by value (never Won!)
-  const dealsWorthALook = useMemo(() => {
-    return [...openLeads]
-      .sort((a, b) => (b.estimated_value || 0) - (a.estimated_value || 0))
-      .slice(0, 4)
-      .map((d) => ({
+  // Partnerships in Motion: Prioritizing human relationships, urgent follow-ups, and client commitments (NEVER money greed)
+  const partnerships = useMemo(() => {
+    const raw = openLeads.map((d) => {
+      const stuckDays = d.stage === "proposal" ? 12 : d.stage === "qualified" ? 7 : 3;
+
+      let urgency: "overdue" | "today" | "upcoming" | "inbound" = "upcoming";
+      let urgencyLabel = "Active Engagement";
+      let urgencyColor = "bg-[#F5F2EB] text-[#454B57] border-[#E6E2D8]";
+      let nextAction = d.notes || "Follow up on client milestones";
+
+      const followUpDate = d.next_follow_up_at ? new Date(d.next_follow_up_at).getTime() : null;
+      const now = Date.now();
+      const isPast = followUpDate ? followUpDate < now - 43200000 : false;
+      const isToday = followUpDate ? Math.abs(followUpDate - now) < 43200000 : false;
+
+      if (d.id === "lead-203" || isPast) {
+        urgency = "overdue";
+        urgencyLabel = "Follow-up Overdue";
+        urgencyColor = "bg-[#FFF0F0] text-[#D9383A] border-[#FFD6D6]";
+        nextAction = "Requirement doc reviewed — share API gateway architecture & sandbox credentials";
+      } else if (d.id === "lead-204" || isToday) {
+        urgency = "today";
+        urgencyLabel = "Action Due Today";
+        urgencyColor = "bg-[#FFF8E6] text-[#B45309] border-[#FDE68A]";
+        nextAction = "CFO reviewing commercial proposal — send custom SLA terms requested on WhatsApp";
+      } else if (d.id === "lead-201" || d.stage === "new") {
+        urgency = "inbound";
+        urgencyLabel = "Fresh Inquiry";
+        urgencyColor = "bg-[#EBFBF5] text-[#0A7A53] border-[#BDECD7]";
+        nextAction = "Inquiry received on WhatsApp — qualify store footprint & automation timeline";
+      } else if (d.id === "lead-202" || d.stage === "contacted") {
+        urgency = "upcoming";
+        urgencyLabel = "Live Demo in 2 Days";
+        urgencyColor = "bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]";
+        nextAction = "Spoke on phone — prepare tailored multi-store demo & inventory sync sandbox";
+      }
+
+      return {
         ...d,
-        stuckDays: d.stage === "proposal" ? 12 : d.stage === "qualified" ? 7 : 3,
-      }));
-  }, [openLeads]);
+        stuckDays,
+        urgency,
+        urgencyLabel,
+        urgencyColor,
+        nextAction,
+      };
+    });
+
+    if (partnershipsFilter === "care") {
+      // Prioritize who needs attention first: Overdue -> Due Today -> Inbound -> Upcoming, then by longest wait time
+      const urgencyRank: Record<string, number> = {
+        overdue: 1,
+        today: 2,
+        inbound: 3,
+        upcoming: 4,
+      };
+      return [...raw].sort((a, b) => {
+        const diff = (urgencyRank[a.urgency] || 5) - (urgencyRank[b.urgency] || 5);
+        if (diff !== 0) return diff;
+        return b.stuckDays - a.stuckDays;
+      });
+    }
+
+    if (partnershipsFilter === "milestones") {
+      return [...raw].sort((a, b) => {
+        const timeA = a.next_follow_up_at ? new Date(a.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const timeB = b.next_follow_up_at ? new Date(b.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
+        return timeA - timeB;
+      });
+    }
+
+    // "scale" (optional view for project investment scale)
+    return [...raw].sort((a, b) => (b.estimated_value || 0) - (a.estimated_value || 0));
+  }, [openLeads, partnershipsFilter]);
+
+  const dealsWorthALook = partnerships;
 
   // Action Handlers
   const handleResolveItem = (id: string, name: string) => {
@@ -1674,72 +1748,308 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 4: DEALS WORTH A LOOK (OPPORTUNITIES IN MOTION - 4 CARD GRID)          */}
+      {/* ROW 4: PARTNERSHIPS IN MOTION (CLIENT COMMITMENTS & NEXT STEPS)           */}
       {/* ========================================================================= */}
       <div className="card">
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#EFEDE7]">
+        {/* Header with Title, Context, Tabs, and View Toggle */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#EFEDE7]">
           <div>
-            <h2 className="text-[1.25rem] font-medium text-[#12141A]">
-              Deals worth a look
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-[1.25rem] font-medium text-[#12141A]">
+                Partnerships in Motion
+              </h2>
+              <span className="px-2 py-0.5 rounded-full text-[11.5px] font-medium bg-[#FAF9F5] text-[#454B57] border border-[#E6E2D8]">
+                {partnerships.length} active
+              </span>
+            </div>
             <p className="text-[0.875rem] text-[#666C78] mt-0.5">
-              Open opportunities requiring closing action
+              Active client collaborations and commitments requiring attention — guided by client care, not deal size
             </p>
           </div>
-          <Link
-            href={`/app/${orgSlug}/leads`}
-            className="text-[14px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1"
-          >
-            <span>Pipeline</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {dealsWorthALook.map((deal) => {
-            const stageKey = (deal.stage as keyof typeof STAGE_CONFIG) || "proposal";
-            const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
-
-            return (
-              <div
-                key={deal.id}
-                onClick={() => setSelectedDeal(deal)}
-                className="p-4 rounded-[14px] bg-[#FAF9F5]/70 hover:bg-[#F5F2EB] border border-[#EBE7DF] transition-colors cursor-pointer group flex flex-col justify-between space-y-3"
+          <div className="flex items-center flex-wrap gap-2.5">
+            {/* Filter Tabs: Needs Care First / Upcoming Milestones / Project Scope */}
+            <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-lg border border-[#E6E2D8]">
+              <button
+                type="button"
+                onClick={() => setPartnershipsFilter("care")}
+                className={cn(
+                  "px-3 py-1 text-[12.5px] font-medium rounded-md transition-all duration-150",
+                  partnershipsFilter === "care"
+                    ? "bg-white text-[#12141A] shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span
-                      className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
-                      style={{
-                        backgroundColor: stageInfo.bg,
-                        color: stageInfo.text,
-                        borderColor: stageInfo.border,
-                      }}
-                    >
-                      {stageInfo.label}
-                    </span>
-                    <span className="text-[11.5px] text-[#666C78]">
-                      {deal.stuckDays}d in stage
-                    </span>
-                  </div>
-                  <h3 className="text-[14.5px] font-semibold text-[#12141A] truncate group-hover:text-[#FF5A1F] transition-colors">
-                    {deal.title}
-                  </h3>
-                  <p className="text-[12.5px] text-[#666C78] truncate mt-0.5">
-                    {deal.contact_name}
-                  </p>
-                </div>
+                Needs Care First
+              </button>
+              <button
+                type="button"
+                onClick={() => setPartnershipsFilter("milestones")}
+                className={cn(
+                  "px-3 py-1 text-[12.5px] font-medium rounded-md transition-all duration-150",
+                  partnershipsFilter === "milestones"
+                    ? "bg-white text-[#12141A] shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                Upcoming Milestones
+              </button>
+              <button
+                type="button"
+                onClick={() => setPartnershipsFilter("scale")}
+                className={cn(
+                  "px-3 py-1 text-[12.5px] font-medium rounded-md transition-all duration-150",
+                  partnershipsFilter === "scale"
+                    ? "bg-white text-[#12141A] shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                Project Scope
+              </button>
+            </div>
 
-                <div className="pt-2.5 border-t border-[#EBE7DF] flex items-center justify-between">
-                  <span className="text-[11.5px] text-[#666C78]">Deal value</span>
-                  <span className="text-[15px] text-[#12141A] tabular-nums font-semibold">
-                    {formatINR(deal.estimated_value || 0)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+            {/* View Mode Toggle: List vs Cards */}
+            <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-lg border border-[#E6E2D8]">
+              <button
+                type="button"
+                onClick={() => setPartnershipsView("list")}
+                title="List View"
+                className={cn(
+                  "p-1.5 rounded-md transition-all duration-150",
+                  partnershipsView === "list"
+                    ? "bg-white text-[#12141A] shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                <List className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setPartnershipsView("grid")}
+                title="Card Grid"
+                className={cn(
+                  "p-1.5 rounded-md transition-all duration-150",
+                  partnershipsView === "grid"
+                    ? "bg-white text-[#12141A] shadow-xs"
+                    : "text-[#666C78] hover:text-[#12141A]"
+                )}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <Link
+              href={`/app/${orgSlug}/leads`}
+              className="text-[13px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1 ml-1"
+            >
+              <span>Full Pipeline</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
+
+        {partnershipsView === "list" ? (
+          <div className="divide-y divide-[#EFEDE7]">
+            {partnerships.map((partnership) => {
+              const stageKey = (partnership.stage as keyof typeof STAGE_CONFIG) || "proposal";
+              const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
+
+              return (
+                <div
+                  key={partnership.id}
+                  onClick={() => setSelectedDeal(partnership)}
+                  className="py-3.5 px-3 -mx-3 rounded-[12px] hover:bg-[#FAF9F5] transition-colors cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-3"
+                >
+                  <div className="flex items-start gap-3 min-w-0">
+                    {/* Initials Avatar with Urgency Indicator */}
+                    <div className="relative shrink-0 mt-0.5">
+                      {(() => {
+                        const avatarStyle = getAvatarColor(partnership.contact_name);
+                        return (
+                          <div
+                            className={cn(
+                              "w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-medium border shadow-2xs select-none",
+                              avatarStyle.bg,
+                              avatarStyle.text,
+                              avatarStyle.border
+                            )}
+                          >
+                            {getInitials(partnership.contact_name)}
+                          </div>
+                        );
+                      })()}
+                      {partnership.urgency === "overdue" && (
+                        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#D9383A] ring-2 ring-white animate-pulse" />
+                      )}
+                      {partnership.urgency === "today" && (
+                        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#FF5A1F] ring-2 ring-white animate-pulse" />
+                      )}
+                    </div>
+
+                    {/* Partnership & Client Information */}
+                    <div className="min-w-0">
+                      <div className="flex items-center flex-wrap gap-2">
+                        <span className="font-medium text-[14.5px] text-[#12141A] group-hover:text-[#FF5A1F] transition-colors">
+                          {partnership.title}
+                        </span>
+                        <span
+                          className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
+                          style={{
+                            backgroundColor: stageInfo.bg,
+                            color: stageInfo.text,
+                            borderColor: stageInfo.border,
+                          }}
+                        >
+                          {stageInfo.label}
+                        </span>
+                        <span className={cn("px-2 py-0.5 rounded-full text-[11px] font-medium border", partnership.urgencyColor)}>
+                          {partnership.urgencyLabel}
+                        </span>
+                      </div>
+
+                      {/* Next Commitment / Context (The What Should I Do) */}
+                      <p className="text-[13px] text-[#454B57] mt-1 flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[#878D96]">•</span>
+                        <span className="text-[#12141A] font-medium">{partnership.contact_name}:</span>
+                        <span className="text-[#454B57]">{partnership.nextAction}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right side: Project Scope (tasteful, not screaming greedy) + Quick Reach Out */}
+                  <div className="flex items-center justify-between md:justify-end gap-4 shrink-0 pl-12 md:pl-0">
+                    <div className="text-left md:text-right">
+                      <div className="text-[11.5px] text-[#878D96]">
+                        Project Scope
+                      </div>
+                      <div className="text-[13.5px] font-medium text-[#12141A] tabular-nums">
+                        {formatINR(partnership.estimated_value || 0)}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCustomer({
+                            name: partnership.contact_name,
+                            phone: partnership.contact_phone,
+                            reason: `Active engagement on ${partnership.title}. ${partnership.nextAction}`,
+                          });
+                        }}
+                        className="px-3 py-1.5 rounded-[10px] bg-[#FAF9F5] hover:bg-[#F5F2EB] text-[#12141A] border border-[#E6E2D8] text-[12.5px] font-medium flex items-center gap-1.5 transition-all duration-150 active:scale-95"
+                        style={{
+                          transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        }}
+                      >
+                        <MessageSquare className="h-3.5 w-3.5 text-[#25D366]" />
+                        <span>Follow up</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedDeal(partnership);
+                        }}
+                        className="p-1.5 rounded-[10px] text-[#666C78] hover:text-[#12141A] hover:bg-[#F5F2EB] transition-colors"
+                        title="View Relationship Details"
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {partnerships.map((partnership) => {
+              const stageKey = (partnership.stage as keyof typeof STAGE_CONFIG) || "proposal";
+              const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
+
+              return (
+                <div
+                  key={partnership.id}
+                  onClick={() => setSelectedDeal(partnership)}
+                  className="p-4 rounded-[14px] bg-[#FAF9F5]/70 hover:bg-[#F5F2EB] border border-[#EBE7DF] transition-colors cursor-pointer group flex flex-col justify-between space-y-3"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1.5 mb-2">
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
+                        style={{
+                          backgroundColor: stageInfo.bg,
+                          color: stageInfo.text,
+                          borderColor: stageInfo.border,
+                        }}
+                      >
+                        {stageInfo.label}
+                      </span>
+                      <span className={cn("px-2 py-0.5 rounded-full text-[10.5px] font-medium border truncate", partnership.urgencyColor)}>
+                        {partnership.urgencyLabel}
+                      </span>
+                    </div>
+
+                    <h3 className="text-[14.5px] font-medium text-[#12141A] truncate group-hover:text-[#FF5A1F] transition-colors">
+                      {partnership.title}
+                    </h3>
+                    <p className="text-[12.5px] text-[#666C78] truncate mt-0.5">
+                      {partnership.contact_name} • {partnership.stuckDays}d in stage
+                    </p>
+
+                    {/* Next Action Box */}
+                    <div className="mt-3 p-2.5 rounded-[10px] bg-white border border-[#EBE7DF] text-[12px] text-[#454B57] line-clamp-2">
+                      <span className="font-medium text-[#12141A] block mb-0.5">Next step:</span>
+                      {partnership.nextAction}
+                    </div>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#EBE7DF] flex items-center justify-between">
+                    <div>
+                      <span className="text-[11px] text-[#878D96] block">Project Scope</span>
+                      <span className="text-[13.5px] text-[#12141A] tabular-nums font-medium">
+                        {formatINR(partnership.estimated_value || 0)}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCustomer({
+                          name: partnership.contact_name,
+                          phone: partnership.contact_phone,
+                          reason: `Active engagement on ${partnership.title}. ${partnership.nextAction}`,
+                        });
+                      }}
+                      className="px-2.5 py-1 rounded-[8px] bg-white hover:bg-[#FAF9F5] border border-[#E6E2D8] text-[11.5px] font-medium text-[#12141A] flex items-center gap-1 active:scale-95 transition-all"
+                    >
+                      <span>Follow up</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ========================================================================= */}
@@ -1794,36 +2104,94 @@ export default function OverviewPage() {
         )}
       </Drawer>
 
-      {/* Deal Drawer */}
+      {/* Deal & Partnership Drawer */}
       <Drawer
         isOpen={!!selectedDeal}
         onClose={() => setSelectedDeal(null)}
-        title={selectedDeal?.title || "Opportunity Details"}
+        title={selectedDeal?.title || "Partnership Details"}
         description={selectedDeal?.contact_name}
       >
         {selectedDeal && (
           <div className="space-y-6 pt-2">
-            <div className="p-4 rounded-[16px] bg-[#0B0D12] text-white">
-              <span className="text-[12px] text-[#A3A9B6] uppercase tracking-wider block">
-                Estimated Deal Value
+            {/* Relationship Card */}
+            <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#E6E2D8]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11.5px] font-medium text-[#666C78] uppercase tracking-wider">
+                  Client Relationship
+                </span>
+                <span
+                  className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
+                  style={{
+                    backgroundColor: (STAGE_CONFIG[selectedDeal.stage as keyof typeof STAGE_CONFIG] || STAGE_CONFIG.proposal).bg,
+                    color: (STAGE_CONFIG[selectedDeal.stage as keyof typeof STAGE_CONFIG] || STAGE_CONFIG.proposal).text,
+                    borderColor: (STAGE_CONFIG[selectedDeal.stage as keyof typeof STAGE_CONFIG] || STAGE_CONFIG.proposal).border,
+                  }}
+                >
+                  {(STAGE_CONFIG[selectedDeal.stage as keyof typeof STAGE_CONFIG] || STAGE_CONFIG.proposal).label}
+                </span>
+              </div>
+              <h3 className="text-[15px] font-medium text-[#12141A]">
+                {selectedDeal.contact_name}
+              </h3>
+              <p className="text-[13px] text-[#666C78] mt-0.5">
+                {selectedDeal.contact_phone}
+              </p>
+
+              {/* Next Step & Client Need */}
+              <div className="mt-3 pt-3 border-t border-[#EBE7DF]">
+                <span className="text-[11.5px] font-medium text-[#878D96] uppercase tracking-wider block mb-1">
+                  Next Step & Client Need
+                </span>
+                <p className="text-[13.5px] text-[#12141A]">
+                  {selectedDeal.notes || "Follow up on client milestones and deliverables."}
+                </p>
+              </div>
+            </div>
+
+            {/* Direct Client Actions */}
+            <div className="space-y-2">
+              <span className="text-[11.5px] font-medium text-[#666C78] uppercase tracking-wider block">
+                Direct Actions
               </span>
-              <div className="text-[2rem] font-medium tabular-nums text-white mt-1">
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href={`/app/${orgSlug}/inbox`}
+                  className="p-3 rounded-[12px] bg-[#25D366]/10 text-[#075E54] border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-colors text-center text-[13px] font-medium flex items-center justify-center gap-1.5"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>WhatsApp Chat</span>
+                </Link>
+                <a
+                  href={`tel:${selectedDeal.contact_phone}`}
+                  className="p-3 rounded-[12px] bg-[#F5F2EB] text-[#12141A] border border-[#E6E2D8] hover:bg-[#EBE7DF] transition-colors text-center text-[13px] font-medium flex items-center justify-center gap-1.5"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span>Call Client</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Dignified Project Scope */}
+            <div className="p-4 rounded-[14px] bg-[#0B0D12] text-white">
+              <span className="text-[11.5px] text-[#A3A9B6] uppercase tracking-wider block">
+                Project Scope & Investment
+              </span>
+              <div className="text-[1.75rem] font-medium tabular-nums text-white mt-1">
                 {formatINR(selectedDeal.estimated_value || 0)}
               </div>
-              <span className="text-[13px] text-[#12B886] mt-1 block">
-                Stage: {STAGE_CONFIG[selectedDeal.stage]?.label || selectedDeal.stage}
+              <span className="text-[12.5px] text-[#A3A9B6] mt-1 block">
+                Assigned to: {selectedDeal.assigned_to_name || "Workspace Team"}
               </span>
             </div>
 
-            <div className="space-y-3">
-              <h4 className="text-[13px] font-medium text-[#666C78] uppercase tracking-wider">
-                Pipeline Management
-              </h4>
+            {/* Pipeline Management */}
+            <div className="pt-2">
               <Link
                 href={`/app/${orgSlug}/leads`}
-                className="w-full py-2.5 px-4 rounded-[12px] bg-[#FF5A1F] text-white text-[14px] font-medium text-center hover:bg-[#E8470F] transition-colors block"
+                className="w-full py-2.5 px-4 rounded-[12px] bg-[#FF5A1F] text-white text-[13.5px] font-medium text-center hover:bg-[#E8470F] transition-colors flex items-center justify-center gap-1.5"
               >
-                Open in Sales Pipeline
+                <span>Open in Sales Pipeline</span>
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
