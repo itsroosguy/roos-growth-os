@@ -14,7 +14,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
 import { BriefingLine } from "@/components/overview/briefing-line";
 import { DayRail } from "@/components/overview/day-rail";
-import { AppleNotificationBanner } from "@/components/overview/apple-notification-banner";
+import { RecentActivityCard } from "@/components/overview/recent-activity-card";
 import { NewOpportunityModal } from "@/components/crm/new-opportunity-modal";
 import {
   cn,
@@ -185,7 +185,6 @@ export default function OverviewPage() {
   const [todayFilter, setTodayFilter] = useState<
     "all" | "waiting" | "due_today" | "overdue" | "proposal"
   >("all");
-  const [activityExpanded, setActivityExpanded] = useState(false);
 
   // Quick reply popover / inline edit state
   const [inlineReplyId, setInlineReplyId] = useState<string | null>(null);
@@ -761,23 +760,9 @@ export default function OverviewPage() {
           </button>
         </div>
 
-        {/* Right: Apple OS Live Activity / Notification Banner */}
+        {/* Right: Apple OS Recent Activity Banner */}
         <div className="lg:col-span-6 xl:col-span-7 flex flex-col">
-          <AppleNotificationBanner
-            orgSlug={orgSlug}
-            notifications={unreadConversations}
-            onReply={(convId, text) => {
-              const conv = unreadConversations.find((c) => c.id === convId);
-              handleSendReply(convId, text, conv?.contact_name || "Customer");
-            }}
-            onDismiss={(convId) => {
-              setResolvedQueueIds((prev) => new Set(prev).add(`conv-${convId}`));
-              toast("Notification dismissed", {
-                message: "Conversation cleared from live activity.",
-                type: "info",
-              });
-            }}
-          />
+          <RecentActivityCard className="h-full min-h-[160px]" />
         </div>
       </div>
 
@@ -1304,83 +1289,6 @@ export default function OverviewPage() {
             unreadCount={unreadConversations.length}
             onCompleteTask={handleCompleteTaskById}
           />
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* ROW 4: RECENT ACTIVITY (COLLAPSIBLE TIMELINE OF REAL EVENTS)               */}
-      {/* ========================================================================= */}
-      <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-[1.25rem] font-medium text-[#12141A]">Recent activity</h2>
-            <p className="text-[0.875rem] text-[#666C78]">
-              Events logged across conversations, deals, and team tasks
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setActivityExpanded((prev) => !prev)}
-            className="text-[13px] font-medium text-[#666C78] hover:text-[#12141A] flex items-center gap-1"
-          >
-            <span>{activityExpanded ? "Collapse" : "Expand"}</span>
-            <ChevronDown
-              className={cn(
-                "h-3.5 w-3.5 transition-transform duration-140",
-                activityExpanded ? "rotate-180" : ""
-              )}
-            />
-          </button>
-        </div>
-
-        <div
-          className={cn(
-            "space-y-3 transition-all duration-200 overflow-hidden",
-            activityExpanded ? "max-h-96 overflow-y-auto" : "max-h-48"
-          )}
-        >
-          {[
-            {
-              id: "act-1",
-              text: "Sneha Reddy replied to fleet proposal on WhatsApp",
-              time: "25m ago",
-              dotColor: "bg-[#3D5AFE]",
-            },
-            {
-              id: "act-2",
-              text: "Rohan Mehta confirmed consultation for technical architecture",
-              time: "1h ago",
-              dotColor: "bg-[#1FA2E8]",
-            },
-            {
-              id: "act-3",
-              text: "Aarav Patel deal advanced to Qualified stage",
-              time: "3h ago",
-              dotColor: "bg-[#12B886]",
-            },
-            {
-              id: "act-4",
-              text: "Follow-up task scheduled for Sneha Reddy proposal terms",
-              time: "4h ago",
-              dotColor: "bg-[#F5A524]",
-            },
-            {
-              id: "act-5",
-              text: "Q4 Retail Automation Announcement broadcast delivered to 10 contacts",
-              time: "Yesterday",
-              dotColor: "bg-[#7C4DFF]",
-            },
-          ].map((ev) => (
-            <div key={ev.id} className="flex items-start gap-3 text-[13px]">
-              <span className={cn("h-2 w-2 rounded-full mt-1.5 shrink-0", ev.dotColor)} />
-              <div className="min-w-0 flex-1">
-                <p className="text-[#12141A] leading-snug">{ev.text}</p>
-                <span className="text-[12px] text-[#666C78] mt-0.5 block">
-                  {ev.time}
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
