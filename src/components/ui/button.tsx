@@ -9,11 +9,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-b from-[#FF6B35] to-[#FF5A1F] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24),0_2px_4px_rgba(232,71,15,0.22)] hover:from-[#FF7744] hover:to-[#FF6428] border border-transparent font-medium",
+          "btn-primary btn-flow text-white font-medium",
         primary:
-          "bg-gradient-to-b from-[#FF6B35] to-[#FF5A1F] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24),0_2px_4px_rgba(232,71,15,0.22)] hover:from-[#FF7744] hover:to-[#FF6428] border border-transparent font-medium",
+          "btn-primary btn-flow text-white font-medium",
         orange:
-          "bg-gradient-to-b from-[#FF6B35] to-[#FF5A1F] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24),0_2px_4px_rgba(232,71,15,0.22)] hover:from-[#FF7744] hover:to-[#FF6428] border border-transparent font-medium",
+          "btn-primary btn-flow text-white font-medium",
         orangeSubtle:
           "bg-[#FFF1EA] text-[#B93A0A] hover:bg-[#FFE2D4] border border-[#FFE2D4] font-medium",
         secondary:
