@@ -766,9 +766,9 @@ export default function OverviewPage() {
       {/* ========================================================================= */}
       {/* ROW 1: TODAY STRIP (LEFT) + APPLE OS NOTIFICATION (RIGHT)                 */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left: 2x2 Today Strip (5 cols on xl, 6 cols on lg) */}
-        <div className="lg:col-span-6 xl:col-span-5 grid grid-cols-2 gap-3">
+        <div className="lg:col-span-6 xl:col-span-5 w-full grid grid-cols-2 grid-rows-[74px_74px] gap-3 content-start self-start">
           {/* 1. Waiting on you (Ultramarine) */}
           <button
             type="button"
@@ -776,7 +776,7 @@ export default function OverviewPage() {
               setTodayFilter(todayFilter === "waiting" ? "all" : "waiting")
             }
             className={cn(
-              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-colors duration-140 text-left active:scale-[0.98] cursor-pointer",
               todayFilter === "waiting"
                 ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20 shadow-xs"
                 : "bg-white border-[#E6E2D8] hover:border-[#3D5AFE]/40 hover:bg-[#FAFCFF] shadow-xs"
@@ -800,7 +800,7 @@ export default function OverviewPage() {
               setTodayFilter(todayFilter === "due_today" ? "all" : "due_today")
             }
             className={cn(
-              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-colors duration-140 text-left active:scale-[0.98] cursor-pointer",
               todayFilter === "due_today"
                 ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20 shadow-xs"
                 : "bg-white border-[#E6E2D8] hover:border-[#F5A524]/40 hover:bg-[#FFFDF9] shadow-xs"
@@ -825,7 +825,7 @@ export default function OverviewPage() {
                 setTodayFilter(todayFilter === "overdue" ? "all" : "overdue")
               }
               className={cn(
-                "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+                "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-colors duration-140 text-left active:scale-[0.98] cursor-pointer",
                 todayFilter === "overdue"
                   ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20 shadow-xs"
                   : "bg-white border-[#FDC8CA] hover:bg-[#FFF5F5] shadow-xs"
@@ -862,7 +862,7 @@ export default function OverviewPage() {
               setTodayFilter(todayFilter === "proposal" ? "all" : "proposal")
             }
             className={cn(
-              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-colors duration-140 text-left active:scale-[0.98] cursor-pointer",
               todayFilter === "proposal"
                 ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20 shadow-xs"
                 : "bg-white border-[#E6E2D8] hover:border-[#12B886]/40 hover:bg-[#F8FCFA] shadow-xs"
@@ -881,8 +881,8 @@ export default function OverviewPage() {
         </div>
 
         {/* Right: Apple OS Recent Activity Banner */}
-        <div className="lg:col-span-6 xl:col-span-7 flex flex-col">
-          <RecentActivityCard className="h-full min-h-[160px]" />
+        <div className="lg:col-span-6 xl:col-span-7 flex flex-col self-start">
+          <RecentActivityCard className="w-full" />
         </div>
       </div>
 

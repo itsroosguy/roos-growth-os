@@ -121,12 +121,13 @@ export function RecentActivityCard({
   return (
     <div
       className={cn(
-        "rounded-[20px] bg-white/85 backdrop-blur-xl border border-white/80 shadow-[0_8px_24px_-6px_rgba(11,13,18,0.06),0_1px_2px_rgba(11,13,18,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-200 relative overflow-hidden",
+        "rounded-[16px] bg-white/85 backdrop-blur-xl border border-[#E6E2D8] shadow-xs px-4 py-3 flex flex-col justify-between relative transition-colors duration-140",
+        isExpanded ? "min-h-[160px] h-auto" : "h-[160px]",
         className
       )}
     >
       {/* Header Row (Apple OS Style) */}
-      <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-[#F0ECE1]">
+      <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE1] shrink-0">
         <div className="flex items-center gap-2.5 min-w-0">
           {/* Apple App Icon Squircle */}
           <div className="h-6 w-6 rounded-[7px] bg-gradient-to-b from-[#1B1F29] to-[#0B0D12] text-white flex items-center justify-center shadow-2xs shrink-0">
@@ -135,12 +136,12 @@ export function RecentActivityCard({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-[13.5px] font-medium text-[#12141A] tracking-[-0.01em] truncate">
+              <h2 className="text-[13px] font-medium text-[#12141A] tracking-[-0.01em] truncate">
                 Recent activity
               </h2>
               <span className="h-1.5 w-1.5 rounded-full bg-[#12B886] shrink-0" />
             </div>
-            <p className="text-[11px] text-[#666C78] truncate">
+            <p className="text-[11px] font-normal text-[#666C78] truncate leading-tight">
               Events logged across conversations, deals, and team tasks
             </p>
           </div>
@@ -150,7 +151,7 @@ export function RecentActivityCard({
         <button
           type="button"
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="h-7 px-2.5 rounded-[8px] bg-black/[0.04] hover:bg-black/[0.07] text-[#454B57] hover:text-[#12141A] text-[11.5px] font-medium flex items-center gap-1 transition-colors active:scale-[0.98] cursor-pointer shrink-0 ml-2"
+          className="h-6 px-2.5 rounded-[7px] bg-black/[0.04] hover:bg-black/[0.07] text-[#454B57] hover:text-[#12141A] text-[11px] font-medium flex items-center gap-1 transition-colors active:scale-[0.98] cursor-pointer shrink-0 ml-2"
           aria-expanded={isExpanded}
         >
           <span>{isExpanded ? "Collapse" : "Expand"}</span>
@@ -166,8 +167,9 @@ export function RecentActivityCard({
       {/* Events Stack */}
       <div
         className={cn(
-          "space-y-1.5 transition-all duration-200",
-          isExpanded ? "max-h-60 overflow-y-auto pr-1" : ""
+          isExpanded
+            ? "space-y-1.5 max-h-[260px] overflow-y-auto pr-1 mt-2.5"
+            : "flex flex-col justify-between gap-1.5"
         )}
       >
         {visibleEvents.map((ev) => {
@@ -177,7 +179,7 @@ export function RecentActivityCard({
           return (
             <div
               key={ev.id}
-              className="flex items-center justify-between gap-2.5 p-2 rounded-[10px] bg-white/60 hover:bg-white/90 border border-black/[0.03] transition-colors"
+              className="h-[40px] flex items-center justify-between gap-2.5 px-3 rounded-[10px] bg-[#FAF9F5]/70 hover:bg-[#F5F2EB]/90 border border-[#EBE7DF]/80 transition-colors"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <div
@@ -190,7 +192,7 @@ export function RecentActivityCard({
                 >
                   <Icon className="h-3 w-3 stroke-[2.2]" />
                 </div>
-                <p className="text-[12.5px] font-normal text-[#12141A] truncate leading-tight">
+                <p className="text-[12px] font-normal text-[#12141A] truncate leading-tight">
                   {ev.text}
                 </p>
               </div>
