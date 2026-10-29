@@ -63,6 +63,8 @@ interface QueueItem {
   aiSuggestion?: string;
   timeAgo: string;
   waitingHours: number;
+  dealValue?: number;
+  dealTitle?: string;
 }
 
 function getReplySuggestionForContext(
@@ -258,6 +260,11 @@ export default function OverviewPage() {
   const [inlineReplyText, setInlineReplyText] = useState("");
   const [selectedTone, setSelectedTone] = useState<"standard" | "shorter" | "direct">("standard");
 
+  // Queue channel filter & inline quick reply state
+  const [queueChannelFilter, setQueueChannelFilter] = useState<"all" | "whatsapp" | "task" | "lead">("all");
+  const [expandedQueueItemId, setExpandedQueueItemId] = useState<string | null>(null);
+  const [queueRowTone, setQueueRowTone] = useState<Record<string, "standard" | "shorter" | "direct">>({});
+
   // Customer Drawer State
   const [selectedCustomer, setSelectedCustomer] = useState<{
     name: string;
@@ -386,6 +393,10 @@ export default function OverviewPage() {
         c.lead_title || undefined,
         "conversation"
       );
+      const matchingLead = leads.find(
+        (l) => l.id === c.lead_id || (l.contact_phone && l.contact_phone === c.contact_phone)
+      );
+
       queue.push({
         id: `conv-${c.id}`,
         rawId: c.id,
@@ -393,13 +404,15 @@ export default function OverviewPage() {
         avatar: contactName,
         name: contactName,
         subContext: c.lead_title ? `${c.lead_title} • ${c.contact_phone || ""}` : c.contact_phone,
-        reason: "Customer waiting on WhatsApp response",
+        reason: matchingLead ? `${matchingLead.title} • ${suggestion.topic}` : suggestion.topic,
         inboundText: c.inboundText,
         phone: c.contact_phone,
         suggestion,
         aiSuggestion: suggestion.standard,
         timeAgo: `waiting ${c.waitLabel}`,
         waitingHours: c.waitingHours,
+        dealValue: matchingLead?.estimated_value,
+        dealTitle: matchingLead?.title || c.lead_title || undefined,
       });
     });
 
@@ -412,6 +425,8 @@ export default function OverviewPage() {
         t.title,
         "task"
       );
+      const matchingLead = leads.find((l) => l.id === t.lead_id);
+
       queue.push({
         id: `task-${t.id}`,
         rawId: t.id,
@@ -420,12 +435,14 @@ export default function OverviewPage() {
         name: t.title,
         subContext: t.contact_name ? `Contact: ${t.contact_name} • Priority: ${t.priority}` : `Priority: ${t.priority}`,
         reason: `Overdue SLA deadline • Priority: ${t.priority}`,
-        inboundText: `Action item SLA commitment: "${t.title}". Requires confirming stakeholder availability and sharing deliverables.`,
+        inboundText: `Action item SLA commitment: "${t.title}". Confirming deliverables with stakeholders.`,
         phone: "+91 98765 43210",
         suggestion,
         aiSuggestion: suggestion.standard,
         timeAgo: "overdue",
         waitingHours: 24,
+        dealValue: matchingLead?.estimated_value,
+        dealTitle: matchingLead?.title,
       });
     });
 
@@ -438,6 +455,8 @@ export default function OverviewPage() {
         t.title,
         "task"
       );
+      const matchingLead = leads.find((l) => l.id === t.lead_id);
+
       queue.push({
         id: `task-${t.id}`,
         rawId: t.id,
@@ -446,12 +465,14 @@ export default function OverviewPage() {
         name: t.title,
         subContext: t.contact_name ? `Contact: ${t.contact_name}` : "Due today",
         reason: `Follow-up SLA due today • ${t.contact_name ? `Contact: ${t.contact_name}` : ""}`,
-        inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder availability and sharing deliverables.`,
+        inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder next steps.`,
         phone: "+91 98765 43210",
         suggestion,
         aiSuggestion: suggestion.standard,
         timeAgo: "due today",
         waitingHours: 4,
+        dealValue: matchingLead?.estimated_value,
+        dealTitle: matchingLead?.title,
       });
     });
 
@@ -475,12 +496,14 @@ export default function OverviewPage() {
           name: l.title,
           subContext: `Inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
           reason: `New inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
-          inboundText: `New WhatsApp inbound inquiry from ${leadContact}: Interested in enterprise Growth plan with custom integrations.`,
+          inboundText: `New WhatsApp inbound inquiry from ${leadContact}: Interested in retail automation solutions.`,
           phone: l.contact_phone,
           suggestion,
           aiSuggestion: suggestion.standard,
           timeAgo: "waiting 1h",
           waitingHours: 1,
+          dealValue: l.estimated_value,
+          dealTitle: l.title,
         });
       });
 
@@ -506,6 +529,23 @@ export default function OverviewPage() {
 
     return remaining;
   }, [allQueueItems, nextBestAction, todayFilter]);
+
+  // Filtered queue items based on the channel tabs
+  const displayedQueue = useMemo(() => {
+    let list = upNextQueue;
+    if (queueChannelFilter === "whatsapp") {
+      list = list.filter((i) => i.type === "conversation");
+    } else if (queueChannelFilter === "task") {
+      list = list.filter((i) => i.type === "task");
+    } else if (queueChannelFilter === "lead") {
+      list = list.filter((i) => i.type === "lead");
+    }
+    return list;
+  }, [upNextQueue, queueChannelFilter]);
+
+  const queuePipelineValue = useMemo(() => {
+    return upNextQueue.reduce((sum, item) => sum + (item.dealValue || 0), 0);
+  }, [upNextQueue]);
 
   // Open Pipeline Calculation (Does NOT include Won deals)
   const openLeads = useMemo(
@@ -1302,33 +1342,71 @@ export default function OverviewPage() {
         <div className="xl:col-span-7 space-y-6">
           {/* UP NEXT IN YOUR QUEUE */}
           <div className="card">
-            <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#EFEDE7]">
+            {/* Header with channel tabs & pipeline value */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 mb-5 pb-4 border-b border-[#EFEDE7]">
               <div>
-                <h2 className="text-[1.25rem] font-medium text-[#12141A]">
-                  Up next in your queue
-                </h2>
-                <p className="text-[0.875rem] text-[#666C78] mt-0.5">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h2 className="text-[1.25rem] font-medium text-[#12141A] tracking-[-0.01em]">
+                    Up next in your queue
+                  </h2>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#FF5A1F] bg-[#FFF0EB] border border-[#FFD8CC] px-2.5 py-0.5 rounded-full">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F] animate-pulse" />
+                    {upNextQueue.length} priority items
+                  </span>
+                  {queuePipelineValue > 0 && (
+                    <span className="text-[11px] font-medium text-[#0A7A53] bg-[#E4F7EF] border border-[#BDECD7] px-2.5 py-0.5 rounded-full">
+                      {formatINR(queuePipelineValue)} pipeline at stake
+                    </span>
+                  )}
+                </div>
+                <p className="text-[0.875rem] text-[#666C78] mt-1">
                   {todayFilter !== "all"
                     ? `Filtered by "${todayFilter.replace("_", " ")}" • `
                     : ""}
-                  {upNextQueue.length} priority items awaiting action
+                  Real customer messages and SLAs with instant 1-click AI replies
                 </p>
               </div>
 
-              {todayFilter !== "all" && (
-                <button
-                  type="button"
-                  onClick={() => setTodayFilter("all")}
-                  className="text-[13px] font-medium text-[#FF5A1F] hover:underline"
-                >
-                  Clear filter
-                </button>
-              )}
+              {/* Channel filter tabs */}
+              <div className="inline-flex items-center gap-1 p-1 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] self-start sm:self-auto">
+                {(
+                  [
+                    { id: "all", label: "All", count: upNextQueue.length },
+                    { id: "whatsapp", label: "WhatsApp", count: upNextQueue.filter((i) => i.type === "conversation").length },
+                    { id: "task", label: "Tasks", count: upNextQueue.filter((i) => i.type === "task").length },
+                    { id: "lead", label: "Leads", count: upNextQueue.filter((i) => i.type === "lead").length },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setQueueChannelFilter(tab.id)}
+                    className={cn(
+                      "px-2.5 py-1 rounded-[7px] text-[12px] font-medium transition-colors flex items-center gap-1.5 cursor-pointer",
+                      queueChannelFilter === tab.id
+                        ? "bg-white text-[#12141A] shadow-2xs font-semibold"
+                        : "text-[#666C78] hover:text-[#12141A]"
+                    )}
+                  >
+                    <span>{tab.label}</span>
+                    <span
+                      className={cn(
+                        "text-[10px] px-1.5 py-0.2 rounded-full font-medium tabular-nums",
+                        queueChannelFilter === tab.id
+                          ? "bg-[#12141A] text-white"
+                          : "bg-black/5 text-[#666C78]"
+                      )}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="divide-y divide-[#E6E2D8]">
-              {upNextQueue.length > 0 ? (
-                upNextQueue.map((item) => {
+              {displayedQueue.length > 0 ? (
+                displayedQueue.map((item) => {
                   const avatarStyle = getAvatarColor(item.name);
                   const isConv = item.type === "conversation";
                   const isTask = item.type === "task";
@@ -1337,94 +1415,240 @@ export default function OverviewPage() {
                   return (
                     <div
                       key={item.id}
-                      className="py-3.5 flex items-center justify-between gap-4 group hover:bg-[#F7F5F0] -mx-3 px-3 rounded-[12px] transition-colors"
+                      className={cn(
+                        "py-3.5 px-3.5 -mx-3.5 rounded-[14px] transition-colors",
+                        expandedQueueItemId === item.id
+                          ? "bg-[#FAF8FE]/80 border border-[#E9E4F7] shadow-xs"
+                          : "hover:bg-[#FAF9F5] border border-transparent"
+                      )}
                     >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div
-                          className={cn(
-                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[13px] font-medium",
-                            avatarStyle.bg,
-                            avatarStyle.text,
-                            avatarStyle.border
-                          )}
-                        >
-                          {getInitials(item.name)}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span
-                              onClick={() => {
-                                if (item.phone) {
-                                  setSelectedCustomer({
-                                    name: item.name,
-                                    phone: item.phone,
-                                    reason: item.reason,
-                                  });
-                                }
-                              }}
-                              className="text-[1.0625rem] font-medium text-[#12141A] truncate hover:underline cursor-pointer"
-                            >
-                              {item.name}
-                            </span>
-
-                            {isConv && (
-                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF]">
-                                WhatsApp
-                              </span>
+                      {/* Main Item Row */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3.5 min-w-0">
+                          {/* Avatar */}
+                          <div
+                            className={cn(
+                              "flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border text-[14px] font-medium shadow-2xs mt-0.5 select-none",
+                              avatarStyle.bg,
+                              avatarStyle.text,
+                              avatarStyle.border
                             )}
-                            {isTask && (
-                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3]">
-                                Task
-                              </span>
-                            )}
-                            {isLead && (
-                              <span className="px-2 py-0.5 rounded-full text-[12px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
-                                Lead
-                              </span>
-                            )}
+                          >
+                            {getInitials(item.name)}
                           </div>
 
-                          <p className="text-[0.875rem] text-[#666C78] truncate mt-0.5">
-                            {item.reason}
-                          </p>
+                          <div className="min-w-0 flex-1">
+                            {/* Line 1: Name + Badges */}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span
+                                onClick={() => {
+                                  if (item.phone) {
+                                    setSelectedCustomer({
+                                      name: item.name,
+                                      phone: item.phone,
+                                      reason: item.reason,
+                                    });
+                                  }
+                                }}
+                                className="text-[15px] font-semibold text-[#12141A] truncate hover:text-[#FF5A1F] cursor-pointer transition-colors"
+                              >
+                                {item.name}
+                              </span>
+
+                              {/* Channel Badge */}
+                              {isConv && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#EAEEFF] text-[#2A3DB5] border border-[#D3DCFF]">
+                                  <MessageSquare className="h-2.5 w-2.5 text-[#2A3DB5]" />
+                                  <span>WhatsApp</span>
+                                </span>
+                              )}
+                              {isTask && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#FFF3D6] text-[#8F5300] border border-[#FFE5A3]">
+                                  <Clock className="h-2.5 w-2.5 text-[#8F5300]" />
+                                  <span>Task</span>
+                                </span>
+                              )}
+                              {isLead && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
+                                  <Sparkles className="h-2.5 w-2.5 text-[#0A6AA3]" />
+                                  <span>Lead</span>
+                                </span>
+                              )}
+
+                              {/* Deal Title / Subcontext Badge */}
+                              {item.dealTitle && (
+                                <span className="px-2 py-0.5 rounded-full text-[11px] font-normal bg-black/[0.04] text-[#454B57] truncate max-w-[200px]">
+                                  {item.dealTitle}
+                                </span>
+                              )}
+
+                              {/* Deal Value Pill */}
+                              {item.dealValue && (
+                                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#E4F7EF] text-[#0A7A53] border border-[#BDECD7] tabular-nums">
+                                  {formatINR(item.dealValue)}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Line 2: Real Message / Goal Snippet */}
+                            {item.inboundText && (
+                              <p className="text-[13px] text-[#454B57] font-normal leading-snug line-clamp-2 mt-1">
+                                <span className="text-[#666C78] font-medium mr-1.5">
+                                  {isConv ? "Incoming message:" : isTask ? "Milestone:" : "Inquiry:"}
+                                </span>
+                                &ldquo;{item.inboundText}&rdquo;
+                              </p>
+                            )}
+
+                            {/* Line 3: AI Intent / Topic Pill */}
+                            {item.suggestion?.topic && (
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#7C4DFF] bg-[#F5F0FF] border border-[#E9E4F7] px-2 py-0.5 rounded-full">
+                                  <Sparkles className="h-3 w-3 text-[#7C4DFF]" />
+                                  <span>{item.suggestion.topic}</span>
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span
-                          className={cn(
-                            "text-[13px] font-medium tabular-nums",
-                            item.timeAgo === "overdue"
-                              ? "text-[#B42336]"
-                              : item.timeAgo.includes("waiting")
-                              ? "text-[#8F5300]"
-                              : "text-[#666C78]"
+                        {/* Right: SLA Time + Action Buttons */}
+                        <div className="flex items-center gap-2 shrink-0 self-start mt-1">
+                          {/* SLA Badge */}
+                          <span
+                            className={cn(
+                              "px-2.5 py-0.5 rounded-full text-[11.5px] font-medium tabular-nums border",
+                              item.timeAgo === "overdue"
+                                ? "bg-[#FFE9EA] text-[#B42336] border-[#FCD0D3]"
+                                : item.timeAgo.includes("waiting")
+                                ? "bg-[#FFF3D6] text-[#8F5300] border-[#FDE5A3]"
+                                : "bg-[#F7F5F0] text-[#666C78] border-[#E6E2D8]"
+                            )}
+                          >
+                            {item.timeAgo}
+                          </span>
+
+                          {/* Quick Actions */}
+                          {item.suggestion && (
+                            <button
+                              type="button"
+                              onClick={() => setExpandedQueueItemId(expandedQueueItemId === item.id ? null : item.id)}
+                              className="h-8 px-2.5 rounded-[8px] bg-[#12141A] hover:bg-[#2A2E39] text-white text-[12px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.98] shadow-2xs"
+                            >
+                              <Send className="h-3 w-3" />
+                              <span>{expandedQueueItemId === item.id ? "Hide" : "Reply"}</span>
+                            </button>
                           )}
-                        >
-                          {item.timeAgo}
-                        </span>
 
-                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            size="sm"
-                            variant="ghost"
+                          <button
+                            type="button"
                             onClick={() => handleResolveItem(item.id, item.name)}
-                            className="h-8 px-2.5 text-[13px] text-[#454B57]"
+                            className="h-8 px-2.5 rounded-[8px] hover:bg-black/5 text-[#666C78] hover:text-[#12141A] text-[12px] font-medium transition-colors cursor-pointer"
                           >
                             Snooze
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="secondary"
+                          </button>
+
+                          <button
+                            type="button"
                             onClick={() => handleResolveItem(item.id, item.name)}
-                            className="h-8 px-2.5 text-[13px] gap-1"
+                            className="h-8 px-2.5 rounded-[8px] border border-[#E6E2D8] bg-white hover:bg-[#E4F7EF] hover:border-[#BDECD7] hover:text-[#0A7A53] text-[#12141A] text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1"
                           >
-                            <Check className="h-3.5 w-3.5 text-[#12B886]" />
+                            <Check className="h-3 w-3 text-[#12B886]" />
                             <span>Done</span>
-                          </Button>
+                          </button>
                         </div>
                       </div>
+
+                      {/* Inline AI Quick Reply Dock */}
+                      {expandedQueueItemId === item.id && item.suggestion && (
+                        <div className="mt-3.5 pt-3 border-t border-[#EBE7DF] space-y-2.5">
+                          <div className="p-3.5 rounded-[12px] bg-[#FAF8FE] border border-[#E9E4F7] space-y-2.5">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <div className="flex items-center gap-1.5 text-[12px] font-medium text-[#5B34C9]">
+                                <Sparkles className="h-3.5 w-3.5 text-[#7C4DFF]" />
+                                <span>AI Recommended Response</span>
+                                <span className="text-[11px] text-[#7C4DFF] bg-[#F0EAFF] px-2 py-0.5 rounded-full font-medium ml-1">
+                                  {item.suggestion.topic}
+                                </span>
+                              </div>
+
+                              {/* Tone Selector */}
+                              <div className="inline-flex items-center gap-1 p-0.5 rounded-[8px] bg-white border border-[#E9E4F7]">
+                                {(["standard", "shorter", "direct"] as const).map((t) => (
+                                  <button
+                                    key={t}
+                                    type="button"
+                                    onClick={() => setQueueRowTone((prev) => ({ ...prev, [item.id]: t }))}
+                                    className={cn(
+                                      "px-2 py-0.5 rounded-[6px] text-[11px] font-medium capitalize transition-colors cursor-pointer",
+                                      (queueRowTone[item.id] || "standard") === t
+                                        ? "bg-[#7C4DFF] text-white shadow-2xs"
+                                        : "text-[#666C78] hover:text-[#12141A]"
+                                    )}
+                                  >
+                                    {t}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Reply Text Preview */}
+                            <p className="text-[13px] text-[#12141A] leading-relaxed font-normal bg-white p-3 rounded-[9px] border border-[#E9E4F7]">
+                              {item.suggestion[queueRowTone[item.id] || "standard"]}
+                            </p>
+
+                            {/* Send Reply Button */}
+                            <div className="flex items-center justify-between gap-2 pt-1">
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (item.type === "conversation") {
+                                      handleSendReply(
+                                        item.rawId,
+                                        item.suggestion![queueRowTone[item.id] || "standard"],
+                                        item.name
+                                      );
+                                    } else {
+                                      handleResolveItem(item.id, item.name);
+                                    }
+                                    setExpandedQueueItemId(null);
+                                  }}
+                                  className="btn-primary gap-1.5 text-[12.5px] h-8 px-3.5"
+                                >
+                                  <Send className="h-3 w-3" />
+                                  <span>Send on WhatsApp</span>
+                                </button>
+
+                                {item.phone && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedCustomer({
+                                        name: item.name,
+                                        phone: item.phone!,
+                                        reason: item.reason,
+                                      });
+                                    }}
+                                    className="h-8 px-3 rounded-[8px] border border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1"
+                                  >
+                                    <ExternalLink className="h-3 w-3 text-[#666C78]" />
+                                    <span>Open chat</span>
+                                  </button>
+                                )}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => setExpandedQueueItemId(null)}
+                                className="text-[12px] text-[#666C78] hover:text-[#12141A] font-medium cursor-pointer"
+                              >
+                                Collapse
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })
