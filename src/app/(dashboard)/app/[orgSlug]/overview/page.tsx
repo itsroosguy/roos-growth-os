@@ -14,6 +14,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
 import { BriefingLine } from "@/components/overview/briefing-line";
 import { DayRail } from "@/components/overview/day-rail";
+import { NewOpportunityModal } from "@/components/crm/new-opportunity-modal";
 import {
   cn,
   formatINR,
@@ -203,11 +204,7 @@ export default function OverviewPage() {
 
   // New Opportunity Modal State
   const [newDealOpen, setNewDealOpen] = useState(false);
-  const [dealTitle, setDealTitle] = useState("");
-  const [dealValue, setDealValue] = useState("65000");
-  const [dealContactName, setDealContactName] = useState("");
-  const [dealContactPhone, setDealContactPhone] = useState("");
-  const [dealStage, setDealStage] = useState<LeadStage>("new");
+  const [newDealContact, setNewDealContact] = useState<{ name: string; phone: string } | null>(null);
 
   // Undo task storage
   const [lastCompletedTask, setLastCompletedTask] = useState<Task | null>(null);
@@ -574,33 +571,6 @@ export default function OverviewPage() {
     toast("Action Undone", {
       message: "Task restored to active agenda.",
       type: "info",
-    });
-  };
-
-  const handleCreateDeal = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!dealTitle) return;
-
-    crmStore.createLead(orgSlug, {
-      title: dealTitle,
-      estimated_value: parseFloat(dealValue) || 50000,
-      stage: dealStage,
-      contact_name: dealContactName || "Direct Inquiry",
-      contact_phone: dealContactPhone || "+91 98765 00000",
-      contact_id: "c-direct",
-      currency: "INR",
-    });
-
-    setNewDealOpen(false);
-    setDealTitle("");
-    setDealValue("65000");
-    setDealContactName("");
-    setDealContactPhone("");
-    setRefreshKey((k) => k + 1);
-
-    toast("Opportunity Created", {
-      message: "Added to active sales pipeline.",
-      type: "success",
     });
   };
 
@@ -1426,10 +1396,12 @@ export default function OverviewPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    setNewDealContact({
+                      name: selectedCustomer.name,
+                      phone: selectedCustomer.phone,
+                    });
                     setSelectedCustomer(null);
                     setNewDealOpen(true);
-                    setDealContactName(selectedCustomer.name);
-                    setDealContactPhone(selectedCustomer.phone);
                   }}
                   className="p-3 rounded-[12px] bg-[#E4F7EF] text-[#0A7A53] border border-[#BDECD7] hover:bg-[#D2F2E4] transition-colors text-center text-[13px] font-medium"
                 >
@@ -1478,105 +1450,17 @@ export default function OverviewPage() {
       </Drawer>
 
       {/* New Opportunity Modal */}
-      {newDealOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white rounded-[24px] p-6 max-w-md w-full border border-[#E6E2D8] shadow-xl">
-            <h3 className="text-[1.25rem] font-medium text-[#12141A] mb-1">
-              New Opportunity
-            </h3>
-            <p className="text-[0.875rem] text-[#666C78] mb-4">
-              Add a qualified customer deal to your sales pipeline.
-            </p>
-
-            <form onSubmit={handleCreateDeal} className="space-y-4">
-              <div>
-                <label className="text-[13px] font-medium text-[#454B57] block mb-1">
-                  Opportunity Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={dealTitle}
-                  onChange={(e) => setDealTitle(e.target.value)}
-                  placeholder="e.g. Apex Logistics 20-Seat Contract"
-                  className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
-                    Value (₹)
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    value={dealValue}
-                    onChange={(e) => setDealValue(e.target.value)}
-                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-                  />
-                </div>
-                <div>
-                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
-                    Stage
-                  </label>
-                  <select
-                    value={dealStage}
-                    onChange={(e) => setDealStage(e.target.value as LeadStage)}
-                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-                  >
-                    <option value="new">Inbound</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="qualified">Qualified</option>
-                    <option value="proposal">Proposal</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
-                    Contact Name
-                  </label>
-                  <input
-                    type="text"
-                    value={dealContactName}
-                    onChange={(e) => setDealContactName(e.target.value)}
-                    placeholder="e.g. Rohan Mehta"
-                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-                  />
-                </div>
-                <div>
-                  <label className="text-[13px] font-medium text-[#454B57] block mb-1">
-                    Phone
-                  </label>
-                  <input
-                    type="text"
-                    value={dealContactPhone}
-                    onChange={(e) => setDealContactPhone(e.target.value)}
-                    placeholder="+91 98765 00000"
-                    className="w-full h-10 px-3 rounded-[10px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setNewDealOpen(false)}
-                  className="h-10 px-4 text-[14px]"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="btn-primary text-[14px]">
-                  Create Opportunity
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <NewOpportunityModal
+        open={newDealOpen}
+        onClose={() => {
+          setNewDealOpen(false);
+          setNewDealContact(null);
+        }}
+        orgSlug={orgSlug}
+        initialContactName={newDealContact?.name}
+        initialContactPhone={newDealContact?.phone}
+        onSuccess={() => setRefreshKey((k) => k + 1)}
+      />
     </div>
   );
 }

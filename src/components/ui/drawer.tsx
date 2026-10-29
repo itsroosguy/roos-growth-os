@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 
@@ -23,6 +24,12 @@ export function Drawer({
   width = "md",
   className,
 }: DrawerProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -41,7 +48,7 @@ export function Drawer({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const widthClasses = {
     sm: "max-w-md",
@@ -50,8 +57,8 @@ export function Drawer({
     xl: "max-w-2xl",
   }[width];
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex justify-end">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-[#0B0D12]/40 backdrop-blur-[2px] transition-opacity duration-200"
@@ -62,7 +69,7 @@ export function Drawer({
       {/* Slide-over panel */}
       <div
         className={cn(
-          "relative z-50 flex h-full w-full flex-col bg-white border-l border-[#E4E1D8] shadow-overlay animate-drawer-slide",
+          "relative z-50 flex h-full w-full flex-col bg-white border-l border-[#E4E1D8] shadow-overlay animate-drawer-slide will-change-transform",
           widthClasses,
           className
         )}
@@ -71,7 +78,7 @@ export function Drawer({
       >
         {/* Header */}
         {(title || description) && (
-          <div className="flex items-center justify-between border-b border-[#E4E1D8] px-6 py-4 bg-[#FFFFFF]">
+          <div className="flex items-center justify-between border-b border-[#E4E1D8] px-6 py-4 bg-[#FFFFFF] shrink-0">
             <div>
               {title && (
                 <h3 className="text-[17px] font-medium text-[#12141A]">
@@ -86,7 +93,7 @@ export function Drawer({
             </div>
             <button
               onClick={onClose}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] text-[#4B515D] hover:bg-[#EFEDE7] hover:text-[#12141A] transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] text-[#4B515D] hover:bg-[#EFEDE7] hover:text-[#12141A] active:scale-[0.95] transition-all duration-140 cursor-pointer"
               aria-label="Close drawer"
             >
               <X className="h-4 w-4" />
@@ -97,6 +104,7 @@ export function Drawer({
         {/* Content body */}
         <div className="flex-1 overflow-y-auto p-6">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

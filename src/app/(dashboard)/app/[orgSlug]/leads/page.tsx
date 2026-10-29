@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusPill } from "@/components/ui/status-pill";
 import { Drawer } from "@/components/ui/drawer";
+import { NewOpportunityModal } from "@/components/crm/new-opportunity-modal";
 import {
   Dialog,
   DialogHeader,
@@ -985,88 +986,13 @@ export default function LeadsPage() {
       {/* ========================================================================= */}
       {/* 5. CREATE OPPORTUNITY MODAL DIALOG                                        */}
       {/* ========================================================================= */}
-      <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
-        <form onSubmit={handleCreateLead} className="space-y-4">
-          <DialogHeader>
-            <DialogTitle>Add Sales Opportunity</DialogTitle>
-            <DialogDescription>
-              Create a commercial deal in your active workspace pipeline.
-            </DialogDescription>
-          </DialogHeader>
-
-          <Input
-            label="Deal Title *"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder="e.g. Enterprise WhatsApp Retainer"
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Estimated Value (INR) *"
-              type="number"
-              value={dealValue}
-              onChange={(e) => setDealValue(e.target.value)}
-              required
-            />
-
-            <div className="space-y-1.5">
-              <label className="block text-[13px] font-medium text-[#4B515D]">
-                Initial Stage
-              </label>
-              <select
-                value={initialStage}
-                onChange={(e) => setInitialStage(e.target.value as LeadStage)}
-                className="w-full h-10 px-3 rounded-[10px] border border-[#E4E1D8] bg-white text-[13px] text-[#12141A] outline-none"
-              >
-                <option value="new">Inbound</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="proposal">On Review / Proposal</option>
-                <option value="won">Completed / Won</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Client Contact Name"
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              placeholder="e.g. Rahul Sharma"
-            />
-
-            <Input
-              label="Client Phone"
-              value={contactPhone}
-              onChange={(e) => setContactPhone(e.target.value)}
-              placeholder="+91 98765 43210"
-            />
-          </div>
-
-          <Input
-            label="Deal Notes & Requirement"
-            value={dealNotes}
-            onChange={(e) => setDealNotes(e.target.value)}
-            placeholder="Reviewing updated components and requirements..."
-          />
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => setCreateModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="sm">
-              Create Opportunity
-            </Button>
-          </DialogFooter>
-        </form>
-      </Dialog>
+      <NewOpportunityModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        orgSlug={orgSlug}
+        initialStage={initialStage}
+        onSuccess={() => setRefreshKey((k) => k + 1)}
+      />
 
       {/* ========================================================================= */}
       {/* 6. INVITE TEAM MEMBER DIALOG                                              */}
