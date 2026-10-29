@@ -45,6 +45,14 @@ export class MockAIProvider implements AIProvider {
       detectedIntent = "Pricing Enquiry";
       suggestionText = `Hi ${params.customerName}! Here are our standard plans for ${profile.business_name}: ${profile.pricing_info}. Would you like me to schedule a quick 10-minute walkthrough for your team?`;
       suggestedNextSteps.push("Send pricing sheet", "Schedule product demo");
+    } else if (msg.includes("fleet") || msg.includes("proposal") || msg.includes("finance")) {
+      detectedIntent = "Proposal Review Follow-up";
+      suggestionText = `Hi ${params.customerName}! Sounds great, take your time reviewing the proposal with your finance team. Should I check back with you on Friday, or would you like me to clarify any line items before then?`;
+      suggestedNextSteps.push("Set follow-up reminder for Friday", "Share unit economics breakdown");
+    } else if (msg.includes("quotation") || msg.includes("quote") || msg.includes("retail") || msg.includes("setup")) {
+      detectedIntent = "Quotation & Scope Delivery";
+      suggestionText = `Hi ${params.customerName}! I've prepared the commercial quotation and hardware spec sheet for your setup. Would you prefer I share the PDF directly here on WhatsApp, or hop on a brief 10-minute walkthrough call?`;
+      suggestedNextSteps.push("Send quotation PDF", "Schedule brief alignment");
     } else if (msg.includes("refund") || msg.includes("cancel") || msg.includes("return")) {
       detectedIntent = "Cancellation / Refund Policy Enquiry";
       suggestionText = `Hello ${params.customerName}, regarding cancellations: ${profile.return_policy}. Let us know if you need any assistance with your account.`;

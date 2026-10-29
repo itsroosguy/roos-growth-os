@@ -35,6 +35,143 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+interface ContextualSuggestion {
+  standard: string;
+  shorter: string;
+  direct: string;
+  intent: string;
+  topic: string;
+}
+
+interface QueueItem {
+  id: string;
+  rawId: string;
+  type: "conversation" | "task" | "lead";
+  avatar: string;
+  name: string;
+  subContext?: string;
+  reason: string;
+  inboundText?: string;
+  phone?: string;
+  suggestion?: ContextualSuggestion;
+  aiSuggestion?: string;
+  timeAgo: string;
+  waitingHours: number;
+}
+
+function getReplySuggestionForContext(
+  name: string,
+  inboundText?: string,
+  contextTitle?: string,
+  type: "conversation" | "task" | "lead" = "conversation"
+): ContextualSuggestion {
+  const firstName = name.includes(" ") ? name.split(" ")[0] : name;
+  const text = (inboundText || "").toLowerCase();
+  const title = (contextTitle || "").toLowerCase();
+
+  // 1. Fleet / Proposal / Finance review
+  if (
+    text.includes("fleet") ||
+    text.includes("proposal") ||
+    text.includes("finance") ||
+    title.includes("fleet") ||
+    title.includes("proposal")
+  ) {
+    return {
+      topic: "Fleet proposal review",
+      intent: "Proposal Review Follow-up",
+      standard: `Hi ${firstName}! Sounds great, take your time reviewing the fleet proposal with your finance team. Should I check back with you on Friday, or would you like me to clarify any unit pricing or terms before then?`,
+      shorter: `Hi ${firstName}! Sounds good. Take your time with the finance team—feel free to reach out if any questions come up.`,
+      direct: `Hi ${firstName}, understood. I will follow up with you on Friday once your finance team has reviewed the proposal.`,
+    };
+  }
+
+  // 2. Retail automation / Quotation
+  if (
+    text.includes("quotation") ||
+    text.includes("quote") ||
+    text.includes("retail") ||
+    text.includes("hardware") ||
+    title.includes("retail")
+  ) {
+    return {
+      topic: "Retail automation quote",
+      intent: "Quotation & Scope Delivery",
+      standard: `Hi ${firstName}! I've prepared the commercial quotation and hardware spec sheet for your retail automation setup. Would you prefer I share the PDF directly here on WhatsApp, or hop on a brief 10-minute walkthrough call?`,
+      shorter: `Hi ${firstName}! The quotation is ready. Should I send the PDF over WhatsApp or email it to you?`,
+      direct: `Hi ${firstName}, the retail automation quotation is ready. I can send the PDF right away or schedule a 10-minute walkthrough.`,
+    };
+  }
+
+  // 3. Demo / Trial availability
+  if (
+    text.includes("demo") ||
+    text.includes("trial") ||
+    text.includes("available this week") ||
+    title.includes("demo")
+  ) {
+    return {
+      topic: "Live demo scheduling",
+      intent: "Live Demo Scheduling",
+      standard: `Hi ${firstName}! Yes, we have demo slots open tomorrow at 11:30 AM and Thursday at 3:00 PM IST. Which of those times works best for you and your team?`,
+      shorter: `Hi ${firstName}! We have slots open tomorrow at 11:30 AM or Thursday at 3:00 PM IST. Would either work for you?`,
+      direct: `Hi ${firstName}, yes. I have openings tomorrow at 11:30 AM or Thursday at 3:00 PM IST for a live walkthrough.`,
+    };
+  }
+
+  // 4. Pricing / Cost / Plans
+  if (
+    text.includes("price") ||
+    text.includes("pricing") ||
+    text.includes("cost") ||
+    text.includes("rate") ||
+    text.includes("plan")
+  ) {
+    return {
+      topic: "Pricing tiers breakdown",
+      intent: "Pricing & Plans Breakdown",
+      standard: `Hi ${firstName}! Here is our pricing breakdown: Starter Plan is ₹299/mo and Growth Plan is ₹799/mo with full WhatsApp API automation. Would you like me to share the complete comparison sheet?`,
+      shorter: `Hi ${firstName}! Our plans start at ₹299/mo (Starter) and ₹799/mo (Growth). Would you like the full feature comparison?`,
+      direct: `Hi ${firstName}, pricing is ₹299/mo for Starter and ₹799/mo for Growth. I can send the comparison sheet or set up a test account.`,
+    };
+  }
+
+  // 5. Broadcasts / Campaigns
+  if (
+    text.includes("broadcast") ||
+    text.includes("campaign") ||
+    text.includes("template")
+  ) {
+    return {
+      topic: "Meta-approved broadcast templates",
+      intent: "Broadcasts & Templates Inquiry",
+      standard: `Hi ${firstName}! We support broadcast campaigns with Meta-approved templates, scheduled delivery, and automatic opt-out handling. Would you like to review sample templates?`,
+      shorter: `Hi ${firstName}! Yes, broadcasts are supported with Meta templates and full analytics. Would you like a sample?`,
+      direct: `Hi ${firstName}, yes. We support Meta-approved broadcasts. I can share sample templates or enable them on your workspace.`,
+    };
+  }
+
+  // 6. Tasks
+  if (type === "task") {
+    return {
+      topic: contextTitle || "Milestone check-in",
+      intent: "Action Item Checkpoint",
+      standard: `Hi ${firstName}! Following up regarding "${contextTitle || "our discussion"}". We've finalized the latest updates and deliverables. Would 3:30 PM today work for a brief alignment?`,
+      shorter: `Hi ${firstName}! Quick checkpoint on "${contextTitle || "deliverables"}". Let me know when you're free for a 5-minute sync.`,
+      direct: `Hi ${firstName}, milestone checkpoint for "${contextTitle || "deliverables"}". Ready for your review.`,
+    };
+  }
+
+  // 7. General Inquiry / Fallback
+  return {
+    topic: "Customer inquiry response",
+    intent: "Inquiry Follow-up",
+    standard: `Hi ${firstName}! Thank you for reaching out to Roos StudioX. I would be happy to help with this. Would you like to hop on a quick 10-minute call, or shall I share details right here?`,
+    shorter: `Hi ${firstName}! Thanks for reaching out. How can I best assist you today?`,
+    direct: `Hi ${firstName}, I can help you with this right away. What are your specific requirements?`,
+  };
+}
+
 export default function OverviewPage() {
   const { currentOrg } = useTenant();
   const orgSlug = currentOrg.slug;
@@ -51,6 +188,7 @@ export default function OverviewPage() {
   // Quick reply popover / inline edit state
   const [inlineReplyId, setInlineReplyId] = useState<string | null>(null);
   const [inlineReplyText, setInlineReplyText] = useState("");
+  const [selectedTone, setSelectedTone] = useState<"standard" | "shorter" | "direct">("standard");
 
   // Customer Drawer State
   const [selectedCustomer, setSelectedCustomer] = useState<{
@@ -173,34 +311,29 @@ export default function OverviewPage() {
 
   // Combined Queue Items
   const allQueueItems = useMemo(() => {
-    const queue: Array<{
-      id: string;
-      rawId: string;
-      type: "conversation" | "task" | "lead";
-      avatar: string;
-      name: string;
-      reason: string;
-      inboundText?: string;
-      phone?: string;
-      aiSuggestion?: string;
-      timeAgo: string;
-      waitingHours: number;
-    }> = [];
+    const queue: QueueItem[] = [];
 
     // Conversations
     unreadConversations.forEach((c) => {
       const contactName = c.contact_name || c.contact_phone || "A customer";
-      const firstName = contactName.includes(" ") ? contactName.split(" ")[0] : contactName;
+      const suggestion = getReplySuggestionForContext(
+        contactName,
+        c.inboundText,
+        c.lead_title || undefined,
+        "conversation"
+      );
       queue.push({
         id: `conv-${c.id}`,
         rawId: c.id,
         type: "conversation",
         avatar: contactName,
         name: contactName,
+        subContext: c.lead_title ? `${c.lead_title} • ${c.contact_phone || ""}` : c.contact_phone,
         reason: "Customer waiting on WhatsApp response",
         inboundText: c.inboundText,
         phone: c.contact_phone,
-        aiSuggestion: `Hi ${firstName}! Thank you for reaching out. Here is our tailored Growth tier breakdown and onboarding schedule. Would 3:00 PM today work for a brief 10-minute walkthrough call?`,
+        suggestion,
+        aiSuggestion: suggestion.standard,
         timeAgo: `waiting ${c.waitLabel}`,
         waitingHours: c.waitingHours,
       });
@@ -209,17 +342,24 @@ export default function OverviewPage() {
     // Overdue tasks
     overdueTasks.forEach((t) => {
       const taskContact = t.contact_name || "Client";
-      const firstName = taskContact.includes(" ") ? taskContact.split(" ")[0] : taskContact;
+      const suggestion = getReplySuggestionForContext(
+        taskContact,
+        t.title,
+        t.title,
+        "task"
+      );
       queue.push({
         id: `task-${t.id}`,
         rawId: t.id,
         type: "task",
         avatar: t.contact_name || "Task",
         name: t.title,
+        subContext: t.contact_name ? `Contact: ${t.contact_name} • Priority: ${t.priority}` : `Priority: ${t.priority}`,
         reason: `Overdue SLA deadline • Priority: ${t.priority}`,
-        inboundText: `Action item SLA commitment: "${t.title}". Stakeholder requested technical architecture specifications and milestone delivery commitments.`,
+        inboundText: `Action item SLA commitment: "${t.title}". Requires confirming stakeholder availability and sharing deliverables.`,
         phone: "+91 98765 43210",
-        aiSuggestion: `Hi ${firstName}! Following up regarding "${t.title}". We have finalized the technical architecture draft for your team's review. Would 3:30 PM work for a brief touchpoint?`,
+        suggestion,
+        aiSuggestion: suggestion.standard,
         timeAgo: "overdue",
         waitingHours: 24,
       });
@@ -227,15 +367,25 @@ export default function OverviewPage() {
 
     // Today Tasks
     todayTasks.forEach((t) => {
+      const taskContact = t.contact_name || "Client";
+      const suggestion = getReplySuggestionForContext(
+        taskContact,
+        t.title,
+        t.title,
+        "task"
+      );
       queue.push({
         id: `task-${t.id}`,
         rawId: t.id,
         type: "task",
         avatar: t.contact_name || "Task",
         name: t.title,
+        subContext: t.contact_name ? `Contact: ${t.contact_name}` : "Due today",
         reason: `Follow-up SLA due today • ${t.contact_name ? `Contact: ${t.contact_name}` : ""}`,
         inboundText: `Scheduled milestone checkpoint: "${t.title}". Requires confirming stakeholder availability and sharing deliverables.`,
         phone: "+91 98765 43210",
+        suggestion,
+        aiSuggestion: suggestion.standard,
         timeAgo: "due today",
         waitingHours: 4,
       });
@@ -246,15 +396,25 @@ export default function OverviewPage() {
       .filter((l) => l.stage === "new" && !resolvedQueueIds.has(`lead-${l.id}`))
       .slice(0, 2)
       .forEach((l) => {
+        const leadContact = l.contact_name || l.title;
+        const suggestion = getReplySuggestionForContext(
+          leadContact,
+          l.title,
+          l.title,
+          "lead"
+        );
         queue.push({
           id: `lead-${l.id}`,
           rawId: l.id,
           type: "lead",
-          avatar: l.contact_name || l.title,
+          avatar: leadContact,
           name: l.title,
+          subContext: `Inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
           reason: `New inbound inquiry • Value: ${formatINR(l.estimated_value || 0)}`,
-          inboundText: `New WhatsApp inbound inquiry from ${l.contact_name || l.title}: Interested in enterprise Growth plan with custom webhook integrations.`,
+          inboundText: `New WhatsApp inbound inquiry from ${leadContact}: Interested in enterprise Growth plan with custom integrations.`,
           phone: l.contact_phone,
+          suggestion,
+          aiSuggestion: suggestion.standard,
           timeAgo: "waiting 1h",
           waitingHours: 1,
         });
@@ -635,102 +795,127 @@ export default function OverviewPage() {
         {/* HERO 1 (LEFT 7 COLS): NEXT BEST ACTION */}
         <div
           ref={heroRef}
-          className="card xl:col-span-7 border-l-[4px] border-l-[#FF5A1F] flex flex-col justify-between"
+          className="card xl:col-span-7 flex flex-col justify-between"
         >
           {nextBestAction ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               {/* Card Header & Contact Meta */}
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="relative">
-                    {(() => {
-                      const avatarStyle = getAvatarColor(nextBestAction.name);
-                      return (
-                        <div
-                          className={cn(
-                            "flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] border text-[16px] font-medium shadow-2xs",
-                            avatarStyle.bg,
-                            avatarStyle.text,
-                            avatarStyle.border
-                          )}
-                        >
-                          {getInitials(nextBestAction.name)}
-                        </div>
-                      );
-                    })()}
-                    <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#12B886] ring-2 ring-white" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3
-                        onClick={() =>
-                          setSelectedCustomer({
-                            name: nextBestAction.name,
-                            phone: nextBestAction.phone || "+91 98765 43210",
-                            reason: nextBestAction.reason,
-                          })
-                        }
-                        className="text-[1.0625rem] font-medium text-[#12141A] hover:text-[#FF5A1F] cursor-pointer truncate transition-colors"
+                  {(() => {
+                    const avatarStyle = getAvatarColor(nextBestAction.name);
+                    return (
+                      <div
+                        className={cn(
+                          "flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] border text-[15px] font-medium shadow-2xs select-none",
+                          avatarStyle.bg,
+                          avatarStyle.text,
+                          avatarStyle.border
+                        )}
                       >
-                        {nextBestAction.name}
-                      </h3>
-                      <span className="px-2 py-0.5 rounded-[6px] text-[12px] font-medium bg-[#E3F3FD] text-[#0A6AA3] border border-[#BFE3FA]">
-                        WhatsApp Customer
-                      </span>
-                    </div>
+                        {getInitials(nextBestAction.name)}
+                      </div>
+                    );
+                  })()}
+                  <div className="min-w-0">
+                    <h3
+                      onClick={() =>
+                        setSelectedCustomer({
+                          name: nextBestAction.name,
+                          phone: nextBestAction.phone || "+91 98765 43210",
+                          reason: nextBestAction.reason,
+                        })
+                      }
+                      className="text-[1.0625rem] font-medium text-[#12141A] hover:text-[#FF5A1F] cursor-pointer truncate transition-colors"
+                    >
+                      {nextBestAction.name}
+                    </h3>
                     <p className="text-[0.875rem] text-[#666C78] truncate mt-0.5">
-                      {nextBestAction.phone || "+91 98765 43210"} • {nextBestAction.reason}
+                      {nextBestAction.subContext || nextBestAction.phone || nextBestAction.reason}
                     </p>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedCustomer({
-                      name: nextBestAction.name,
-                      phone: nextBestAction.phone || "+91 98765 43210",
-                      reason: nextBestAction.reason,
-                    })
-                  }
-                  className="text-[#666C78] hover:text-[#12141A] text-[13px] h-8 px-2.5 rounded-[8px] hover:bg-[#F7F5F0] transition-colors inline-flex items-center gap-1 shrink-0"
-                >
-                  <span>Details</span>
-                  <ExternalLink className="h-3 w-3" />
-                </button>
-              </div>
-
-              {/* Inbound Customer Message */}
-              <div className="rounded-[18px] bg-[#F7F5F0] border border-[#E6E2D8] p-4 text-[#12141A]">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-[#12B886]" />
-                    <span className="text-[12px] font-medium text-[#454B57] uppercase tracking-wider">
-                      Latest Inbound Message
-                    </span>
-                  </div>
-                  <span className="text-[12px] text-[#666C78]">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className={cn(
+                      "px-3 py-1 rounded-full text-[12px] font-medium border tabular-nums",
+                      nextBestAction.timeAgo === "overdue"
+                        ? "bg-[#FFE9EA] text-[#B42336] border-[#FCD0D3]"
+                        : "bg-[#FFF3D6] text-[#8F5300] border-[#FDE5A3]"
+                    )}
+                  >
                     {nextBestAction.timeAgo}
                   </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedCustomer({
+                        name: nextBestAction.name,
+                        phone: nextBestAction.phone || "+91 98765 43210",
+                        reason: nextBestAction.reason,
+                      })
+                    }
+                    className="text-[#666C78] hover:text-[#12141A] text-[13px] h-8 px-2 rounded-[8px] hover:bg-[#F7F5F0] transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>Details</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </button>
                 </div>
-                <p className="text-[24px] text-[#12141A] leading-snug font-normal pl-3 border-l-2 border-[#12B886]">
+              </div>
+
+              {/* Inbound Customer Message (Direct, commanding 24px, no nested box) */}
+              <div className="pt-1 pb-1">
+                <span className="text-[12px] font-medium text-[#666C78] block mb-2">
+                  Customer message
+                </span>
+                <p className="text-[22px] md:text-[24px] text-[#12141A] font-normal leading-[1.35] tracking-[-0.015em]">
                   &ldquo;{nextBestAction.inboundText}&rdquo;
                 </p>
               </div>
 
-              {/* AI Suggested Reply Preview (Violet box) */}
-              {nextBestAction.aiSuggestion && (
-                <div className="rounded-[18px] bg-[#F0EAFF] border border-[#D9C9FF] p-4 relative overflow-hidden">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2 text-[#5B34C9]">
-                      <Sparkles className="h-4 w-4" />
-                      <span className="text-[12px] font-medium uppercase tracking-wider text-[#5B34C9]">
-                        Suggested Reply
+              {/* AI Suggested Reply Preview (Refined quiet dock with tone controls) */}
+              {nextBestAction.suggestion && (
+                <div className="rounded-[16px] bg-[#FAF8FE] border border-[#E9E4F7] p-4.5 space-y-3">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] font-medium text-[#5B34C9]">
+                        Suggested reply
+                      </span>
+                      <span className="text-[11px] text-[#7C4DFF] bg-[#F0EAFF] px-2 py-0.5 rounded-full font-medium">
+                        {nextBestAction.suggestion.topic}
                       </span>
                     </div>
-                    <span className="text-[11px] font-medium text-[#5B34C9] bg-white/80 px-2 py-0.5 rounded-full border border-[#D9C9FF]">
-                      AI Engine
-                    </span>
+
+                    {/* Tone selector pills */}
+                    <div className="inline-flex items-center gap-1 p-0.5 rounded-[10px] bg-white/80 border border-[#E9E4F7]">
+                      {(
+                        [
+                          { id: "standard", label: "Standard" },
+                          { id: "shorter", label: "Shorter" },
+                          { id: "direct", label: "Direct" },
+                        ] as const
+                      ).map((t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedTone(t.id);
+                            if (inlineReplyId === nextBestAction.id && nextBestAction.suggestion) {
+                              setInlineReplyText(nextBestAction.suggestion[t.id]);
+                            }
+                          }}
+                          className={cn(
+                            "px-2.5 py-0.5 text-[12px] font-medium rounded-[7px] transition-all cursor-pointer",
+                            selectedTone === t.id
+                              ? "bg-[#7C4DFF] text-white shadow-2xs"
+                              : "text-[#666C78] hover:text-[#12141A] hover:bg-[#F0EAFF]"
+                          )}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {inlineReplyId === nextBestAction.id ? (
@@ -739,96 +924,77 @@ export default function OverviewPage() {
                         value={inlineReplyText}
                         onChange={(e) => setInlineReplyText(e.target.value)}
                         className="w-full h-24 p-3 rounded-[12px] bg-white border border-[#D9C9FF] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]"
-                        placeholder="Edit suggested reply..."
+                        placeholder="Edit message..."
                       />
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() =>
-                            handleSendReply(
-                              nextBestAction.rawId,
-                              inlineReplyText,
-                              nextBestAction.name
-                            )
-                          }
-                          className="btn-primary text-[14px]"
-                        >
-                          Send reply
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setInlineReplyId(null)}
-                          className="text-[14px] h-9 px-3"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
                     </div>
                   ) : (
-                    <p className="text-[0.9375rem] text-[#341F73] leading-relaxed">
-                      {nextBestAction.aiSuggestion}
+                    <p className="text-[15px] text-[#2D2254] leading-relaxed">
+                      {nextBestAction.suggestion[selectedTone]}
                     </p>
                   )}
                 </div>
               )}
 
               {/* Actions Dock */}
-              {inlineReplyId !== nextBestAction.id && (
-                <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#EFEDE7]">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() =>
-                        handleSendReply(
-                          nextBestAction.rawId,
-                          nextBestAction.aiSuggestion ||
-                            "Thank you for contacting Roos StudioX! We are reviewing your inquiry.",
-                          nextBestAction.name
-                        )
-                      }
-                      className="btn-primary inline-flex items-center gap-1.5 text-[14px] font-medium text-white shadow-xs cursor-pointer"
-                    >
-                      <Send className="h-3.5 w-3.5" />
-                      <span>Send</span>
-                    </Button>
+              <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#EFEDE7]">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const textToSend =
+                        inlineReplyId === nextBestAction.id
+                          ? inlineReplyText
+                          : nextBestAction.suggestion
+                          ? nextBestAction.suggestion[selectedTone]
+                          : nextBestAction.aiSuggestion || "";
+                      handleSendReply(nextBestAction.rawId, textToSend, nextBestAction.name);
+                    }}
+                    className="btn-primary gap-2"
+                  >
+                    <Send className="h-4 w-4" />
+                    <span>Send reply</span>
+                  </button>
 
-                    <Button
-                      variant="outline"
-                      onClick={() => {
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (inlineReplyId === nextBestAction.id) {
+                        setInlineReplyId(null);
+                      } else {
                         setInlineReplyId(nextBestAction.id);
-                        setInlineReplyText(nextBestAction.aiSuggestion || "");
-                      }}
-                      className="text-[13px] h-10 px-3.5 gap-1.5 rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A]"
-                    >
-                      <Pencil className="h-3.5 w-3.5 text-[#666C78]" />
-                      <span>Edit</span>
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() =>
-                        handleResolveItem(nextBestAction.id, nextBestAction.name)
+                        setInlineReplyText(
+                          nextBestAction.suggestion
+                            ? nextBestAction.suggestion[selectedTone]
+                            : nextBestAction.aiSuggestion || ""
+                        );
                       }
-                      className="text-[#666C78] hover:text-[#12141A] text-[13px] h-10 px-3 rounded-[12px]"
-                    >
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>Snooze</span>
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() =>
-                        handleResolveItem(nextBestAction.id, nextBestAction.name)
-                      }
-                      className="text-[13px] h-10 px-3.5 gap-1.5 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#E4F7EF] hover:text-[#0A7A53] hover:border-[#BDECD7] text-[#12141A]"
-                    >
-                      <Check className="h-3.5 w-3.5 text-[#12B886]" />
-                      <span>Done</span>
-                    </Button>
-                  </div>
+                    }}
+                    className="h-10 px-4 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] text-[14px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <Pencil className="h-3.5 w-3.5 text-[#666C78]" />
+                    <span>{inlineReplyId === nextBestAction.id ? "Cancel" : "Edit"}</span>
+                  </button>
                 </div>
-              )}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleResolveItem(nextBestAction.id, nextBestAction.name)}
+                    className="h-10 px-3.5 rounded-[12px] text-[#666C78] hover:text-[#12141A] hover:bg-[#F7F5F0] text-[13px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>Snooze</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleResolveItem(nextBestAction.id, nextBestAction.name)}
+                    className="h-10 px-4 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#E4F7EF] hover:text-[#0A7A53] hover:border-[#BDECD7] text-[#12141A] text-[14px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <Check className="h-3.5 w-3.5 text-[#12B886]" />
+                    <span>Done</span>
+                  </button>
+                </div>
+              </div>
             </div>
           ) : (
             /* Empty State */
