@@ -644,9 +644,9 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 1: TODAY STRIP (FOUR 72PX TALL CHIPS IN MODULE HUES)                   */}
+      {/* ROW 1: TODAY STRIP (2x2 GRID, 50% WIDTH, TIGHT AND PROPORTIONAL)           */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="w-full lg:max-w-[540px] grid grid-cols-2 gap-3">
         {/* 1. Waiting on you (Ultramarine) */}
         <button
           type="button"
@@ -654,21 +654,21 @@ export default function OverviewPage() {
             setTodayFilter(todayFilter === "waiting" ? "all" : "waiting")
           }
           className={cn(
-            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "waiting"
-              ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20"
-              : "bg-white border-[#E6E2D8] hover:border-[#D3DCFF] hover:bg-[#FAFCFF] shadow-xs"
+              ? "bg-[#EAEEFF] border-[#3D5AFE] ring-2 ring-[#3D5AFE]/20 shadow-xs"
+              : "bg-white border-[#E6E2D8] hover:border-[#3D5AFE]/40 hover:bg-[#FAFCFF] shadow-xs"
           )}
         >
           <div>
             <span className="text-[12px] font-medium text-[#2A3DB5] block">
               Waiting on you
             </span>
-            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
               {unreadConversations.length}
             </span>
           </div>
-          <span className="h-3 w-3 rounded-full bg-[#3D5AFE]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3D5AFE] ring-4 ring-[#3D5AFE]/15 shrink-0" />
         </button>
 
         {/* 2. Due today (Amber) */}
@@ -678,21 +678,21 @@ export default function OverviewPage() {
             setTodayFilter(todayFilter === "due_today" ? "all" : "due_today")
           }
           className={cn(
-            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "due_today"
-              ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20"
-              : "bg-white border-[#E6E2D8] hover:border-[#FFE5A3] hover:bg-[#FFFDF9] shadow-xs"
+              ? "bg-[#FFF3D6] border-[#F5A524] ring-2 ring-[#F5A524]/20 shadow-xs"
+              : "bg-white border-[#E6E2D8] hover:border-[#F5A524]/40 hover:bg-[#FFFDF9] shadow-xs"
           )}
         >
           <div>
             <span className="text-[12px] font-medium text-[#8F5300] block">
               Due today
             </span>
-            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
               {todayTasks.length}
             </span>
           </div>
-          <span className="h-3 w-3 rounded-full bg-[#F5A524]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#F5A524] ring-4 ring-[#F5A524]/15 shrink-0" />
         </button>
 
         {/* 3. Overdue (Rose if > 0, otherwise calm Emerald "On track") */}
@@ -703,9 +703,9 @@ export default function OverviewPage() {
               setTodayFilter(todayFilter === "overdue" ? "all" : "overdue")
             }
             className={cn(
-              "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+              "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
               todayFilter === "overdue"
-                ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20"
+                ? "bg-[#FFE9EA] border-[#E5484D] ring-2 ring-[#E5484D]/20 shadow-xs"
                 : "bg-white border-[#FDC8CA] hover:bg-[#FFF5F5] shadow-xs"
             )}
           >
@@ -713,14 +713,14 @@ export default function OverviewPage() {
               <span className="text-[12px] font-medium text-[#B42336] block">
                 Overdue
               </span>
-              <span className="text-[2rem] font-medium leading-none text-[#E5484D] tabular-nums mt-1 block">
+              <span className="text-[1.875rem] font-medium leading-none text-[#E5484D] tabular-nums mt-1 block">
                 {overdueTasks.length}
               </span>
             </div>
-            <span className="h-3 w-3 rounded-full bg-[#E5484D] animate-pulse" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E5484D] ring-4 ring-[#E5484D]/20 animate-pulse shrink-0" />
           </button>
         ) : (
-          <div className="h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border border-[#BDECD7] bg-[#E4F7EF] text-left shadow-xs">
+          <div className="h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border border-[#BDECD7] bg-[#E4F7EF] text-left shadow-xs">
             <div>
               <span className="text-[12px] font-medium text-[#0A7A53] block">
                 Overdue
@@ -729,7 +729,7 @@ export default function OverviewPage() {
                 On track
               </span>
             </div>
-            <Check className="h-4 w-4 text-[#0A7A53]" />
+            <Check className="h-4 w-4 text-[#0A7A53] shrink-0" />
           </div>
         )}
 
@@ -740,21 +740,21 @@ export default function OverviewPage() {
             setTodayFilter(todayFilter === "proposal" ? "all" : "proposal")
           }
           className={cn(
-            "h-[72px] rounded-[16px] p-3.5 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
+            "h-[74px] rounded-[16px] px-4 py-3 flex items-center justify-between border transition-all duration-140 text-left active:scale-[0.98] cursor-pointer",
             todayFilter === "proposal"
-              ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20"
-              : "bg-white border-[#E6E2D8] hover:border-[#BDECD7] hover:bg-[#F8FCFA] shadow-xs"
+              ? "bg-[#E4F7EF] border-[#12B886] ring-2 ring-[#12B886]/20 shadow-xs"
+              : "bg-white border-[#E6E2D8] hover:border-[#12B886]/40 hover:bg-[#F8FCFA] shadow-xs"
           )}
         >
           <div>
             <span className="text-[12px] font-medium text-[#0A7A53] block">
               In proposal
             </span>
-            <span className="text-[2rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
+            <span className="text-[1.875rem] font-medium leading-none text-[#12141A] tabular-nums mt-1 block">
               {proposalLeads.length}
             </span>
           </div>
-          <span className="h-3 w-3 rounded-full bg-[#12B886]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#12B886] ring-4 ring-[#12B886]/15 shrink-0" />
         </button>
       </div>
 
