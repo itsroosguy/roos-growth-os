@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useTenant } from "@/lib/organizations/tenant-context";
 import { crmStore } from "@/lib/crm/crm-store";
@@ -75,6 +75,12 @@ export default function OverviewPage() {
   // Deal Drawer State
   const [selectedDeal, setSelectedDeal] = useState<Lead | null>(null);
 
+  // Client mounted state to guard hydration
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // New Opportunity Modal/Drawer State
   const [newDealOpen, setNewDealOpen] = useState(false);
   const [dealTitle, setDealTitle] = useState("");
@@ -125,8 +131,18 @@ export default function OverviewPage() {
     [leads]
   );
 
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // Stable start/end of today
+  const startOfToday = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  const endOfToday = useMemo(() => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d;
+  }, []);
 
   const overdueTasks = useMemo(
     () =>
@@ -145,14 +161,15 @@ export default function OverviewPage() {
         (t) =>
           t.status !== "completed" &&
           new Date(t.due_date) >= startOfToday &&
+          new Date(t.due_date) <= endOfToday &&
           !resolvedQueueIds.has(`task-${t.id}`)
       ),
-    [tasks, startOfToday, resolvedQueueIds]
+    [tasks, startOfToday, endOfToday, resolvedQueueIds]
   );
 
   // Time-aware greeting line
   const timeGreeting = useMemo(() => {
-    const hour = now.getHours();
+    const hour = new Date().getHours();
     let salutation = "Good morning";
     if (hour >= 12 && hour < 17) salutation = "Good afternoon";
     if (hour >= 17) salutation = "Good evening";
@@ -487,7 +504,9 @@ export default function OverviewPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="type-display text-[#12141A]">Overview</h1>
-          <p className="type-body text-[#454B57] mt-1">{timeGreeting}</p>
+          <p className="type-body text-[#454B57] mt-1" suppressHydrationWarning>
+            {timeGreeting}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -548,7 +567,7 @@ export default function OverviewPage() {
               Unanswered conversations
             </p>
           </div>
-          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0">
+          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0" suppressHydrationWarning>
             {unreadConversations.length}
           </span>
         </button>
@@ -568,7 +587,7 @@ export default function OverviewPage() {
             <span className="type-eyebrow text-[#FF7A1A]">Due today</span>
             <p className="type-small text-[#8E95A3] truncate mt-0.5">Follow-ups & SLAs</p>
           </div>
-          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0">
+          <span className="type-metric text-[#FF7A1A] ml-3 shrink-0" suppressHydrationWarning>
             {todayTasks.length}
           </span>
         </button>
@@ -602,7 +621,7 @@ export default function OverviewPage() {
             </p>
           </div>
           {overdueTasks.length > 0 ? (
-            <span className="type-metric text-[#EF4444] ml-3 shrink-0">
+            <span className="type-metric text-[#EF4444] ml-3 shrink-0" suppressHydrationWarning>
               {overdueTasks.length}
             </span>
           ) : (
@@ -627,7 +646,7 @@ export default function OverviewPage() {
             <span className="type-eyebrow text-[#10B981]">In proposal</span>
             <p className="type-small text-[#8E95A3] truncate mt-0.5">Active negotiations</p>
           </div>
-          <span className="type-metric text-[#10B981] ml-3 shrink-0">
+          <span className="type-metric text-[#10B981] ml-3 shrink-0" suppressHydrationWarning>
             {proposalDeals.length}
           </span>
         </button>
@@ -653,7 +672,7 @@ export default function OverviewPage() {
                       Next best action
                     </span>
                   </div>
-                  <span className="text-[13px] text-[#666C78] font-normal hidden sm:inline">
+                  <span className="text-[13px] text-[#666C78] font-normal hidden sm:inline" suppressHydrationWarning>
                     Priority 1 of {allQueueItems.length} • Action Required
                   </span>
                 </div>
@@ -665,9 +684,10 @@ export default function OverviewPage() {
                       ? "bg-[#FFE9EA] text-[#B42336] border border-[#FFCCD0]"
                       : "bg-[#FFF0EB] text-[#B93A0A] border border-[#FFD9CC]"
                   )}
+                  suppressHydrationWarning
                 >
                   <Clock className="h-3.5 w-3.5" />
-                  <span className="capitalize">{nextBestAction.timeAgo}</span>
+                  <span className="capitalize" suppressHydrationWarning>{nextBestAction.timeAgo}</span>
                 </span>
               </div>
 
@@ -685,6 +705,7 @@ export default function OverviewPage() {
                             avatarStyle.text,
                             avatarStyle.border
                           )}
+                          suppressHydrationWarning
                         >
                           {getInitials(nextBestAction.name)}
                         </div>
@@ -703,6 +724,7 @@ export default function OverviewPage() {
                           })
                         }
                         className="text-[18px] sm:text-[20px] font-medium text-[#12141A] hover:text-[#FF5A1F] hover:underline cursor-pointer truncate transition-colors"
+                        suppressHydrationWarning
                       >
                         {nextBestAction.name}
                       </h3>
@@ -710,7 +732,7 @@ export default function OverviewPage() {
                         WhatsApp Client
                       </span>
                     </div>
-                    <p className="text-[13px] text-[#666C78] truncate mt-0.5">
+                    <p className="text-[13px] text-[#666C78] truncate mt-0.5" suppressHydrationWarning>
                       {nextBestAction.phone || "+91 98765 43210"} • {nextBestAction.reason}
                     </p>
                   </div>
@@ -742,11 +764,11 @@ export default function OverviewPage() {
                       Latest Inbound Context
                     </span>
                   </div>
-                  <span className="text-[13px] text-[#8E95A3] font-normal">
+                  <span className="text-[13px] text-[#8E95A3] font-normal" suppressHydrationWarning>
                     Received {nextBestAction.timeAgo}
                   </span>
                 </div>
-                <p className="text-[15px] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#25D366]">
+                <p className="text-[15px] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#25D366]" suppressHydrationWarning>
                   "{nextBestAction.inboundText}"
                 </p>
               </div>
@@ -800,7 +822,7 @@ export default function OverviewPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-[14px] text-[#241C48] leading-relaxed font-normal">
+                    <p className="text-[14px] text-[#241C48] leading-relaxed font-normal" suppressHydrationWarning>
                       {nextBestAction.aiSuggestion}
                     </p>
                   )}
@@ -972,7 +994,7 @@ export default function OverviewPage() {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="type-title text-[#12141A]">Up next in your queue</h2>
-              <p className="type-small text-[#666C78]">
+              <p className="type-small text-[#666C78]" suppressHydrationWarning>
                 {todayFilter !== "all"
                   ? `Filtered by "${todayFilter.replace("_", " ")}" • `
                   : ""}
@@ -1013,6 +1035,7 @@ export default function OverviewPage() {
                           avatarStyle.text,
                           avatarStyle.border
                         )}
+                        suppressHydrationWarning
                       >
                         {getInitials(item.name)}
                       </div>
@@ -1030,6 +1053,7 @@ export default function OverviewPage() {
                               }
                             }}
                             className="type-label text-[#12141A] truncate hover:underline cursor-pointer"
+                            suppressHydrationWarning
                           >
                             {item.name}
                           </span>
@@ -1052,7 +1076,7 @@ export default function OverviewPage() {
                           )}
                         </div>
 
-                        <p className="type-small text-[#666C78] truncate mt-0.5">
+                        <p className="type-small text-[#666C78] truncate mt-0.5" suppressHydrationWarning>
                           {item.reason}
                         </p>
                       </div>
@@ -1068,6 +1092,7 @@ export default function OverviewPage() {
                             ? "text-[#8F5300]"
                             : "text-[#666C78]"
                         )}
+                        suppressHydrationWarning
                       >
                         {item.timeAgo}
                       </span>

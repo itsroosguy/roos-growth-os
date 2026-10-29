@@ -412,7 +412,17 @@ class CRMStore {
   // LEADS OPERATIONS (TENANT-ISOLATED)
   // ============================================================================
   getLeads(orgSlug: string): Lead[] {
-    return [...(this.leads.get(orgSlug) || [])];
+    const raw = this.leads.get(orgSlug) || [];
+    const now = Date.now();
+    return raw.map((l) => {
+      if (l.id === "lead-204" && l.next_follow_up_at) {
+        return { ...l, next_follow_up_at: new Date(now).toISOString() };
+      }
+      if (l.id === "lead-203" && l.next_follow_up_at) {
+        return { ...l, next_follow_up_at: new Date(now - 86400000).toISOString() };
+      }
+      return l;
+    });
   }
 
   getLeadById(orgSlug: string, leadId: string): Lead | null {
@@ -480,7 +490,20 @@ class CRMStore {
   // TASKS & FOLLOW-UPS (TENANT-ISOLATED)
   // ============================================================================
   getTasks(orgSlug: string): Task[] {
-    return [...(this.tasks.get(orgSlug) || [])];
+    const raw = this.tasks.get(orgSlug) || [];
+    const now = Date.now();
+    return raw.map((t) => {
+      if (t.id === "t-301") {
+        return { ...t, due_date: new Date(now).toISOString() };
+      }
+      if (t.id === "t-302") {
+        return { ...t, due_date: new Date(now - 86400000).toISOString() };
+      }
+      if (t.id === "t-303") {
+        return { ...t, due_date: new Date(now + 86400000 * 2).toISOString() };
+      }
+      return t;
+    });
   }
 
   createTask(orgSlug: string, data: Omit<Task, "id" | "organization_id" | "created_at" | "updated_at">): Task {

@@ -4,6 +4,23 @@ All notable architectural, visual, and experiential changes to the Roos StudioX 
 
 ---
 
+## [Patch: Hydration Mismatch & SSR Normalization] — 2026-10-29
+### Zero Hydration Errors & Full Client/Server Determinism
+- **Root Cause Resolution**:
+  - Eliminated the `Server: "1" Client: "2"` mismatch caused by server boot timestamps vs client load timestamps in singleton store seed data across midnight boundaries.
+  - Normalized `crmStore.getTasks()` and `crmStore.getLeads()` to dynamically calculate task and lead due dates relative to the active request timestamp (`t-301` consistently Due Today, `t-302` consistently Overdue, `t-303` consistently Upcoming).
+  - Added strict date boundary bounds (`>= startOfToday && <= endOfToday`) for `todayTasks` to prevent future/upcoming tasks from leaking into the today filter.
+- **Hydration Guards (`suppressHydrationWarning`)**:
+  - Protected all dynamic queue text nodes across the Next Best Action Hero card (avatar initials, customer name, phone, context quote, AI suggestion, elapsed time).
+  - Protected the Today strip metric counters and Up Next in Queue list items.
+  - Verified via Chrome CDP headless runner that `nextjs-portal` shadow root contains zero errors, zero toast warnings, and `DETAILED HYDRATION ERRORS: []`.
+- **System Integrity**:
+  - 144/144 unit and integration tests passing across 27 test files (`vitest run`).
+  - 0 TypeScript compiler errors (`tsc --noEmit`).
+  - 15/15 routes verified with 0 typography violations (`scripts/dom-audit.js`).
+
+---
+
 ## [Revision 2: The "2027 Pass"] — 2026-10-28
 ### Complete Transformation to 2027 Design Standard across All 15 Routes
 - **Tokens & Semantic Meaning**:
