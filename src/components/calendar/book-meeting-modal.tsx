@@ -210,7 +210,7 @@ export function BookMeetingModal({
             </Button>
             <Button
               type="submit"
-              className="btn-primary-flame h-10 px-5 text-[14px] font-medium interactive-tap-spring"
+              className="btn-primary text-[14px] font-medium"
             >
               Schedule Meeting
             </Button>

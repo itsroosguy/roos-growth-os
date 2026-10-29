@@ -52,6 +52,7 @@ export function MeetingsHeroCard({ orgSlug }: MeetingsHeroCardProps) {
 
   const handleCopyLink = (m: Meeting, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!m.meeting_url) return;
     navigator.clipboard.writeText(m.meeting_url);
     setCopiedId(m.id);
     setTimeout(() => setCopiedId(null), 1500);
@@ -65,7 +66,7 @@ export function MeetingsHeroCard({ orgSlug }: MeetingsHeroCardProps) {
 
   return (
     <>
-      <div className="card-2027 rounded-[28px] border border-[#E6E2D8] bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-[0_2px_4px_rgba(11,13,18,0.04),0_16px_36px_-12px_rgba(11,13,18,0.12)] hover:shadow-[0_20px_48px_-12px_rgba(45,140,255,0.14)] transition-all duration-200 h-full">
+      <div className="card flex flex-col justify-between relative overflow-hidden h-full">
         {/* Top tri-color Google/Zoom/Emerald gradient accent line */}
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#4285F4] via-[#2D8CFF] to-[#12B886]" />
 
@@ -108,7 +109,7 @@ export function MeetingsHeroCard({ orgSlug }: MeetingsHeroCardProps) {
               <Button
                 size="sm"
                 onClick={() => setBookMeetingOpen(true)}
-                className="btn-primary-flame h-8 px-2.5 gap-1 text-[12.5px] font-medium rounded-[9px] shadow-2xs interactive-tap-spring"
+                className="btn-primary h-8 px-2.5 gap-1 text-[13px] font-medium rounded-[9px] shadow-2xs"
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span>Book</span>
@@ -251,7 +252,7 @@ export function MeetingsHeroCard({ orgSlug }: MeetingsHeroCardProps) {
                 <Button
                   size="sm"
                   onClick={() => setBookMeetingOpen(true)}
-                  className="mt-2.5 btn-primary-flame h-7 px-3 text-[12px]"
+                  className="mt-2.5 btn-primary h-7 px-3 text-[13px]"
                 >
                   Schedule call
                 </Button>

@@ -501,7 +501,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col bg-[#0B0D12] text-[#F4F5F7] select-none transition-all duration-320 ease-expo-out rounded-[24px]",
+        "flex h-full flex-col text-[#F4F5F7] select-none rounded-[24px] overflow-hidden",
         collapsed ? "w-[76px]" : "w-[272px]"
       )}
     >
@@ -679,11 +679,9 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                           }
                         }}
                         onMouseLeave={() => setHoveredTooltip(null)}
+                        aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "group relative flex items-center rounded-[12px] h-[42px] px-2.5 transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
-                          isActive
-                            ? "bg-[#1B1F29] text-[#F4F5F7] font-medium"
-                            : "text-[#A3A9B6] hover:bg-[#1B1F29]/60 hover:text-[#F4F5F7]",
+                          "nav-item group relative flex items-center h-[42px] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
                           collapsed && "justify-center px-0 w-11 mx-auto"
                         )}
                       >
@@ -701,24 +699,24 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                               modColor.text
                             )}
                           >
-                            <Icon className="h-[20px] w-[20px]" />
+                            <Icon className="h-[22px] w-[22px]" />
                           </div>
                         ) : (
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center transition-transform duration-120 group-hover:translate-x-[1px]">
                             <Icon
                               className={cn(
-                                "h-[20px] w-[20px] text-[#A3A9B6] transition-colors duration-140",
+                                "h-[22px] w-[22px] text-[#A3A9B6] transition-colors duration-140",
                                 modColor.hover
                               )}
                             />
                           </div>
                         )}
 
-                        {/* Title Label */}
+                        {/* Title Label: 16px */}
                         {!collapsed && (
                           <span
                             className={cn(
-                              "ml-3 truncate text-[15px] leading-tight transition-colors",
+                              "ml-3 truncate text-[16px] leading-tight transition-colors",
                               isActive
                                 ? "text-[#F4F5F7] font-medium"
                                 : "text-[#A3A9B6] group-hover:text-[#F4F5F7] font-normal"
@@ -921,15 +919,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   return (
     <>
       {/* Desktop Inset Floating Sidebar (>= 1024px) */}
-      <aside className="hidden lg:flex flex-col shrink-0 p-3 h-screen sticky top-0 z-30">
-        <div
-          className={cn(
-            "flex flex-col h-[calc(100vh-24px)] rounded-[24px] bg-[#0B0D12] text-[#F4F5F7] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_12px_36px_-8px_rgba(11,13,18,0.35)] select-none transition-all duration-320 ease-expo-out overflow-visible relative",
-            collapsed ? "w-[76px]" : "w-[272px]"
-          )}
-        >
-          {sidebarContent}
-        </div>
+      <aside className={cn("sidebar", collapsed && "is-collapsed")}>
+        {sidebarContent}
       </aside>
 
       {/* Mobile / Tablet Menu Trigger (< 1024px) */}

@@ -234,7 +234,7 @@ export default function TasksPage() {
 
           <Button
             onClick={() => setCreateModalOpen(true)}
-            className="btn-primary-flame flex items-center gap-2 h-10 px-4 text-[14px]"
+            className="btn-primary flex items-center gap-2 text-[14px]"
           >
             <Plus className="h-4 w-4" />
             <span>Add task</span>
@@ -367,7 +367,7 @@ export default function TasksPage() {
                   if (selectedTask) handleCompleteTask(selectedTask);
                   setSelectedTask(null);
                 }}
-                className="btn-primary-flame text-[14px]"
+                className="btn-primary text-[14px]"
               >
                 Mark as Completed
               </Button>
@@ -470,7 +470,7 @@ export default function TasksPage() {
             >
               Cancel
             </Button>
-            <Button type="submit" className="btn-primary-flame text-[14px]">
+            <Button type="submit" className="btn-primary text-[14px]">
               Create Task
             </Button>
           </DialogFooter>

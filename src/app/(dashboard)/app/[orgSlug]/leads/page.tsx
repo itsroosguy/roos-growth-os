@@ -474,7 +474,7 @@ export default function LeadsPage() {
               setInitialStage("new");
               setCreateModalOpen(true);
             }}
-            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] bg-[#FF5A1F] hover:bg-[#E04B14] text-white text-[14px] font-medium shadow-2xs transition-all duration-140 cursor-pointer active:scale-[0.98]"
+            className="btn-primary flex items-center gap-1.5 text-[14px] cursor-pointer"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>Create Deal</span>

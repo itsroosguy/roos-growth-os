@@ -172,7 +172,7 @@ export default function ContactsPage() {
           {/* Primary Action Button */}
           <Button
             onClick={() => setAddModalOpen(true)}
-            className="btn-primary-flame flex items-center gap-2 h-10 px-4 text-[14px]"
+            className="btn-primary flex items-center gap-2 text-[14px]"
           >
             <Plus className="h-4 w-4" />
             <span>Add contact</span>

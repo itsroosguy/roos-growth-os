@@ -13,7 +13,7 @@ export interface Meeting {
   end_time: string;   // e.g. "12:15 PM" or ISO
   date: string;       // YYYY-MM-DD or ISO
   platform: MeetingPlatform;
-  meeting_url: string;
+  meeting_url?: string;
   status: MeetingStatus;
   notes?: string;
   created_at: string;

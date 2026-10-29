@@ -84,7 +84,7 @@ export function Topbar() {
     {
       id: "n-2",
       title: "Follow-up Task Due Today",
-      subtitle: "Call Priya Sharma to review tailored proposal quotation",
+      subtitle: "Review proposal terms for Sneha Reddy (Fleet Management)",
       time: "1h ago",
       read: false,
       type: "task",
@@ -201,7 +201,7 @@ export function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#E6E2D8] bg-[#F7F5F0] px-4 md:px-8 select-none">
+      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#E6E2D8] bg-[#F7F5F0] px-4 md:px-8 select-none lg:ml-[308px] transition-[margin] duration-200">
         {/* Left: Contextual Breadcrumb */}
         <div className="flex items-center gap-2 text-[14px]">
           <span className="text-[#666C78] font-normal">

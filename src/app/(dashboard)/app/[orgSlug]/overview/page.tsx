@@ -121,13 +121,22 @@ export default function OverviewPage() {
         const msgs = whatsappStore.getMessages(c.id);
         const inboundMsgs = msgs.filter((m) => m.sender_type === "customer");
         const lastInbound = inboundMsgs[inboundMsgs.length - 1];
+
+        // Real timestamp computation (differs per conversation)
+        const msgTimeStr = lastInbound?.created_at || c.last_customer_message_at || c.last_message_at || new Date().toISOString();
+        const diffMs = Math.max(60000, Date.now() - new Date(msgTimeStr).getTime());
+        const waitHours = Math.max(1, Math.round(diffMs / (1000 * 60 * 60)));
+        const waitMinutes = Math.max(1, Math.round(diffMs / (1000 * 60)));
+        const waitLabel = waitMinutes < 60 ? `${waitMinutes}m` : `${waitHours}h`;
+
         return {
           ...c,
           inboundText:
             lastInbound?.body ||
             c.last_message_text ||
-            "Hello! We are looking to integrate WhatsApp Business API for our 20-agent sales team. Could you please share the pricing schedule and onboarding timeline?",
-          waitingHours: 2,
+            "Hello! We are looking to integrate WhatsApp Business API for our sales team. Could you please share the pricing schedule and onboarding timeline?",
+          waitingHours: waitHours,
+          waitLabel,
         };
       });
   }, [conversations, resolvedQueueIds]);
@@ -192,8 +201,8 @@ export default function OverviewPage() {
         inboundText: c.inboundText,
         phone: c.contact_phone,
         aiSuggestion: `Hi ${firstName}! Thank you for reaching out. Here is our tailored Growth tier breakdown and onboarding schedule. Would 3:00 PM today work for a brief 10-minute walkthrough call?`,
-        timeAgo: "waiting 2h",
-        waitingHours: 2,
+        timeAgo: `waiting ${c.waitLabel}`,
+        waitingHours: c.waitingHours,
       });
     });
 
@@ -496,7 +505,7 @@ export default function OverviewPage() {
           <button
             type="button"
             onClick={() => setNewDealOpen(true)}
-            className="btn-primary-flame inline-flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px] font-medium text-white shadow-sm transition-transform duration-140 active:scale-95 cursor-pointer"
+            className="btn-primary gap-1.5"
           >
             <Plus className="h-4 w-4" />
             <span>New opportunity</span>
@@ -626,7 +635,7 @@ export default function OverviewPage() {
         {/* HERO 1 (LEFT 7 COLS): NEXT BEST ACTION */}
         <div
           ref={heroRef}
-          className="xl:col-span-7 bg-white rounded-[28px] p-7 border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_24px_-12px_rgba(11,13,18,0.12)] border-l-[4px] border-l-[#FF5A1F] flex flex-col justify-between"
+          className="card xl:col-span-7 border-l-[4px] border-l-[#FF5A1F] flex flex-col justify-between"
         >
           {nextBestAction ? (
             <div className="space-y-5">
@@ -704,7 +713,7 @@ export default function OverviewPage() {
                     {nextBestAction.timeAgo}
                   </span>
                 </div>
-                <p className="text-[1rem] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#12B886]">
+                <p className="text-[24px] text-[#12141A] leading-snug font-normal pl-3 border-l-2 border-[#12B886]">
                   &ldquo;{nextBestAction.inboundText}&rdquo;
                 </p>
               </div>
@@ -742,7 +751,7 @@ export default function OverviewPage() {
                               nextBestAction.name
                             )
                           }
-                          className="btn-primary-flame text-[14px] h-9 px-4"
+                          className="btn-primary text-[14px]"
                         >
                           Send reply
                         </Button>
@@ -777,7 +786,7 @@ export default function OverviewPage() {
                           nextBestAction.name
                         )
                       }
-                      className="btn-primary-flame inline-flex items-center gap-1.5 h-10 px-4 text-[14px] font-medium text-white shadow-xs cursor-pointer"
+                      className="btn-primary inline-flex items-center gap-1.5 text-[14px] font-medium text-white shadow-xs cursor-pointer"
                     >
                       <Send className="h-3.5 w-3.5" />
                       <span>Send</span>
@@ -835,11 +844,8 @@ export default function OverviewPage() {
           )}
         </div>
 
-        {/* HERO 2 (RIGHT 5 COLS): REVENUE HERO (INK SURFACE WITH SOFT FLAME GLOW) */}
-        <div className="xl:col-span-5 bg-[#0B0D12] text-white rounded-[28px] p-8 border border-[#1B1F29] relative overflow-hidden shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_24px_-12px_rgba(11,13,18,0.12)] flex flex-col justify-between">
-          {/* Subtle Flame Glow at Lower Right */}
-          <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#FF5A1F]/15 blur-3xl pointer-events-none" />
-
+        {/* HERO 2 (RIGHT 5 COLS): REVENUE HERO (.hero-ink SURFACE WITH 80PX METRIC) */}
+        <div className="hero-ink xl:col-span-5 relative overflow-hidden flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#A3A9B6]">
@@ -853,7 +859,7 @@ export default function OverviewPage() {
 
             {/* Hero-metric Figure (5rem / 80px) with single-session count-up */}
             <div className="my-4">
-              <div className="text-[3.5rem] sm:text-[4.25rem] font-medium leading-none tracking-tight text-white tabular-nums">
+              <div className="metric-hero text-white tabular-nums">
                 <AnimatedNumber
                   value={openPipelineValue}
                   format="currency"
@@ -866,9 +872,9 @@ export default function OverviewPage() {
               </p>
             </div>
 
-            {/* Proportional Stage Bar (Open stages only) */}
+            {/* Proportional Stage Bar (12px tall, open stages only) */}
             <div className="my-5">
-              <div className="h-3.5 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
+              <div className="h-3 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
                 {openStageSegments.map((stage) => (
                   <div
                     key={stage.key}
@@ -902,12 +908,12 @@ export default function OverviewPage() {
             </div>
           </div>
 
-          {/* Three Quiet Lines at Bottom */}
+          {/* Quiet Metric Summary Lines at Bottom */}
           <div className="pt-4 border-t border-white/10 space-y-2.5 text-[13px]">
             <div className="flex items-center justify-between">
               <span className="text-[#A3A9B6]">Won this period</span>
               <span className="font-medium text-[#12B886] tabular-nums">
-                {formatINR(wonValue)} ({wonDeals.length} deals closed)
+                {formatINR(wonValue)} ({wonDeals.length} {wonDeals.length === 1 ? "deal" : "deals"} closed)
               </span>
             </div>
 
@@ -915,13 +921,6 @@ export default function OverviewPage() {
               <span className="text-[#A3A9B6]">Win conversion rate</span>
               <span className="font-medium text-white tabular-nums">
                 {winRate}% of closed proposals
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-[#A3A9B6]">Active deals in pipeline</span>
-              <span className="font-medium text-white tabular-nums">
-                {openLeads.length} active opportunities
               </span>
             </div>
           </div>
@@ -935,7 +934,7 @@ export default function OverviewPage() {
         {/* LEFT (7 COLS): UP NEXT QUEUE & DEALS WORTH A LOOK */}
         <div className="xl:col-span-7 space-y-6">
           {/* UP NEXT IN YOUR QUEUE */}
-          <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
+          <div className="card">
             <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#EFEDE7]">
               <div>
                 <h2 className="text-[1.25rem] font-medium text-[#12141A]">
@@ -1071,7 +1070,7 @@ export default function OverviewPage() {
           </div>
 
           {/* DEALS WORTH A LOOK (OPEN DEALS ONLY) */}
-          <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm">
+          <div className="card">
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#EFEDE7]">
               <div>
                 <h2 className="text-[1.25rem] font-medium text-[#12141A]">
@@ -1190,7 +1189,7 @@ export default function OverviewPage() {
             },
             {
               id: "act-2",
-              text: "Rohan Mehta confirmed Zoom call for technical architecture",
+              text: "Rohan Mehta confirmed consultation for technical architecture",
               time: "1h ago",
               dotColor: "bg-[#1FA2E8]",
             },
@@ -1202,13 +1201,13 @@ export default function OverviewPage() {
             },
             {
               id: "act-4",
-              text: "Follow-up task scheduled for Priya Sharma proposal terms",
+              text: "Follow-up task scheduled for Sneha Reddy proposal terms",
               time: "4h ago",
               dotColor: "bg-[#F5A524]",
             },
             {
               id: "act-5",
-              text: "Broadcast campaign delivered to 450 contacts (99.2% rate)",
+              text: "Q4 Retail Automation Announcement broadcast delivered to 10 contacts",
               time: "Yesterday",
               dotColor: "bg-[#7C4DFF]",
             },
@@ -1404,7 +1403,7 @@ export default function OverviewPage() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="btn-primary-flame h-10 px-5 text-[14px]">
+                <Button type="submit" className="btn-primary text-[14px]">
                   Create Opportunity
                 </Button>
               </div>

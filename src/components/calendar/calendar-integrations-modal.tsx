@@ -251,7 +251,7 @@ export function CalendarIntegrationsModal({
           </div>
 
           <Button
-            className="btn-primary-flame h-10 px-5 text-[14px] font-medium interactive-tap-spring"
+            className="btn-primary text-[14px] font-medium"
             onClick={() => onOpenChange(false)}
           >
             Done

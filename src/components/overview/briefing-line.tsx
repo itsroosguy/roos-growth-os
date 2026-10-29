@@ -70,7 +70,7 @@ export function BriefingLine({
         type="button"
         onClick={onClick}
         title={title}
-        className={`inline-flex items-center px-2 py-0.5 rounded-[8px] text-[15px] font-medium border transition-transform duration-140 active:scale-95 mx-0.5 align-baseline cursor-pointer ${variants[variant]}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[15px] font-medium border transition-transform duration-140 active:scale-95 mx-0.5 align-baseline cursor-pointer ${variants[variant]}`}
       >
         {children}
       </button>
@@ -83,7 +83,7 @@ export function BriefingLine({
     const firstName = rawName.includes(" ") ? rawName.split(" ")[0] : rawName;
 
     return (
-      <p className="text-[17px] sm:text-[19px] text-[#454B57] font-normal leading-relaxed">
+      <p className="text-[20px] text-[#454B57] font-normal leading-relaxed">
         <Chip
           variant="sky"
           title={`Click to view conversation with ${rawName}`}
@@ -154,7 +154,7 @@ export function BriefingLine({
   // 2. All conversations answered; has meetings scheduled
   if (todayMeetings.length > 0) {
     return (
-      <p className="text-[17px] sm:text-[19px] text-[#454B57] font-normal leading-relaxed">
+      <p className="text-[20px] text-[#454B57] font-normal leading-relaxed">
         {"You are caught up on WhatsApp. You have "}
         <Chip
           variant="ultramarine"
@@ -195,7 +195,7 @@ export function BriefingLine({
   // 3. Calm state with active pipeline
   if (totalProposalValue > 0) {
     return (
-      <p className="text-[17px] sm:text-[19px] text-[#454B57] font-normal leading-relaxed">
+      <p className="text-[20px] text-[#454B57] font-normal leading-relaxed">
         {"All queues and meetings are clear for today. You have "}
         <Chip
           variant="emerald"
@@ -222,7 +222,7 @@ export function BriefingLine({
 
   // 4. Clean slate empty state
   return (
-    <p className="text-[17px] sm:text-[19px] text-[#454B57] font-normal leading-relaxed">
+    <p className="text-[20px] text-[#454B57] font-normal leading-relaxed">
       All customer queues and follow-ups are up to date. Ready for new inquiries.
     </p>
   );

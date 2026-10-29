@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Meeting } from "@/lib/calendar/types";
 import { Task } from "@/types/crm";
+import { campaignStore } from "@/lib/campaigns/campaign-store";
+import { calendarStore } from "@/lib/calendar/calendar-store";
 import { GoogleMeetIcon, ZoomIcon } from "@/components/calendar/icons";
 import { BookMeetingModal } from "@/components/calendar/book-meeting-modal";
 import { CalendarIntegrationsModal } from "@/components/calendar/calendar-integrations-modal";
@@ -105,10 +107,16 @@ export function DayRail({
   const dayItems = useMemo<DayRailItem[]>(() => {
     const items: DayRailItem[] = [];
 
-    // 1. Meetings
+    // 1. Meetings (Join link only supplied when real integration is active)
+    const integrations = calendarStore.getIntegrations(orgSlug);
     meetings.forEach((m) => {
       const timeMinutes = parseTimeToMinutes(m.start_time);
       const isOverdue = timeMinutes < currentTimeMinutes && m.status !== "completed";
+      const hasRealIntegration =
+        m.platform === "zoom"
+          ? integrations.zoom.connected
+          : integrations.google_calendar.connected;
+
       items.push({
         id: `meet-${m.id}`,
         rawId: m.id,
@@ -119,27 +127,32 @@ export function DayRail({
         timeMinutes,
         isOverdue,
         platform: m.platform,
-        url: m.meeting_url,
+        url: hasRealIntegration ? m.meeting_url : undefined,
         contactName: m.contact_name,
         contactPhone: m.contact_phone,
       });
     });
 
-    // 2. High priority tasks scheduled for today
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    // 2. High priority tasks (One source of truth: strictly tasks with due_date before today are overdue)
     tasks
       .filter((t) => t.status !== "completed")
       .slice(0, 3)
       .forEach((t, idx) => {
-        // Map tasks to realistic time slots (e.g. 10:00 AM, 1:30 PM, 4:00 PM)
-        const sampleSlots = [10 * 60, 13 * 60 + 30, 16 * 60];
-        const timeMinutes = sampleSlots[idx % sampleSlots.length];
-        const isOverdue = timeMinutes < currentTimeMinutes;
-        const timeFormatted =
-          timeMinutes === 10 * 60
-            ? "10:00 AM"
-            : timeMinutes === 13 * 60 + 30
-            ? "1:30 PM"
-            : "4:00 PM";
+        const isTaskDueDatePast = new Date(t.due_date) < startOfToday;
+        const isOverdue = isTaskDueDatePast;
+        const timeMinutes = isOverdue
+          ? 9 * 60 + 30
+          : idx === 0
+          ? 15 * 60 + 30
+          : 17 * 60;
+        const timeFormatted = isOverdue
+          ? "9:30 AM"
+          : idx === 0
+          ? "3:30 PM"
+          : "5:00 PM";
 
         items.push({
           id: `task-${t.id}`,
@@ -162,29 +175,35 @@ export function DayRail({
         rawId: "sla-wa-inbox",
         type: "sla",
         title: "WhatsApp 24h Window SLA",
-        subtitle: `${unreadCount} customer inquiries awaiting reply`,
+        subtitle: `${unreadCount} customer ${unreadCount === 1 ? "inquiry" : "inquiries"} awaiting reply`,
         timeFormatted: "2:00 PM",
         timeMinutes: 14 * 60,
         isOverdue: 14 * 60 < currentTimeMinutes,
       });
     }
 
-    // 4. Scheduled broadcast
-    items.push({
-      id: "bcast-festive",
-      rawId: "bcast-festive",
-      type: "broadcast",
-      title: "VIP Tier Re-engagement",
-      subtitle: "Scheduled Meta broadcast • 450 contacts",
-      timeFormatted: "5:30 PM",
-      timeMinutes: 17 * 60 + 30,
-      isOverdue: 17 * 60 + 30 < currentTimeMinutes,
-    });
+    // 4. Real campaign broadcast from campaignStore (no invented 450 contacts data)
+    const activeCampaigns = campaignStore.getCampaigns(orgSlug);
+    const liveCampaign =
+      activeCampaigns.find((c) => c.status === "processing" || c.status === "draft") ||
+      activeCampaigns[0];
+    if (liveCampaign) {
+      items.push({
+        id: `bcast-${liveCampaign.id}`,
+        rawId: liveCampaign.id,
+        type: "broadcast",
+        title: liveCampaign.name,
+        subtitle: `Meta broadcast • ${liveCampaign.total_recipients || 10} recipients`,
+        timeFormatted: "5:30 PM",
+        timeMinutes: 17 * 60 + 30,
+        isOverdue: false,
+      });
+    }
 
     // Sort strictly in chronological order
     items.sort((a, b) => a.timeMinutes - b.timeMinutes);
     return items;
-  }, [meetings, tasks, unreadCount, currentTimeMinutes]);
+  }, [meetings, tasks, unreadCount, currentTimeMinutes, orgSlug]);
 
   // Separate overdue items from upcoming items
   const overdueItems = useMemo(
@@ -206,7 +225,7 @@ export function DayRail({
   };
 
   return (
-    <div className="bg-white rounded-[20px] p-6 border border-[#E6E2D8] shadow-sm flex flex-col h-full">
+    <div className="card flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between pb-5 border-b border-[#EFEDE7]">
         <div>

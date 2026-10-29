@@ -662,7 +662,7 @@ function InboxContent() {
                 <Button
                   onClick={composerMode === "whatsapp" ? () => handleSendMessage() : () => handleSendInternalNote()}
                   isLoading={isSending}
-                  className="btn-primary-flame flex items-center gap-2 h-10 px-5 text-[14px]"
+                  className="btn-primary flex items-center gap-2 text-[14px]"
                 >
                   <Send className="h-4 w-4" />
                   <span>Send</span>
