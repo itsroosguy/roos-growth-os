@@ -22,7 +22,7 @@ export function AnimatedNumber({
   decimals = 0,
   className,
 }: AnimatedNumberProps) {
-  const [displayValue, setDisplayValue] = useState<number>(0);
+  const [displayValue, setDisplayValue] = useState<number>(value);
   const [hasAnimated, setHasAnimated] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const prevValueRef = useRef<number>(value);

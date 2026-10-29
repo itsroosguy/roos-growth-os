@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Drawer } from "@/components/ui/drawer";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
+import { MeetingsHeroCard } from "@/components/calendar/meetings-hero-card";
 import {
   cn,
   formatINR,
@@ -653,33 +654,33 @@ export default function OverviewPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 2: THE TWO HEROES (7 / 5 COLUMNS)                                     */}
+      {/* ROW 2: NEXT BEST ACTION, CALENDAR & MEETINGS, REVENUE HERO                */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* HERO 1: NEXT BEST ACTION (7 COLUMNS) */}
-        <div className="lg:col-span-7 card-2027 rounded-[28px] border border-[#E6E2D8] bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-[0_2px_4px_rgba(11,13,18,0.04),0_16px_36px_-12px_rgba(11,13,18,0.12)] hover:shadow-[0_20px_48px_-12px_rgba(255,90,31,0.14)] transition-all duration-200">
+        {/* HERO 1: NEXT BEST ACTION (5 COLUMNS ON XL) */}
+        <div className="lg:col-span-12 xl:col-span-5 card-2027 rounded-[28px] border border-[#E6E2D8] bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-[0_2px_4px_rgba(11,13,18,0.04),0_16px_36px_-12px_rgba(11,13,18,0.12)] hover:shadow-[0_20px_48px_-12px_rgba(255,90,31,0.14)] transition-all duration-200">
           {/* Subtle top rainbow flame/violet accent line */}
           <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FF5A1F] via-[#FF8833] to-[#7C4DFF]" />
 
           {nextBestAction ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* Header line with Live Radar Beacon badge & Timer */}
-              <div className="flex items-center justify-between gap-3 pt-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex items-center gap-2 bg-[#FFF0EB] border border-[#FFD9CC] rounded-full px-3 py-1 shadow-2xs">
+              <div className="flex items-center justify-between gap-2.5 pt-0.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-2 bg-[#FFF0EB] border border-[#FFD9CC] rounded-full px-3 py-1 shadow-2xs shrink-0">
                     <span className="radar-beacon inline-flex h-2.5 w-2.5 rounded-full bg-[#FF5A1F]" />
-                    <span className="text-[13px] font-semibold tracking-wider uppercase text-[#B93A0A]">
+                    <span className="text-[13px] font-semibold tracking-wider uppercase text-[#B93A0A] whitespace-nowrap">
                       Next best action
                     </span>
                   </div>
-                  <span className="text-[13px] text-[#666C78] font-normal hidden sm:inline" suppressHydrationWarning>
-                    Priority 1 of {allQueueItems.length} • Action Required
+                  <span className="text-[13px] text-[#666C78] font-normal hidden 2xl:inline" suppressHydrationWarning>
+                    Priority 1 of {allQueueItems.length}
                   </span>
                 </div>
 
                 <span
                   className={cn(
-                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium transition-all shadow-2xs",
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium transition-all shadow-2xs shrink-0",
                     nextBestAction.timeAgo === "overdue"
                       ? "bg-[#FFE9EA] text-[#B42336] border border-[#FFCCD0]"
                       : "bg-[#FFF0EB] text-[#B93A0A] border border-[#FFD9CC]"
@@ -693,14 +694,14 @@ export default function OverviewPage() {
 
               {/* Customer Profile & Identity Row */}
               <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="relative">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative shrink-0">
                     {(() => {
                       const avatarStyle = getAvatarColor(nextBestAction.name);
                       return (
                         <div
                           className={cn(
-                            "flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border text-[16px] font-medium shadow-2xs transition-transform hover:scale-105 duration-140",
+                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border text-[15px] font-medium shadow-2xs transition-transform hover:scale-105 duration-140",
                             avatarStyle.bg,
                             avatarStyle.text,
                             avatarStyle.border
@@ -713,7 +714,7 @@ export default function OverviewPage() {
                     })()}
                     <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-[#12B886] ring-2 ring-white" />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3
                         onClick={() =>
@@ -723,12 +724,12 @@ export default function OverviewPage() {
                             reason: nextBestAction.reason,
                           })
                         }
-                        className="text-[18px] sm:text-[20px] font-medium text-[#12141A] hover:text-[#FF5A1F] hover:underline cursor-pointer truncate transition-colors"
+                        className="text-[17px] sm:text-[19px] font-medium text-[#12141A] hover:text-[#FF5A1F] hover:underline cursor-pointer truncate transition-colors"
                         suppressHydrationWarning
                       >
                         {nextBestAction.name}
                       </h3>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] text-[13px] font-medium bg-[#EBF6FD] text-[#0F6F9D] border border-[#CDE5F7]">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] text-[12px] font-medium bg-[#EBF6FD] text-[#0F6F9D] border border-[#CDE5F7] shrink-0">
                         WhatsApp Client
                       </span>
                     </div>
@@ -748,10 +749,10 @@ export default function OverviewPage() {
                       reason: nextBestAction.reason,
                     })
                   }
-                  className="text-[#454B57] hover:text-[#12141A] text-[14px] h-9 px-3 gap-1.5 shrink-0 rounded-[10px] cursor-pointer"
+                  className="text-[#454B57] hover:text-[#12141A] text-[13px] h-8 px-2.5 gap-1 shrink-0 rounded-[9px] cursor-pointer"
                 >
-                  <span className="hidden sm:inline">View contact</span>
-                  <ExternalLink className="h-3.5 w-3.5 text-[#666C78]" />
+                  <span className="hidden sm:inline">View</span>
+                  <ExternalLink className="h-3 w-3 text-[#666C78]" />
                 </Button>
               </div>
 
@@ -831,8 +832,8 @@ export default function OverviewPage() {
 
               {/* Actions Footer Dock */}
               {inlineReplyId !== nextBestAction.id && (
-                <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#E6E2D8]">
-                  <div className="flex items-center gap-2.5">
+                <div className="pt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#E6E2D8]">
+                  <div className="flex items-center gap-2">
                     {/* Primary Button: Flame Send with Takeoff Animation */}
                     <Button
                       onClick={() =>
@@ -843,9 +844,9 @@ export default function OverviewPage() {
                           nextBestAction.name
                         )
                       }
-                      className="btn-primary-flame group gap-2 h-11 px-5 text-[14px] font-medium shadow-xs cursor-pointer interactive-tap-spring"
+                      className="btn-primary-flame group gap-1.5 h-9 px-3.5 text-[13px] font-medium shadow-xs cursor-pointer interactive-tap-spring"
                     >
-                      <Send className="h-4 w-4 transition-transform duration-140 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
+                      <Send className="h-3.5 w-3.5 transition-transform duration-140 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
                       <span>Send Reply</span>
                     </Button>
 
@@ -855,32 +856,32 @@ export default function OverviewPage() {
                         setInlineReplyId(nextBestAction.id);
                         setInlineReplyText(nextBestAction.aiSuggestion || "");
                       }}
-                      className="text-[14px] h-11 px-4 gap-1.5 rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] cursor-pointer"
+                      className="text-[13px] h-9 px-3 gap-1 rounded-[10px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] cursor-pointer"
                     >
-                      <Pencil className="h-3.5 w-3.5 text-[#666C78]" />
+                      <Pencil className="h-3 w-3 text-[#666C78]" />
                       <span>Edit</span>
                     </Button>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <Button
                       variant="ghost"
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[#666C78] hover:text-[#12141A] text-[14px] h-11 px-3.5 gap-1.5 rounded-[12px] cursor-pointer"
+                      className="text-[#666C78] hover:text-[#12141A] text-[12.5px] h-9 px-2.5 gap-1 rounded-[10px] cursor-pointer"
                     >
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>Snooze 2h</span>
+                      <Clock className="h-3 w-3" />
+                      <span>Snooze</span>
                     </Button>
                     <Button
                       variant="secondary"
                       onClick={() =>
                         handleResolveItem(nextBestAction.id, nextBestAction.name)
                       }
-                      className="text-[14px] h-11 px-4 gap-1.5 rounded-[12px] border border-[#E6E2D8] bg-white hover:bg-[#E6FBF2] hover:text-[#0A7A53] hover:border-[#12B886]/40 text-[#12141A] transition-all cursor-pointer interactive-tap-spring"
+                      className="text-[12.5px] h-9 px-3 gap-1 rounded-[10px] border border-[#E6E2D8] bg-white hover:bg-[#E6FBF2] hover:text-[#0A7A53] hover:border-[#12B886]/40 text-[#12141A] transition-all cursor-pointer interactive-tap-spring"
                     >
-                      <Check className="h-4 w-4 text-[#12B886]" />
+                      <Check className="h-3.5 w-3.5 text-[#12B886]" />
                       <span>Done</span>
                     </Button>
                   </div>
@@ -902,29 +903,34 @@ export default function OverviewPage() {
           )}
         </div>
 
-        {/* HERO 2: REVENUE HERO (5 COLUMNS, INK SURFACE WITH FLAME GLOW) */}
-        <div className="lg:col-span-5 hero-card-dark p-8 flex flex-col justify-between text-white">
+        {/* HERO 2: CALENDAR & MEETINGS (GOOGLE CALENDAR & ZOOM INTEGRATIONS) */}
+        <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
+          <MeetingsHeroCard orgSlug={orgSlug} />
+        </div>
+
+        {/* HERO 3: REVENUE HERO (3 COLUMNS ON XL, INK SURFACE WITH FLAME GLOW) */}
+        <div className="lg:col-span-6 xl:col-span-3 hero-card-dark p-6 flex flex-col justify-between text-white">
           <div>
             <div className="flex items-center justify-between">
               <span className="type-eyebrow text-[#A3A9B6]">Open pipeline</span>
-              <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#12B886] bg-[#12B886]/15 px-2.5 py-0.5 rounded-full border border-[#12B886]/30">
-                <TrendingUp className="h-3.5 w-3.5" />
-                <span>+18.4% vs last period</span>
+              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#12B886] bg-[#12B886]/15 px-2 py-0.5 rounded-full border border-[#12B886]/30">
+                <TrendingUp className="h-3 w-3" />
+                <span>+18.4%</span>
               </span>
             </div>
 
-            {/* 80px Hero Metric Figure */}
-            <div className="my-4">
-              <div className="type-hero-metric text-white">
+            {/* Fluid Responsive Hero Metric Figure */}
+            <div className="my-3.5">
+              <div className="text-[32px] sm:text-[38px] xl:text-[34px] 2xl:text-[40px] font-medium leading-none tracking-tight text-white tabular-nums">
                 <AnimatedNumber value={openPipelineValue} format="currency" currencySymbol="₹" duration={850} />
               </div>
-              <p className="type-meta text-[#A3A9B6] mt-1">
-                Weighted across {openLeads.length} active opportunities
+              <p className="type-meta text-[#A3A9B6] mt-1.5 text-[12px]">
+                {openLeads.length} active deals in pipeline
               </p>
             </div>
 
             {/* Proportional Stage Distribution Bar */}
-            <div className="my-6">
+            <div className="my-4">
               <div className="h-3.5 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
                 {openStageSegments.map((stage) => (
                   <div
@@ -939,18 +945,18 @@ export default function OverviewPage() {
                 ))}
               </div>
 
-              {/* Legend with Real Numbers */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-[13px]">
+              {/* Legend with Real Numbers (2x2 Grid) */}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-3 pt-2.5 border-t border-white/10 text-[12px]">
                 {openStageSegments.map((stage) => (
-                  <div key={stage.key} className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
+                  <div key={stage.key} className="flex items-center justify-between min-w-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
                       <span
-                        className="h-2 w-2 rounded-full shrink-0"
+                        className="h-1.5 w-1.5 rounded-full shrink-0"
                         style={{ backgroundColor: stage.color }}
                       />
                       <span className="text-[#A3A9B6] truncate">{stage.label}</span>
                     </div>
-                    <span className="font-medium text-white tabular-nums mt-0.5">
+                    <span className="font-medium text-white tabular-nums ml-1.5 shrink-0">
                       {formatINR(stage.val)}
                     </span>
                   </div>
@@ -960,7 +966,7 @@ export default function OverviewPage() {
           </div>
 
           {/* Three Quiet Lines at Bottom */}
-          <div className="pt-6 border-t border-white/10 space-y-2.5 text-[14px]">
+          <div className="pt-3.5 border-t border-white/10 space-y-2 text-[13px]">
             <div className="flex items-center justify-between">
               <span className="text-[#A3A9B6]">Won this period</span>
               <span className="font-medium text-[#12B886] tabular-nums">
