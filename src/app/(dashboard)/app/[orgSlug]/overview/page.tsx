@@ -770,7 +770,7 @@ export default function OverviewPage() {
                   </span>
                 </div>
                 <p className="text-[15px] text-[#12141A] leading-relaxed font-normal pl-3 border-l-2 border-[#25D366]" suppressHydrationWarning>
-                  "{nextBestAction.inboundText}"
+                  &ldquo;{nextBestAction.inboundText}&rdquo;
                 </p>
               </div>
 
@@ -894,7 +894,7 @@ export default function OverviewPage() {
               <div className="h-14 w-14 rounded-full bg-[#E4F7EF] text-[#0A7A53] flex items-center justify-center mb-4">
                 <Check className="h-7 w-7" />
               </div>
-              <h3 className="type-title text-[#12141A]">You're all caught up!</h3>
+              <h3 className="type-title text-[#12141A]">You&apos;re all caught up!</h3>
               <p className="type-body text-[#666C78] max-w-sm mt-1">
                 Zero overdue SLAs and no pending customer inquiries awaiting attention.
                 Last reply resolved 12 minutes ago.
@@ -1141,7 +1141,7 @@ export default function OverviewPage() {
             <div>
               <h2 className="type-title text-[#12141A]">Coming up</h2>
               <p className="type-small text-[#666C78]">
-                Today's scheduled follow-ups, SLAs & broadcasts
+                Today&apos;s scheduled follow-ups, SLAs &amp; broadcasts
               </p>
             </div>
             <Calendar className="h-4 w-4 text-[#666C78]" />
