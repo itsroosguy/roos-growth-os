@@ -1251,95 +1251,24 @@ export default function OverviewPage() {
           )}
         </div>
 
-        {/* HERO 2 (RIGHT 5 COLS): REVENUE HERO (.hero-ink SURFACE WITH 80PX METRIC) */}
-        <div className="hero-ink xl:col-span-5 relative overflow-hidden flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between">
-              <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#A3A9B6]">
-                Open pipeline
-              </span>
-              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#12B886] bg-[#12B886]/15 px-2 py-0.5 rounded-full border border-[#12B886]/30">
-                <TrendingUp className="h-3 w-3" />
-                <span>+18.4%</span>
-              </span>
-            </div>
-
-            {/* Hero-metric Figure (5rem / 80px) with single-session count-up */}
-            <div className="my-4">
-              <div className="metric-hero text-white tabular-nums">
-                <AnimatedNumber
-                  value={openPipelineValue}
-                  format="currency"
-                  currencySymbol="₹"
-                  duration={800}
-                />
-              </div>
-              <p className="text-[0.875rem] text-[#A3A9B6] mt-2">
-                {openLeads.length} active opportunities in motion
-              </p>
-            </div>
-
-            {/* Proportional Stage Bar (12px tall, open stages only) */}
-            <div className="my-5">
-              <div className="h-3 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
-                {openStageSegments.map((stage) => (
-                  <div
-                    key={stage.key}
-                    style={{
-                      width: `${stage.pct}%`,
-                      backgroundColor: stage.color,
-                    }}
-                    className="h-full rounded-full transition-all duration-300 relative group cursor-pointer"
-                    title={`${stage.label}: ${formatINR(stage.val)} (${stage.count} deals)`}
-                  />
-                ))}
-              </div>
-
-              {/* Stage Legend with Values */}
-              <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3.5 pt-3 border-t border-white/10 text-[12px]">
-                {openStageSegments.map((stage) => (
-                  <div key={stage.key} className="flex items-center justify-between min-w-0">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span
-                        className="h-2 w-2 rounded-full shrink-0"
-                        style={{ backgroundColor: stage.color }}
-                      />
-                      <span className="text-[#A3A9B6] truncate">{stage.label}</span>
-                    </div>
-                    <span className="font-medium text-white tabular-nums ml-1 shrink-0">
-                      {formatINR(stage.val)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Quiet Metric Summary Lines at Bottom */}
-          <div className="pt-4 border-t border-white/10 space-y-2.5 text-[13px]">
-            <div className="flex items-center justify-between">
-              <span className="text-[#A3A9B6]">Won this period</span>
-              <span className="font-medium text-[#12B886] tabular-nums">
-                {formatINR(wonValue)} ({wonDeals.length} {wonDeals.length === 1 ? "deal" : "deals"} closed)
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-[#A3A9B6]">Win conversion rate</span>
-              <span className="font-medium text-white tabular-nums">
-                {winRate}% of closed proposals
-              </span>
-            </div>
-          </div>
+        {/* HERO 2 (RIGHT 5 COLS): THE DAY RAIL (TODAY'S MEETINGS, SLAS & FOLLOW-UPS) */}
+        <div ref={dayRailRef} className="xl:col-span-5 flex flex-col">
+          <DayRail
+            orgSlug={orgSlug}
+            meetings={todayMeetings}
+            tasks={todayTasks}
+            unreadCount={unreadConversations.length}
+            onCompleteTask={handleCompleteTaskById}
+          />
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* ROW 3: UP NEXT IN YOUR QUEUE (7 COLS) & THE DAY RAIL (5 COLS)             */}
+      {/* ROW 3: UP NEXT IN YOUR QUEUE (7 COLS) & OPEN PIPELINE (5 COLS)            */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        {/* LEFT (7 COLS): UP NEXT QUEUE & DEALS WORTH A LOOK */}
-        <div className="xl:col-span-7 space-y-6">
+        {/* LEFT (7 COLS): UP NEXT QUEUE */}
+        <div className="xl:col-span-7">
           {/* UP NEXT IN YOUR QUEUE */}
           <div className="card">
             {/* Header with channel tabs & pipeline value */}
@@ -1659,83 +1588,157 @@ export default function OverviewPage() {
               )}
             </div>
           </div>
+        </div>
 
-          {/* DEALS WORTH A LOOK (OPEN DEALS ONLY) */}
-          <div className="card">
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#EFEDE7]">
-              <div>
-                <h2 className="text-[1.25rem] font-medium text-[#12141A]">
-                  Deals worth a look
-                </h2>
-                <p className="text-[0.875rem] text-[#666C78] mt-0.5">
-                  Open opportunities requiring action
-                </p>
-              </div>
-              <Link
-                href={`/app/${orgSlug}/leads`}
-                className="text-[14px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1"
-              >
-                <span>Pipeline</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+        {/* RIGHT (5 COLS): REVENUE HERO (.hero-ink SURFACE WITH 80PX METRIC) */}
+        <div className="hero-ink xl:col-span-5 relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#A3A9B6]">
+                Open pipeline
+              </span>
+              <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#12B886] bg-[#12B886]/15 px-2 py-0.5 rounded-full border border-[#12B886]/30">
+                <TrendingUp className="h-3 w-3" />
+                <span>+18.4%</span>
+              </span>
             </div>
 
-            <div className="divide-y divide-[#E6E2D8]">
-              {dealsWorthALook.map((deal) => {
-                const stageKey = (deal.stage as keyof typeof STAGE_CONFIG) || "proposal";
-                const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
+            {/* Hero-metric Figure (5rem / 80px) with single-session count-up */}
+            <div className="my-4">
+              <div className="metric-hero text-white tabular-nums">
+                <AnimatedNumber
+                  value={openPipelineValue}
+                  format="currency"
+                  currencySymbol="₹"
+                  duration={800}
+                />
+              </div>
+              <p className="text-[0.875rem] text-[#A3A9B6] mt-2">
+                {openLeads.length} active opportunities in motion
+              </p>
+            </div>
 
-                return (
+            {/* Proportional Stage Bar (12px tall, open stages only) */}
+            <div className="my-5">
+              <div className="h-3 w-full rounded-full bg-[#1B1F29] overflow-hidden flex gap-1 p-0.5">
+                {openStageSegments.map((stage) => (
                   <div
-                    key={deal.id}
-                    onClick={() => setSelectedDeal(deal)}
-                    className="py-3.5 flex items-center justify-between gap-4 -mx-3 px-3 rounded-[12px] hover:bg-[#F7F5F0] transition-colors cursor-pointer group"
-                  >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[1.0625rem] font-medium text-[#12141A] truncate group-hover:underline">
-                          {deal.title}
-                        </span>
-                        <span
-                          className="px-2 py-0.5 rounded-full text-[12px] font-medium border"
-                          style={{
-                            backgroundColor: stageInfo.bg,
-                            color: stageInfo.text,
-                            borderColor: stageInfo.border,
-                          }}
-                        >
-                          {stageInfo.label}
-                        </span>
-                      </div>
-                      <p className="text-[0.875rem] text-[#666C78] mt-0.5">
-                        {deal.contact_name} • {deal.stuckDays} days in stage
-                      </p>
-                    </div>
+                    key={stage.key}
+                    style={{
+                      width: `${stage.pct}%`,
+                      backgroundColor: stage.color,
+                    }}
+                    className="h-full rounded-full transition-all duration-300 relative group cursor-pointer"
+                    title={`${stage.label}: ${formatINR(stage.val)} (${stage.count} deals)`}
+                  />
+                ))}
+              </div>
 
-                    <div className="text-right shrink-0">
-                      <span className="text-[1.125rem] text-[#12141A] tabular-nums font-medium block">
-                        {formatINR(deal.estimated_value || 0)}
-                      </span>
-                      <span className="text-[12px] text-[#666C78] block">
-                        {deal.stage === "proposal" ? "In Proposal" : "Active deal"}
-                      </span>
+              {/* Stage Legend with Values */}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3.5 pt-3 border-t border-white/10 text-[12px]">
+                {openStageSegments.map((stage) => (
+                  <div key={stage.key} className="flex items-center justify-between min-w-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span
+                        className="h-2 w-2 rounded-full shrink-0"
+                        style={{ backgroundColor: stage.color }}
+                      />
+                      <span className="text-[#A3A9B6] truncate">{stage.label}</span>
                     </div>
+                    <span className="font-medium text-white tabular-nums ml-1 shrink-0">
+                      {formatINR(stage.val)}
+                    </span>
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Quiet Metric Summary Lines at Bottom */}
+          <div className="pt-4 border-t border-white/10 space-y-2.5 text-[13px]">
+            <div className="flex items-center justify-between">
+              <span className="text-[#A3A9B6]">Won this period</span>
+              <span className="font-medium text-[#12B886] tabular-nums">
+                {formatINR(wonValue)} ({wonDeals.length} {wonDeals.length === 1 ? "deal" : "deals"} closed)
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-[#A3A9B6]">Win conversion rate</span>
+              <span className="font-medium text-white tabular-nums">
+                {winRate}% of closed proposals
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* RIGHT (5 COLS): THE DAY RAIL (VERTICAL TIMELINE WITH LIVE NOW MARKER) */}
-        <div ref={dayRailRef} className="xl:col-span-5">
-          <DayRail
-            orgSlug={orgSlug}
-            meetings={todayMeetings}
-            tasks={todayTasks}
-            unreadCount={unreadConversations.length}
-            onCompleteTask={handleCompleteTaskById}
-          />
+      {/* ========================================================================= */}
+      {/* ROW 4: DEALS WORTH A LOOK (OPPORTUNITIES IN MOTION - 4 CARD GRID)          */}
+      {/* ========================================================================= */}
+      <div className="card">
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#EFEDE7]">
+          <div>
+            <h2 className="text-[1.25rem] font-medium text-[#12141A]">
+              Deals worth a look
+            </h2>
+            <p className="text-[0.875rem] text-[#666C78] mt-0.5">
+              Open opportunities requiring closing action
+            </p>
+          </div>
+          <Link
+            href={`/app/${orgSlug}/leads`}
+            className="text-[14px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1"
+          >
+            <span>Pipeline</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {dealsWorthALook.map((deal) => {
+            const stageKey = (deal.stage as keyof typeof STAGE_CONFIG) || "proposal";
+            const stageInfo = STAGE_CONFIG[stageKey] || STAGE_CONFIG.proposal;
+
+            return (
+              <div
+                key={deal.id}
+                onClick={() => setSelectedDeal(deal)}
+                className="p-4 rounded-[14px] bg-[#FAF9F5]/70 hover:bg-[#F5F2EB] border border-[#EBE7DF] transition-colors cursor-pointer group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span
+                      className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
+                      style={{
+                        backgroundColor: stageInfo.bg,
+                        color: stageInfo.text,
+                        borderColor: stageInfo.border,
+                      }}
+                    >
+                      {stageInfo.label}
+                    </span>
+                    <span className="text-[11.5px] text-[#666C78]">
+                      {deal.stuckDays}d in stage
+                    </span>
+                  </div>
+                  <h3 className="text-[14.5px] font-semibold text-[#12141A] truncate group-hover:text-[#FF5A1F] transition-colors">
+                    {deal.title}
+                  </h3>
+                  <p className="text-[12.5px] text-[#666C78] truncate mt-0.5">
+                    {deal.contact_name}
+                  </p>
+                </div>
+
+                <div className="pt-2.5 border-t border-[#EBE7DF] flex items-center justify-between">
+                  <span className="text-[11.5px] text-[#666C78]">Deal value</span>
+                  <span className="text-[15px] text-[#12141A] tabular-nums font-semibold">
+                    {formatINR(deal.estimated_value || 0)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
