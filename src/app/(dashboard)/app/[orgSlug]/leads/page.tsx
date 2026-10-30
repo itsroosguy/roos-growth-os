@@ -62,6 +62,7 @@ import {
   ExternalLink,
   ChevronDown,
   X,
+  GripVertical,
 } from "lucide-react";
 
 interface StageConfig {
@@ -336,24 +337,111 @@ export default function LeadsPage() {
     };
   };
 
-  // Helper: Milestone information (completed / total segments)
-  const getMilestoneInfo = (stage: LeadStage) => {
+  // Helper: Stage Progress & State Information (Explicit 5-step pipeline progression)
+  const getStageProgressInfo = (stage: LeadStage) => {
     switch (stage) {
       case "new":
-        return { completed: 1, total: 6, label: "1/6", color: "bg-[#94A3B8]" };
+        return {
+          step: 1,
+          total: 5,
+          stepLabel: "Step 1 of 5",
+          stageName: "Inbound Discovery",
+          phaseDescription: "Initial customer inquiry",
+          nextStageName: "Contacted",
+          color: "bg-[#64748B]",
+          badgeBg: "bg-[#F1F5F9]",
+          badgeText: "text-[#475569]",
+          badgeBorder: "border-[#CBD5E1]",
+        };
       case "contacted":
-        return { completed: 2, total: 6, label: "2/6", color: "bg-[#0284C7]" };
+        return {
+          step: 2,
+          total: 5,
+          stepLabel: "Step 2 of 5",
+          stageName: "Contacted & Demo",
+          phaseDescription: "Live demo in progress",
+          nextStageName: "Qualified",
+          color: "bg-[#0284C7]",
+          badgeBg: "bg-[#E3F3FD]",
+          badgeText: "text-[#0A6AA3]",
+          badgeBorder: "border-[#BFE3FA]",
+        };
       case "qualified":
-        return { completed: 3, total: 6, label: "3/6", color: "bg-[#4F46E5]" };
+        return {
+          step: 3,
+          total: 5,
+          stepLabel: "Step 3 of 5",
+          stageName: "Solution Qualified",
+          phaseDescription: "Architecture fit approved",
+          nextStageName: "Proposal",
+          color: "bg-[#3D5AFE]",
+          badgeBg: "bg-[#EAEEFF]",
+          badgeText: "text-[#2A3DB5]",
+          badgeBorder: "border-[#D3DCFF]",
+        };
       case "proposal":
-        return { completed: 5, total: 6, label: "5/6", color: "bg-[#D97706]" };
+        return {
+          step: 4,
+          total: 5,
+          stepLabel: "Step 4 of 5",
+          stageName: "Proposal Review",
+          phaseDescription: "Commercial sign-off pending",
+          nextStageName: "Won",
+          color: "bg-[#F5A524]",
+          badgeBg: "bg-[#FFF3D6]",
+          badgeText: "text-[#8F5300]",
+          badgeBorder: "border-[#FFE5A3]",
+        };
       case "won":
-        return { completed: 6, total: 6, label: "6/6", color: "bg-[#16A34A]" };
+        return {
+          step: 5,
+          total: 5,
+          stepLabel: "Won & Closed",
+          stageName: "Closed Won",
+          phaseDescription: "Contract executed & active",
+          nextStageName: null,
+          color: "bg-[#12B886]",
+          badgeBg: "bg-[#E4F7EF]",
+          badgeText: "text-[#0A7A53]",
+          badgeBorder: "border-[#BDECD7]",
+        };
       case "lost":
-        return { completed: 2, total: 6, label: "2/6", color: "bg-[#DC2626]" };
+        return {
+          step: 0,
+          total: 5,
+          stepLabel: "Closed Lost",
+          stageName: "Closed Lost",
+          phaseDescription: "Inactive opportunity",
+          nextStageName: null,
+          color: "bg-[#E5484D]",
+          badgeBg: "bg-[#FFE9EA]",
+          badgeText: "text-[#B42336]",
+          badgeBorder: "border-[#FDC8CA]",
+        };
       default:
-        return { completed: 1, total: 6, label: "1/6", color: "bg-[#94A3B8]" };
+        return {
+          step: 1,
+          total: 5,
+          stepLabel: "Step 1 of 5",
+          stageName: "Inbound",
+          phaseDescription: "Discovery",
+          nextStageName: "Contacted",
+          color: "bg-[#64748B]",
+          badgeBg: "bg-[#F1F5F9]",
+          badgeText: "text-[#475569]",
+          badgeBorder: "border-[#CBD5E1]",
+        };
     }
+  };
+
+  const getMilestoneInfo = (stage: LeadStage) => {
+    const info = getStageProgressInfo(stage);
+    return {
+      completed: info.step,
+      total: info.total,
+      label: info.stepLabel,
+      color: info.color,
+    };
   };
 
   return (
@@ -517,296 +605,369 @@ export default function LeadsPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. KANBAN BOARD VIEW (Exact Match to User Reference Aesthetic)             */}
+      {/* 2. KANBAN BOARD VIEW (Elevated Alignment, Explicit State & Drag Cues)       */}
       {/* ========================================================================= */}
       {viewMode === "board" && (
-        <div className="overflow-x-auto pb-6 custom-light-scroll select-none">
-          <div className="flex gap-4.5 min-w-[1420px] items-start">
-            {stages.map((stage) => {
-              const stageLeads = leads.filter((l) => l.stage === stage.id);
-              const isOver = dragOverStage === stage.id;
-              const StageIcon = stage.icon;
+        <div className="flex flex-col gap-4 select-none">
+          {/* Pipeline Interactive Guidance Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-2.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8] text-[13px]">
+            <div className="flex items-center gap-2.5 text-[#454B57]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#FF5A1F]/10 text-[#FF5A1F]">
+                <GripVertical className="h-3.5 w-3.5" />
+              </span>
+              <span>
+                <strong className="font-medium text-[#12141A]">Interactive Kanban:</strong> Drag cards between columns to advance stages, or use the 1-click <strong className="font-medium text-[#FF5A1F]">Advance →</strong> button on each card.
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-[12.5px] text-[#666C78] shrink-0">
+              <span>Pipeline: <strong className="font-medium text-[#12141A] tabular-nums">{formatINR(totalOpenValue)}</strong></span>
+              <span>•</span>
+              <span>{leads.length} total deals</span>
+            </div>
+          </div>
 
-              return (
-                <div
-                  key={stage.id}
-                  onDragOver={(e) => handleDragOver(e, stage.id)}
-                  onDrop={() => handleDrop(stage.id)}
-                  className="flex flex-col w-[285px] shrink-0 transition-all duration-140"
-                >
-                  {/* --- Column Header Pill Banner (Matches Reference Image!) --- */}
+          <div className="overflow-x-auto pb-6 custom-light-scroll">
+            <div className="flex gap-4.5 min-w-[1420px] items-start">
+              {stages.map((stage) => {
+                const stageLeads = leads.filter((l) => l.stage === stage.id);
+                const isOver = dragOverStage === stage.id;
+                const StageIcon = stage.icon;
+
+                return (
                   <div
-                    className={cn(
-                      "flex items-center justify-between px-3.5 py-2.5 rounded-[14px] border shadow-2xs transition-all",
-                      stage.pillBg,
-                      stage.pillBorder
-                    )}
+                    key={stage.id}
+                    onDragOver={(e) => handleDragOver(e, stage.id)}
+                    onDrop={() => handleDrop(stage.id)}
+                    className="flex flex-col w-[290px] shrink-0 transition-all duration-140"
                   >
-                    <div className="flex items-center gap-2 overflow-hidden">
-                      <StageIcon className={cn("h-4 w-4 shrink-0", stage.pillText)} />
-                      <span className={cn("text-[14px] font-semibold truncate", stage.pillText)}>
-                        {stage.label}
-                      </span>
-                      <span
-                        className={cn(
-                          "h-5 min-w-[20px] px-1.5 rounded-full text-[12px] font-medium flex items-center justify-center font-variant-numeric tabular-nums shadow-2xs",
-                          stage.countBg,
-                          stage.countText
-                        )}
-                      >
-                        {stage.count}
-                      </span>
+                    {/* --- Unified Column Header (Icon, Title, Count, Add Deal & Stage Total) --- */}
+                    <div
+                      className={cn(
+                        "flex flex-col rounded-[16px] border shadow-2xs transition-all overflow-hidden bg-white",
+                        stage.pillBorder
+                      )}
+                    >
+                      {/* Top Row: Icon, Label, Count, Add Deal */}
+                      <div className={cn("flex items-center justify-between px-3.5 py-2.5", stage.pillBg)}>
+                        <div className="flex items-center gap-2 overflow-hidden">
+                          <StageIcon className={cn("h-4 w-4 shrink-0", stage.pillText)} />
+                          <span className={cn("text-[13.5px] font-medium truncate", stage.pillText)}>
+                            {stage.label}
+                          </span>
+                          <span
+                            className={cn(
+                              "h-5 min-w-[20px] px-1.5 rounded-full text-[11.5px] font-medium flex items-center justify-center tabular-nums shadow-2xs border",
+                              stage.countBg,
+                              stage.countText,
+                              stage.pillBorder
+                            )}
+                          >
+                            {stage.count}
+                          </span>
+                        </div>
+
+                        {/* Stage Add Opportunity Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInitialStage(stage.id);
+                            setCreateModalOpen(true);
+                          }}
+                          className={cn(
+                            "h-6 w-6 rounded-[7px] flex items-center justify-center hover:bg-black/5 active:scale-95 transition-all cursor-pointer",
+                            stage.pillText
+                          )}
+                          title={`Add deal to ${stage.label}`}
+                        >
+                          <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                        </button>
+                      </div>
+
+                      {/* Bottom Row: Stage Value Subtotal */}
+                      <div className="px-3.5 py-1.5 bg-white border-t border-[#F0ECE2] flex items-center justify-between text-[11.5px]">
+                        <span className="text-[#878D96]">Stage Total</span>
+                        <span className="font-medium text-[#12141A] tabular-nums">
+                          {formatINR(stage.totalValue)}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Stage Add Opportunity Button */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setInitialStage(stage.id);
-                        setCreateModalOpen(true);
-                      }}
+                    {/* --- Drop Container & Cards List --- */}
+                    <div
                       className={cn(
-                        "h-6 w-6 rounded-[7px] flex items-center justify-center hover:bg-black/5 active:scale-95 transition-all cursor-pointer",
-                        stage.pillText
+                        "mt-2.5 p-1.5 space-y-3 min-h-[580px] rounded-[18px] border transition-all duration-140 custom-light-scroll",
+                        isOver
+                          ? "border-[#FF5A1F] ring-2 ring-[#FF5A1F]/20 bg-[#FFF6F2]"
+                          : draggedLeadId
+                          ? "border-dashed border-[#CBD5E1] bg-[#FBFBFA]/60"
+                          : "border-transparent bg-transparent"
                       )}
-                      title={`Add deal to ${stage.label}`}
                     >
-                      <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
-                    </button>
-                  </div>
+                      {isOver && (
+                        <div className="py-2.5 px-3 rounded-[12px] bg-[#FF5A1F]/10 border border-[#FF5A1F]/30 text-center text-[12px] font-medium text-[#FF5A1F] animate-pulse">
+                          Drop to advance to {stage.label}
+                        </div>
+                      )}
 
-                  {/* Subtotal deal value readout */}
-                  <div className="px-2 pt-2 pb-1.5 flex items-center justify-between text-[12px] text-[#6B7280]">
-                    <span>Stage Value</span>
-                    <span className="font-semibold text-[#111827] tabular-nums font-variant-numeric">
-                      {formatINR(stage.totalValue)}
-                    </span>
-                  </div>
+                      {stageLeads.map((lead) => {
+                        const priority = getPriorityBadge(lead);
+                        const progress = getStageProgressInfo(lead.stage);
+                        const isMenuOpen = activeMenuLeadId === lead.id;
+                        const dueDateText = lead.next_follow_up_at
+                          ? `Due: ${formatDate(lead.next_follow_up_at)}`
+                          : `Created: ${formatDate(lead.created_at)}`;
 
-                  {/* --- Drop Container & Cards List --- */}
-                  <div
-                    className={cn(
-                      "p-2 space-y-3 min-h-[560px] rounded-[18px] border transition-all duration-140 custom-light-scroll",
-                      isOver
-                        ? "border-[#FF5A1F] ring-2 ring-[#FF5A1F]/25 bg-[#FFF6F2]"
-                        : "border-transparent bg-transparent"
-                    )}
-                  >
-                    {stageLeads.map((lead) => {
-                      const priority = getPriorityBadge(lead);
-                      const milestone = getMilestoneInfo(lead.stage);
-                      const isMenuOpen = activeMenuLeadId === lead.id;
-                      const dueDateText = lead.next_follow_up_at
-                        ? `Due: ${formatDate(lead.next_follow_up_at)}`
-                        : `Created: ${formatDate(lead.created_at)}`;
+                        // Deterministic assignees
+                        const primaryAssignee = lead.assigned_to_name || "Praveen";
+                        const secondaryAssignee =
+                          lead.stage === "proposal" || lead.stage === "won" ? "Rahul M." : "Neha G.";
+                        const primaryColor = getAvatarColor(primaryAssignee);
+                        const secondaryColor = getAvatarColor(secondaryAssignee);
 
-                      // Deterministic assignees
-                      const primaryAssignee = lead.assigned_to_name || "Praveen";
-                      const secondaryAssignee =
-                        lead.stage === "proposal" || lead.stage === "won" ? "Rahul M." : "Neha G.";
-                      const primaryColor = getAvatarColor(primaryAssignee);
-                      const secondaryColor = getAvatarColor(secondaryAssignee);
+                        // Deterministic counts
+                        const attachmentCount = (lead.title.length % 3) + 2;
+                        const commentCount = Math.floor((lead.estimated_value / 25000) % 6) + 2;
 
-                      // Deterministic counts
-                      const attachmentCount = (lead.title.length % 3) + 2;
-                      const commentCount = Math.floor((lead.estimated_value / 25000) % 6) + 2;
-
-                      return (
-                        <div
-                          key={lead.id}
-                          draggable
-                          onDragStart={() => handleDragStart(lead.id)}
-                          onClick={() => setActiveLead(lead)}
-                          className="group relative p-4 rounded-[18px] border border-[#EAE7DF] bg-white shadow-[0_2px_8px_rgba(11,13,18,0.03)] hover:shadow-[0_8px_20px_-4px_rgba(11,13,18,0.08)] hover:border-[#D5D0C3] transition-all duration-140 cursor-grab active:cursor-grabbing select-none"
-                        >
-                          {/* Row 1: Due Date / Age + Three-Dots Menu */}
-                          <div className="flex items-center justify-between text-[12px] text-[#6B7280]">
-                            <div className="flex items-center gap-1.5 font-normal">
-                              <Clock className="h-3.5 w-3.5 text-[#9CA3AF]" />
-                              <span>{dueDateText}</span>
-                            </div>
-
-                            {/* Three-dots Context Menu Button */}
-                            <div className="relative context-menu-container">
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveMenuLeadId(isMenuOpen ? null : lead.id);
-                                }}
-                                className="h-6 w-6 rounded-[6px] hover:bg-[#F3F1EC] text-[#9CA3AF] hover:text-[#111827] flex items-center justify-center transition-colors cursor-pointer"
-                                title="Deal options"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </button>
-
-                              {isMenuOpen && (
-                                <div className="absolute right-0 top-7 w-48 rounded-[12px] bg-white border border-[#E6E2D8] shadow-xl p-1.5 z-40 animate-reveal text-[13px]">
-                                  {lead.stage !== "won" && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleAdvanceStage(lead.id, lead.stage);
-                                      }}
-                                      className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
-                                    >
-                                      <ArrowRight className="h-3.5 w-3.5 text-[#FF5A1F]" />
-                                      <span>Advance Stage</span>
-                                    </button>
-                                  )}
-
-                                  <Link
-                                    href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(lead.contact_phone || "")}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
-                                  >
-                                    <MessageSquare className="h-3.5 w-3.5 text-[#3D5AFE]" />
-                                    <span>Open WhatsApp</span>
-                                  </Link>
-
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      crmStore.updateLeadStage(orgSlug, lead.id, "won");
-                                      setActiveMenuLeadId(null);
-                                      setRefreshKey((k) => k + 1);
-                                      toast("Deal marked as Won!", { type: "success" });
-                                    }}
-                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#16A34A] hover:bg-[#E8F8F0] flex items-center gap-2"
-                                  >
-                                    <CheckCircle2 className="h-3.5 w-3.5" />
-                                    <span>Mark as Won</span>
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      crmStore.updateLeadStage(orgSlug, lead.id, "lost");
-                                      setActiveMenuLeadId(null);
-                                      setRefreshKey((k) => k + 1);
-                                      toast("Deal marked as Closed Lost", { type: "info" });
-                                    }}
-                                    className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#DC2626] hover:bg-[#FEE2E2] flex items-center gap-2"
-                                  >
-                                    <XCircle className="h-3.5 w-3.5" />
-                                    <span>Mark as Lost</span>
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Row 2: Deal Title */}
-                          <h4 className="mt-2 text-[15px] font-semibold text-[#111827] leading-snug line-clamp-1 group-hover:text-[#FF5A1F] transition-colors">
-                            {lead.title}
-                          </h4>
-
-                          {/* Row 3: Deal Description / Excerpt */}
-                          <p className="mt-1 text-[13px] text-[#6B7280] leading-relaxed line-clamp-2">
-                            {lead.notes || `${lead.source} • Contact: ${lead.contact_name}`}
-                          </p>
-
-                          {/* Row 4: Milestone & Value with Segmented Bar */}
-                          <div className="mt-3.5 pt-3 border-t border-[#F0ECE2] space-y-2">
-                            <div className="flex items-center justify-between text-[13px]">
-                              <div className="flex items-center gap-1.5 text-[#6B7280]">
-                                <Layers className="h-3.5 w-3.5 text-[#9CA3AF]" />
-                                <span>Milestone</span>
+                        return (
+                          <div
+                            key={lead.id}
+                            draggable
+                            onDragStart={() => handleDragStart(lead.id)}
+                            onDragEnd={() => {
+                              setDraggedLeadId(null);
+                              setDragOverStage(null);
+                            }}
+                            onClick={() => setActiveLead(lead)}
+                            className={cn(
+                              "group relative p-3.5 rounded-[16px] border bg-white transition-all duration-150 select-none cursor-grab active:cursor-grabbing",
+                              draggedLeadId === lead.id
+                                ? "opacity-40 scale-95 border-[#FF5A1F] shadow-none"
+                                : "border-[#EAE7DF] shadow-[0_2px_6px_rgba(11,13,18,0.03)] hover:shadow-[0_8px_20px_-4px_rgba(11,13,18,0.08)] hover:border-[#D5D0C3]"
+                            )}
+                          >
+                            {/* Row 1: Due Date / Age + Drag Grip Handle + Options Menu */}
+                            <div className="flex items-center justify-between text-[11.5px] text-[#6B7280]">
+                              <div className="flex items-center gap-1.5 font-normal">
+                                <Clock className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                                <span>{dueDateText}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-[#111827] tabular-nums font-variant-numeric">
+
+                              <div className="flex items-center gap-1">
+                                {/* Explicit Drag Handle Affordance */}
+                                <span
+                                  title="Drag card to move between stages"
+                                  className="h-6 w-6 rounded-[6px] text-[#9CA3AF] hover:text-[#12141A] hover:bg-[#F3F1EC] flex items-center justify-center transition-colors cursor-grab active:cursor-grabbing"
+                                >
+                                  <GripVertical className="h-3.5 w-3.5" />
+                                </span>
+
+                                {/* Three-dots Context Menu Button */}
+                                <div className="relative context-menu-container">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveMenuLeadId(isMenuOpen ? null : lead.id);
+                                    }}
+                                    className="h-6 w-6 rounded-[6px] hover:bg-[#F3F1EC] text-[#9CA3AF] hover:text-[#111827] flex items-center justify-center transition-colors cursor-pointer"
+                                    title="Deal options"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </button>
+
+                                  {isMenuOpen && (
+                                    <div className="absolute right-0 top-7 w-48 rounded-[12px] bg-white border border-[#E6E2D8] shadow-xl p-1.5 z-40 animate-reveal text-[13px]">
+                                      {lead.stage !== "won" && (
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleAdvanceStage(lead.id, lead.stage);
+                                          }}
+                                          className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
+                                        >
+                                          <ArrowRight className="h-3.5 w-3.5 text-[#FF5A1F]" />
+                                          <span>Advance Stage</span>
+                                        </button>
+                                      )}
+
+                                      <Link
+                                        href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(lead.contact_phone || "")}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#111827] hover:bg-[#F4F5F7] flex items-center gap-2"
+                                      >
+                                        <MessageSquare className="h-3.5 w-3.5 text-[#3D5AFE]" />
+                                        <span>Open WhatsApp</span>
+                                      </Link>
+
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          crmStore.updateLeadStage(orgSlug, lead.id, "won");
+                                          setActiveMenuLeadId(null);
+                                          setRefreshKey((k) => k + 1);
+                                          toast("Deal marked as Won!", { type: "success" });
+                                        }}
+                                        className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#16A34A] hover:bg-[#E8F8F0] flex items-center gap-2"
+                                      >
+                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                        <span>Mark as Won</span>
+                                      </button>
+
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          crmStore.updateLeadStage(orgSlug, lead.id, "lost");
+                                          setActiveMenuLeadId(null);
+                                          setRefreshKey((k) => k + 1);
+                                          toast("Deal marked as Closed Lost", { type: "info" });
+                                        }}
+                                        className="w-full text-left px-2.5 py-1.5 rounded-[7px] text-[#DC2626] hover:bg-[#FEE2E2] flex items-center gap-2"
+                                      >
+                                        <XCircle className="h-3.5 w-3.5" />
+                                        <span>Mark as Lost</span>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Row 2: Explicit Project State Pill (Clear state understanding) */}
+                            <div className="mt-2.5 flex items-center justify-between gap-1.5">
+                              <span
+                                className={cn(
+                                  "px-2 py-0.5 rounded-full text-[11px] font-medium border flex items-center gap-1.5 truncate",
+                                  progress.badgeBg,
+                                  progress.badgeText,
+                                  progress.badgeBorder
+                                )}
+                              >
+                                <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", progress.color)} />
+                                <span className="truncate">{progress.stageName}</span>
+                              </span>
+                              <span className="text-[11px] text-[#878D96] font-medium shrink-0 tabular-nums">
+                                {progress.stepLabel}
+                              </span>
+                            </div>
+
+                            {/* Row 3: Deal Title */}
+                            <h4 className="mt-2 text-[14.5px] font-medium text-[#111827] leading-snug line-clamp-1 group-hover:text-[#FF5A1F] transition-colors">
+                              {lead.title}
+                            </h4>
+
+                            {/* Row 4: Deal Description / Excerpt */}
+                            <p className="mt-1 text-[12.5px] text-[#6B7280] leading-relaxed line-clamp-2">
+                              {lead.notes || `${lead.source} • Contact: ${lead.contact_name}`}
+                            </p>
+
+                            {/* Row 5: Deal Value & 5-Step Segmented Bar */}
+                            <div className="mt-3 pt-2.5 border-t border-[#F0ECE2] space-y-1.5">
+                              <div className="flex items-center justify-between text-[12.5px]">
+                                <span className="text-[#878D96]">Deal Value</span>
+                                <span className="font-medium text-[#111827] tabular-nums">
                                   {formatINR(lead.estimated_value)}
                                 </span>
-                                <span className="text-[12px] text-[#6B7280] font-medium tabular-nums font-variant-numeric">
-                                  {milestone.label}
-                                </span>
+                              </div>
+
+                              {/* Segmented Progress Bar (5 clear stages) */}
+                              <div className="flex items-center gap-1 w-full h-1.5 pt-0.5">
+                                {Array.from({ length: 5 }).map((_, idx) => (
+                                  <div
+                                    key={idx}
+                                    className={cn(
+                                      "flex-1 h-full rounded-full transition-all duration-200",
+                                      idx < progress.step
+                                        ? progress.color
+                                        : "bg-[#EAE6DD]"
+                                    )}
+                                    title={`Pipeline Stage ${idx + 1} of 5`}
+                                  />
+                                ))}
                               </div>
                             </div>
 
-                            {/* Segmented Progress Bar (Matching Reference Image!) */}
-                            <div className="flex items-center gap-1 w-full h-1.5">
-                              {Array.from({ length: 6 }).map((_, idx) => (
+                            {/* Row 6: Assigned to Row */}
+                            <div className="mt-2.5 flex items-center justify-between text-[12px]">
+                              <span className="text-[#878D96]">Assigned to</span>
+                              <div className="flex items-center -space-x-1.5">
                                 <div
-                                  key={idx}
+                                  title={primaryAssignee}
                                   className={cn(
-                                    "flex-1 h-full rounded-full transition-all duration-200",
-                                    idx < milestone.completed
-                                      ? milestone.color
-                                      : "bg-[#EAE6DD]"
+                                    "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
+                                    primaryColor.bg,
+                                    primaryColor.text
                                   )}
-                                />
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Row 5: Assigned For Row */}
-                          <div className="mt-3 flex items-center justify-between text-[13px]">
-                            <span className="text-[#6B7280]">Assigned for</span>
-                            <div className="flex items-center -space-x-1.5">
-                              <div
-                                title={primaryAssignee}
-                                className={cn(
-                                  "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
-                                  primaryColor.bg,
-                                  primaryColor.text
-                                )}
-                              >
-                                {getInitials(primaryAssignee)}
-                              </div>
-                              <div
-                                title={secondaryAssignee}
-                                className={cn(
-                                  "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
-                                  secondaryColor.bg,
-                                  secondaryColor.text
-                                )}
-                              >
-                                {getInitials(secondaryAssignee)}
+                                >
+                                  {getInitials(primaryAssignee)}
+                                </div>
+                                <div
+                                  title={secondaryAssignee}
+                                  className={cn(
+                                    "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium border-2 border-white shadow-2xs select-none",
+                                    secondaryColor.bg,
+                                    secondaryColor.text
+                                  )}
+                                >
+                                  {getInitials(secondaryAssignee)}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Row 6: Footer with Priority Pill & Counts */}
-                          <div className="mt-3 pt-2.5 border-t border-[#F0ECE2] flex items-center justify-between">
-                            {/* Priority Pill with Flag */}
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium border",
-                                priority.pillClass
+                            {/* Row 7: Footer with Priority Pill & 1-Click Advance Button */}
+                            <div className="mt-3 pt-2.5 border-t border-[#F0ECE2] flex items-center justify-between gap-2">
+                              {/* Priority Pill with Flag */}
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border",
+                                  priority.pillClass
+                                )}
+                              >
+                                <Flag className="h-3 w-3" />
+                                <span>{priority.label}</span>
+                              </span>
+
+                              {/* 1-Click Advance Button or Closed Badge */}
+                              {progress.nextStageName ? (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAdvanceStage(lead.id, lead.stage);
+                                  }}
+                                  className="px-2.5 py-1 rounded-[7px] bg-[#FAF9F5] hover:bg-[#FF5A1F] text-[#454B57] hover:text-white border border-[#E6E2D8] hover:border-[#FF5A1F] text-[11.5px] font-medium flex items-center gap-1 transition-all duration-150 active:scale-95 group/adv"
+                                  style={{
+                                    transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                  }}
+                                  title={`Advance deal to ${progress.nextStageName}`}
+                                >
+                                  <span>Advance</span>
+                                  <ArrowRight className="h-3 w-3 group-hover/adv:translate-x-0.5 transition-transform" />
+                                </button>
+                              ) : (
+                                <span className="text-[11px] text-[#12B886] font-medium flex items-center gap-1">
+                                  <CheckCircle2 className="h-3.5 w-3.5" />
+                                  <span>Closed Won</span>
+                                </span>
                               )}
-                            >
-                              <Flag className="h-3 w-3" />
-                              <span>{priority.label}</span>
-                            </span>
-
-                            {/* Metadata counts: Attachments & Comments */}
-                            <div className="flex items-center gap-3 text-[12px] text-[#6B7280]">
-                              <div className="flex items-center gap-1" title="Attachments">
-                                <Link2 className="h-3.5 w-3.5 text-[#9CA3AF]" />
-                                <span className="tabular-nums font-variant-numeric">{attachmentCount}</span>
-                              </div>
-                              <div className="flex items-center gap-1" title="WhatsApp Messages">
-                                <MessageSquare className="h-3.5 w-3.5 text-[#9CA3AF]" />
-                                <span className="tabular-nums font-variant-numeric">{commentCount}</span>
-                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
 
-                    {stageLeads.length === 0 && (
-                      <div className="h-36 flex items-center justify-center rounded-[16px] border border-dashed border-[#E0DCD2] text-[13px] text-[#8C93A0] bg-white/40">
-                        Drop deals here
-                      </div>
-                    )}
+                      {stageLeads.length === 0 && (
+                        <div className="h-36 flex flex-col items-center justify-center gap-1 rounded-[16px] border border-dashed border-[#E0DCD2] text-[13px] text-[#8C93A0] bg-white/40">
+                          <GripVertical className="h-4 w-4 text-[#CBD5E1]" />
+                          <span>Drop deals here</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
