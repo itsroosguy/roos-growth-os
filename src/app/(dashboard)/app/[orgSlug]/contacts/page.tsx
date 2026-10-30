@@ -116,7 +116,7 @@ const CLASSIFICATION_CONFIG: Record<
     label: "General Lead",
     bg: "bg-[#F5F2EB]",
     text: "text-[#666C78]",
-    border: "border-[#E6E2D8]",
+    border: "border-[#EDE8E0]",
     dotColor: "bg-[#9CA3AF]",
   },
 };
@@ -252,7 +252,7 @@ export default function ContactsPage() {
             <h1 className="text-[28px] sm:text-[30px] font-medium leading-[36px] tracking-[-0.02em] text-[#12141A]">
               Contacts Directory
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FAF9F5] text-[#454B57] border border-[#E6E2D8]">
+            <span className="px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FAF9F5] text-[#454B57] border border-[#EDE8E0]">
               {allContacts.length} verified
             </span>
           </div>
@@ -273,7 +273,7 @@ export default function ContactsPage() {
                 setCurrentPage(1);
               }}
               placeholder="Search by name, email, role, or company..."
-              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[13.5px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
+              className="h-10 w-full rounded-[12px] border border-[#EDE8E0] bg-white pl-9 pr-3 text-[13.5px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 
@@ -291,7 +291,7 @@ export default function ContactsPage() {
       {/* 2. CLASSIFICATION & DEPARTMENT FILTERS BAR */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         {/* Quick Filter Tabs for Ongoing Clients vs New Opportunities */}
-        <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-xl border border-[#E6E2D8] self-start overflow-x-auto max-w-full">
+        <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-xl border border-[#EDE8E0] self-start overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => {
@@ -309,7 +309,7 @@ export default function ContactsPage() {
             }}
           >
             <span>All Contacts</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-[#FAF9F5] border border-[#E6E2D8] text-[#454B57]">
+            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-[#FAF9F5] border border-[#EDE8E0] text-[#454B57]">
               {allContacts.length}
             </span>
           </button>
@@ -368,7 +368,7 @@ export default function ContactsPage() {
               setDepartmentFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="h-9 px-3 rounded-[11px] border border-[#E6E2D8] bg-white text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+            className="h-9 px-3 rounded-[11px] border border-[#EDE8E0] bg-white text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
           >
             <option value="all">All Departments</option>
             <option value="finance">Finance (CFO / Accounts)</option>
@@ -385,7 +385,7 @@ export default function ContactsPage() {
               setConsentFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="h-9 px-3 rounded-[11px] border border-[#E6E2D8] bg-white text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+            className="h-9 px-3 rounded-[11px] border border-[#EDE8E0] bg-white text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
           >
             <option value="all">All Consent</option>
             <option value="opted_in">Opted In</option>
@@ -585,7 +585,7 @@ export default function ContactsPage() {
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-2 rounded-[8px] border border-[#E6E2D8] bg-white disabled:opacity-30 hover:bg-[#EFEDE7] text-[#12141A] transition-colors shadow-xs"
+              className="p-2 rounded-[8px] border border-[#EDE8E0] bg-white disabled:opacity-30 hover:bg-[#EFEDE7] text-[#12141A] transition-colors shadow-xs"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -614,7 +614,7 @@ export default function ContactsPage() {
         {selectedContact && (
           <div className="space-y-6 pt-2">
             {/* Relationship & Department Identity Card */}
-            <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#E6E2D8] space-y-3">
+            <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#EDE8E0] space-y-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <span className="text-[11.5px] font-medium text-[#878D96] uppercase tracking-wider">
                   Profile & Classification
@@ -685,7 +685,7 @@ export default function ContactsPage() {
                 ) : (
                   <button
                     disabled
-                    className="p-3 rounded-[12px] bg-[#F5F2EB] text-[#A3A9B6] border border-[#E6E2D8] text-center text-[13px] font-medium flex items-center justify-center gap-1.5 opacity-60"
+                    className="p-3 rounded-[12px] bg-[#F5F2EB] text-[#A3A9B6] border border-[#EDE8E0] text-center text-[13px] font-medium flex items-center justify-center gap-1.5 opacity-60"
                   >
                     <Mail className="h-4 w-4" />
                     <span>No Email ID</span>
@@ -695,7 +695,7 @@ export default function ContactsPage() {
             </div>
 
             {/* Detailed Meta Card */}
-            <div className="p-4 rounded-[14px] bg-white border border-[#E6E2D8] space-y-2.5 text-[13px]">
+            <div className="p-4 rounded-[14px] bg-white border border-[#EDE8E0] space-y-2.5 text-[13px]">
               <div className="flex items-center justify-between text-[#666C78]">
                 <span>Email ID</span>
                 <span className="font-medium text-[#12141A]">{selectedContact.email || "—"}</span>
@@ -800,7 +800,7 @@ export default function ContactsPage() {
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value as DepartmentType)}
-                className="h-10 w-full px-3 rounded-[10px] border border-[#E6E2D8] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
+                className="h-10 w-full px-3 rounded-[10px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
               >
                 <option value="finance">Finance</option>
                 <option value="operations">Operations</option>
@@ -819,7 +819,7 @@ export default function ContactsPage() {
               <select
                 value={classification}
                 onChange={(e) => setClassification(e.target.value as ContactClassification)}
-                className="h-10 w-full px-3 rounded-[10px] border border-[#E6E2D8] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
+                className="h-10 w-full px-3 rounded-[10px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
               >
                 <option value="ongoing_client">Ongoing Client</option>
                 <option value="new_opportunity">New Opportunity</option>
@@ -836,7 +836,7 @@ export default function ContactsPage() {
             <select
               value={consentStatus}
               onChange={(e) => setConsentStatus(e.target.value as ConsentStatus)}
-              className="h-10 w-full px-3 rounded-[10px] border border-[#E6E2D8] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
+              className="h-10 w-full px-3 rounded-[10px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs"
             >
               <option value="opted_in">Opted In (Verified)</option>
               <option value="pending">Pending Opt-In</option>

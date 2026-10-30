@@ -5,7 +5,6 @@ import { useTenant } from "@/lib/organizations/tenant-context";
 import { whatsappStore } from "@/lib/whatsapp/whatsapp-store";
 import { WhatsAppMode, WhatsAppConnectionStatus } from "@/lib/whatsapp/types";
 import { MOCK_TEMPLATES } from "@/lib/whatsapp/mock-provider";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -117,315 +116,317 @@ export default function WhatsAppSettingsPage() {
       orgSlug={currentOrg.slug}
       title="WhatsApp Configuration"
       description={`Configure official Meta WhatsApp Business Cloud API or local mock simulation for ${currentOrg.name}.`}
+      contentClassName="max-w-[960px]"
       badge={
         <div className="flex items-center gap-1.5">
           <Badge
             variant={connection.status === "connected" ? "success" : "neutral"}
-            className="text-xs uppercase font-medium"
+            className="text-[12px] uppercase font-semibold"
           >
             {connection.status}
           </Badge>
           {connection.mode === "mock" && (
-            <Badge variant="orangeSubtle" className="text-xs font-medium tabular-nums">
-              MOCK DEV MODE
-            </Badge>
+            <span className="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30">
+              Mock Dev Mode
+            </span>
           )}
         </div>
       }
     >
       <div className="space-y-6">
-
         {isAdmin && (
-          <div className="flex justify-end pb-2">
+          <div className="flex justify-end pb-1">
             <Button
               variant={connection.status === "connected" ? "outline" : "primary"}
               onClick={handleToggleConnection}
-              className={`rounded-[12px] shadow-xs font-medium text-[14px] h-10 px-4 flex items-center gap-2 ${
+              className={`rounded-[12px] shadow-xs font-semibold text-[14px] h-10 px-4 flex items-center gap-2 cursor-pointer ${
                 connection.status === "connected"
-                  ? "border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A]"
+                  ? "border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A]"
                   : ""
               }`}
             >
               <Power className="h-4 w-4" />
-              <span>{connection.status === "connected" ? "Disable WhatsApp" : "Connect WhatsApp"}</span>
+              <span>{connection.status === "connected" ? "Disconnect WhatsApp" : "Connect WhatsApp"}</span>
             </Button>
           </div>
         )}
 
-      {/* Mode Switcher Banner */}
-      <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-start space-x-3.5">
-          <div className="p-2.5 rounded-[12px] bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30 shrink-0 mt-0.5">
-            <Zap className="h-5 w-5" />
+        {/* Mode Switcher Banner */}
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-start space-x-3.5">
+            <div className="p-2.5 rounded-[12px] bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30 shrink-0 mt-0.5">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-[16px] font-semibold text-[#12141A]">
+                Active Messaging Mode:{" "}
+                <span className="capitalize text-[#FF5A1F] font-semibold">{mode} Mode</span>
+              </h3>
+              <p className="text-[13px] text-[#666C78] font-normal mt-1 max-w-xl leading-relaxed">
+                {mode === "mock"
+                  ? "Mock mode operates completely free without requiring Meta credentials. Test chats, 24h window expiry, and webhook simulation locally."
+                  : "Live mode connects directly to official Meta WhatsApp Cloud API via Graph API v20.0."}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-[16px] font-medium text-[#12141A]">
-              Active Messaging Mode:{" "}
-              <span className="capitalize text-[#FF5A1F] font-medium">{mode} Mode</span>
-            </h3>
-            <p className="text-[13px] text-[#666C78] font-normal mt-1 max-w-xl leading-relaxed">
-              {mode === "mock"
-                ? "Mock mode operates completely free without requiring Meta credentials. Test chats, 24h window expiry, and webhook simulation locally."
-                : "Live mode connects directly to official Meta WhatsApp Cloud API via Graph API v20.0."}
-            </p>
+
+          <div className="flex items-center rounded-[12px] border border-[#EDE8E0] p-1 bg-[#F7F5F0] shadow-xs shrink-0">
+            <button
+              onClick={() => setMode("mock")}
+              className={`px-4 py-2 rounded-[9px] text-[13px] font-medium transition-all cursor-pointer ${
+                mode === "mock"
+                  ? "bg-[#0B0D12] text-white shadow-xs font-semibold"
+                  : "text-[#666C78] hover:text-[#12141A]"
+              }`}
+            >
+              Mock Mode (Free)
+            </button>
+            <button
+              onClick={() => setMode("live")}
+              className={`px-4 py-2 rounded-[9px] text-[13px] font-medium transition-all cursor-pointer ${
+                mode === "live"
+                  ? "bg-[#0B0D12] text-white shadow-xs font-semibold"
+                  : "text-[#666C78] hover:text-[#12141A]"
+              }`}
+            >
+              Live Meta API
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center rounded-[12px] border border-[#E6E2D8] p-1 bg-[#F7F5F0] shadow-xs shrink-0">
-          <button
-            onClick={() => setMode("mock")}
-            className={`px-4 py-2 rounded-[9px] text-[13px] font-medium transition-all cursor-pointer ${
-              mode === "mock"
-                ? "bg-[#0B0D12] text-white shadow-xs"
-                : "text-[#666C78] hover:text-[#12141A]"
-            }`}
-          >
-            Mock Mode (Free)
-          </button>
-          <button
-            onClick={() => setMode("live")}
-            className={`px-4 py-2 rounded-[9px] text-[13px] font-medium transition-all cursor-pointer ${
-              mode === "live"
-                ? "bg-[#0B0D12] text-white shadow-xs"
-                : "text-[#666C78] hover:text-[#12141A]"
-            }`}
-          >
-            Live Meta API
-          </button>
-        </div>
-      </div>
-
-      {/* Connection Details Form */}
-      <form onSubmit={handleSaveConfig}>
-        <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
-          <div className="p-6 border-b border-[#E6E2D8]">
-            <h2 className="text-[18px] font-medium text-[#12141A]">Connection Identifiers &amp; Secrets</h2>
-            <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
-              {mode === "mock"
-                ? "Simulated connection details for testing the CRM and inbox."
-                : "Official Meta Business Manager identifiers and System User Token."}
-            </p>
-          </div>
-          
-          <div className="p-6 space-y-5">
-            {saveSuccess && (
-              <div className="rounded-[12px] bg-[#E6FBF2] p-4 border border-[#B8F5D8] text-[14px] text-[#0A7A53] font-medium flex items-center space-x-2">
-                <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
-                <span>WhatsApp connection settings saved successfully!</span>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <Input
-                label="Sender Display Name"
-                placeholder="e.g. Acme Business Solutions"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                disabled={!isAdmin}
-                className="bg-[#F7F5F0] border-[#E6E2D8] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] rounded-[12px] text-[14px]"
-              />
-              <Input
-                label="Display Phone Number"
-                placeholder="+1 555 019 2831"
-                value={displayPhone}
-                onChange={(e) => setDisplayPhone(e.target.value)}
-                disabled={!isAdmin}
-                className="bg-[#F7F5F0] border-[#E6E2D8] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
-              />
+        {/* Connection Details Form */}
+        <form onSubmit={handleSaveConfig}>
+          <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-0 overflow-hidden">
+            <div className="p-6 border-b border-[#EDE8E0]">
+              <h2 className="text-[18px] font-semibold text-[#12141A]">Connection Identifiers &amp; Secrets</h2>
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
+                {mode === "mock"
+                  ? "Simulated connection details for testing the CRM and inbox."
+                  : "Official Meta Business Manager identifiers and System User Token."}
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <Input
-                label="Phone Number ID"
-                placeholder="e.g. 104829104829104"
-                value={phoneNumberId}
-                onChange={(e) => setPhoneNumberId(e.target.value)}
-                disabled={!isAdmin}
-                className="bg-[#F7F5F0] border-[#E6E2D8] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
-              />
-              <Input
-                label="WhatsApp Business Account ID (WABA ID)"
-                placeholder="e.g. 294829104820194"
-                value={wabaId}
-                onChange={(e) => setWabaId(e.target.value)}
-                disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
-              />
-            </div>
-
-            {mode === "live" && (
-              <Input
-                label="System User Permanent Access Token"
-                type="password"
-                placeholder="EAAG... (Stored securely on server only)"
-                value={accessToken}
-                onChange={(e) => setAccessToken(e.target.value)}
-                disabled={!isAdmin}
-                className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] text-[#0D0D0E] tabular-nums rounded-xl text-xs"
-              />
-            )}
-
-            {/* Test Connection Button & Result */}
-            <div className="pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleRunConnectionTest}
-                isLoading={isTesting}
-                className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] h-10 px-4"
-              >
-                <RefreshCw className="mr-1.5 h-4 w-4 text-[#FF5A1F]" />
-                Test Connection Status
-              </Button>
-
-              {testResult && (
-                <div
-                  className={`mt-3 p-4 rounded-[12px] text-[14px] flex items-center space-x-2.5 ${
-                    testResult.success
-                      ? "bg-[#E6FBF2] text-[#0A7A53] border border-[#B8F5D8] font-medium"
-                      : "bg-[#FFE9EA] text-[#B42336] border border-[#FDCFD1] font-medium"
-                  }`}
-                >
-                  {testResult.success ? (
-                    <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
-                  ) : (
-                    <AlertCircle className="h-4 w-4 text-[#E5484D] shrink-0" />
-                  )}
-                  <span>{testResult.msg}</span>
+            <div className="p-6 space-y-5">
+              {saveSuccess && (
+                <div className="rounded-[12px] bg-[#E4F7EF] p-4 border border-[#BDECD7] text-[13.5px] text-[#0A7A53] font-medium flex items-center space-x-2">
+                  <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
+                  <span>WhatsApp connection settings saved successfully!</span>
                 </div>
               )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input
+                  label="Sender Display Name"
+                  placeholder="e.g. Acme Business Solutions"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  disabled={!isAdmin}
+                  className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] rounded-[12px] text-[14px]"
+                />
+                <Input
+                  label="Display Phone Number"
+                  placeholder="+1 555 019 2831"
+                  value={displayPhone}
+                  onChange={(e) => setDisplayPhone(e.target.value)}
+                  disabled={!isAdmin}
+                  className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input
+                  label="Phone Number ID"
+                  placeholder="e.g. 104829104829104"
+                  value={phoneNumberId}
+                  onChange={(e) => setPhoneNumberId(e.target.value)}
+                  disabled={!isAdmin}
+                  className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
+                />
+                <Input
+                  label="WhatsApp Business Account ID (WABA ID)"
+                  placeholder="e.g. 294829104820194"
+                  value={wabaId}
+                  onChange={(e) => setWabaId(e.target.value)}
+                  disabled={!isAdmin}
+                  className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
+                />
+              </div>
+
+              {mode === "live" && (
+                <Input
+                  label="System User Permanent Access Token"
+                  type="password"
+                  placeholder="EAAG... (Stored securely on server only)"
+                  value={accessToken}
+                  onChange={(e) => setAccessToken(e.target.value)}
+                  disabled={!isAdmin}
+                  className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] tabular-nums rounded-[12px] text-[14px]"
+                />
+              )}
+
+              {/* Test Connection Button & Result */}
+              <div className="pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRunConnectionTest}
+                  isLoading={isTesting}
+                  className="rounded-[12px] border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] h-10 px-4 cursor-pointer"
+                >
+                  <RefreshCw className="mr-1.5 h-4 w-4 text-[#FF5A1F]" />
+                  Test Connection Status
+                </Button>
+
+                {testResult && (
+                  <div
+                    className={`mt-3 p-4 rounded-[12px] text-[13.5px] flex items-center space-x-2.5 ${
+                      testResult.success
+                        ? "bg-[#E4F7EF] text-[#0A7A53] border border-[#BDECD7] font-medium"
+                        : "bg-[#FFE9EA] text-[#B42336] border border-[#FFCCD0] font-medium"
+                    }`}
+                  >
+                    {testResult.success ? (
+                      <CheckCircle2 className="h-4 w-4 text-[#0A7A53] shrink-0" />
+                    ) : (
+                      <AlertCircle className="h-4 w-4 text-[#E5484D] shrink-0" />
+                    )}
+                    <span>{testResult.msg}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {isAdmin && (
+              <div className="p-4 bg-[#F7F5F0] border-t border-[#EDE8E0] flex justify-end">
+                <Button type="submit" variant="primary" className="rounded-[12px] text-[14px] h-10 px-5 font-semibold cursor-pointer">
+                  Save WhatsApp Configuration
+                </Button>
+              </div>
+            )}
+          </div>
+        </form>
+
+        {/* Webhook Configuration Section */}
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-0 overflow-hidden">
+          <div className="p-6 border-b border-[#EDE8E0] flex items-center space-x-2.5">
+            <Globe className="h-5 w-5 text-[#FF5A1F]" />
+            <div>
+              <h2 className="text-[18px] font-semibold text-[#12141A]">Meta Webhook Callback URL</h2>
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
+                Enter these endpoints into your Meta App Dashboard under WhatsApp &gt; Configuration.
+              </p>
             </div>
           </div>
 
-          {isAdmin && (
-            <div className="p-4 bg-[#FAF9F5] border-t border-[#E6E2D8] flex justify-end">
-              <Button type="submit" variant="primary" className="rounded-[12px] text-[14px] h-10 px-5 font-medium">
-                Save WhatsApp Configuration
-              </Button>
+          <div className="p-6 space-y-5">
+            <div className="space-y-1.5">
+              <label className="block text-[13.5px] font-medium text-[#12141A]">
+                Callback URL (Webhook Ingestion)
+              </label>
+              <div className="flex items-center space-x-2">
+                <div className="flex-1 tabular-nums text-[13.5px] bg-[#F7F5F0] p-3 rounded-[12px] border border-[#EDE8E0] select-all truncate text-[#12141A] font-medium">
+                  {webhookUrl}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyToClipboard(webhookUrl, setCopiedUrl)}
+                  className="rounded-[12px] border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium shrink-0 text-[13.5px] h-11 px-4 cursor-pointer"
+                >
+                  {copiedUrl ? (
+                    <>
+                      <Check className="h-4 w-4 mr-1.5 text-[#0A7A53]" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-1.5 text-[#666C78]" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-          )}
-        </div>
-      </form>
 
-      {/* Webhook Configuration Section */}
-      <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
-        <div className="p-6 border-b border-[#E6E2D8] flex items-center space-x-2.5">
-          <Globe className="h-5 w-5 text-[#FF5A1F]" />
-          <div>
-            <h2 className="text-[18px] font-medium text-[#12141A]">Meta Webhook Callback URL</h2>
+            <div className="space-y-1.5">
+              <label className="block text-[13.5px] font-medium text-[#12141A]">
+                Verify Token
+              </label>
+              <div className="flex items-center space-x-2">
+                <div className="flex-1 tabular-nums text-[13.5px] bg-[#F7F5F0] p-3 rounded-[12px] border border-[#EDE8E0] select-all truncate text-[#12141A] font-medium">
+                  {connection.webhook_verify_token}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyToClipboard(connection.webhook_verify_token, setCopiedToken)}
+                  className="rounded-[12px] border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium shrink-0 text-[13.5px] h-11 px-4 cursor-pointer"
+                >
+                  {copiedToken ? (
+                    <>
+                      <Check className="h-4 w-4 mr-1.5 text-[#0A7A53]" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-1.5 text-[#666C78]" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-[12px] bg-[#FFF0EB] p-4 border border-[#FF5A1F]/30 text-[13px] text-[#12141A] space-y-1">
+              <span className="font-semibold text-[#FF5A1F] block">Webhook Subscriptions Required:</span>
+              <p className="text-[#666C78] font-normal leading-relaxed">
+                Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded tabular-nums text-[#12141A] font-semibold border border-[#EDE8E0]">messages</code> subscription field in your Meta Developer App Dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Message Templates Catalog */}
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-0 overflow-hidden">
+          <div className="p-6 border-b border-[#EDE8E0]">
+            <h2 className="text-[18px] font-semibold text-[#12141A]">Pre-Approved Message Templates</h2>
             <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
-              Enter these endpoints into your Meta App Dashboard under WhatsApp &gt; Configuration.
+              Templates permitted for initiating contact or re-engaging customers outside the 24-hour service window.
             </p>
           </div>
-        </div>
-        
-        <div className="p-6 space-y-5">
-          <div className="space-y-1.5">
-            <label className="block text-[14px] font-medium text-[#12141A]">
-              Callback URL (Webhook Ingestion)
-            </label>
-            <div className="flex items-center space-x-2">
-              <div className="flex-1 tabular-nums text-[14px] bg-[#F7F5F0] p-3 rounded-[12px] border border-[#E6E2D8] select-all truncate text-[#12141A] font-medium">
-                {webhookUrl}
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(webhookUrl, setCopiedUrl)}
-                className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium shrink-0 text-[14px] h-11 px-4 cursor-pointer"
-              >
-                {copiedUrl ? (
-                  <>
-                    <Check className="h-4 w-4 mr-1.5 text-[#0A7A53]" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 mr-1.5 text-[#666C78]" />
-                    Copy
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-[14px] font-medium text-[#12141A]">
-              Verify Token
-            </label>
-            <div className="flex items-center space-x-2">
-              <div className="flex-1 tabular-nums text-[14px] bg-[#F7F5F0] p-3 rounded-[12px] border border-[#E6E2D8] select-all truncate text-[#12141A] font-medium">
-                {connection.webhook_verify_token}
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(connection.webhook_verify_token, setCopiedToken)}
-                className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium shrink-0 text-[14px] h-11 px-4 cursor-pointer"
-              >
-                {copiedToken ? (
-                  <>
-                    <Check className="h-4 w-4 mr-1.5 text-[#0A7A53]" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 mr-1.5 text-[#666C78]" />
-                    Copy
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          <div className="rounded-[12px] bg-[#FFF0EB] p-4 border border-[#FF5A1F]/30 text-[13px] text-[#12141A] space-y-1">
-            <span className="font-semibold text-[#FF7A1A] block">Webhook Subscriptions Required:</span>
-            <p className="text-[#8E8E93] font-medium">Ensure you check the <code className="bg-white px-1.5 py-0.5 rounded tabular-nums text-[#0D0D0E] font-semibold border border-[#E5E5E7]">messages</code> subscription field in your Meta Developer App Dashboard.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Message Templates Catalog */}
-      <div className="bg-white rounded-2xl border border-[#E5E5E7] shadow-2xs overflow-hidden">
-        <div className="p-5 border-b border-[#E5E5E7]">
-          <h2 className="text-base font-semibold text-[#0D0D0E]">Pre-Approved Message Templates</h2>
-          <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
-            Templates permitted for initiating contact or re-engaging customers outside the 24-hour service window.
-          </p>
-        </div>
-        
-        <div className="p-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {MOCK_TEMPLATES.map((tpl) => (
-              <div
-                key={tpl.id}
-                className="p-4 rounded-xl border border-[#E5E5E7] bg-white flex flex-col justify-between shadow-2xs hover:border-[#FF7A1A]/40 transition-all"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="tabular-nums font-semibold text-xs text-[#0D0D0E]">
-                      {tpl.name}
-                    </span>
-                    <Badge variant="success" className="text-[10px] uppercase font-medium">
-                      {tpl.status}
-                    </Badge>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {MOCK_TEMPLATES.map((tpl) => (
+                <div
+                  key={tpl.id}
+                  className="p-4.5 rounded-[14px] border border-[#EDE8E0] bg-white flex flex-col justify-between hover:border-[#FF5A1F]/40 transition-colors space-y-3"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="tabular-nums font-semibold text-[13.5px] text-[#12141A]">
+                        {tpl.name}
+                      </span>
+                      <Badge variant="success" className="text-[11px] uppercase font-semibold">
+                        {tpl.status}
+                      </Badge>
+                    </div>
+                    <p className="text-[13px] text-[#12141A] font-normal leading-relaxed bg-[#F7F5F0] p-3 rounded-[10px] border border-[#EDE8E0]">
+                      &ldquo;{tpl.body_content}&rdquo;
+                    </p>
                   </div>
-                  <p className="text-xs text-[#0D0D0E] font-medium leading-relaxed bg-[#F7F7F8] p-2.5 rounded-lg border border-[#E5E5E7] mb-2">
-                    &ldquo;{tpl.body_content}&rdquo;
-                  </p>
+                  <div className="flex items-center justify-between text-[12px] text-[#666C78] pt-2 border-t border-[#EDE8E0]">
+                    <span className="capitalize font-medium">Category: {tpl.category}</span>
+                    <span className="tabular-nums font-medium text-[11px]">Variables: {tpl.variables.join(", ")}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-[#8E8E93] pt-2 border-t border-[#E5E5E7]">
-                  <span className="capitalize font-medium">Category: {tpl.category}</span>
-                  <span className="tabular-nums text-[10px]">Variables: {tpl.variables.join(", ")}</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </SettingsShell>
   );

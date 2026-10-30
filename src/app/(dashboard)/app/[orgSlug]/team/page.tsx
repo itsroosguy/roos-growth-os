@@ -17,7 +17,6 @@ import {
   AlertCircle,
   Users,
   Crown,
-  ShieldAlert,
   KeyRound,
   Copy,
   Check,
@@ -58,7 +57,7 @@ interface MemberItem {
 export default function TeamAndCredentialsPage() {
   const { currentOrg, userRole, setUserRole, isAdmin } = useTenant();
 
-  // Active Tab: "credentials" | "roster" | "invitations" | "matrix"
+  // Active Tab: "roster" | "invitations" | "credentials" | "matrix"
   const [activeTab, setActiveTab] = useState<"credentials" | "roster" | "invitations" | "matrix">("roster");
 
   // Credential State
@@ -98,55 +97,54 @@ export default function TeamAndCredentialsPage() {
     },
     {
       id: "mem-2",
-      name: "Platform Administrator",
-      email: "admin@acmetech.io",
+      name: "Siddharth Rao",
+      email: "siddharth@acmetech.io",
       role: "admin",
       status: "active",
-      joinedAt: "Jan 12, 2026",
+      joinedAt: "Jan 14, 2026",
     },
     {
       id: "mem-3",
-      name: "Senior Operations Lead",
-      email: "operations.lead@acmetech.io",
+      name: "Pooja Varma",
+      email: "pooja@acmetech.io",
       role: "senior_manager",
       status: "active",
-      joinedAt: "Jan 15, 2026",
+      joinedAt: "Feb 02, 2026",
     },
     {
       id: "mem-4",
-      name: "Junior Operations Manager",
-      email: "jr.manager@acmetech.io",
+      name: "Karan Malhotra",
+      email: "karan@acmetech.io",
       role: "junior_manager",
       status: "active",
-      joinedAt: "Feb 01, 2026",
+      joinedAt: "Feb 18, 2026",
     },
     {
       id: "mem-5",
-      name: "Support Specialist",
-      email: "support@acmetech.io",
-      role: "staff",
+      name: "Ananya Deshmukh",
+      email: "ananya@acmetech.io",
+      role: "junior_manager",
       status: "active",
-      joinedAt: "Feb 15, 2026",
+      joinedAt: "Mar 01, 2026",
     },
   ]);
 
   const handleCopy = (keyId: string) => {
-    navigator.clipboard?.writeText(keyId);
+    navigator.clipboard.writeText(keyId);
     setCopiedKeyId(keyId);
     setTimeout(() => setCopiedKeyId(null), 2000);
   };
 
   const handleCopyLink = (token: string) => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://app.roosstudiox.com";
     const fullUrl = `${origin}/invite/${token}`;
-    navigator.clipboard?.writeText(fullUrl);
+    navigator.clipboard.writeText(fullUrl);
     setCopiedInviteLink(true);
     setTimeout(() => setCopiedInviteLink(false), 2000);
   };
 
   const handleCreateCredential = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAdmin) return;
     if (!credName || !credEmail) return;
 
     credentialsStore.createCredential(currentOrg.slug, {
@@ -217,15 +215,15 @@ export default function TeamAndCredentialsPage() {
   const pendingCount = invitations.filter((i) => i.status === "pending").length;
 
   return (
-    <div className="space-y-6 max-w-6xl pb-12">
+    <div className="space-y-6 max-w-6xl pb-12 animate-page-enter">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E6E2D8]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#EDE8E0]">
         <div>
-          <h1 className="text-[2.25rem] font-medium leading-[1.15] text-[#12141A] tracking-[-0.02em]">
-            Team &amp; Access
+          <h1 className="text-[30px] font-semibold leading-tight text-[#12141A] tracking-[-0.02em]">
+            Team Roster &amp; Access
           </h1>
-          <p className="type-body text-[#454B57] mt-1">
-            Invite teammates, manage member roles, and issue integration API keys.
+          <p className="text-[14px] text-[#666C78] mt-1 font-normal">
+            Invite teammates, manage multi-level clearance roles, and issue integration API tokens.
           </p>
         </div>
 
@@ -235,7 +233,7 @@ export default function TeamAndCredentialsPage() {
               <Button
                 onClick={() => setInviteModalOpen(true)}
                 variant="primary"
-                className="h-10 px-4 cursor-pointer flex items-center gap-2"
+                className="h-10 px-4 cursor-pointer flex items-center gap-2 rounded-[12px]"
               >
                 <UserPlus className="h-4 w-4" />
                 <span>Invite Member</span>
@@ -243,7 +241,7 @@ export default function TeamAndCredentialsPage() {
               <Button
                 onClick={() => setNewCredModalOpen(true)}
                 variant="outline"
-                className="h-10 px-3.5 hover:bg-[#F7F5F0] cursor-pointer flex items-center gap-2"
+                className="h-10 px-3.5 border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] cursor-pointer flex items-center gap-2 rounded-[12px]"
               >
                 <KeyRound className="h-4 w-4 text-[#666C78]" />
                 <span>API Token</span>
@@ -282,32 +280,20 @@ export default function TeamAndCredentialsPage() {
           {
             id: "governance",
             label: "Workspace Plan",
-            value: "Enterprise",
+            value: "Growth",
             change: { value: "All seats active", trend: "up" },
           },
         ]}
       />
 
       {/* Tabs */}
-      <div className="flex items-center border-b border-[#E6E2D8] gap-6 text-[14px] font-medium">
-        <button
-          onClick={() => setActiveTab("invitations")}
-          className={cn(
-            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
-            activeTab === "invitations"
-              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
-              : "border-transparent text-[#666C78] hover:text-[#12141A]"
-          )}
-        >
-          <Mail className="h-4 w-4" />
-          <span>Pending Invitations ({pendingCount})</span>
-        </button>
+      <div className="flex items-center border-b border-[#EDE8E0] gap-6 text-[14px] font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
         <button
           onClick={() => setActiveTab("roster")}
           className={cn(
             "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "roster"
-              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              ? "border-[#FF5A1F] text-[#FF5A1F] font-semibold"
               : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
@@ -315,11 +301,23 @@ export default function TeamAndCredentialsPage() {
           <span>Active Team Roster ({members.length})</span>
         </button>
         <button
+          onClick={() => setActiveTab("invitations")}
+          className={cn(
+            "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
+            activeTab === "invitations"
+              ? "border-[#FF5A1F] text-[#FF5A1F] font-semibold"
+              : "border-transparent text-[#666C78] hover:text-[#12141A]"
+          )}
+        >
+          <Mail className="h-4 w-4" />
+          <span>Pending Invitations ({pendingCount})</span>
+        </button>
+        <button
           onClick={() => setActiveTab("credentials")}
           className={cn(
             "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "credentials"
-              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              ? "border-[#FF5A1F] text-[#FF5A1F] font-semibold"
               : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
@@ -331,7 +329,7 @@ export default function TeamAndCredentialsPage() {
           className={cn(
             "pb-3.5 border-b-2 transition-colors cursor-pointer flex items-center gap-2",
             activeTab === "matrix"
-              ? "border-[#1FA2E8] text-[#1FA2E8] font-medium"
+              ? "border-[#FF5A1F] text-[#FF5A1F] font-semibold"
               : "border-transparent text-[#666C78] hover:text-[#12141A]"
           )}
         >
@@ -343,14 +341,14 @@ export default function TeamAndCredentialsPage() {
       {/* Trust & Decoupled Liability Highlights Banner */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Level 1: Admin */}
-        <div className="bg-[#0B0D12] text-white rounded-[20px] border border-[#242A38] p-6 shadow-xs space-y-3 relative overflow-hidden">
+        <div className="bg-[#0B0D12] text-white rounded-[16px] border border-[#242A38] p-6 shadow-sm space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[12px] font-medium uppercase tracking-wider text-[#FF5A1F] bg-[#FF5A1F]/15 border border-[#FF5A1F]/30 px-3 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#FF5A1F] bg-[#FF5A1F]/15 border border-[#FF5A1F]/30 px-3 py-0.5 rounded-full tabular-nums">
               Level 1: Admin
             </span>
             <Crown className="h-5 w-5 text-[#FF5A1F]" />
           </div>
-          <h3 className="text-[16px] font-medium text-white">Full Root &amp; Fund Authority</h3>
+          <h3 className="text-[16px] font-semibold text-white">Full Root &amp; Fund Authority</h3>
           <p className="text-[13px] text-[#A3A9B6] leading-relaxed font-normal">
             Exclusive authority to issue multi-level credentials, execute overall fund transfers, manage bank settlements, and configure webhooks.
           </p>
@@ -360,7 +358,7 @@ export default function TeamAndCredentialsPage() {
             </span>
             <button
               onClick={() => setUserRole("admin")}
-              className="text-[#FF5A1F] hover:underline cursor-pointer"
+              className="text-[#FF5A1F] hover:underline cursor-pointer font-medium"
             >
               Simulate Role →
             </button>
@@ -368,18 +366,18 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 2: Senior Manager */}
-        <div className="bg-white rounded-[20px] border border-[#E6E2D8] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-3 relative overflow-hidden">
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] p-6 card-ref space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[12px] font-medium uppercase tracking-wider text-[#7C4DFF] bg-[#F4F0FF] border border-[#E0D4FC] px-3 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#7C4DFF] bg-[#F4F0FF] border border-[#E0D4FC] px-3 py-0.5 rounded-full tabular-nums">
               Level 2: Senior Manager
             </span>
             <Shield className="h-5 w-5 text-[#7C4DFF]" />
           </div>
-          <h3 className="text-[16px] font-medium text-[#12141A]">Operational Management</h3>
+          <h3 className="text-[16px] font-semibold text-[#12141A]">Operational Management</h3>
           <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
-            Full operational access (CRM, shared inbox, automations, campaigns). <span className="font-medium text-[#12141A]">Strictly Decoupled &amp; Protected: Zero fund transfer liability.</span>
+            Full operational access (CRM, shared inbox, automations, campaigns). <span className="font-semibold text-[#12141A]">Strictly Decoupled &amp; Protected: Zero fund transfer liability.</span>
           </p>
-          <div className="pt-3 flex items-center justify-between border-t border-[#E6E2D8] text-[13px] font-medium">
+          <div className="pt-3 flex items-center justify-between border-t border-[#EDE8E0] text-[13px] font-medium">
             <span className="text-[#E5484D] flex items-center gap-1.5">
               <Lock className="h-4 w-4" /> Funds: Blocked (Safe)
             </span>
@@ -393,18 +391,18 @@ export default function TeamAndCredentialsPage() {
         </div>
 
         {/* Level 3: Junior Manager */}
-        <div className="bg-white rounded-[20px] border border-[#E6E2D8] p-6 shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-3 relative overflow-hidden">
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] p-6 card-ref space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-[12px] font-medium uppercase tracking-wider text-[#1FA2E8] bg-[#EBF6FD] border border-[#BCE1F9] px-3 py-0.5 rounded-full tabular-nums">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#3D5AFE] bg-[#EBF2FF] border border-[#D4E2FF] px-3 py-0.5 rounded-full tabular-nums">
               Level 3: Junior Manager
             </span>
-            <Users className="h-5 w-5 text-[#1FA2E8]" />
+            <Users className="h-5 w-5 text-[#3D5AFE]" />
           </div>
-          <h3 className="text-[16px] font-medium text-[#12141A]">Customer &amp; Task Frontline</h3>
+          <h3 className="text-[16px] font-semibold text-[#12141A]">Customer &amp; Task Frontline</h3>
           <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
-            Direct client communication and operational follow-up execution. <span className="font-medium text-[#12141A]">Strictly Decoupled &amp; Protected: Zero financial configuration exposure.</span>
+            Direct client communication and operational follow-up execution. <span className="font-semibold text-[#12141A]">Strictly Decoupled &amp; Protected: Zero financial configuration exposure.</span>
           </p>
-          <div className="pt-3 flex items-center justify-between border-t border-[#E6E2D8] text-[13px] font-medium">
+          <div className="pt-3 flex items-center justify-between border-t border-[#EDE8E0] text-[13px] font-medium">
             <span className="text-[#E5484D] flex items-center gap-1.5">
               <Lock className="h-4 w-4" /> Funds: Blocked (Safe)
             </span>
@@ -419,22 +417,22 @@ export default function TeamAndCredentialsPage() {
       </div>
 
       {/* TAB 1: EMAIL DISPATCHES & INVITATIONS */}
-      {/* TAB 1: EMAIL DISPATCHES & INVITATIONS */}
       {activeTab === "invitations" && (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-base font-semibold text-[#0D0D0E]">
+              <h2 className="text-[17px] font-semibold text-[#12141A]">
                 Dispatched Multi-Level Account Invitations
               </h2>
-              <p className="text-xs text-[#8E8E93] font-medium mt-0.5">
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                 Every appointment generates an enterprise verification token delivered via email and activated upon respondent acceptance.
               </p>
             </div>
             {isAdmin && (
               <Button
                 onClick={() => setInviteModalOpen(true)}
-                className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold text-xs h-8.5 rounded-xl self-start sm:self-auto cursor-pointer"
+                variant="primary"
+                className="h-9 px-4 rounded-[12px] text-[13px] self-start sm:self-auto cursor-pointer"
               >
                 <Send className="mr-1.5 h-3.5 w-3.5" />
                 New Appointment Dispatch
@@ -442,16 +440,16 @@ export default function TeamAndCredentialsPage() {
             )}
           </div>
 
-          <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
+          <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-0 overflow-hidden">
             <Table>
-              <TableHeader className="bg-[#FAF9F5] border-b border-[#E6E2D8]">
+              <TableHeader className="bg-[#F7F5F0] border-b border-[#EDE8E0]">
                 <TableRow>
-                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Recipient</TableHead>
-                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Assigned Level</TableHead>
-                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Fund Liability</TableHead>
-                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
-                  <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">SLA Expiry</TableHead>
-                  <TableHead className="text-right text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Actions</TableHead>
+                  <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Recipient</TableHead>
+                  <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Assigned Level</TableHead>
+                  <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Fund Liability</TableHead>
+                  <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
+                  <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">SLA Expiry</TableHead>
+                  <TableHead className="text-right text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -459,20 +457,20 @@ export default function TeamAndCredentialsPage() {
                   const roleMeta = ROLE_DEFINITIONS[inv.role];
                   const avatarColor = getAvatarColor(inv.recipient_name);
                   return (
-                    <TableRow key={inv.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#E6E2D8]/70">
+                    <TableRow key={inv.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#EDE8E0]/70">
                       <TableCell>
                         <div className="flex items-center space-x-3 py-1">
                           <div
                             style={{ backgroundColor: avatarColor.bg, color: avatarColor.text }}
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-medium text-[13px] border border-black/5 shadow-xs"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-semibold text-[13px] border border-black/5 shadow-2xs"
                           >
                             {getInitials(inv.recipient_name)}
                           </div>
                           <div>
-                            <span className="font-medium text-[15px] text-[#12141A] block">
+                            <span className="font-semibold text-[14px] text-[#12141A] block">
                               {inv.recipient_name}
                             </span>
-                            <span className="text-[13px] text-[#666C78] tabular-nums">
+                            <span className="text-[12px] text-[#666C78] tabular-nums">
                               {inv.recipient_email}
                             </span>
                           </div>
@@ -482,12 +480,12 @@ export default function TeamAndCredentialsPage() {
                       <TableCell>
                         <span
                           className={cn(
-                            "text-[12px] font-medium uppercase px-2.5 py-0.5 rounded-full border",
+                            "text-[12px] font-semibold uppercase px-2.5 py-0.5 rounded-full border",
                             inv.role === "admin"
                               ? "bg-[#FFF0EB] text-[#FF5A1F] border-[#FF5A1F]/30"
                               : inv.role === "senior_manager"
-                              ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
-                              : "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
+                              ? "bg-[#F3E8FF] text-[#5E35B1] border-[#E9D5FF]"
+                              : "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]"
                           )}
                         >
                           {roleMeta.title}
@@ -513,15 +511,15 @@ export default function TeamAndCredentialsPage() {
                             inv.status === "pending"
                               ? "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]"
                               : inv.status === "accepted"
-                              ? "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
-                              : "bg-[#FFE9EA] text-[#B42336] border-[#FDCFD1]"
+                              ? "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]"
+                              : "bg-[#FFE9EA] text-[#B42336] border-[#FFCCD0]"
                           )}
                         >
                           {inv.status === "pending" ? "Awaiting Acceptance" : inv.status}
                         </span>
                       </TableCell>
 
-                      <TableCell className="text-[13px] text-[#666C78] font-medium">
+                      <TableCell className="text-[13px] text-[#666C78] font-medium tabular-nums">
                         {new Date(inv.expires_at).toLocaleDateString("en-IN", {
                           month: "short",
                           day: "numeric",
@@ -545,7 +543,7 @@ export default function TeamAndCredentialsPage() {
                           <Link
                             href={`/invite/${inv.token}`}
                             target="_blank"
-                            className="inline-flex items-center text-[13px] font-medium text-[#12141A] hover:text-[#FF5A1F] bg-[#F7F5F0] hover:bg-[#FFF0EB] px-3 py-1.5 rounded-[10px] transition-colors border border-[#E6E2D8]"
+                            className="inline-flex items-center text-[13px] font-medium text-[#12141A] hover:text-[#FF5A1F] bg-[#F7F5F0] hover:bg-[#FFF0EB] px-3 py-1.5 rounded-[10px] transition-colors border border-[#EDE8E0]"
                           >
                             <span>Accept</span>
                             <ExternalLink className="h-3.5 w-3.5 ml-1" />
@@ -563,29 +561,29 @@ export default function TeamAndCredentialsPage() {
 
       {/* TAB 2: ACTIVE TEAM ROSTER */}
       {activeTab === "roster" && (
-        <div className="bg-white rounded-[20px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden">
-          <div className="p-5 border-b border-[#E6E2D8] flex items-center justify-between">
+        <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-0 overflow-hidden">
+          <div className="p-5 border-b border-[#EDE8E0] flex items-center justify-between">
             <div>
-              <h2 className="text-[18px] font-medium text-[#12141A]">Active Workspace Members</h2>
+              <h2 className="text-[17px] font-semibold text-[#12141A]">Active Workspace Members</h2>
               <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                 Staff holding activated credentials in {currentOrg.name}
               </p>
             </div>
-            <span className="rounded-full bg-[#F7F5F0] border border-[#E6E2D8] text-[13px] font-medium px-3.5 py-1 text-[#12141A]">
-              <span className="tabular-nums font-medium text-[#FF5A1F] mr-1">{members.length}</span>
+            <span className="rounded-full bg-[#F7F5F0] border border-[#EDE8E0] text-[13px] font-medium px-3.5 py-1 text-[#12141A]">
+              <span className="tabular-nums font-semibold text-[#FF5A1F] mr-1">{members.length}</span>
               members
             </span>
           </div>
 
           <Table>
-            <TableHeader className="bg-[#FAF9F5] border-b border-[#E6E2D8]">
+            <TableHeader className="bg-[#F7F5F0] border-b border-[#EDE8E0]">
               <TableRow>
-                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">User</TableHead>
-                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Assigned Role</TableHead>
-                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Fund Clearance</TableHead>
-                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
-                <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Joined</TableHead>
-                {isAdmin && <TableHead className="text-right text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Role Action</TableHead>}
+                <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">User</TableHead>
+                <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Assigned Role</TableHead>
+                <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Fund Clearance</TableHead>
+                <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
+                <TableHead className="text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Joined</TableHead>
+                {isAdmin && <TableHead className="text-right text-[12px] font-semibold uppercase tracking-wider text-[#666C78] py-4">Role Action</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -593,20 +591,20 @@ export default function TeamAndCredentialsPage() {
                 const isFundAllowed = member.role === "admin" || member.role === "owner";
                 const avatarColor = getAvatarColor(member.name);
                 return (
-                  <TableRow key={member.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#E6E2D8]/70">
+                  <TableRow key={member.id} className="hover:bg-[#F7F5F0]/70 transition-colors border-b border-[#EDE8E0]/70">
                     <TableCell>
                       <div className="flex items-center space-x-3 py-1">
                         <div
                           style={{ backgroundColor: avatarColor.bg, color: avatarColor.text }}
-                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-medium text-[13px] border border-black/5 shadow-xs"
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-semibold text-[13px] border border-black/5 shadow-2xs"
                         >
                           {getInitials(member.name)}
                         </div>
                         <div className="flex flex-col">
-                          <span className="font-medium text-[15px] text-[#12141A]">
+                          <span className="font-semibold text-[14px] text-[#12141A]">
                             {member.name}
                           </span>
-                          <span className="text-[13px] text-[#666C78] font-normal">
+                          <span className="text-[12px] text-[#666C78] font-normal">
                             {member.email}
                           </span>
                         </div>
@@ -615,14 +613,14 @@ export default function TeamAndCredentialsPage() {
                     <TableCell>
                       <span
                         className={cn(
-                          "text-[12px] font-medium uppercase px-2.5 py-0.5 rounded-full border",
+                          "text-[12px] font-semibold uppercase px-2.5 py-0.5 rounded-full border",
                           member.role === "owner"
-                            ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
+                            ? "bg-[#F3E8FF] text-[#5E35B1] border-[#E9D5FF]"
                             : member.role === "admin"
                             ? "bg-[#FFF0EB] text-[#FF5A1F] border-[#FF5A1F]/30"
                             : member.role === "senior_manager"
-                            ? "bg-[#F4F0FF] text-[#7C4DFF] border-[#E0D4FC]"
-                            : "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
+                            ? "bg-[#EBF2FF] text-[#2545D3] border-[#D4E2FF]"
+                            : "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]"
                         )}
                       >
                         {member.role === "admin"
@@ -650,14 +648,14 @@ export default function TeamAndCredentialsPage() {
                         className={cn(
                           "text-[12px] font-medium capitalize px-2.5 py-0.5 rounded-full border",
                           member.status === "active"
-                            ? "bg-[#E6FBF2] text-[#0A7A53] border-[#B8F5D8]"
+                            ? "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]"
                             : "bg-[#FFF3D6] text-[#8F5300] border-[#FFE5A3]"
                         )}
                       >
                         {member.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-[13px] text-[#666C78] font-medium">
+                    <TableCell className="text-[13px] text-[#666C78] font-medium tabular-nums">
                       {member.joinedAt}
                     </TableCell>
                     {isAdmin && (
@@ -669,7 +667,7 @@ export default function TeamAndCredentialsPage() {
                               onChange={(e) =>
                                 handleUpdateRole(member.id, e.target.value as OrganizationRole)
                               }
-                              className="rounded-[10px] border border-[#E6E2D8] bg-white px-2.5 py-1.5 text-[14px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
+                              className="rounded-[10px] border border-[#EDE8E0] bg-white px-2.5 py-1.5 text-[13px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F] cursor-pointer"
                             >
                               <option value="admin">Level 1: Admin</option>
                               <option value="senior_manager">Level 2: Sr Manager</option>
@@ -680,7 +678,7 @@ export default function TeamAndCredentialsPage() {
                               onClick={() =>
                                 setMembers(members.filter((m) => m.id !== member.id))
                               }
-                              className="text-[14px] font-medium text-[#E5484D] hover:text-[#B42336] cursor-pointer ml-1.5"
+                              className="text-[13px] font-medium text-[#E5484D] hover:text-[#B42336] cursor-pointer ml-1.5"
                             >
                               Remove
                             </button>
@@ -703,12 +701,12 @@ export default function TeamAndCredentialsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-slate-950">Active Access Credentials & Tokens</h2>
-              <p className="text-xs text-slate-600 font-normal mt-0.5">
+              <h2 className="text-[17px] font-semibold text-[#12141A]">Active Access Credentials &amp; Tokens</h2>
+              <p className="text-[13px] text-[#666C78] font-normal mt-0.5">
                 Cryptographic credentials for users, backend microservices, and WhatsApp integrations
               </p>
             </div>
-            <span className="text-xs tabular-nums font-semibold text-slate-500">
+            <span className="text-[12px] tabular-nums font-semibold text-[#666C78]">
               Workspace: {currentOrg.slug}
             </span>
           </div>
@@ -721,39 +719,39 @@ export default function TeamAndCredentialsPage() {
               return (
                 <div
                   key={cred.id}
-                  className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4 hover:border-slate-300 transition-colors"
+                  className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-5 space-y-4"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center space-x-3">
                       <div
                         className={cn(
-                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-semibold text-xs shadow-2xs",
+                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] font-semibold text-xs shadow-2xs",
                           cred.role === "admin" || cred.role === "owner"
-                            ? "bg-blue-600 text-white"
+                            ? "bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30"
                             : cred.role === "senior_manager"
-                            ? "bg-purple-600 text-white"
-                            : "bg-emerald-600 text-white"
+                            ? "bg-[#F3E8FF] text-[#5E35B1] border border-[#E9D5FF]"
+                            : "bg-[#E4F7EF] text-[#0A7A53] border border-[#BDECD7]"
                         )}
                       >
                         <KeyRound className="h-5 w-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-sm text-slate-950">{cred.name}</h3>
+                          <h3 className="font-semibold text-[15px] text-[#12141A]">{cred.name}</h3>
                           <span
                             className={cn(
-                              "text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border",
+                              "text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full border",
                               cred.role === "admin" || cred.role === "owner"
-                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                ? "bg-[#FFF0EB] text-[#FF5A1F] border-[#FF5A1F]/30"
                                 : cred.role === "senior_manager"
-                                ? "bg-purple-50 text-purple-700 border-purple-200"
-                                : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                ? "bg-[#F3E8FF] text-[#5E35B1] border-[#E9D5FF]"
+                                : "bg-[#E4F7EF] text-[#0A7A53] border-[#BDECD7]"
                             )}
                           >
                             {roleMeta.title}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 font-medium">{cred.email}</p>
+                        <p className="text-[12px] text-[#666C78] font-normal">{cred.email}</p>
                       </div>
                     </div>
 
@@ -762,11 +760,11 @@ export default function TeamAndCredentialsPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleCopy(cred.apiKeyId)}
-                        className="rounded-xl border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 h-8 px-2.5 cursor-pointer"
+                        className="rounded-[10px] border-[#EDE8E0] text-[13px] font-medium text-[#12141A] hover:bg-[#F7F5F0] h-8.5 px-3 cursor-pointer"
                       >
                         {isCopied ? (
                           <>
-                            <Check className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                            <Check className="h-3.5 w-3.5 mr-1 text-[#0A7A53]" />
                             Copied!
                           </>
                         ) : (
@@ -779,45 +777,45 @@ export default function TeamAndCredentialsPage() {
                       <Button
                         size="sm"
                         onClick={() => setUserRole(cred.role)}
-                        className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold h-8 px-3 cursor-pointer"
+                        className="rounded-[10px] bg-[#0B0D12] hover:bg-[#1B1F29] text-white text-[13px] font-semibold h-8.5 px-3.5 cursor-pointer"
                       >
                         Activate Role
                       </Button>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                  <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
                     {cred.description}
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 tabular-nums text-xs flex items-center justify-between">
+                    <div className="bg-[#F7F5F0] rounded-[12px] p-2.5 border border-[#EDE8E0] tabular-nums text-xs flex items-center justify-between">
                       <div className="truncate pr-2">
-                        <span className="text-[10px] uppercase font-medium text-slate-400 block font-sans">
+                        <span className="text-[10px] uppercase font-semibold text-[#666C78] block">
                           Access Key ID
                         </span>
-                        <span className="text-slate-800 font-semibold truncate block">
+                        <span className="text-[#12141A] font-semibold truncate block text-[13px]">
                           {cred.apiKeyId}
                         </span>
                       </div>
                       <button
                         onClick={() => handleCopy(cred.apiKeyId)}
-                        className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                        className="text-[#666C78] hover:text-[#12141A] cursor-pointer"
                       >
                         <Copy className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
-                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 tabular-nums text-xs flex items-center justify-between">
+                    <div className="bg-[#F7F5F0] rounded-[12px] p-2.5 border border-[#EDE8E0] tabular-nums text-xs flex items-center justify-between">
                       <div className="truncate pr-2">
-                        <span className="text-[10px] uppercase font-medium text-slate-400 block font-sans">
+                        <span className="text-[10px] uppercase font-semibold text-[#666C78] block">
                           Secret Token
                         </span>
-                        <span className="text-slate-500 font-semibold tracking-widest truncate block">
+                        <span className="text-[#666C78] font-semibold tracking-widest truncate block text-[13px]">
                           {cred.secretMasked}
                         </span>
                       </div>
-                      <span className="text-[10px] font-sans font-semibold text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-200">
+                      <span className="text-[11px] font-semibold text-[#666C78] bg-white px-2 py-0.5 rounded-full border border-[#EDE8E0]">
                         Encrypted
                       </span>
                     </div>
@@ -832,15 +830,15 @@ export default function TeamAndCredentialsPage() {
       {/* TAB 4: ENTERPRISE BRAND GOVERNANCE RULES */}
       {activeTab === "matrix" && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl border border-[#E5E5E7] p-6 shadow-2xs space-y-4">
+          <div className="bg-white rounded-[16px] border border-[#EDE8E0] card-ref p-6 space-y-4">
             <div>
-              <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-[#FFF4EC] text-[#FF7A1A] border border-[#FF7A1A]/30 tabular-nums">
+              <span className="text-[11px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30 tabular-nums">
                 Brand Product &amp; Institutional Trust Seal
               </span>
-              <h2 className="text-lg font-semibold text-[#0D0D0E] mt-2">
+              <h2 className="text-[18px] font-semibold text-[#12141A] mt-2">
                 Enterprise Multi-Level Access &amp; Liability Rules
               </h2>
-              <p className="text-xs text-[#8E8E93] mt-1 font-medium">
+              <p className="text-[13px] text-[#666C78] mt-1 font-normal">
                 These rules guarantee customer trust, enterprise compliance, and legal protection for every team member.
               </p>
             </div>
@@ -849,18 +847,18 @@ export default function TeamAndCredentialsPage() {
               {ENTERPRISE_GOVERNANCE_RULES.map((rule) => (
                 <div
                   key={rule.code}
-                  className="p-5 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-2 hover:border-[#FF7A1A]/40 transition-colors"
+                  className="p-5 rounded-[14px] bg-[#F7F5F0] border border-[#EDE8E0] space-y-2 hover:border-[#FF5A1F]/40 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-[#0D0D0E] flex items-center gap-1.5">
-                      <ShieldCheck className="h-4 w-4 text-[#FF7A1A]" />
+                    <span className="font-semibold text-[14px] text-[#12141A] flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-[#FF5A1F]" />
                       {rule.title}
                     </span>
-                    <span className="text-[10px] tabular-nums font-semibold text-[#FF7A1A] bg-[#FFF4EC] px-2 py-0.5 rounded-full border border-[#FF7A1A]/30">
+                    <span className="text-[11px] tabular-nums font-semibold text-[#FF5A1F] bg-white px-2 py-0.5 rounded-full border border-[#EDE8E0]">
                       {rule.code}
                     </span>
                   </div>
-                  <p className="text-xs text-[#8E8E93] leading-relaxed font-medium">
+                  <p className="text-[13px] text-[#666C78] leading-relaxed font-normal">
                     {rule.description}
                   </p>
                 </div>
@@ -872,32 +870,32 @@ export default function TeamAndCredentialsPage() {
 
       {/* MODAL 1: DISPATCH MULTI-LEVEL INVITATION (ADMIN ONLY) */}
       <Dialog open={inviteModalOpen} onOpenChange={setInviteModalOpen}>
-        <form onSubmit={handleDispatchInvitation} className="max-w-md bg-white rounded-2xl p-2">
+        <form onSubmit={handleDispatchInvitation} className="max-w-md bg-white rounded-[16px] border border-[#EDE8E0] p-4 shadow-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-[#0D0D0E] flex items-center gap-2">
-              <Send className="h-5 w-5 text-[#FF7A1A]" />
+            <DialogTitle className="text-[18px] font-semibold text-[#12141A] flex items-center gap-2">
+              <Send className="h-5 w-5 text-[#FF5A1F]" />
               <span>Dispatch Account Invitation</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
+            <DialogDescription className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Only Level 1 Administrators can dispatch formal multi-level appointments to respondent emails.
             </DialogDescription>
           </DialogHeader>
 
           {inviteError && (
-            <div className="my-3 rounded-xl bg-rose-50 p-3.5 border border-rose-200 text-xs text-rose-800 font-semibold flex items-center space-x-2">
-              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+            <div className="my-3 rounded-[12px] bg-[#FFE9EA] p-3.5 border border-[#FFCCD0] text-[13px] text-[#B42336] font-semibold flex items-center space-x-2">
+              <AlertCircle className="h-4 w-4 text-[#E5484D] shrink-0" />
               <span>{inviteError}</span>
             </div>
           )}
 
-          <div className="space-y-4 my-4 text-xs">
+          <div className="space-y-4 my-4 text-[13px]">
             <Input
               label="Recipient Full Name *"
               placeholder="e.g. Ramesh Iyer"
               value={inviteName}
               onChange={(e) => setInviteName(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
+              className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] rounded-[12px] text-[13.5px] text-[#12141A]"
             />
 
             <Input
@@ -907,17 +905,17 @@ export default function TeamAndCredentialsPage() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
+              className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] rounded-[12px] text-[13.5px] text-[#12141A]"
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#0D0D0E]">
+              <label className="block text-[13px] font-medium text-[#12141A]">
                 Designated Clearance Level
               </label>
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value as OrganizationRole)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none"
+                className="w-full rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] px-3.5 py-2 text-[13px] font-semibold text-[#12141A] focus:border-[#FF5A1F] focus:bg-white focus:outline-none cursor-pointer"
               >
                 <option value="admin">Level 1: Admin (Full Access + Overall Fund Transfers)</option>
                 <option value="senior_manager">Level 2: Senior Manager (Operational - Zero Fund Liability)</option>
@@ -925,38 +923,39 @@ export default function TeamAndCredentialsPage() {
               </select>
             </div>
 
-            <div className="rounded-xl bg-[#F7F7F8] p-3 border border-[#E5E5E7] text-[11px] text-[#8E8E93] space-y-1">
-              <span className="font-semibold text-[#0D0D0E] block">Brand Trust Guarantee:</span>
+            <div className="rounded-[12px] bg-[#F7F5F0] p-3.5 border border-[#EDE8E0] text-[12px] text-[#666C78] space-y-1">
+              <span className="font-semibold text-[#12141A] block">Brand Trust Guarantee:</span>
               {inviteRole === "admin" && (
-                <span className="text-[#FF7A1A] font-semibold block">
+                <span className="text-[#FF5A1F] font-semibold block">
                   ✓ Full governance clearance. Recipient is granted overall fund transfer &amp; settlement oversight.
                 </span>
               )}
               {inviteRole === "senior_manager" && (
-                <span className="text-purple-700 font-semibold block">
-                  ✓ Full operational control. <strong>Decoupled liability:</strong> Recipient is cryptographically blocked from capital &amp; fund transfers.
+                <span className="text-[#5E35B1] font-semibold block">
+                  ✓ Full operational control. <strong className="text-[#12141A]">Decoupled liability:</strong> Recipient is cryptographically blocked from capital &amp; fund transfers.
                 </span>
               )}
               {inviteRole === "junior_manager" && (
-                <span className="text-emerald-700 font-semibold block">
+                <span className="text-[#0A7A53] font-semibold block">
                   ✓ Protected task workspace. Recipient focuses on customer response SLAs and performance KPIs.
                 </span>
               )}
             </div>
           </div>
 
-          <DialogFooter className="border-t border-[#E5E5E7] pt-3">
+          <DialogFooter className="border-t border-[#EDE8E0] pt-3 flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="ghost"
               onClick={() => setInviteModalOpen(false)}
-              className="text-[#8E8E93] hover:text-[#0D0D0E] rounded-xl text-xs font-semibold"
+              className="text-[#666C78] hover:text-[#12141A] rounded-[10px] text-[13px] font-medium"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
+              variant="primary"
+              className="rounded-[10px] text-[13px] font-semibold shadow-xs cursor-pointer px-4"
             >
               Dispatch Email Invitation
             </Button>
@@ -966,68 +965,68 @@ export default function TeamAndCredentialsPage() {
 
       {/* MODAL 2: BRANDED DISPATCHED EMAIL PREVIEW */}
       <Dialog open={emailPreviewModalOpen} onOpenChange={setEmailPreviewModalOpen}>
-        <div className="max-w-lg bg-white rounded-2xl p-2">
+        <div className="max-w-lg bg-white rounded-[16px] border border-[#EDE8E0] p-4 shadow-xl">
           <DialogHeader>
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-base font-semibold text-[#0D0D0E] flex items-center gap-2">
-                <Mail className="h-4 w-4 text-[#FF7A1A]" />
+              <DialogTitle className="text-[17px] font-semibold text-[#12141A] flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[#FF5A1F]" />
                 <span>Dispatched Official Invitation Email</span>
               </DialogTitle>
-              <Badge variant="success" className="text-[10px] uppercase font-medium">
+              <Badge variant="success" className="text-[11px] uppercase font-semibold">
                 Email Delivered
               </Badge>
             </div>
-            <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
+            <DialogDescription className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Live preview of the official institutional appointment email sent to {previewInvite?.recipient_email}
             </DialogDescription>
           </DialogHeader>
 
           {previewInvite && (
-            <div className="my-4 border border-[#E5E5E7] rounded-2xl overflow-hidden shadow-2xs bg-[#F7F7F8]">
+            <div className="my-4 border border-[#EDE8E0] rounded-[14px] overflow-hidden shadow-2xs bg-[#F7F5F0]">
               {/* Email Envelope Bar */}
-              <div className="bg-[#E5E5E7]/50 p-3 border-b border-[#E5E5E7] text-[11px] space-y-1 tabular-nums text-[#0D0D0E]">
+              <div className="bg-[#EDE8E0]/40 p-3 border-b border-[#EDE8E0] text-[12px] space-y-1 tabular-nums text-[#12141A]">
                 <div>
-                  <span className="text-[#8E8E93] font-semibold">From:</span> ROOS STUDIOX Growth OS &lt;auth@roosstudiox.com&gt;
+                  <span className="text-[#666C78] font-semibold">From:</span> ROOS STUDIOX Growth OS &lt;auth@roosstudiox.com&gt;
                 </div>
                 <div>
-                  <span className="text-[#8E8E93] font-semibold">To:</span> {previewInvite.recipient_name} &lt;{previewInvite.recipient_email}&gt;
+                  <span className="text-[#666C78] font-semibold">To:</span> {previewInvite.recipient_name} &lt;{previewInvite.recipient_email}&gt;
                 </div>
                 <div>
-                  <span className="text-[#8E8E93] font-semibold">Subject:</span> [Action Required] Formal appointment as {ROLE_DEFINITIONS[previewInvite.role].title} for {previewInvite.organization_name}
+                  <span className="text-[#666C78] font-semibold">Subject:</span> [Action Required] Formal appointment as {ROLE_DEFINITIONS[previewInvite.role].title} for {previewInvite.organization_name}
                 </div>
               </div>
 
               {/* Email Body Preview */}
-              <div className="p-6 bg-white space-y-4 text-xs">
+              <div className="p-6 bg-white space-y-4 text-[13px]">
                 {/* Brand Logo Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E7]">
-                  <div className="flex items-center gap-2 font-semibold text-sm text-[#0D0D0E]">
-                    <div className="h-7 w-7 rounded-lg bg-[#FF7A1A] text-white font-semibold flex items-center justify-center text-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EDE8E0]">
+                  <div className="flex items-center gap-2 font-semibold text-[14px] text-[#12141A]">
+                    <div className="h-7 w-7 rounded-[8px] bg-gradient-to-b from-[#FF7A3D] to-[#FF5A1F] text-white font-semibold flex items-center justify-center text-xs">
                       RX
                     </div>
                     <span>ROOS STUDIOX</span>
                   </div>
-                  <span className="text-[10px] text-[#8E8E93] tabular-nums">SOC-2 VERIFIED</span>
+                  <span className="text-[11px] text-[#666C78] tabular-nums font-semibold">SOC-2 VERIFIED</span>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-semibold text-[#0D0D0E]">
+                  <p className="font-semibold text-[#12141A]">
                     Dear {previewInvite.recipient_name},
                   </p>
-                  <p className="text-[#8E8E93] leading-relaxed font-medium">
-                    You have been formally designated as <strong className="text-[#0D0D0E]">{ROLE_DEFINITIONS[previewInvite.role].title}</strong> for <strong className="text-[#0D0D0E]">{previewInvite.organization_name}</strong> by Workspace Administrator {previewInvite.inviter_name}.
+                  <p className="text-[#666C78] leading-relaxed font-normal">
+                    You have been formally designated as <strong className="text-[#12141A] font-semibold">{ROLE_DEFINITIONS[previewInvite.role].title}</strong> for <strong className="text-[#12141A] font-semibold">{previewInvite.organization_name}</strong> by Workspace Administrator {previewInvite.inviter_name}.
                   </p>
                 </div>
 
                 {/* Scope Box */}
-                <div className="p-3.5 rounded-xl bg-[#F7F7F8] border border-[#E5E5E7] space-y-1.5">
-                  <span className="text-[10px] font-semibold uppercase text-[#8E8E93] tracking-wider block">
+                <div className="p-3.5 rounded-[12px] bg-[#F7F5F0] border border-[#EDE8E0] space-y-1.5">
+                  <span className="text-[11px] font-semibold uppercase text-[#666C78] tracking-wider block">
                     Assigned Clearance Scope
                   </span>
-                  <p className="text-[#0D0D0E] text-xs font-semibold">
+                  <p className="text-[#12141A] text-[13px] font-semibold">
                     {ROLE_DEFINITIONS[previewInvite.role].summary}
                   </p>
-                  <p className="text-[11px] text-[#8E8E93] font-medium">
+                  <p className="text-[12px] text-[#666C78] font-normal">
                     {previewInvite.role === "admin"
                       ? "✓ Authorized for overall fund transfers, bank payouts & master governance."
                       : "✓ Decoupled Liability: Protected from overall fund transfers & corporate treasury liabilities."}
@@ -1039,12 +1038,12 @@ export default function TeamAndCredentialsPage() {
                   <Link
                     href={`/invite/${previewInvite.token}`}
                     target="_blank"
-                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold text-xs shadow-xs transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-[12px] bg-gradient-to-b from-[#FF7A3D] to-[#FF5A1F] hover:opacity-95 text-white font-semibold text-[13px] shadow-xs transition-opacity"
                   >
                     <span>Accept Appointment &amp; Activate Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <span className="text-[10px] text-[#8E8E93] mt-2 block tabular-nums">
+                  <span className="text-[11px] text-[#666C78] mt-2 block tabular-nums">
                     Token Expiration: 7 Days (168 Hours) SLA Guarantee
                   </span>
                 </div>
@@ -1052,22 +1051,22 @@ export default function TeamAndCredentialsPage() {
             </div>
           )}
 
-          <DialogFooter className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-[#E5E5E7] pt-3">
+          <DialogFooter className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-[#EDE8E0] pt-3">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => previewInvite && handleCopyLink(previewInvite.token)}
-              className="text-xs h-9 rounded-xl border-[#E5E5E7] font-semibold text-[#0D0D0E] hover:bg-[#F7F7F8] w-full sm:w-auto"
+              className="text-[13px] h-9 rounded-[10px] border-[#EDE8E0] font-medium text-[#12141A] hover:bg-[#F7F5F0] w-full sm:w-auto"
             >
               {copiedInviteLink ? (
                 <>
-                  <Check className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                  <Check className="h-3.5 w-3.5 mr-1 text-[#0A7A53]" />
                   Link Copied!
                 </>
               ) : (
                 <>
-                  <Copy className="h-3.5 w-3.5 mr-1 text-[#8E8E93]" />
+                  <Copy className="h-3.5 w-3.5 mr-1 text-[#666C78]" />
                   Copy Invitation Link
                 </>
               )}
@@ -1075,7 +1074,7 @@ export default function TeamAndCredentialsPage() {
             <Button
               type="button"
               onClick={() => setEmailPreviewModalOpen(false)}
-              className="bg-[#0D0D0E] hover:bg-[#1C1C1F] text-white font-semibold text-xs h-9 rounded-xl w-full sm:w-auto"
+              className="bg-[#0B0D12] hover:bg-[#1B1F29] text-white font-semibold text-[13px] h-9 rounded-[10px] w-full sm:w-auto"
             >
               Done
             </Button>
@@ -1085,24 +1084,24 @@ export default function TeamAndCredentialsPage() {
 
       {/* MODAL 3: API TOKEN GENERATOR */}
       <Dialog open={newCredModalOpen} onOpenChange={setNewCredModalOpen}>
-        <form onSubmit={handleCreateCredential} className="max-w-md bg-white rounded-2xl p-2">
+        <form onSubmit={handleCreateCredential} className="max-w-md bg-white rounded-[16px] border border-[#EDE8E0] p-4 shadow-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-[#0D0D0E]">
+            <DialogTitle className="text-[18px] font-semibold text-[#12141A]">
               Generate API Access Token
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#8E8E93] font-medium mt-0.5">
+            <DialogDescription className="text-[13px] text-[#666C78] font-normal mt-0.5">
               Generate programmatic microservice credentials scoped to one of the 3 clearance levels.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 my-4 text-xs">
+          <div className="space-y-4 my-4 text-[13px]">
             <Input
               label="Token Description *"
               placeholder="e.g. ERP Integration Service"
               value={credName}
               onChange={(e) => setCredName(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
+              className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] rounded-[12px] text-[13.5px] text-[#12141A]"
             />
 
             <Input
@@ -1112,17 +1111,17 @@ export default function TeamAndCredentialsPage() {
               value={credEmail}
               onChange={(e) => setCredEmail(e.target.value)}
               required
-              className="bg-[#F7F7F8] border-[#E5E5E7] focus:bg-white focus:border-[#FF7A1A] rounded-xl text-xs"
+              className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] rounded-[12px] text-[13.5px] text-[#12141A]"
             />
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#0D0D0E]">
+              <label className="block text-[13px] font-medium text-[#12141A]">
                 Clearance Tier
               </label>
               <select
                 value={credRole}
                 onChange={(e) => setCredRole(e.target.value as OrganizationRole)}
-                className="w-full rounded-xl border border-[#E5E5E7] bg-[#F7F7F8] px-3.5 py-2 text-xs font-semibold text-[#0D0D0E] focus:border-[#FF7A1A] focus:bg-white focus:outline-none"
+                className="w-full rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] px-3.5 py-2 text-[13px] font-semibold text-[#12141A] focus:border-[#FF5A1F] focus:bg-white focus:outline-none cursor-pointer"
               >
                 <option value="admin">Level 1: Admin (Full Access + Fund Transfers)</option>
                 <option value="senior_manager">Level 2: Senior Manager (Operational)</option>
@@ -1131,18 +1130,19 @@ export default function TeamAndCredentialsPage() {
             </div>
           </div>
 
-          <DialogFooter className="border-t border-[#E5E5E7] pt-3">
+          <DialogFooter className="border-t border-[#EDE8E0] pt-3 flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="ghost"
               onClick={() => setNewCredModalOpen(false)}
-              className="text-[#8E8E93] hover:text-[#0D0D0E] rounded-xl text-xs font-semibold"
+              className="text-[#666C78] hover:text-[#12141A] rounded-[10px] text-[13px] font-medium"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#FF7A1A] hover:bg-[#FF8833] text-white font-semibold rounded-xl text-xs shadow-2xs cursor-pointer"
+              variant="primary"
+              className="rounded-[10px] text-[13px] font-semibold shadow-xs cursor-pointer px-4"
             >
               Generate Token
             </Button>

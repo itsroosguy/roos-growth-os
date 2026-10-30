@@ -148,12 +148,12 @@ export default function TasksPage() {
               }
             }}
             className={cn(
-              "flex h-5 w-5 items-center justify-center rounded-[6px] border transition-colors shrink-0",
+              "flex h-5 w-5 items-center justify-center rounded-[6px] border transition-transform active:scale-95 shrink-0 cursor-pointer",
               isCompleted
                 ? "bg-[#12B886] border-[#12B886] text-white"
                 : isOverdue
                 ? "border-[#E5484D] hover:bg-[#FFE9EA] text-transparent hover:text-[#B42336]"
-                : "border-[#D2CEC2] hover:border-[#F5A524] bg-white text-transparent hover:text-[#8F5300]"
+                : "border-[#EDE8E0] hover:border-[#FF5A1F] bg-white text-transparent hover:text-[#FF5A1F]"
             )}
             title={isCompleted ? "Restore task" : "Mark complete"}
           >
@@ -163,14 +163,14 @@ export default function TasksPage() {
           <div className="min-w-0">
             <span
               className={cn(
-                "text-[15px] font-medium text-[#12141A] truncate block group-hover:underline",
+                "text-[14.5px] font-semibold text-[#12141A] truncate block group-hover:text-[#FF5A1F] transition-colors",
                 isCompleted && "line-through text-[#666C78]"
               )}
             >
               {task.title}
             </span>
             {task.contact_name && (
-              <span className="text-[13px] text-[#666C78] truncate block mt-0.5">
+              <span className="text-[12.5px] text-[#666C78] truncate block mt-0.5">
                 Client: {task.contact_name}
               </span>
             )}
@@ -193,8 +193,8 @@ export default function TasksPage() {
 
           <span
             className={cn(
-              "text-[13px] font-variant-numeric tabular-nums",
-              isOverdue ? "text-[#B42336] font-medium" : "text-[#666C78]"
+              "text-[13px] tabular-nums",
+              isOverdue ? "text-[#B42336] font-semibold" : "text-[#666C78]"
             )}
           >
             {formatDate(task.due_date)}
@@ -205,14 +205,14 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="space-y-6 animate-page-enter">
+    <div className="space-y-6 animate-page-enter pb-12">
       {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E6E2D8] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 pb-5 border-b border-[#EDE8E0] sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="type-display text-[#12141A]">
+          <h1 className="text-[30px] font-semibold text-[#12141A] tracking-[-0.02em] leading-tight">
             Tasks &amp; SLAs
           </h1>
-          <p className="mt-1 type-body text-[#454B57]">
+          <p className="mt-1 text-[14px] text-[#666C78] font-normal">
             {overdueTasks.length + todayTasks.length + upcomingTasks.length} pending SLAs •{" "}
             {overdueTasks.length === 0
               ? "Zero overdue"
@@ -228,13 +228,14 @@ export default function TasksPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks..."
-              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[13px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#F5A524] focus:outline-none shadow-xs"
+              className="h-10 w-full rounded-[12px] border border-[#EDE8E0] bg-white pl-9 pr-3 text-[13.5px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 
           <Button
             onClick={() => setCreateModalOpen(true)}
-            className="btn-primary flex items-center gap-2 text-[14px]"
+            variant="primary"
+            className="flex items-center gap-2 text-[13.5px] h-10 px-4 rounded-[12px] font-semibold cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>Add task</span>
@@ -246,38 +247,38 @@ export default function TasksPage() {
       <div className="space-y-6">
         {/* OVERDUE GROUP */}
         {overdueTasks.length > 0 && (
-          <div className="rounded-[20px] border border-[#FFCCD0] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] overflow-hidden">
+          <div className="rounded-[16px] border border-[#FFCCD0] bg-white card-ref p-0 overflow-hidden shadow-xs">
             <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#FFCCD0] bg-[#FFE9EA]">
               <div className="flex items-center gap-2.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#E5484D]" />
-                <h2 className="text-[15px] font-medium text-[#B42336]">
+                <h2 className="text-[15px] font-semibold text-[#B42336]">
                   Overdue SLAs ({overdueTasks.length})
                 </h2>
               </div>
-              <span className="text-[13px] text-[#B42336]">
+              <span className="text-[12.5px] text-[#B42336] font-medium">
                 Requires immediate resolution
               </span>
             </div>
-            <div className="divide-y divide-[#E6E2D8]">
+            <div className="divide-y divide-[#EDE8E0]">
               {overdueTasks.map((t) => renderTaskRow(t, true))}
             </div>
           </div>
         )}
 
         {/* TODAY GROUP */}
-        <div className="rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#E6E2D8] bg-white">
+        <div className="rounded-[16px] border border-[#EDE8E0] bg-white card-ref p-0 overflow-hidden shadow-xs">
+          <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#EDE8E0] bg-[#F7F5F0]">
             <div className="flex items-center gap-2.5">
               <span className="h-2.5 w-2.5 rounded-full bg-[#F5A524]" />
-              <h2 className="text-[15px] font-medium text-[#12141A]">
+              <h2 className="text-[15px] font-semibold text-[#12141A]">
                 Due Today ({todayTasks.length})
               </h2>
             </div>
-            <span className="text-[13px] text-[#666C78]">
+            <span className="text-[12.5px] text-[#666C78]">
               Scheduled follow-up actions
             </span>
           </div>
-          <div className="divide-y divide-[#E6E2D8]">
+          <div className="divide-y divide-[#EDE8E0]">
             {todayTasks.map((t) => renderTaskRow(t))}
             {todayTasks.length === 0 && (
               <div className="p-8 text-center text-[13px] text-[#666C78]">
@@ -288,19 +289,19 @@ export default function TasksPage() {
         </div>
 
         {/* UPCOMING GROUP */}
-        <div className="rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#E6E2D8] bg-white">
+        <div className="rounded-[16px] border border-[#EDE8E0] bg-white card-ref p-0 overflow-hidden shadow-xs">
+          <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#EDE8E0] bg-[#F7F5F0]">
             <div className="flex items-center gap-2.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#3B4258]" />
-              <h2 className="text-[15px] font-medium text-[#12141A]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#666C78]" />
+              <h2 className="text-[15px] font-semibold text-[#12141A]">
                 Upcoming ({upcomingTasks.length})
               </h2>
             </div>
-            <span className="text-[13px] text-[#666C78]">
+            <span className="text-[12.5px] text-[#666C78]">
               Future customer SLAs
             </span>
           </div>
-          <div className="divide-y divide-[#E6E2D8]">
+          <div className="divide-y divide-[#EDE8E0]">
             {upcomingTasks.map((t) => renderTaskRow(t))}
             {upcomingTasks.length === 0 && (
               <div className="p-8 text-center text-[13px] text-[#666C78]">
@@ -312,11 +313,11 @@ export default function TasksPage() {
 
         {/* COMPLETED FEED */}
         {completedTasks.length > 0 && (
-          <div className="rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,0.04)] overflow-hidden">
-            <div className="px-6 py-3.5 border-b border-[#E6E2D8] bg-[#EFEDE7] text-[13px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
+          <div className="rounded-[16px] border border-[#EDE8E0] bg-white card-ref p-0 overflow-hidden shadow-xs">
+            <div className="px-6 py-3.5 border-b border-[#EDE8E0] bg-[#F7F5F0] text-[12px] font-semibold text-[#666C78] uppercase tracking-wider">
               Completed Tasks ({completedTasks.length})
             </div>
-            <div className="divide-y divide-[#E6E2D8]">
+            <div className="divide-y divide-[#EDE8E0]">
               {completedTasks.slice(0, 5).map((t) => renderTaskRow(t))}
             </div>
           </div>
@@ -330,9 +331,9 @@ export default function TasksPage() {
         title={selectedTask?.title || "Task Details"}
         description={`Due: ${selectedTask?.due_date}`}
       >
-        <div className="space-y-6 text-[14px]">
-          <div className="p-4 rounded-[16px] bg-[#F7F5F0] border border-[#E6E2D8] space-y-3">
-            <div className="flex items-center justify-between text-[#454B57]">
+        <div className="space-y-6 text-[13.5px]">
+          <div className="p-4 rounded-[14px] bg-[#F7F5F0] border border-[#EDE8E0] space-y-3">
+            <div className="flex items-center justify-between text-[#666C78]">
               <span>Priority</span>
               <StatusPill
                 variant={selectedTask?.priority === "high" ? "rose" : "amber"}
@@ -341,7 +342,7 @@ export default function TasksPage() {
                 {selectedTask?.priority}
               </StatusPill>
             </div>
-            <div className="flex items-center justify-between text-[#454B57]">
+            <div className="flex items-center justify-between text-[#666C78]">
               <span>Status</span>
               <StatusPill
                 variant={selectedTask?.status === "completed" ? "emerald" : "neutral"}
@@ -351,23 +352,24 @@ export default function TasksPage() {
               </StatusPill>
             </div>
             {selectedTask?.contact_name && (
-              <div className="flex items-center justify-between text-[#454B57]">
+              <div className="flex items-center justify-between text-[#666C78]">
                 <span>Associated Client</span>
-                <span className="font-medium text-[#12141A]">
+                <span className="font-semibold text-[#12141A]">
                   {selectedTask.contact_name}
                 </span>
               </div>
             )}
           </div>
 
-          <div className="pt-4 border-t border-[#E6E2D8] flex items-center justify-between">
+          <div className="pt-4 border-t border-[#EDE8E0] flex items-center justify-between">
             {selectedTask?.status !== "completed" ? (
               <Button
+                variant="primary"
                 onClick={() => {
                   if (selectedTask) handleCompleteTask(selectedTask);
                   setSelectedTask(null);
                 }}
-                className="btn-primary text-[14px]"
+                className="text-[13.5px] rounded-[10px] h-9 px-4 font-semibold"
               >
                 Mark as Completed
               </Button>
@@ -378,7 +380,7 @@ export default function TasksPage() {
                   if (selectedTask) handleUndoTask(selectedTask.id);
                   setSelectedTask(null);
                 }}
-                className="text-[14px]"
+                className="text-[13.5px] rounded-[10px] h-9 px-4 border-[#EDE8E0]"
               >
                 Mark as Incomplete
               </Button>
@@ -387,7 +389,7 @@ export default function TasksPage() {
             <Button
               variant="ghost"
               onClick={() => setSelectedTask(null)}
-              className="text-[14px]"
+              className="text-[13.5px] rounded-[10px] h-9 px-3.5"
             >
               Close
             </Button>
@@ -397,84 +399,86 @@ export default function TasksPage() {
 
       {/* 4. CREATE TASK MODAL */}
       <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
-        <DialogHeader>
-          <DialogTitle>Add Follow-up Task</DialogTitle>
-          <DialogDescription>
-            Schedule a customer SLA or team action item.
-          </DialogDescription>
-        </DialogHeader>
+        <div className="bg-white rounded-[16px] p-2">
+          <DialogHeader>
+            <DialogTitle className="text-[18px] font-semibold text-[#12141A]">Add Follow-up Task</DialogTitle>
+            <DialogDescription className="text-[13px] text-[#666C78]">
+              Schedule a customer SLA or team action item.
+            </DialogDescription>
+          </DialogHeader>
 
-        <form onSubmit={handleCreateTask} className="space-y-4 py-2">
-          <div>
-            <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-              Task Title
-            </label>
-            <Input
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-              placeholder="e.g. Call client to confirm terms"
-              required
-              className="h-10 text-[14px] rounded-[12px]"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleCreateTask} className="space-y-4 py-2">
             <div>
-              <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-                Due Date
+              <label className="text-[13px] text-[#12141A] block mb-1.5 font-medium">
+                Task Title
               </label>
               <Input
-                type="date"
-                value={taskDueDate}
-                onChange={(e) => setTaskDueDate(e.target.value)}
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+                placeholder="e.g. Call client to confirm terms"
                 required
-                className="h-10 text-[14px] rounded-[12px]"
+                className="h-10 text-[13.5px] rounded-[12px] bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F]"
               />
             </div>
 
-            <div>
-              <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-                Priority
-              </label>
-              <select
-                value={taskPriority}
-                onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
-                className="w-full h-10 px-3 rounded-[12px] bg-white border border-[#E6E2D8] text-[14px] text-[#12141A] focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent SLA</option>
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-[13px] text-[#12141A] block mb-1.5 font-medium">
+                  Due Date
+                </label>
+                <Input
+                  type="date"
+                  value={taskDueDate}
+                  onChange={(e) => setTaskDueDate(e.target.value)}
+                  required
+                  className="h-10 text-[13.5px] rounded-[12px] bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F]"
+                />
+              </div>
+
+              <div>
+                <label className="text-[13px] text-[#12141A] block mb-1.5 font-medium">
+                  Priority
+                </label>
+                <select
+                  value={taskPriority}
+                  onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
+                  className="w-full h-10 px-3 rounded-[12px] bg-[#F7F5F0] border border-[#EDE8E0] text-[13.5px] text-[#12141A] focus:outline-none focus:border-[#FF5A1F] focus:bg-white cursor-pointer"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="urgent">Urgent SLA</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="type-small text-[#12141A] block mb-1.5 font-medium">
-              Associated Client Name (Optional)
-            </label>
-            <Input
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              placeholder="e.g. Vikram Malhotra"
-              className="h-10 text-[14px] rounded-[12px]"
-            />
-          </div>
+            <div>
+              <label className="text-[13px] text-[#12141A] block mb-1.5 font-medium">
+                Associated Client Name (Optional)
+              </label>
+              <Input
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                placeholder="e.g. Vikram Malhotra"
+                className="h-10 text-[13.5px] rounded-[12px] bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F]"
+              />
+            </div>
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setCreateModalOpen(false)}
-              className="text-[14px]"
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="btn-primary text-[14px]">
-              Create Task
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter className="pt-3 border-t border-[#EDE8E0]">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setCreateModalOpen(false)}
+                className="text-[13px] rounded-[10px]"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" className="text-[13px] font-semibold rounded-[10px] px-4 cursor-pointer">
+                Create Task
+              </Button>
+            </DialogFooter>
+          </form>
+        </div>
       </Dialog>
     </div>
   );

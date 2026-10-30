@@ -335,9 +335,9 @@ function InboxContent() {
       {/* ========================================================================= */}
       {/* 1. LEFT PANE: CONVERSATION LIST (ON CANVAS, NO WHITE CONTAINER)            */}
       {/* ========================================================================= */}
-      <div className="w-[340px] shrink-0 border-r border-[#E6E2D8] flex flex-col bg-transparent">
+      <div className="w-[340px] shrink-0 border-r border-[#EDE8E0] flex flex-col bg-transparent">
         {/* Search Header */}
-        <div className="p-3.5 border-b border-[#E6E2D8]">
+        <div className="p-3.5 border-b border-[#EDE8E0]">
           <div className="relative flex items-center">
             <Search className="absolute left-3 h-4 w-4 text-[#666C78]" />
             <input
@@ -345,7 +345,7 @@ function InboxContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search conversations..."
-              className="h-9 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[13px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#3D5AFE] focus:outline-none shadow-[0_1px_2px_rgba(11,13,18,0.03)]"
+              className="h-9 w-full rounded-[12px] border border-[#EDE8E0] bg-white pl-9 pr-3 text-[13px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#3D5AFE] focus:outline-none shadow-[0_1px_2px_rgba(11,13,18,0.03)]"
             />
           </div>
 
@@ -359,7 +359,7 @@ function InboxContent() {
                 className={cn(
                   "px-2 py-1 rounded-[8px] capitalize transition-colors",
                   filterTab === tab
-                    ? "bg-white text-[#12141A] font-medium shadow-[0_1px_2px_rgba(11,13,18,0.04)] border border-[#E6E2D8]"
+                    ? "bg-white text-[#12141A] font-medium shadow-[0_1px_2px_rgba(11,13,18,0.04)] border border-[#EDE8E0]"
                     : "hover:text-[#12141A]"
                 )}
               >
@@ -385,7 +385,7 @@ function InboxContent() {
                 className={cn(
                   "p-3 rounded-[16px] transition-all duration-140 cursor-pointer text-left relative",
                   isSelected
-                    ? "bg-white text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_20px_-10px_rgba(11,13,18,0.12)] border border-[#E6E2D8]"
+                    ? "bg-white text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04),0_8px_20px_-10px_rgba(11,13,18,0.12)] border border-[#EDE8E0]"
                     : "hover:bg-white/60 text-[#12141A] border border-transparent"
                 )}
               >
@@ -428,11 +428,11 @@ function InboxContent() {
       {/* ========================================================================= */}
       {/* 2. CENTER PANE: ACTIVE THREAD ON WHITE RAISED PANEL                       */}
       {/* ========================================================================= */}
-      <div className="flex flex-1 flex-col min-w-0 bg-white rounded-[24px] border border-[#E6E2D8] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden m-2.5">
+      <div className="flex flex-1 flex-col min-w-0 bg-white rounded-[24px] border border-[#EDE8E0] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden m-2.5">
         {activeConversation ? (
           <>
             {/* Thread Header */}
-            <div className="flex h-[56px] shrink-0 items-center justify-between px-6 border-b border-[#E6E2D8] bg-white">
+            <div className="flex h-[56px] shrink-0 items-center justify-between px-6 border-b border-[#EDE8E0] bg-white">
               <div className="flex items-center gap-3">
                 {(() => {
                   const avatarColor = getAvatarColor(activeConversation.contact_name || "Contact");
@@ -485,7 +485,7 @@ function InboxContent() {
             </div>
 
             {/* 24-Hour Meta SLA Status Line */}
-            <div className="flex h-8 shrink-0 items-center justify-between px-6 bg-[#F7F5F0] border-b border-[#E6E2D8] text-[13px] text-[#454B57]">
+            <div className="flex h-8 shrink-0 items-center justify-between px-6 bg-[#F7F5F0] border-b border-[#EDE8E0] text-[13px] text-[#454B57]">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-[#12B886]" />
                 <span className="font-medium">Meta Customer Service Window: Active</span>
@@ -499,7 +499,7 @@ function InboxContent() {
                 <div key={group.dateLabel} className="space-y-3">
                   {/* Accurate Date Separator */}
                   <div className="flex items-center justify-center my-3">
-                    <span className="px-3 py-1 rounded-full border border-[#E6E2D8] bg-white text-[13px] text-[#666C78] shadow-xs">
+                    <span className="px-3 py-1 rounded-full border border-[#EDE8E0] bg-white text-[13px] text-[#666C78] shadow-xs">
                       {group.dateLabel}
                     </span>
                   </div>
@@ -538,9 +538,9 @@ function InboxContent() {
                       >
                         <div
                           className={cn(
-                            "max-w-lg rounded-[20px] p-4 text-[15px] leading-relaxed border transition-all",
+                            "max-w-lg rounded-[16px] p-4 text-[15px] leading-relaxed border transition-all",
                             isClient
-                              ? "bg-white text-[#12141A] border-[#E6E2D8] rounded-bl-[4px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+                              ? "bg-white text-[#12141A] border-[#EDE8E0] rounded-bl-[4px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
                               : "bg-[#EAEEFF] text-[#12141A] border-[#D3DCFF] rounded-br-[4px]"
                           )}
                         >
@@ -564,7 +564,7 @@ function InboxContent() {
             </div>
 
             {/* Pinned Composer at Bottom */}
-            <div className="shrink-0 border-t border-[#E6E2D8] bg-white p-4 space-y-3">
+            <div className="shrink-0 border-t border-[#EDE8E0] bg-white p-4 space-y-3">
               {/* Mode Tabs */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 rounded-[10px] bg-[#EFEDE7] p-1 text-[13px] font-medium">
@@ -621,7 +621,7 @@ function InboxContent() {
                     }
                   }}
                   placeholder={`Reply to ${activeConversation.contact_name || activeConversation.contact_phone} (Enter to send, Shift+Enter for new line)...`}
-                  className="w-full resize-none rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] p-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:bg-white focus:border-[#3D5AFE] focus:outline-none transition-colors"
+                  className="w-full resize-none rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] p-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:bg-white focus:border-[#3D5AFE] focus:outline-none transition-colors"
                 />
               ) : (
                 <textarea
@@ -681,13 +681,13 @@ function InboxContent() {
       {/* 3. RIGHT PANE: QUIET CUSTOMER & DEAL CONTEXT (340px Collapsible)           */}
       {/* ========================================================================= */}
       {contextPaneOpen && activeConversation && (
-        <div className="w-[340px] shrink-0 border-l border-[#E6E2D8] bg-[#FAF9F5] flex flex-col overflow-y-auto p-5 space-y-6 custom-light-scroll">
+        <div className="w-[340px] shrink-0 border-l border-[#EDE8E0] bg-[#FAF9F5] flex flex-col overflow-y-auto p-5 space-y-6 custom-light-scroll">
           {/* Contact Details Section */}
           <div className="space-y-3">
             <h4 className="type-eyebrow text-[#666C78]">
               Customer Information
             </h4>
-            <div className="p-4 rounded-[16px] bg-white border border-[#E6E2D8] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+            <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
               <div className="flex items-center justify-between text-[#454B57]">
                 <span>Contact Name</span>
                 <span className="font-medium text-[#12141A]">
@@ -726,7 +726,7 @@ function InboxContent() {
             </div>
 
             {linkedLead ? (
-              <div className="p-4 rounded-[16px] bg-white border border-[#E6E2D8] space-y-2 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+              <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-[#12141A] truncate">
                     {linkedLead.title}
@@ -766,7 +766,7 @@ function InboxContent() {
               {linkedTasks.map((t) => (
                 <div
                   key={t.id}
-                  className="p-3 rounded-[14px] bg-white border border-[#E6E2D8] flex items-center justify-between text-[13px] shadow-xs"
+                  className="p-3 rounded-[14px] bg-white border border-[#EDE8E0] flex items-center justify-between text-[13px] shadow-xs"
                 >
                   <span className="font-medium text-[#12141A] truncate">{t.title}</span>
                   <span className="text-[12px] text-[#8F5300] bg-[#FFF3D6] px-2 py-0.5 rounded-full border border-[#FFE5A3] shrink-0">

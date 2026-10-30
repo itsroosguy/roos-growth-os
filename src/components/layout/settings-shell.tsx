@@ -23,6 +23,7 @@ export interface SettingsShellProps {
   onSave?: () => void;
   onReset?: () => void;
   badge?: React.ReactNode;
+  contentClassName?: string;
 }
 
 export function SettingsShell({
@@ -35,6 +36,7 @@ export function SettingsShell({
   onSave,
   onReset,
   badge,
+  contentClassName,
 }: SettingsShellProps) {
   const pathname = usePathname();
 
@@ -116,8 +118,8 @@ export function SettingsShell({
           })}
         </aside>
 
-        {/* Right Form Column (max-w-[760px]) */}
-        <main className="lg:col-span-9 max-w-[760px] space-y-6">
+        {/* Right Form Column (720px - 880px by default) */}
+        <main className={cn("lg:col-span-9 space-y-6", contentClassName || "max-w-[880px]")}>
           {children}
 
           {/* Sticky Save Bar */}

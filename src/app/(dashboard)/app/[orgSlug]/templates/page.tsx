@@ -78,13 +78,13 @@ export default function TemplatesPage() {
   return (
     <div className="space-y-6 animate-page-enter">
       {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E6E2D8] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 pb-5 border-b border-[#EDE8E0] sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="type-display text-[#12141A]">
+          <h1 className="text-[30px] font-semibold text-[#12141A] tracking-[-0.02em] leading-tight">
             Templates
           </h1>
-          <p className="type-body text-[#454B57] mt-1">
-            {templates.length} pre-approved WhatsApp Cloud API templates for broadcasting and instant agent responses
+          <p className="text-[14px] text-[#666C78] mt-1 font-normal">
+            {templates.length} pre-approved WhatsApp Cloud API templates for broadcasting and instant agent responses.
           </p>
         </div>
 
@@ -96,14 +96,14 @@ export default function TemplatesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search templates..."
-              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-3 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
+              className="h-10 w-full rounded-[12px] border border-[#EDE8E0] bg-white pl-9 pr-3 text-[13.5px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-xs"
             />
           </div>
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="h-10 px-3 rounded-[12px] border border-[#E6E2D8] bg-white text-[14px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+            className="h-10 px-3 rounded-[12px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
           >
             <option value="all">All Categories</option>
             <option value="utility">Utility</option>
@@ -114,7 +114,7 @@ export default function TemplatesPage() {
           <Button
             onClick={() => setCreateOpen(true)}
             variant="primary"
-            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[14px]"
+            className="flex items-center gap-1.5 h-10 px-4 rounded-[12px] text-[13.5px] font-semibold cursor-pointer"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>New template</span>
@@ -128,11 +128,11 @@ export default function TemplatesPage() {
           <div
             key={tpl.id}
             onClick={() => setSelectedTemplate(tpl)}
-            className="group p-5 rounded-[20px] border border-[#E6E2D8] bg-white hover:border-[#D2CEC2] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] transition-all duration-140 cursor-pointer space-y-4 flex flex-col justify-between"
+            className="group p-5 rounded-[16px] border border-[#EDE8E0] bg-white card-ref hover:border-[#FF5A1F]/40 cursor-pointer space-y-4 flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[16px] font-medium text-[#12141A] group-hover:underline">
+                <span className="text-[16px] font-semibold text-[#12141A] group-hover:text-[#FF5A1F] transition-colors">
                   {tpl.name}
                 </span>
                 <StatusPill
@@ -144,20 +144,20 @@ export default function TemplatesPage() {
                 </StatusPill>
               </div>
 
-              <div className="flex items-center gap-2 mt-1.5 text-[13px] text-[#666C78]">
+              <div className="flex items-center gap-2 mt-1.5 text-[12.5px] text-[#666C78]">
                 <span className="capitalize">{tpl.category}</span>
                 <span>•</span>
                 <span>{tpl.language}</span>
               </div>
 
-              <p className="mt-3.5 text-[14px] text-[#454B57] line-clamp-3 bg-[#F7F5F0] p-3.5 rounded-[12px] border border-[#E6E2D8] leading-relaxed">
+              <p className="mt-3.5 text-[13.5px] text-[#12141A] font-normal line-clamp-3 bg-[#F7F5F0] p-3.5 rounded-[12px] border border-[#EDE8E0] leading-relaxed">
                 {tpl.body_content}
               </p>
             </div>
 
-            <div className="pt-3 border-t border-[#E6E2D8] flex items-center justify-between text-[13px] text-[#666C78]">
+            <div className="pt-3 border-t border-[#EDE8E0] flex items-center justify-between text-[12.5px] text-[#666C78]">
               <span>Click to view phone preview</span>
-              <Smartphone className="h-4 w-4 text-[#666C78] group-hover:text-[#7C4DFF] transition-colors" />
+              <Smartphone className="h-4 w-4 text-[#666C78] group-hover:text-[#FF5A1F] transition-colors" />
             </div>
           </div>
         ))}
@@ -177,48 +177,48 @@ export default function TemplatesPage() {
             <div className="mx-auto h-3.5 w-24 rounded-full bg-[#1B1F29]" />
 
             {/* Chat Bubble Simulation */}
-            <div className="rounded-[14px] bg-white p-3.5 shadow-xs text-[14px] text-[#12141A] leading-relaxed border border-[#E6E2D8]">
+            <div className="rounded-[14px] bg-white p-3.5 shadow-xs text-[13.5px] text-[#12141A] leading-relaxed border border-[#EDE8E0]">
               {selectedTemplate?.header_text && (
-                <div className="font-medium text-[#12141A] mb-1.5 text-[14px]">
+                <div className="font-semibold text-[#12141A] mb-1.5 text-[14px]">
                   {selectedTemplate.header_text}
                 </div>
               )}
               <p className="whitespace-pre-wrap">{selectedTemplate?.body_content}</p>
               {selectedTemplate?.footer_text && (
-                <div className="mt-2 text-[13px] text-[#666C78] border-t border-[#E6E2D8] pt-1.5">
+                <div className="mt-2 text-[12.5px] text-[#666C78] border-t border-[#EDE8E0] pt-1.5">
                   {selectedTemplate.footer_text}
                 </div>
               )}
-              <div className="mt-1.5 text-right text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
+              <div className="mt-1.5 text-right text-[12px] text-[#666C78] tabular-nums">
                 12:45 PM • Read
               </div>
             </div>
           </div>
 
-          <div className="space-y-2.5 text-[14px]">
-            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+          <div className="space-y-2.5 text-[13.5px]">
+            <div className="flex items-center justify-between py-2 border-b border-[#EDE8E0]">
               <span className="text-[#666C78]">Category</span>
-              <span className="font-medium text-[#12141A] capitalize">{selectedTemplate?.category}</span>
+              <span className="font-semibold text-[#12141A] capitalize">{selectedTemplate?.category}</span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+            <div className="flex items-center justify-between py-2 border-b border-[#EDE8E0]">
               <span className="text-[#666C78]">Meta Template Status</span>
               <StatusPill variant={selectedTemplate?.status === "APPROVED" ? "emerald" : "amber"} size="sm">
                 {selectedTemplate?.status}
               </StatusPill>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[#E6E2D8]">
+            <div className="flex items-center justify-between py-2 border-b border-[#EDE8E0]">
               <span className="text-[#666C78]">Language</span>
-              <span className="font-medium text-[#12141A]">{selectedTemplate?.language}</span>
+              <span className="font-semibold text-[#12141A]">{selectedTemplate?.language}</span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#E6E2D8] flex items-center justify-between">
+          <div className="pt-4 border-t border-[#EDE8E0] flex items-center justify-between">
             <Link href={`/app/${orgSlug}/campaigns?template=${selectedTemplate?.name}`}>
-              <Button variant="primary" size="sm" className="rounded-[12px] text-[14px] h-10 px-4">
+              <Button variant="primary" size="sm" className="rounded-[12px] text-[13.5px] h-10 px-4 font-semibold cursor-pointer">
                 Use in Broadcast
               </Button>
             </Link>
-            <Button variant="secondary" size="sm" onClick={() => setSelectedTemplate(null)} className="rounded-[12px] text-[14px] h-10 px-4">
+            <Button variant="secondary" size="sm" onClick={() => setSelectedTemplate(null)} className="rounded-[12px] text-[13.5px] h-10 px-4 font-medium border-[#EDE8E0] cursor-pointer">
               Close Preview
             </Button>
           </div>
@@ -227,10 +227,10 @@ export default function TemplatesPage() {
 
       {/* 4. NEW TEMPLATE MODAL */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <form onSubmit={handleCreateTemplate} className="space-y-4">
+        <form onSubmit={handleCreateTemplate} className="space-y-4 p-2 bg-white rounded-[16px]">
           <DialogHeader>
-            <DialogTitle>Create WhatsApp Template</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-[18px] font-semibold text-[#12141A]">Create WhatsApp Template</DialogTitle>
+            <DialogDescription className="text-[13px] text-[#666C78]">
               Draft a template to submit to Meta Business Manager for approval.
             </DialogDescription>
           </DialogHeader>
@@ -241,16 +241,17 @@ export default function TemplatesPage() {
             onChange={(e) => setName(e.target.value)}
             required
             placeholder="e.g. order_confirmation"
+            className="bg-[#F7F5F0] border-[#EDE8E0] focus:bg-white focus:border-[#FF5A1F] text-[#12141A] rounded-[12px] text-[13.5px]"
           />
 
           <div className="space-y-1.5">
-            <label className="block text-[13px] font-medium text-[#4B515D]">
+            <label className="block text-[13px] font-medium text-[#12141A]">
               Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as TemplateCategory)}
-              className="w-full h-9 px-3 rounded-[8px] border border-[#E4E1D8] bg-[#EFEDE7] text-[13px] text-[#12141A] outline-none"
+              className="w-full h-10 px-3 rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] text-[13.5px] text-[#12141A] outline-none cursor-pointer focus:border-[#FF5A1F] focus:bg-white"
             >
               <option value="utility">Utility (Account / Service updates)</option>
               <option value="marketing">Marketing (Promotions / Retargeting)</option>
@@ -259,7 +260,7 @@ export default function TemplatesPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[13px] font-medium text-[#4B515D]">
+            <label className="block text-[13px] font-medium text-[#12141A]">
               Body Message Text *
             </label>
             <textarea
@@ -268,15 +269,15 @@ export default function TemplatesPage() {
               onChange={(e) => setBodyContent(e.target.value)}
               required
               placeholder="Hi {{1}}, thank you for your order with Roos StudioX. Your tracking number is {{2}}."
-              className="w-full rounded-[8px] border border-[#E4E1D8] bg-[#EFEDE7] p-2.5 text-[13px] text-[#12141A] outline-none focus:border-[#FF5A1F] focus:bg-white resize-none"
+              className="w-full rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] p-3 text-[13.5px] text-[#12141A] outline-none focus:border-[#FF5A1F] focus:bg-white resize-none"
             />
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="secondary" size="sm" onClick={() => setCreateOpen(false)}>
+          <DialogFooter className="pt-3 border-t border-[#EDE8E0]">
+            <Button type="button" variant="ghost" size="sm" onClick={() => setCreateOpen(false)} className="rounded-[10px] text-[13px]">
               Cancel
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="primary" size="sm" className="rounded-[10px] text-[13px] font-semibold px-4 cursor-pointer">
               Submit Template
             </Button>
           </DialogFooter>

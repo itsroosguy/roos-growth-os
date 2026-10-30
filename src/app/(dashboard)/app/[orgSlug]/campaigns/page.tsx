@@ -422,7 +422,7 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E6E2D8]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#EDE8E0]">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30">
@@ -445,7 +445,7 @@ export default function CampaignsPage() {
           <Button
             variant="outline"
             onClick={handleExportAllCSV}
-            className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4 transition-transform active:scale-[0.98] duration-150"
+            className="rounded-[12px] border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4 transition-transform active:scale-[0.98] duration-150"
             title="Download full executive summary CSV of all campaigns"
           >
             <Download className="h-4 w-4 text-[#FF5A1F]" />
@@ -453,7 +453,7 @@ export default function CampaignsPage() {
           </Button>
 
           <Link href={`/app/${orgSlug}/templates`}>
-            <Button variant="outline" className="rounded-[12px] border-[#E6E2D8] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4 transition-transform active:scale-[0.98] duration-150">
+            <Button variant="outline" className="rounded-[12px] border-[#EDE8E0] bg-white hover:bg-[#F7F5F0] text-[#12141A] font-medium text-[14px] flex items-center gap-1.5 shadow-xs cursor-pointer h-10 px-4 transition-transform active:scale-[0.98] duration-150">
               <FileText className="h-4 w-4 text-[#666C78]" />
               <span>Templates</span>
             </Button>
@@ -510,7 +510,7 @@ export default function CampaignsPage() {
             className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-180 cursor-pointer flex items-center gap-1.5 ${
               statusFilter === "all"
                 ? "bg-[#0B0D12] text-white shadow-xs"
-                : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
+                : "bg-white border border-[#EDE8E0] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
             }`}
           >
             <span>All Campaigns</span>
@@ -522,7 +522,7 @@ export default function CampaignsPage() {
             className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-180 cursor-pointer flex items-center gap-1.5 ${
               statusFilter === "draft"
                 ? "bg-[#0B0D12] text-white shadow-xs"
-                : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
+                : "bg-white border border-[#EDE8E0] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
             }`}
           >
             <span>Drafts</span>
@@ -534,7 +534,7 @@ export default function CampaignsPage() {
             className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-180 cursor-pointer flex items-center gap-1.5 ${
               statusFilter === "scheduled"
                 ? "bg-[#8F5300] text-white shadow-xs"
-                : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
+                : "bg-white border border-[#EDE8E0] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
             }`}
           >
             <span>Scheduled</span>
@@ -546,7 +546,7 @@ export default function CampaignsPage() {
             className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-180 cursor-pointer flex items-center gap-1.5 ${
               statusFilter === "processing"
                 ? "bg-[#0A7A53] text-white shadow-xs"
-                : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
+                : "bg-white border border-[#EDE8E0] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
             }`}
           >
             <span>Active</span>
@@ -558,7 +558,7 @@ export default function CampaignsPage() {
             className={`px-3.5 py-1.5 rounded-[10px] text-[14px] font-medium transition-all duration-180 cursor-pointer flex items-center gap-1.5 ${
               statusFilter === "completed"
                 ? "bg-[#0A7A53] text-white shadow-xs"
-                : "bg-white border border-[#E6E2D8] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
+                : "bg-white border border-[#EDE8E0] text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0]"
             }`}
           >
             <span>Completed</span>
@@ -567,7 +567,7 @@ export default function CampaignsPage() {
         </div>
 
         {/* View Switcher: Table View vs Chart View */}
-        <div className="flex items-center gap-1 bg-[#F0ECE1] p-1 rounded-[12px] border border-[#E6E2D8]">
+        <div className="flex items-center gap-1 bg-[#F0ECE1] p-1 rounded-[12px] border border-[#EDE8E0]">
           <button
             type="button"
             onClick={() => setViewMode("table")}
@@ -596,14 +596,14 @@ export default function CampaignsPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="p-4 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="p-4 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search campaigns by name..."
-            className="w-full pl-10 pr-4 py-2 text-[14px] font-medium rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] text-[#12141A] placeholder:text-[#666C78] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs transition-all duration-180"
+            className="w-full pl-10 pr-4 py-2 text-[14px] font-medium rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] text-[#12141A] placeholder:text-[#666C78] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs transition-all duration-180"
           />
         </div>
 
@@ -611,7 +611,7 @@ export default function CampaignsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as CampaignStatus | "all")}
-            className="rounded-[12px] border border-[#E6E2D8] bg-[#F7F5F0] px-3.5 py-2 text-[14px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs cursor-pointer"
+            className="rounded-[12px] border border-[#EDE8E0] bg-[#F7F5F0] px-3.5 py-2 text-[14px] font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F] focus:bg-white shadow-xs cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="completed">Completed</option>
@@ -637,10 +637,10 @@ export default function CampaignsPage() {
       {/* VIEW MODE 1: TABLE VIEW */}
       {/* ==================================================================== */}
       {viewMode === "table" && (
-        <div className="rounded-[20px] border border-[#E6E2D8] bg-white overflow-hidden shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)]">
+        <div className="rounded-[16px] border border-[#EDE8E0] bg-white overflow-hidden shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)]">
           <Table>
             <TableHeader className="bg-[#FAF9F5]">
-              <TableRow className="border-b border-[#E6E2D8]">
+              <TableRow className="border-b border-[#EDE8E0]">
                 <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4 pl-6">Campaign Name</TableHead>
                 <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Template &amp; Type</TableHead>
                 <TableHead className="text-[13px] font-medium uppercase tracking-wider text-[#666C78] py-4">Status</TableHead>
@@ -666,7 +666,7 @@ export default function CampaignsPage() {
                       : 0;
 
                   return (
-                    <TableRow key={camp.id} className="border-b border-[#E6E2D8]/70 hover:bg-[#F7F5F0]/70 transition-colors">
+                    <TableRow key={camp.id} className="border-b border-[#EDE8E0]/70 hover:bg-[#F7F5F0]/70 transition-colors">
                       <TableCell className="pl-6">
                         <div className="flex items-center gap-3 py-1">
                           <div className="h-10 w-10 rounded-[12px] bg-[#F4F0FF] text-[#7C4DFF] border border-[#E0D4FC] flex items-center justify-center shrink-0 shadow-xs">
@@ -688,7 +688,7 @@ export default function CampaignsPage() {
                           <span className="tabular-nums text-[14px] font-medium text-[#12141A] block">
                             {camp.template_name}
                           </span>
-                          <Badge variant="neutral" className="text-[12px] uppercase font-medium px-2 py-0.5 mt-0.5 border border-[#E6E2D8] bg-[#F7F5F0] text-[#666C78]">
+                          <Badge variant="neutral" className="text-[12px] uppercase font-medium px-2 py-0.5 mt-0.5 border border-[#EDE8E0] bg-[#F7F5F0] text-[#666C78]">
                             {camp.template_category}
                           </Badge>
                         </div>
@@ -706,7 +706,7 @@ export default function CampaignsPage() {
                             <span className="tabular-nums text-[13px] text-[#666C78]">{camp.sent_count} / {camp.total_recipients} sent</span>
                             <span className="tabular-nums font-medium text-[#12141A]">{progressPercent}%</span>
                           </div>
-                          <div className="h-2 w-full bg-[#E6E2D8] rounded-full overflow-hidden">
+                          <div className="h-2 w-full bg-[#EDE8E0] rounded-full overflow-hidden">
                             <div
                               className="h-full bg-[#12B886] transition-all rounded-full"
                               style={{ width: `${progressPercent}%` }}
@@ -792,8 +792,8 @@ export default function CampaignsPage() {
       {viewMode === "chart" && (
         <div className="space-y-6">
           {/* Funnel Overview */}
-          <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E6E2D8]/70 pb-4">
+          <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EDE8E0]/70 pb-4">
               <div>
                 <h3 className="text-[17px] font-medium text-[#12141A]">
                   Aggregate Funnel Performance
@@ -810,7 +810,7 @@ export default function CampaignsPage() {
                   size="sm"
                   variant="outline"
                   onClick={handleExportAllCSV}
-                  className="rounded-[10px] text-[13px] font-medium border-[#E6E2D8] text-[#12141A] hover:bg-[#F7F5F0] flex items-center gap-1.5 cursor-pointer"
+                  className="rounded-[10px] text-[13px] font-medium border-[#EDE8E0] text-[#12141A] hover:bg-[#F7F5F0] flex items-center gap-1.5 cursor-pointer"
                 >
                   <Download className="h-3.5 w-3.5 text-[#FF5A1F]" />
                   <span>Export Funnel (CSV)</span>
@@ -820,7 +820,7 @@ export default function CampaignsPage() {
 
             {/* Funnel Bars */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-[16px] bg-[#F7F5F0] border border-[#E6E2D8] space-y-2">
+              <div className="p-4 rounded-[16px] bg-[#F7F5F0] border border-[#EDE8E0] space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[12px] font-medium text-[#666C78] uppercase tracking-wider">1. Total Audience</span>
                   <Users className="h-4 w-4 text-[#666C78]" />
@@ -828,7 +828,7 @@ export default function CampaignsPage() {
                 <div className="text-[24px] font-medium text-[#12141A] tabular-nums">
                   {allOrgCampaigns.reduce((sum, c) => sum + c.total_recipients, 0)}
                 </div>
-                <div className="h-2 w-full bg-[#E6E2D8] rounded-full overflow-hidden">
+                <div className="h-2 w-full bg-[#EDE8E0] rounded-full overflow-hidden">
                   <div className="h-full bg-[#12141A] rounded-full w-full" />
                 </div>
                 <span className="text-[11px] text-[#666C78] block">100% Target Base</span>
@@ -900,7 +900,7 @@ export default function CampaignsPage() {
           {/* Demographic Breakdown Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Age Demographics Card */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-[16px] font-medium text-[#12141A] flex items-center gap-2">
@@ -909,7 +909,7 @@ export default function CampaignsPage() {
                   </h4>
                   <p className="text-[13px] text-[#666C78]">Audience distribution across age groups</p>
                 </div>
-                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#E6E2D8]">
+                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#EDE8E0]">
                   4 Age Brackets
                 </span>
               </div>
@@ -922,7 +922,7 @@ export default function CampaignsPage() {
                   const readPercent = data.count > 0 ? Math.round((data.read / data.count) * 100) : 0;
 
                   return (
-                    <div key={bracket} className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8]/70 space-y-2">
+                    <div key={bracket} className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#EDE8E0]/70 space-y-2">
                       <div className="flex items-center justify-between text-[13px]">
                         <span className="font-medium text-[#12141A]">Age {bracket}</span>
                         <div className="flex items-center gap-3">
@@ -930,7 +930,7 @@ export default function CampaignsPage() {
                           <span className="font-medium text-[#0A7A53] tabular-nums">{readPercent}% read</span>
                         </div>
                       </div>
-                      <div className="h-2 w-full bg-[#E6E2D8] rounded-full overflow-hidden">
+                      <div className="h-2 w-full bg-[#EDE8E0] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#FF5A1F] rounded-full transition-all duration-300"
                           style={{ width: `${readPercent}%` }}
@@ -943,7 +943,7 @@ export default function CampaignsPage() {
             </div>
 
             {/* Gender Performance Card */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-[16px] font-medium text-[#12141A] flex items-center gap-2">
@@ -952,7 +952,7 @@ export default function CampaignsPage() {
                   </h4>
                   <p className="text-[13px] text-[#666C78]">Delivery &amp; read engagement by gender</p>
                 </div>
-                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#E6E2D8]">
+                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#EDE8E0]">
                   Gender Share
                 </span>
               </div>
@@ -966,7 +966,7 @@ export default function CampaignsPage() {
                   const label = gender.charAt(0).toUpperCase() + gender.slice(1);
 
                   return (
-                    <div key={gender} className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8]/70 space-y-2">
+                    <div key={gender} className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#EDE8E0]/70 space-y-2">
                       <div className="flex items-center justify-between text-[13px]">
                         <span className="font-medium text-[#12141A] capitalize">{label}</span>
                         <div className="flex items-center gap-3">
@@ -974,7 +974,7 @@ export default function CampaignsPage() {
                           <span className="font-medium text-[#7C4DFF] tabular-nums">{readPercent}% read</span>
                         </div>
                       </div>
-                      <div className="h-2 w-full bg-[#E6E2D8] rounded-full overflow-hidden">
+                      <div className="h-2 w-full bg-[#EDE8E0] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#7C4DFF] rounded-full transition-all duration-300"
                           style={{ width: `${readPercent}%` }}
@@ -987,7 +987,7 @@ export default function CampaignsPage() {
             </div>
 
             {/* Department Breakdown */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-[16px] font-medium text-[#12141A] flex items-center gap-2">
@@ -996,7 +996,7 @@ export default function CampaignsPage() {
                   </h4>
                   <p className="text-[13px] text-[#666C78]">Read rate by organizational role</p>
                 </div>
-                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#E6E2D8]">
+                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#EDE8E0]">
                   5 Departments
                 </span>
               </div>
@@ -1007,7 +1007,7 @@ export default function CampaignsPage() {
                   const label = dept.charAt(0).toUpperCase() + dept.slice(1);
 
                   return (
-                    <div key={dept} className="p-3 rounded-[12px] bg-[#FAF9F5] border border-[#E6E2D8]/70 flex items-center justify-between">
+                    <div key={dept} className="p-3 rounded-[12px] bg-[#FAF9F5] border border-[#EDE8E0]/70 flex items-center justify-between">
                       <div>
                         <span className="text-[14px] font-medium text-[#12141A] block">{label}</span>
                         <span className="text-[12px] text-[#666C78] font-normal">{data.count} recipients</span>
@@ -1023,7 +1023,7 @@ export default function CampaignsPage() {
             </div>
 
             {/* Client Classification Breakdown */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-[16px] font-medium text-[#12141A] flex items-center gap-2">
@@ -1032,13 +1032,13 @@ export default function CampaignsPage() {
                   </h4>
                   <p className="text-[13px] text-[#666C78]">Ongoing Clients vs New Opportunities</p>
                 </div>
-                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#E6E2D8]">
+                <span className="text-[12px] font-medium text-[#666C78] bg-[#F7F5F0] px-2.5 py-1 rounded-[8px] border border-[#EDE8E0]">
                   Segmentation
                 </span>
               </div>
 
               <div className="space-y-4 pt-2">
-                <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#E6E2D8] space-y-2">
+                <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#EDE8E0] space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-[14px] font-medium text-[#12141A] block">Ongoing Clients</span>
@@ -1058,7 +1058,7 @@ export default function CampaignsPage() {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#E6E2D8] space-y-2">
+                <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-[#EDE8E0] space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-[14px] font-medium text-[#12141A] block">New Opportunities</span>
@@ -1111,7 +1111,7 @@ export default function CampaignsPage() {
                         ? "bg-[#FF5A1F] text-white shadow-xs"
                         : wizardStep > step
                         ? "bg-[#FFF0EB] text-[#FF5A1F] border border-[#FF5A1F]/30"
-                        : "bg-[#F7F5F0] text-[#666C78] border border-[#E6E2D8]"
+                        : "bg-[#F7F5F0] text-[#666C78] border border-[#EDE8E0]"
                     }`}
                   >
                     {step}
@@ -1141,7 +1141,7 @@ export default function CampaignsPage() {
                   value={campName}
                   onChange={(e) => setCampName(e.target.value)}
                   placeholder="e.g. Q4 Retail Software Upgrade Announcement"
-                  className="text-xs h-10 font-medium rounded-xl border-[#E6E2D8] focus:border-[#FF5A1F]"
+                  className="text-xs h-10 font-medium rounded-xl border-[#EDE8E0] focus:border-[#FF5A1F]"
                 />
               </div>
 
@@ -1165,7 +1165,7 @@ export default function CampaignsPage() {
                     <select
                       value={activeTemplate?.id}
                       onChange={(e) => setSelectedTemplateId(e.target.value)}
-                      className="w-full rounded-xl border border-[#E6E2D8] bg-[#F7F5F0] px-3 py-2.5 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
+                      className="w-full rounded-xl border border-[#EDE8E0] bg-[#F7F5F0] px-3 py-2.5 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
                     >
                       {approvedTemplates.map((t) => (
                         <option key={t.id} value={t.id}>
@@ -1175,7 +1175,7 @@ export default function CampaignsPage() {
                     </select>
 
                     {activeTemplate && (
-                      <div className="p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#E6E2D8]">
+                      <div className="p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#EDE8E0]">
                         <span className="text-[11px] text-[#666C78] tabular-nums font-medium block mb-1">
                           Template Preview ({activeTemplate.category.toUpperCase()}):
                         </span>
@@ -1202,7 +1202,7 @@ export default function CampaignsPage() {
                 <select
                   value={selectedSegmentId}
                   onChange={(e) => setSelectedSegmentId(e.target.value)}
-                  className="w-full rounded-xl border border-[#E6E2D8] bg-[#F7F5F0] px-3 py-2.5 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full rounded-xl border border-[#EDE8E0] bg-[#F7F5F0] px-3 py-2.5 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
                 >
                   <option value="none">Custom Multidimensional Criteria...</option>
                   {savedSegments.map((s) => (
@@ -1214,7 +1214,7 @@ export default function CampaignsPage() {
               </div>
 
               {selectedSegmentId === "none" && (
-                <div className="space-y-3 p-4 rounded-2xl bg-[#F7F5F0] border border-[#E6E2D8]">
+                <div className="space-y-3 p-4 rounded-2xl bg-[#F7F5F0] border border-[#EDE8E0]">
                   <span className="text-[11px] font-medium uppercase tracking-wider text-[#666C78] block">
                     Demographic &amp; Audience Targeting Filters
                   </span>
@@ -1228,7 +1228,7 @@ export default function CampaignsPage() {
                       <select
                         value={filterAge}
                         onChange={(e) => setFilterAge(e.target.value)}
-                        className="w-full rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
+                        className="w-full rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
                       >
                         <option value="all">All Ages</option>
                         <option value="18-25">18 - 25 years</option>
@@ -1246,7 +1246,7 @@ export default function CampaignsPage() {
                       <select
                         value={filterGender}
                         onChange={(e) => setFilterGender(e.target.value)}
-                        className="w-full rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
+                        className="w-full rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
                       >
                         <option value="all">All Genders</option>
                         <option value="female">Female</option>
@@ -1263,7 +1263,7 @@ export default function CampaignsPage() {
                       <select
                         value={filterDepartment}
                         onChange={(e) => setFilterDepartment(e.target.value)}
-                        className="w-full rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
+                        className="w-full rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
                       >
                         <option value="all">All Departments</option>
                         <option value="executive">Executive</option>
@@ -1282,7 +1282,7 @@ export default function CampaignsPage() {
                       <select
                         value={filterClassification}
                         onChange={(e) => setFilterClassification(e.target.value)}
-                        className="w-full rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
+                        className="w-full rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
                       >
                         <option value="all">All Contacts</option>
                         <option value="ongoing_client">Ongoing Clients</option>
@@ -1300,7 +1300,7 @@ export default function CampaignsPage() {
                           const val = e.target.value;
                           if (val && !filterTags.includes(val)) setFilterTags([...filterTags, val]);
                         }}
-                        className="w-full rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
+                        className="w-full rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:border-[#FF5A1F]"
                       >
                         <option value="">Select Tag...</option>
                         <option value="VIP">VIP</option>
@@ -1336,7 +1336,7 @@ export default function CampaignsPage() {
                         value={filterSource}
                         onChange={(e) => setFilterSource(e.target.value)}
                         placeholder="e.g. WhatsApp Inbound"
-                        className="text-xs h-9 bg-white border-[#E6E2D8] focus:border-[#FF5A1F]"
+                        className="text-xs h-9 bg-white border-[#EDE8E0] focus:border-[#FF5A1F]"
                       />
                     </div>
                   </div>
@@ -1344,7 +1344,7 @@ export default function CampaignsPage() {
               )}
 
               {/* Recipient Limit Capping Options */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E6E2D8] space-y-2.5 shadow-2xs">
+              <div className="p-4 rounded-2xl bg-white border border-[#EDE8E0] space-y-2.5 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <label className="font-medium text-[#12141A] block">
                     Recipient Limit Capping
@@ -1371,7 +1371,7 @@ export default function CampaignsPage() {
                       className={`px-3 py-1 rounded-[8px] text-[12px] font-medium transition-all duration-140 cursor-pointer ${
                         recipientLimit === preset.value
                           ? "bg-[#FF5A1F] text-white shadow-xs"
-                          : "bg-[#F7F5F0] border border-[#E6E2D8] text-[#454B57] hover:bg-[#FAF9F5]"
+                          : "bg-[#F7F5F0] border border-[#EDE8E0] text-[#454B57] hover:bg-[#FAF9F5]"
                       }`}
                     >
                       {preset.label}
@@ -1385,13 +1385,13 @@ export default function CampaignsPage() {
                     value={recipientLimit ?? ""}
                     onChange={(e) => setRecipientLimit(e.target.value ? parseInt(e.target.value) : null)}
                     placeholder="Or enter custom recipient limit count..."
-                    className="text-xs h-9 tabular-nums border-[#E6E2D8] focus:border-[#FF5A1F]"
+                    className="text-xs h-9 tabular-nums border-[#EDE8E0] focus:border-[#FF5A1F]"
                   />
                 </div>
               </div>
 
               {/* Dynamic Recipient & Compliance Breakdown Card */}
-              <div className="p-4 rounded-2xl bg-white border border-[#E6E2D8] space-y-3 shadow-2xs">
+              <div className="p-4 rounded-2xl bg-white border border-[#EDE8E0] space-y-3 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-[#12141A]">Real-Time Audience Audit:</span>
                   <Badge variant="orangeSubtle" className="text-xs font-medium tabular-nums">
@@ -1400,7 +1400,7 @@ export default function CampaignsPage() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="p-2.5 rounded-xl bg-[#F7F5F0] border border-[#E6E2D8]">
+                  <div className="p-2.5 rounded-xl bg-[#F7F5F0] border border-[#EDE8E0]">
                     <span className="text-[#666C78] block font-normal text-[11px]">Total Filter Matched</span>
                     <span className="font-medium tabular-nums text-base text-[#12141A]">
                       {audienceResult.totalMatched}
@@ -1439,7 +1439,7 @@ export default function CampaignsPage() {
                   </label>
 
                   {activeTemplate.variables.map((v) => (
-                    <div key={v} className="flex items-center gap-3 p-3 rounded-xl bg-[#F7F5F0] border border-[#E6E2D8]">
+                    <div key={v} className="flex items-center gap-3 p-3 rounded-xl bg-[#F7F5F0] border border-[#EDE8E0]">
                       <span className="tabular-nums font-medium text-[#FF5A1F] shrink-0 w-16">
                         {"{{" + v + "}}"}
                       </span>
@@ -1449,7 +1449,7 @@ export default function CampaignsPage() {
                         onChange={(e) =>
                           setVariableMappings({ ...variableMappings, [v]: e.target.value })
                         }
-                        className="flex-1 rounded-xl border border-[#E6E2D8] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
+                        className="flex-1 rounded-xl border border-[#EDE8E0] bg-white px-2.5 py-2 text-xs font-medium text-[#12141A] focus:outline-none focus:border-[#FF5A1F]"
                       >
                         <option value="first_name">Contact: First Name</option>
                         <option value="last_name">Contact: Last Name</option>
@@ -1467,7 +1467,7 @@ export default function CampaignsPage() {
               )}
 
               {/* Live Rendered Message Preview for Sample Contact */}
-              <div className="p-4 rounded-2xl bg-[#F7F5F0] border border-[#E6E2D8] space-y-2">
+              <div className="p-4 rounded-2xl bg-[#F7F5F0] border border-[#EDE8E0] space-y-2">
                 <div className="flex items-center justify-between text-[11px] text-[#666C78] font-normal uppercase">
                   <span>Representative Preview for:</span>
                   <span className="text-[#12141A] font-medium tabular-nums">
@@ -1475,7 +1475,7 @@ export default function CampaignsPage() {
                   </span>
                 </div>
 
-                <div className="bg-white border border-[#E6E2D8] rounded-2xl p-4 shadow-2xs max-w-md">
+                <div className="bg-white border border-[#EDE8E0] rounded-2xl p-4 shadow-2xs max-w-md">
                   {activeTemplate?.header_text && (
                     <div className="font-medium text-xs text-[#12141A] mb-1">
                       {activeTemplate.header_text}
@@ -1529,7 +1529,7 @@ export default function CampaignsPage() {
               </div>
 
               {/* Schedule options */}
-              <div className="p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#E6E2D8] space-y-2">
+              <div className="p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#EDE8E0] space-y-2">
                 <label className="font-medium text-[#12141A] block">
                   Delivery Timing:
                 </label>
@@ -1563,14 +1563,14 @@ export default function CampaignsPage() {
                       type="datetime-local"
                       value={scheduleDateTime}
                       onChange={(e) => setScheduleDateTime(e.target.value)}
-                      className="text-xs h-10 bg-white border-[#E6E2D8] focus:border-[#FF5A1F]"
+                      className="text-xs h-10 bg-white border-[#EDE8E0] focus:border-[#FF5A1F]"
                     />
                   </div>
                 )}
               </div>
 
               {/* Test mode toggle */}
-              <label className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#E6E2D8] cursor-pointer">
+              <label className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-[#F7F5F0] border border-[#EDE8E0] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isTestMode}
@@ -1603,7 +1603,7 @@ export default function CampaignsPage() {
           )}
 
           {/* Modal Footer Controls */}
-          <DialogFooter className="border-t border-[#E6E2D8] pt-3">
+          <DialogFooter className="border-t border-[#EDE8E0] pt-3">
             {wizardStep > 1 && (
               <Button
                 variant="ghost"

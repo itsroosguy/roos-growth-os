@@ -109,7 +109,7 @@ export default function AutomationsPage() {
   return (
     <div className="space-y-6 animate-page-enter">
       {/* 1. PAGE HEADER */}
-      <div className="flex flex-col gap-3 pb-5 border-b border-[#E6E2D8] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 pb-5 border-b border-[#EDE8E0] sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="type-display text-[#12141A]">
             Automations
@@ -121,7 +121,7 @@ export default function AutomationsPage() {
 
         <div className="flex items-center gap-3">
           {/* Tab Selector */}
-          <div className="flex items-center rounded-[12px] border border-[#E6E2D8] bg-white p-1 shadow-xs">
+          <div className="flex items-center rounded-[12px] border border-[#EDE8E0] bg-white p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setActiveTab("workflows")}
@@ -169,7 +169,7 @@ export default function AutomationsPage() {
             return (
               <div
                 key={rule.id}
-                className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4 hover:border-[#D2CEC2] transition-colors"
+                className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] space-y-4 hover:border-[#D2CEC2] transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3.5">
@@ -202,7 +202,7 @@ export default function AutomationsPage() {
                 </div>
 
                 {/* Human-Readable Chain: When -> If -> Then */}
-                <div className="p-4 rounded-[14px] bg-[#F7F5F0] border border-[#E6E2D8] text-[14px] space-y-2">
+                <div className="p-4 rounded-[14px] bg-[#F7F5F0] border border-[#EDE8E0] text-[14px] space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-[#12141A] w-14 shrink-0">When:</span>
                     <span className="text-[#454B57]">{whenText}</span>
@@ -217,7 +217,7 @@ export default function AutomationsPage() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#E6E2D8] flex items-center justify-between text-[13px] text-[#666C78]">
+                <div className="pt-2 border-t border-[#EDE8E0] flex items-center justify-between text-[13px] text-[#666C78]">
                   <span>Trigger: {rule.trigger_type}</span>
                   <button
                     type="button"
@@ -236,7 +236,7 @@ export default function AutomationsPage() {
 
       {/* 3. EXECUTION HISTORY */}
       {activeTab === "history" && (
-        <div className="rounded-[20px] border border-[#E6E2D8] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden divide-y divide-[#E6E2D8]">
+        <div className="rounded-[16px] border border-[#EDE8E0] bg-white shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden divide-y divide-[#EDE8E0]">
           <div className="p-4 bg-[#FAF9F5] text-[13px] font-medium text-[#666C78] uppercase tracking-[0.06em]">
             Recent Workflow Runs
           </div>

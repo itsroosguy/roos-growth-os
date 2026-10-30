@@ -261,7 +261,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
   return (
     <div className="space-y-6 animate-page-enter">
       {/* 1. TOP HEADER & EXPORT ACTIONS */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-[#E6E2D8]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-[#EDE8E0]">
         <Link
           href={`/app/${orgSlug}/campaigns`}
           className="text-[13px] font-medium text-[#666C78] hover:text-[#FF5A1F] flex items-center gap-1.5 transition-colors self-start"
@@ -273,7 +273,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
         {/* View Mode & Download Controls */}
         <div className="flex items-center flex-wrap gap-2.5">
           {/* Chart View vs Table View Switcher */}
-          <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-xl border border-[#E6E2D8]">
+          <div className="flex items-center bg-[#F5F2EB] p-0.5 rounded-xl border border-[#EDE8E0]">
             <button
               type="button"
               onClick={() => setViewMode("chart")}
@@ -324,7 +324,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             size="sm"
             variant="outline"
             onClick={handlePrint}
-            className="text-[13px] font-medium rounded-xl border-[#E6E2D8] bg-white text-[#12141A] hover:bg-[#F7F5F0] flex items-center gap-1.5"
+            className="text-[13px] font-medium rounded-xl border-[#EDE8E0] bg-white text-[#12141A] hover:bg-[#F7F5F0] flex items-center gap-1.5"
             title="Print or Save PDF report"
           >
             <Printer className="h-3.5 w-3.5 text-[#666C78]" />
@@ -345,7 +345,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
       </div>
 
       {/* 2. CAMPAIGN SUMMARY CARD */}
-      <div className="p-6 rounded-[20px] bg-white border border-[#E6E2D8] space-y-5 shadow-xs">
+      <div className="p-6 rounded-[16px] bg-white border border-[#EDE8E0] space-y-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="flex items-center gap-2.5">
@@ -360,7 +360,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
               )}
             </div>
             <p className="text-[13px] text-[#666C78] mt-1">
-              Template: <code className="bg-[#FAF9F5] border border-[#E6E2D8] px-1.5 py-0.5 rounded text-[#12141A] font-medium">{campaign.template_name}</code> ({campaign.template_category.toUpperCase()}) • Launched by {campaign.created_by_name} on {formatDate(campaign.created_at)}
+              Template: <code className="bg-[#FAF9F5] border border-[#EDE8E0] px-1.5 py-0.5 rounded text-[#12141A] font-medium">{campaign.template_name}</code> ({campaign.template_category.toUpperCase()}) • Launched by {campaign.created_by_name} on {formatDate(campaign.created_at)}
             </p>
           </div>
 
@@ -374,11 +374,11 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
 
         {/* Aggregate KPI Blocks */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-4 border-t border-[#EFEDE7]">
-          <div className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8] text-center">
+          <div className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#EDE8E0] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#666C78] block">Audience</span>
             <span className="text-[20px] font-medium tabular-nums text-[#12141A]">{campaign.total_recipients}</span>
           </div>
-          <div className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8] text-center">
+          <div className="p-3.5 rounded-[14px] bg-[#FAF9F5] border border-[#EDE8E0] text-center">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#666C78] block">Dispatched</span>
             <span className="text-[20px] font-medium tabular-nums text-[#12141A]">{campaign.sent_count}</span>
           </div>
@@ -398,7 +398,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
       </div>
 
       {/* 3. MULTI-DIMENSIONAL FILTERS: LIMIT, AGE, GENDER, DEPARTMENT, STATUS */}
-      <div className="p-4 rounded-[16px] bg-white border border-[#E6E2D8] shadow-xs space-y-3">
+      <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-[#FF5A1F]" />
@@ -420,7 +420,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <select
               value={limitFilter === null ? "all" : String(limitFilter)}
               onChange={(e) => setLimitFilter(e.target.value === "all" ? null : parseInt(e.target.value))}
-              className="w-full h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+              className="w-full h-9 px-3 rounded-[10px] border border-[#EDE8E0] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
             >
               <option value="all">No Limit (All {allRecipients.length})</option>
               <option value="1">Limit to 1 contact</option>
@@ -439,7 +439,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <select
               value={ageFilter}
               onChange={(e) => setAgeFilter(e.target.value)}
-              className="w-full h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+              className="w-full h-9 px-3 rounded-[10px] border border-[#EDE8E0] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
             >
               <option value="all">All Ages</option>
               <option value="18-25">18–25 yrs</option>
@@ -457,7 +457,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <select
               value={genderFilter}
               onChange={(e) => setGenderFilter(e.target.value)}
-              className="w-full h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+              className="w-full h-9 px-3 rounded-[10px] border border-[#EDE8E0] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
             >
               <option value="all">All Genders</option>
               <option value="male">Male</option>
@@ -474,7 +474,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <select
               value={departmentFilter}
               onChange={(e) => setDepartmentFilter(e.target.value)}
-              className="w-full h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+              className="w-full h-9 px-3 rounded-[10px] border border-[#EDE8E0] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
             >
               <option value="all">All Departments</option>
               <option value="operations">Operations</option>
@@ -493,7 +493,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             <select
               value={recipientStatusFilter}
               onChange={(e) => setRecipientStatusFilter(e.target.value)}
-              className="w-full h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
+              className="w-full h-9 px-3 rounded-[10px] border border-[#EDE8E0] bg-[#FAF9F5] text-[13px] font-medium text-[#12141A] outline-none shadow-xs cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="read">Read</option>
@@ -511,7 +511,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
       {viewMode === "chart" && (
         <div className="space-y-6">
           {/* Question 1: Delivery Funnel Chart */}
-          <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+          <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[12px] font-medium text-[#666C78] uppercase tracking-wider">
@@ -521,7 +521,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                   How did recipients engage through the delivery stages?
                 </h3>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-[12px] font-medium bg-[#FAF9F5] text-[#12141A] border border-[#E6E2D8]">
+              <span className="px-2.5 py-1 rounded-full text-[12px] font-medium bg-[#FAF9F5] text-[#12141A] border border-[#EDE8E0]">
                 {analytics.readRate}% Read Rate
               </span>
             </div>
@@ -553,7 +553,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
           {/* Demographic Breakdown Grid: Age, Gender, Department */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Age Demographics Chart */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[11.5px] font-medium text-[#666C78] uppercase tracking-wider">
@@ -589,7 +589,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             </div>
 
             {/* Gender Distribution Chart */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[11.5px] font-medium text-[#666C78] uppercase tracking-wider">
@@ -625,7 +625,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
             </div>
 
             {/* Department / Role Performance Chart */}
-            <div className="p-6 rounded-[20px] border border-[#E6E2D8] bg-white shadow-xs space-y-4">
+            <div className="p-6 rounded-[16px] border border-[#EDE8E0] bg-white shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[11.5px] font-medium text-[#666C78] uppercase tracking-wider">
@@ -668,10 +668,10 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
       {/* ========================================================================= */}
       {viewMode === "table" && (
         <div className="space-y-3">
-          <div className="rounded-[20px] border border-[#E6E2D8] bg-white overflow-hidden shadow-xs">
+          <div className="rounded-[16px] border border-[#EDE8E0] bg-white overflow-hidden shadow-xs">
             <Table>
               <TableHeader className="bg-[#FAF9F5]">
-                <TableRow className="border-b border-[#E6E2D8]">
+                <TableRow className="border-b border-[#EDE8E0]">
                   <TableHead className="text-[12px] font-medium uppercase tracking-wider text-[#666C78] py-3.5">
                     Recipient &amp; Role
                   </TableHead>
@@ -706,7 +706,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                   filteredRecipients.map((r) => {
                     const avatarStyle = getAvatarColor(r.contact_name);
                     return (
-                      <TableRow key={r.id} className="border-b border-[#E6E2D8]/70 hover:bg-[#FAF9F5] transition-colors">
+                      <TableRow key={r.id} className="border-b border-[#EDE8E0]/70 hover:bg-[#FAF9F5] transition-colors">
                         {/* Recipient & Role */}
                         <TableCell>
                           <div className="flex items-center gap-2.5">
@@ -740,7 +740,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
 
                         {/* Department */}
                         <TableCell>
-                          <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-[#FAF9F5] text-[#454B57] border-[#E6E2D8] capitalize">
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-[#FAF9F5] text-[#454B57] border-[#EDE8E0] capitalize">
                             {r.department || "Operations"}
                           </span>
                         </TableCell>

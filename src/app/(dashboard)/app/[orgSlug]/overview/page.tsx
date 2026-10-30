@@ -592,7 +592,7 @@ export default function OverviewPage() {
               <button
                 type="button"
                 onClick={() => setTzDropdownOpen(!tzDropdownOpen)}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[12.5px] font-medium bg-white border border-[#E6E2D8] text-[#343A46] hover:bg-[#FAF9F5] shadow-2xs transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[12.5px] font-medium bg-white border border-[#EDE8E0] text-[#343A46] hover:bg-[#FAF9F5] shadow-2xs transition-colors cursor-pointer"
                 title="Select timezone"
               >
                 <span className="h-2 w-2 rounded-full bg-[#12B886] animate-pulse shrink-0" />
@@ -673,7 +673,7 @@ export default function OverviewPage() {
             <button
               type="button"
               onClick={() => setPeriodDropdownOpen(!periodDropdownOpen)}
-              className="h-10 px-3.5 rounded-[12px] border border-[#E6E2D8] bg-white text-[13.5px] font-medium text-[#12141A] hover:bg-[#FAF9F5] shadow-2xs flex items-center gap-2 transition-colors cursor-pointer"
+              className="h-10 px-3.5 rounded-[12px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] hover:bg-[#FAF9F5] shadow-2xs flex items-center gap-2 transition-colors cursor-pointer"
             >
               <span>{selectedPeriod}</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#666C78]" />
@@ -890,7 +890,7 @@ export default function OverviewPage() {
                     <button
                       type="button"
                       onClick={() => setKebabMenuOpen(!kebabMenuOpen)}
-                      className="h-8.5 w-8.5 rounded-[10px] border border-[#E6E2D8] bg-white text-[#666C78] hover:text-[#12141A] hover:bg-[#FAF9F5] flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+                      className="h-8.5 w-8.5 rounded-[10px] border border-[#EDE8E0] bg-white text-[#666C78] hover:text-[#12141A] hover:bg-[#FAF9F5] flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
                       title="More actions"
                     >
                       <MoreHorizontal className="h-4 w-4" />
@@ -932,7 +932,7 @@ export default function OverviewPage() {
                   <button
                     type="button"
                     onClick={handleDismiss}
-                    className="h-8.5 w-8.5 rounded-[10px] border border-[#E6E2D8] bg-white text-[#666C78] hover:text-[#12141A] hover:bg-[#FAF9F5] flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+                    className="h-8.5 w-8.5 rounded-[10px] border border-[#EDE8E0] bg-white text-[#666C78] hover:text-[#12141A] hover:bg-[#FAF9F5] flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
                     title="Dismiss action item"
                   >
                     <X className="h-4 w-4" />
@@ -956,7 +956,7 @@ export default function OverviewPage() {
                         Fleet Management Solution • +91 98765 43213
                       </p>
                       <div className="flex items-center flex-wrap gap-2 mt-2">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-normal text-[#454B57] bg-white border border-[#E6E2D8] shadow-2xs">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-normal text-[#454B57] bg-white border border-[#EDE8E0] shadow-2xs">
                           <Building2 className="h-3.5 w-3.5 text-[#666C78]" />
                           <span>Enterprise</span>
                         </span>
@@ -1003,7 +1003,7 @@ export default function OverviewPage() {
                     </span>
                     <Link
                       href={`/app/${orgSlug}/leads`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] border border-[#E6E2D8] bg-white hover:bg-[#F9F8F6] text-[#12141A] text-[13.5px] font-medium shadow-2xs transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] border border-[#EDE8E0] bg-white hover:bg-[#F9F8F6] text-[#12141A] text-[13.5px] font-medium shadow-2xs transition-colors cursor-pointer"
                     >
                       <span>View details</span>
                       <ArrowRight className="h-3.5 w-3.5 text-[#666C78]" />
@@ -1029,7 +1029,7 @@ export default function OverviewPage() {
                 </div>
 
                 {/* Composer / Editor Panel */}
-                <div className="rounded-[14px] border border-[#E6E2D8] bg-white shadow-2xs overflow-hidden">
+                <div className="rounded-[14px] border border-[#EDE8E0] bg-white shadow-2xs overflow-hidden">
                   {/* Tabs Header + Shorten / Customise Tools */}
                   <div className="border-b border-[#EDE8E0] px-4 pt-3 flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-1 -mb-[1px]">
@@ -1122,7 +1122,7 @@ export default function OverviewPage() {
                               "px-2.5 py-0.5 rounded-[6px] capitalize transition-colors cursor-pointer",
                               selectedTone === (t === "formal" ? "standard" : t)
                                 ? "bg-[#0B0D12] text-white font-medium"
-                                : "text-[#666C78] hover:text-[#12141A] bg-white border border-[#E6E2D8]"
+                                : "text-[#666C78] hover:text-[#12141A] bg-white border border-[#EDE8E0]"
                             )}
                           >
                             {t}
@@ -1156,7 +1156,7 @@ export default function OverviewPage() {
                       {attachedFiles.map((f) => (
                         <span
                           key={f}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-[#FAF9F5] border border-[#E6E2D8] text-[12px] font-medium text-[#12141A]"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-[#FAF9F5] border border-[#EDE8E0] text-[12px] font-medium text-[#12141A]"
                         >
                           <Paperclip className="h-3 w-3 text-[#FF5A1F]" />
                           <span>{f}</span>
@@ -1178,7 +1178,7 @@ export default function OverviewPage() {
                       <button
                         type="button"
                         onClick={handleAttachment}
-                        className="h-7.5 px-2 rounded-[7px] border border-[#E6E2D8] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
+                        className="h-7.5 px-2 rounded-[7px] border border-[#EDE8E0] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
                       >
                         <Paperclip className="h-3 w-3 text-[#666C78]" />
                         <span>Attachment</span>
@@ -1186,7 +1186,7 @@ export default function OverviewPage() {
                       <button
                         type="button"
                         onClick={handleScheduleFollowup}
-                        className="h-7.5 px-2 rounded-[7px] border border-[#E6E2D8] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
+                        className="h-7.5 px-2 rounded-[7px] border border-[#EDE8E0] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
                       >
                         <Calendar className="h-3 w-3 text-[#666C78]" />
                         <span>Schedule follow-up</span>
@@ -1194,7 +1194,7 @@ export default function OverviewPage() {
                       <button
                         type="button"
                         onClick={handleInsertDoc}
-                        className="h-7.5 px-2 rounded-[7px] border border-[#E6E2D8] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
+                        className="h-7.5 px-2 rounded-[7px] border border-[#EDE8E0] bg-white text-[11.5px] font-medium text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F5F0] inline-flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
                       >
                         <FileText className="h-3 w-3 text-[#666C78]" />
                         <span>Insert document</span>
@@ -1217,7 +1217,7 @@ export default function OverviewPage() {
                         <button
                           type="button"
                           onClick={() => setDueDateDropdownOpen(!dueDateDropdownOpen)}
-                          className="h-7.5 px-2 rounded-[7px] border border-[#E6E2D8] bg-[#F7F5F0] text-[11.5px] font-medium text-[#12141A] inline-flex items-center gap-1 hover:bg-[#EFECE5] shadow-2xs transition-colors cursor-pointer shrink-0"
+                          className="h-7.5 px-2 rounded-[7px] border border-[#EDE8E0] bg-[#F7F5F0] text-[11.5px] font-medium text-[#12141A] inline-flex items-center gap-1 hover:bg-[#EFECE5] shadow-2xs transition-colors cursor-pointer shrink-0"
                         >
                           <Calendar className="h-3 w-3 text-[#666C78]" />
                           <span>{dueDateText}</span>
@@ -1311,7 +1311,7 @@ export default function OverviewPage() {
                     <button
                       type="button"
                       onClick={handleSaveAsTemplate}
-                      className="h-10 px-4 rounded-[11px] border border-[#E6E2D8] bg-white text-[#12141A] text-[13.5px] font-medium hover:bg-[#F9F8F6] inline-flex items-center gap-2 shadow-2xs transition-colors cursor-pointer"
+                      className="h-10 px-4 rounded-[11px] border border-[#EDE8E0] bg-white text-[#12141A] text-[13.5px] font-medium hover:bg-[#F9F8F6] inline-flex items-center gap-2 shadow-2xs transition-colors cursor-pointer"
                     >
                       <FileText className="h-4 w-4 text-[#666C78]" />
                       <span>Save as template</span>
@@ -1324,7 +1324,7 @@ export default function OverviewPage() {
                       <button
                         type="button"
                         onClick={() => setSnoozeDropdownOpen(!snoozeDropdownOpen)}
-                        className="h-10 px-3.5 rounded-[11px] border border-transparent hover:border-[#E6E2D8] text-[#12141A] hover:bg-[#FAF9F5] text-[13.5px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="h-10 px-3.5 rounded-[11px] border border-transparent hover:border-[#EDE8E0] text-[#12141A] hover:bg-[#FAF9F5] text-[13.5px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Clock className="h-4 w-4 text-[#666C78]" />
                         <span>Snooze</span>
@@ -1506,12 +1506,21 @@ export default function OverviewPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Recent Conversations */}
             <div className="card-ref p-6 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#EDE8E0] gap-2">
-                <h4 className="text-[16px] font-semibold text-[#12141A]">
-                  Recent Conversations
-                </h4>
-                {/* Lifecycle Status Classification Tabs */}
-                <div className="flex items-center gap-1 bg-[#EDE8E0] p-0.5 rounded-[8px] flex-wrap">
+              <div className="pb-2 border-b border-[#EDE8E0] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[16px] font-semibold text-[#12141A]">
+                    Recent Conversations
+                  </h4>
+                  <Link
+                    href={`/app/${orgSlug}/inbox`}
+                    className="text-[12px] font-medium text-[#FF5A1F] hover:underline flex items-center gap-1"
+                  >
+                    <span>View inbox</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+                {/* Lifecycle Status Classification Tabs (4-column grid, zero wrapping) */}
+                <div className="grid grid-cols-4 gap-1 bg-[#EDE8E0] p-0.5 rounded-[9px] w-full">
                   {(
                     [
                       { id: "all", label: "All", count: conversationCounts.all },
@@ -1525,9 +1534,9 @@ export default function OverviewPage() {
                       type="button"
                       onClick={() => setConversationFilter(tab.id)}
                       className={cn(
-                        "px-2 py-0.5 rounded-[6px] text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1",
+                        "py-1 rounded-[7px] text-[11px] font-medium transition-all cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap text-center",
                         conversationFilter === tab.id
-                          ? "bg-[#0B0D12] text-white shadow-xs"
+                          ? "bg-[#0B0D12] text-white shadow-xs font-semibold"
                           : "text-[#666C78] hover:text-[#12141A]"
                       )}
                     >

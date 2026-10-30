@@ -456,7 +456,7 @@ export default function LeadsPage() {
             <h1 className="text-[26px] sm:text-[28px] font-medium leading-[34px] tracking-[-0.02em] text-[#12141A]">
               Sales Pipeline
             </h1>
-            <div className="flex items-center rounded-[10px] border border-[#E6E2D8] bg-white p-0.5 shadow-2xs">
+            <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-white p-0.5 shadow-2xs">
               <button
                 type="button"
                 onClick={() => setViewMode("board")}
@@ -502,7 +502,7 @@ export default function LeadsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              className="h-10 w-full rounded-[12px] border border-[#E6E2D8] bg-white pl-9 pr-10 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-2xs transition-colors"
+              className="h-10 w-full rounded-[12px] border border-[#EDE8E0] bg-white pl-9 pr-10 text-[14px] text-[#12141A] placeholder:text-[#666C78] focus:border-[#FF5A1F] focus:outline-none shadow-2xs transition-colors"
             />
             <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-[5px] bg-[#F1F3F5] text-[11px] font-medium text-[#666C78] border border-[#E2E4E8] pointer-events-none">
               ⌘K
@@ -518,7 +518,7 @@ export default function LeadsPage() {
                 "h-10 px-3.5 rounded-[12px] border bg-white flex items-center gap-2 text-[14px] font-medium transition-colors cursor-pointer shadow-2xs",
                 selectedPriorityFilter !== "all"
                   ? "border-[#FF5A1F] text-[#FF5A1F] bg-[#FFF5F0]"
-                  : "border-[#E6E2D8] text-[#12141A] hover:bg-[#F9F8F6]"
+                  : "border-[#EDE8E0] text-[#12141A] hover:bg-[#F9F8F6]"
               )}
             >
               <SlidersHorizontal className="h-4 w-4 text-[#666C78]" />
@@ -529,7 +529,7 @@ export default function LeadsPage() {
             </button>
 
             {filterDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 rounded-[14px] bg-white border border-[#E6E2D8] shadow-lg p-2 z-30 animate-reveal">
+              <div className="absolute right-0 mt-2 w-48 rounded-[14px] bg-white border border-[#EDE8E0] shadow-lg p-2 z-30 animate-reveal">
                 <div className="px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-[#9CA3AF]">
                   Filter by Priority
                 </div>
@@ -570,7 +570,7 @@ export default function LeadsPage() {
           </button>
 
           {/* Team Avatar Stack & Invite Button */}
-          <div className="hidden xl:flex items-center pl-2 border-l border-[#E6E2D8] gap-2">
+          <div className="hidden xl:flex items-center pl-2 border-l border-[#EDE8E0] gap-2">
             <div className="flex items-center -space-x-2">
               {[
                 { name: "Praveen R.", bg: "bg-[#EAEEFF]", text: "text-[#2A3DB5]" },
@@ -595,7 +595,7 @@ export default function LeadsPage() {
             <button
               type="button"
               onClick={() => setInviteModalOpen(true)}
-              className="h-8 px-2.5 rounded-[9px] border border-[#E6E2D8] bg-white text-[12px] font-medium text-[#12141A] hover:bg-[#F9F8F6] flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="h-8 px-2.5 rounded-[9px] border border-[#EDE8E0] bg-white text-[12px] font-medium text-[#12141A] hover:bg-[#F9F8F6] flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <UserPlus className="h-3.5 w-3.5 text-[#666C78]" />
               <span>Invite</span>
@@ -610,7 +610,7 @@ export default function LeadsPage() {
       {viewMode === "board" && (
         <div className="flex flex-col gap-4 select-none">
           {/* Pipeline Interactive Guidance Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-2.5 rounded-[14px] bg-[#FAF9F5] border border-[#E6E2D8] text-[13px]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-2.5 rounded-[14px] bg-[#FAF9F5] border border-[#EDE8E0] text-[13px]">
             <div className="flex items-center gap-2.5 text-[#454B57]">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#FF5A1F]/10 text-[#FF5A1F]">
                 <GripVertical className="h-3.5 w-3.5" />
@@ -776,7 +776,7 @@ export default function LeadsPage() {
                                   </button>
 
                                   {isMenuOpen && (
-                                    <div className="absolute right-0 top-7 w-48 rounded-[12px] bg-white border border-[#E6E2D8] shadow-xl p-1.5 z-40 animate-reveal text-[13px]">
+                                    <div className="absolute right-0 top-7 w-48 rounded-[12px] bg-white border border-[#EDE8E0] shadow-xl p-1.5 z-40 animate-reveal text-[13px]">
                                       {lead.stage !== "won" && (
                                         <button
                                           type="button"
@@ -937,7 +937,7 @@ export default function LeadsPage() {
                                     e.stopPropagation();
                                     handleAdvanceStage(lead.id, lead.stage);
                                   }}
-                                  className="px-2.5 py-1 rounded-[7px] bg-[#FAF9F5] hover:bg-[#FF5A1F] text-[#454B57] hover:text-white border border-[#E6E2D8] hover:border-[#FF5A1F] text-[11.5px] font-medium flex items-center gap-1 transition-all duration-150 active:scale-95 group/adv"
+                                  className="px-2.5 py-1 rounded-[7px] bg-[#FAF9F5] hover:bg-[#FF5A1F] text-[#454B57] hover:text-white border border-[#EDE8E0] hover:border-[#FF5A1F] text-[11.5px] font-medium flex items-center gap-1 transition-all duration-150 active:scale-95 group/adv"
                                   style={{
                                     transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
                                   }}
