@@ -313,6 +313,30 @@ export default function OverviewPage() {
     }
   }, [currentTime, selectedTimezone]);
 
+  // Dynamic greeting based on current hour in selected timezone
+  const greeting = useMemo(() => {
+    try {
+      const hourStr = new Intl.DateTimeFormat("en-US", {
+        timeZone: selectedTimezone,
+        hour: "numeric",
+        hour12: false,
+      }).format(currentTime);
+      const hour = parseInt(hourStr, 10);
+      if (hour >= 4 && hour < 12) {
+        return "Good morning";
+      } else if (hour >= 12 && hour < 17) {
+        return "Good afternoon";
+      } else {
+        return "Good evening";
+      }
+    } catch {
+      const hour = currentTime.getHours();
+      if (hour >= 4 && hour < 12) return "Good morning";
+      if (hour >= 12 && hour < 17) return "Good afternoon";
+      return "Good evening";
+    }
+  }, [currentTime, selectedTimezone]);
+
   // Recent conversations lifecycle tab filter: "all" | "ongoing" | "open" | "closed"
   const [conversationFilter, setConversationFilter] = useState<"all" | "ongoing" | "open" | "closed">("all");
 
@@ -560,7 +584,7 @@ export default function OverviewPage() {
         <div>
           <div className="flex items-center gap-3 flex-wrap">
             <h2 className="text-[22px] sm:text-[24px] font-semibold text-[#12141A] tracking-[-0.02em] leading-tight">
-              Good morning, Praveen
+              {greeting}, Praveen
             </h2>
 
             {/* Live Clock with Selectable Timezone Dropdown */}

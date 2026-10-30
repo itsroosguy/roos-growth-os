@@ -99,23 +99,23 @@ async function main() {
     let ready = false;
     for (let i = 0; i < 40; i++) {
       const check = await sendCommand(ws, 'Runtime.evaluate', {
-        expression: 'document.body.innerText.includes("Good morning, Praveen") && document.body.innerText.includes("Action required")',
+        expression: 'document.body.innerText.includes("has waited") && document.body.innerText.includes("Action required")',
       });
       if (check && check.result && check.result.value) {
         ready = true;
         break;
       }
-      await sleep(250);
+      await sleep(300);
     }
     console.log('Page ready state:', ready);
 
-    await sleep(800); // let animations settle
+    await sleep(3000); // let styles & animations settle
 
     // Audit computed styles and element checks
     const auditRes = await sendCommand(ws, 'Runtime.evaluate', {
       returnByValue: true,
       expression: `(() => {
-        const greetingEl = Array.from(document.querySelectorAll('h2')).find(el => el.innerText.includes('Good morning, Praveen'));
+        const greetingEl = Array.from(document.querySelectorAll('h2')).find(el => el.innerText.includes('Praveen'));
         const greetingStyle = greetingEl ? window.getComputedStyle(greetingEl) : null;
 
         const tzButton = Array.from(document.querySelectorAll('button')).find(el => el.getAttribute('title') === 'Select timezone');
