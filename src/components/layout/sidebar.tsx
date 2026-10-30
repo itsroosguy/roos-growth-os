@@ -28,8 +28,8 @@ import {
   Menu,
   X,
   LogOut,
-  Terminal,
-  Plus,
+  Search,
+  Sparkle,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -42,9 +42,8 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
-  isAttentionBadge?: boolean;
+  badgeType?: "count" | "ai";
   shortcut?: string;
-  module: string;
 }
 
 interface NavGroup {
@@ -53,126 +52,15 @@ interface NavGroup {
   items: NavItem[];
 }
 
-// 2027 Module Colors: Meaningful hue mapping
-const MODULE_COLORS: Record<
-  string,
-  { tint: string; text: string; hover: string; border: string }
-> = {
-  overview: {
-    tint: "bg-[#FFF1EA]",
-    text: "text-[#FF5A1F]",
-    hover: "group-hover:text-[#FF5A1F]",
-    border: "border-[#FFE2D4]",
-  },
-  inbox: {
-    tint: "bg-[#EAEEFF]",
-    text: "text-[#3D5AFE]",
-    hover: "group-hover:text-[#3D5AFE]",
-    border: "border-[#D3DCFF]",
-  },
-  leads: {
-    tint: "bg-[#E4F7EF]",
-    text: "text-[#12B886]",
-    hover: "group-hover:text-[#12B886]",
-    border: "border-[#BDECD7]",
-  },
-  contacts: {
-    tint: "bg-[#E3F3FD]",
-    text: "text-[#1FA2E8]",
-    hover: "group-hover:text-[#1FA2E8]",
-    border: "border-[#BFE3FA]",
-  },
-  campaigns: {
-    tint: "bg-[#F0EAFF]",
-    text: "text-[#7C4DFF]",
-    hover: "group-hover:text-[#7C4DFF]",
-    border: "border-[#D9C9FF]",
-  },
-  templates: {
-    tint: "bg-[#F0EAFF]",
-    text: "text-[#7C4DFF]",
-    hover: "group-hover:text-[#7C4DFF]",
-    border: "border-[#D9C9FF]",
-  },
-  automations: {
-    tint: "bg-[#FFF3D6]",
-    text: "text-[#F5A524]",
-    hover: "group-hover:text-[#F5A524]",
-    border: "border-[#FFE5A3]",
-  },
-  tasks: {
-    tint: "bg-[#FFF3D6]",
-    text: "text-[#F5A524]",
-    hover: "group-hover:text-[#F5A524]",
-    border: "border-[#FFE5A3]",
-  },
-  reports: {
-    tint: "bg-[#E4F7EF]",
-    text: "text-[#12B886]",
-    hover: "group-hover:text-[#12B886]",
-    border: "border-[#BDECD7]",
-  },
-  team: {
-    tint: "bg-[#E3F3FD]",
-    text: "text-[#1FA2E8]",
-    hover: "group-hover:text-[#1FA2E8]",
-    border: "border-[#BFE3FA]",
-  },
-  whatsapp: {
-    tint: "bg-[#EAEEFF]",
-    text: "text-[#3D5AFE]",
-    hover: "group-hover:text-[#3D5AFE]",
-    border: "border-[#D3DCFF]",
-  },
-  "settings-ai": {
-    tint: "bg-[#F0EAFF]",
-    text: "text-[#7C4DFF]",
-    hover: "group-hover:text-[#7C4DFF]",
-    border: "border-[#D9C9FF]",
-  },
-  "settings-admin": {
-    tint: "bg-[#1B1F29]",
-    text: "text-[#FF5A1F]",
-    hover: "group-hover:text-[#FF5A1F]",
-    border: "border-[#242A38]",
-  },
-  subscription: {
-    tint: "bg-[#E4F7EF]",
-    text: "text-[#12B886]",
-    hover: "group-hover:text-[#12B886]",
-    border: "border-[#BDECD7]",
-  },
-  settings: {
-    tint: "bg-[#1B1F29]",
-    text: "text-[#F4F5F7]",
-    hover: "group-hover:text-[#F4F5F7]",
-    border: "border-[#242A38]",
-  },
-};
-
 export function Sidebar({ orgSlug }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { currentOrg, userRole, setUserRole, isJuniorManager } = useTenant();
+  const { currentOrg, userRole } = useTenant();
 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [quickCreateOpen, setQuickCreateOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [sandboxOpen, setSandboxOpen] = useState(false);
-
-  // Configuration group auto-expansion & default collapsed state
-  const isConfigRoute = useMemo(() => {
-    return (
-      pathname.includes("/whatsapp") ||
-      pathname.includes("/settings") ||
-      pathname.includes("/subscription")
-    );
-  }, [pathname]);
-
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({
-    configuration: !isConfigRoute,
-  });
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   // Tooltip state for collapsed rail
   const [hoveredTooltip, setHoveredTooltip] = useState<{
@@ -181,32 +69,23 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     top: number;
   } | null>(null);
 
-  // Initialize and persist collapsed state from localStorage
+  // Initialize and persist collapsed state
   useEffect(() => {
     try {
-      const savedCollapsed = localStorage.getItem("roos_sidebar_collapsed_2027");
+      const savedCollapsed = localStorage.getItem("roos_sidebar_collapsed");
       if (savedCollapsed !== null) {
         setCollapsed(savedCollapsed === "true");
-      }
-      const savedGroups = localStorage.getItem("roos_sidebar_groups_2027");
-      if (savedGroups) {
-        const parsed = JSON.parse(savedGroups);
-        // Ensure configuration expands if currently on a config route
-        if (isConfigRoute) {
-          parsed.configuration = false;
-        }
-        setCollapsedGroups(parsed);
       }
     } catch {
       // Ignore
     }
-  }, [isConfigRoute]);
+  }, []);
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
       const next = !prev;
       try {
-        localStorage.setItem("roos_sidebar_collapsed_2027", String(next));
+        localStorage.setItem("roos_sidebar_collapsed", String(next));
       } catch {
         // Ignore
       }
@@ -215,23 +94,23 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   };
 
   const toggleGroup = (groupId: string) => {
-    setCollapsedGroups((prev) => {
-      const next = { ...prev, [groupId]: !prev[groupId] };
-      try {
-        localStorage.setItem("roos_sidebar_groups_2027", JSON.stringify(next));
-      } catch {
-        // Ignore
-      }
-      return next;
-    });
+    setCollapsedGroups((prev) => ({
+      ...prev,
+      [groupId]: !prev[groupId],
+    }));
   };
 
-  // Nav Groups strictly matching specifications
+  // Trigger global command palette via ⌘K
+  const openCommandPalette = () => {
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+  };
+
+  // Nav Groups strictly matching specifications: Main, Growth Tools, Settings
   const navGroups = useMemo<NavGroup[]>(() => {
-    const groups: NavGroup[] = [
+    return [
       {
-        id: "workspace",
-        label: "Workspace",
+        id: "main",
+        label: "Main",
         items: [
           {
             id: "overview",
@@ -239,17 +118,15 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             href: `/app/${orgSlug}/overview`,
             icon: Home,
             shortcut: "G O",
-            module: "overview",
           },
           {
             id: "inbox",
-            title: "WhatsApp",
+            title: "WhatsApp inbox",
             href: `/app/${orgSlug}/inbox`,
             icon: MessageSquare,
             badge: "3",
-            isAttentionBadge: true,
+            badgeType: "count",
             shortcut: "G I",
-            module: "inbox",
           },
           {
             id: "leads",
@@ -257,7 +134,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             href: `/app/${orgSlug}/leads`,
             icon: Filter,
             shortcut: "G P",
-            module: "leads",
           },
           {
             id: "contacts",
@@ -265,137 +141,112 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             href: `/app/${orgSlug}/contacts`,
             icon: Users,
             shortcut: "G C",
-            module: "contacts",
           },
-        ],
-      },
-      {
-        id: "engagement",
-        label: "Engagement",
-        items: [
           {
             id: "campaigns",
             title: "Broadcasts",
             href: `/app/${orgSlug}/campaigns`,
             icon: Send,
-            module: "campaigns",
-          },
-          {
-            id: "templates",
-            title: "Templates",
-            href: `/app/${orgSlug}/templates`,
-            icon: FileText,
-            module: "templates",
+            shortcut: "G B",
           },
           {
             id: "automations",
             title: "Automations",
             href: `/app/${orgSlug}/automations`,
             icon: Zap,
-            module: "automations",
+            shortcut: "G A",
           },
-        ],
-      },
-      {
-        id: "operations",
-        label: "Operations",
-        items: [
           {
             id: "tasks",
             title: "Tasks & SLAs",
             href: `/app/${orgSlug}/tasks`,
             icon: CheckCircle2,
             badge: "4",
-            isAttentionBadge: true,
+            badgeType: "count",
             shortcut: "G T",
-            module: "tasks",
           },
           {
             id: "reports",
             title: "Analytics & Reports",
             href: `/app/${orgSlug}/reports`,
             icon: BarChart3,
-            module: "reports",
-          },
-          {
-            id: "team",
-            title: "Team Roster",
-            href: `/app/${orgSlug}/team`,
-            icon: Shield,
-            module: "team",
+            shortcut: "G R",
           },
         ],
       },
       {
-        id: "configuration",
-        label: "Configuration",
+        id: "growth-tools",
+        label: "Growth Tools",
         items: [
-          {
-            id: "whatsapp",
-            title: "WhatsApp API",
-            href: `/app/${orgSlug}/whatsapp`,
-            icon: Smartphone,
-            module: "whatsapp",
-          },
           {
             id: "settings-ai",
             title: "AI Engine",
             href: `/app/${orgSlug}/settings/ai`,
             icon: Sparkles,
-            module: "settings-ai",
+            badge: "AI",
+            badgeType: "ai",
+          },
+          {
+            id: "templates",
+            title: "Templates",
+            href: `/app/${orgSlug}/templates`,
+            icon: FileText,
           },
           {
             id: "settings-admin",
             title: "Integrations",
             href: `/app/${orgSlug}/settings/admin`,
             icon: Sliders,
-            module: "settings-admin",
+          },
+        ],
+      },
+      {
+        id: "settings",
+        label: "Settings",
+        items: [
+          {
+            id: "team",
+            title: "Team Roster",
+            href: `/app/${orgSlug}/team`,
+            icon: Shield,
           },
           {
             id: "subscription",
             title: "Subscription & Limits",
             href: `/app/${orgSlug}/subscription`,
             icon: CreditCard,
-            module: "subscription",
           },
           {
-            id: "settings",
+            id: "business-profile",
             title: "Organisation Details",
-            href: `/app/${orgSlug}/settings`,
+            href: `/app/${orgSlug}/settings/business-profile`,
             icon: Building2,
-            module: "settings",
+          },
+          {
+            id: "whatsapp",
+            title: "WhatsApp API",
+            href: `/app/${orgSlug}/whatsapp`,
+            icon: Smartphone,
           },
         ],
       },
     ];
+  }, [orgSlug]);
 
-    if (isJuniorManager) {
-      return [
-        {
-          id: "workspace",
-          label: "Workspace",
-          items: groups[0].items.filter((i) => i.id !== "leads"),
-        },
-        groups[1],
-        {
-          id: "operations",
-          label: "Operations",
-          items: groups[2].items.filter((i) => i.id !== "team"),
-        },
-      ];
-    }
-
-    return groups;
-  }, [orgSlug, isJuniorManager]);
-
-  // Exact / Longest-route active matching
+  // Exact-match logic: Exactly one active item per route
   const activeHref = useMemo(() => {
-    let bestMatch = "";
+    // 1. Check exact equality first
     for (const group of navGroups) {
       for (const item of group.items) {
         if (pathname === item.href) {
           return item.href;
         }
+      }
+    }
+    // 2. Sub-route prefix match (e.g. /campaigns/camp-101 matches /campaigns)
+    let bestMatch = "";
+    for (const group of navGroups) {
+      for (const item of group.items) {
         if (pathname.startsWith(item.href) && item.href.length > bestMatch.length) {
           bestMatch = item.href;
         }
@@ -404,253 +255,102 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     return bestMatch;
   }, [pathname, navGroups]);
 
-  // Global Keyboard Shortcuts (G O, G I, G P, G C, G T, C)
-  useEffect(() => {
-    let lastKey = "";
-    let lastKeyTime = 0;
+  // Plan name calculation
+  const planName = useMemo(() => {
+    const tier = currentOrg.plan_tier || "growth";
+    return tier.charAt(0).toUpperCase() + tier.slice(1) + " Plan";
+  }, [currentOrg.plan_tier]);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) {
-        return;
-      }
-
-      const now = Date.now();
-      const key = e.key.toLowerCase();
-
-      // Quick create shortcut
-      if (key === "c" && !e.metaKey && !e.ctrlKey && now - lastKeyTime > 800) {
-        e.preventDefault();
-        setQuickCreateOpen((prev) => !prev);
-        return;
-      }
-
-      // 'G' navigation prefix chords
-      if (lastKey === "g" && now - lastKeyTime < 1000) {
-        if (key === "o") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/overview`);
-        } else if (key === "i") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/inbox`);
-        } else if (key === "p") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/leads`);
-        } else if (key === "c") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/contacts`);
-        } else if (key === "t") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/tasks`);
-        } else if (key === "b") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/campaigns`);
-        } else if (key === "a") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/automations`);
-        } else if (key === "r") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/reports`);
-        } else if (key === "m") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/team`);
-        } else if (key === "s") {
-          e.preventDefault();
-          router.push(`/app/${orgSlug}/settings`);
-        }
-        lastKey = "";
-        return;
-      }
-
-      if (key === "g" && !e.metaKey && !e.ctrlKey) {
-        lastKey = "g";
-        lastKeyTime = now;
-      } else {
-        lastKey = "";
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [router, orgSlug]);
-
-  // Clean human-friendly role representation
-  const roleLabel = useMemo(() => {
-    switch (userRole) {
-      case "owner":
-        return "Owner";
-      case "admin":
-        return "Admin";
-      case "senior_manager":
-        return "Manager";
-      case "junior_manager":
-        return "Staff";
-      case "staff":
-        return "Staff";
-      default:
-        return "Member";
-    }
-  }, [userRole]);
+  const isBelowTopTier = currentOrg.plan_tier !== "business";
 
   const avatarColors = getAvatarColor("Praveen");
 
   const sidebarContent = (
-    <div
-      className={cn(
-        "flex h-full flex-col text-[#F4F5F7] select-none rounded-[24px] overflow-hidden",
-        collapsed ? "w-[76px]" : "w-[272px]"
-      )}
-    >
-      {/* 1. TOP LOGO BLOCK (68px) - Perfectly center-aligned logo */}
-      <div
-        className={cn(
-          "relative flex h-[68px] shrink-0 items-center justify-center border-b border-[#1B1F29]/60 rounded-t-[24px] px-4",
-          collapsed && "px-2"
-        )}
-      >
+    <div className="flex h-full flex-col text-[#F4F5F7] select-none bg-[#0B0D12] overflow-hidden">
+      {/* 1. TOP LOGO & COLLAPSE HEADER */}
+      <div className="relative flex h-[64px] shrink-0 items-center justify-between px-4 border-b border-white/[0.06]">
         <Link
           href={`/app/${orgSlug}/overview`}
-          className="flex items-center justify-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px] hover:opacity-90 transition-opacity"
+          className="flex items-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px]"
           title="ROOS STUDIOX"
         >
           <RoosLogo collapsed={collapsed} size={collapsed ? "sm" : "md"} className="shrink-0" />
         </Link>
 
-        {/* Collapse Toggle Button */}
+        {/* Collapse Chevron Button */}
         <button
           type="button"
           onClick={toggleCollapsed}
-          className={cn(
-            "hidden lg:flex items-center justify-center rounded-[8px] text-[#A3A9B6] hover:bg-[#1B1F29] hover:text-[#F4F5F7] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] cursor-pointer absolute top-1/2 -translate-y-1/2",
-            collapsed
-              ? "-right-3 h-6 w-6 rounded-full bg-[#1B1F29] border border-[#2E3545] shadow-md z-30 hover:bg-[#FF5A1F] hover:border-[#FF5A1F] hover:text-white"
-              : "right-3 h-7 w-7"
-          )}
+          className="hidden lg:flex items-center justify-center h-7 w-7 rounded-[8px] text-[#A3A9B6] hover:bg-white/[0.08] hover:text-[#F4F5F7] transition-all duration-140 cursor-pointer"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
-            <ChevronRight className="h-3.5 w-3.5" />
+            <ChevronRight className="h-4 w-4" />
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
         </button>
       </div>
 
-      {/* 2. QUICK CREATE BUTTON (Beneath Logo Block) */}
-      <div className="px-3 pt-3 pb-2 relative">
+      {/* 2. SEARCH FIELD (⌘K) INSIDE SIDEBAR */}
+      <div className="px-3 pt-3 pb-1">
         <button
           type="button"
-          onClick={() => setQuickCreateOpen((prev) => !prev)}
+          onClick={openCommandPalette}
           className={cn(
-            "group relative flex items-center justify-center rounded-[12px] bg-[#1B1F29] text-[#F4F5F7] border border-[#242A38] hover:bg-[#12151C] hover:border-[#373E50] transition-all duration-140 ease-spring active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
-            collapsed ? "h-11 w-11 mx-auto" : "h-10 w-full px-3 justify-between"
+            "group flex items-center rounded-[12px] bg-[#12151C] text-[#A3A9B6] border border-white/[0.06] hover:bg-[#1B1F29] hover:border-white/[0.12] hover:text-[#F4F5F7] transition-all duration-140 cursor-pointer",
+            collapsed
+              ? "h-10 w-10 mx-auto justify-center"
+              : "h-[40px] w-full px-3 justify-between"
           )}
-          title="Quick create (C)"
+          title="Search anything (⌘K)"
         >
-          <div className="flex items-center gap-2">
-            <Plus className="h-4 w-4 text-[#FF5A1F] transition-transform duration-140 group-hover:rotate-90" />
+          <div className="flex items-center gap-2.5">
+            <Search className="h-4 w-4 text-[#A3A9B6] group-hover:text-[#FF5A1F] transition-colors" />
             {!collapsed && (
-              <span className="text-[14px] font-medium text-[#F4F5F7]">
-                Quick create
+              <span className="text-[14px] font-normal text-[#A3A9B6] group-hover:text-[#F4F5F7]">
+                Search...
               </span>
             )}
           </div>
           {!collapsed && (
-            <kbd className="hidden sm:inline-flex items-center rounded-[6px] border border-[#242A38] bg-[#0B0D12] px-1.5 py-0.5 text-[11px] text-[#A3A9B6]">
-              C
+            <kbd className="inline-flex items-center rounded-[6px] border border-white/[0.1] bg-[#0B0D12] px-1.5 py-0.5 text-[11px] text-[#6B7280]">
+              ⌘K
             </kbd>
           )}
         </button>
-
-        {/* Quick Create Dropdown Menu */}
-        {quickCreateOpen && (
-          <>
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setQuickCreateOpen(false)}
-            />
-            <div
-              className={cn(
-                "absolute z-50 rounded-[16px] border border-[#242A38] bg-[#12151C] p-1.5 shadow-overlay text-[#F4F5F7] animate-reveal",
-                collapsed ? "left-full top-3 ml-2 w-52" : "left-3 right-3 top-full mt-1.5"
-              )}
-            >
-              <Link
-                href={`/app/${orgSlug}/leads?action=new`}
-                onClick={() => setQuickCreateOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[14px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
-              >
-                <Filter className="h-4 w-4 text-[#12B886]" />
-                <span>New opportunity</span>
-              </Link>
-              <Link
-                href={`/app/${orgSlug}/contacts?action=new`}
-                onClick={() => setQuickCreateOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[14px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
-              >
-                <Users className="h-4 w-4 text-[#1FA2E8]" />
-                <span>New contact</span>
-              </Link>
-              <Link
-                href={`/app/${orgSlug}/tasks?action=new`}
-                onClick={() => setQuickCreateOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[14px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
-              >
-                <CheckCircle2 className="h-4 w-4 text-[#F5A524]" />
-                <span>New task</span>
-              </Link>
-              <Link
-                href={`/app/${orgSlug}/campaigns?action=new`}
-                onClick={() => setQuickCreateOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[14px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] transition-colors"
-              >
-                <Send className="h-4 w-4 text-[#7C4DFF]" />
-                <span>New broadcast</span>
-              </Link>
-            </div>
-          </>
-        )}
       </div>
 
-      {/* 3. NAVIGATION ITEMS SCROLL AREA (42px rows, 24px group spacing, hidden scrollbar with edge fades) */}
-      <nav
-        className="flex-1 overflow-y-auto px-3 py-2 space-y-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{
-          maskImage: "linear-gradient(to bottom, black calc(100% - 24px), transparent 100%)",
-        }}
-      >
+      {/* 3. THREE NAVIGATION GROUPS (42px rows, 22px icons, 15px labels, 12px radius) */}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {navGroups.map((group) => {
           const isGroupCollapsed = !!collapsedGroups[group.id];
 
           return (
-            <div key={group.id} className="first:mt-1">
-              {/* Group Label */}
+            <div key={group.id} className="space-y-1">
+              {/* Group Header */}
               {!collapsed ? (
-                <div className="flex items-center justify-between px-3 mb-2">
-                  <span className="text-[12px] font-medium tracking-[0.06em] text-[#6B7280] uppercase">
+                <div className="flex items-center justify-between px-3 py-1">
+                  <span className="text-[11px] font-semibold tracking-[0.06em] text-[#6B7280] uppercase">
                     {group.label}
                   </span>
                   <button
                     type="button"
                     onClick={() => toggleGroup(group.id)}
-                    className="h-4 w-4 flex items-center justify-center text-[#6B7280] hover:text-[#A3A9B6] transition-colors"
+                    className="h-4 w-4 flex items-center justify-center text-[#6B7280] hover:text-[#A3A9B6] transition-colors cursor-pointer"
                     aria-label={`Toggle ${group.label} group`}
                   >
                     <ChevronDown
                       className={cn(
-                        "h-3 w-3 transition-transform duration-160",
+                        "h-3 w-3 transition-transform duration-140",
                         isGroupCollapsed && "-rotate-90"
                       )}
                     />
                   </button>
                 </div>
               ) : (
-                <div className="my-2 border-t border-[#1B1F29]/60" />
+                <div className="my-2 border-t border-white/[0.06]" />
               )}
 
               {/* Group Items */}
@@ -659,7 +359,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeHref === item.href;
-                    const modColor = MODULE_COLORS[item.module] || MODULE_COLORS.overview;
 
                     return (
                       <Link
@@ -677,69 +376,54 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                         }}
                         onMouseLeave={() => setHoveredTooltip(null)}
                         aria-current={isActive ? "page" : undefined}
+                        data-nav-active={isActive ? "true" : undefined}
                         className={cn(
-                          "nav-item group relative flex items-center h-[42px] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
-                          collapsed && "justify-center px-0 w-11 mx-auto"
+                          "group relative flex items-center h-[42px] rounded-[12px] transition-all duration-140 cursor-pointer",
+                          collapsed ? "justify-center w-11 mx-auto px-0" : "px-3 gap-3",
+                          isActive
+                            ? "bg-gradient-to-b from-[#FF7A3D] to-[#FF5A1F] text-white shadow-[0_4px_12px_rgba(255,90,31,0.35)]"
+                            : "text-[#A3A9B6] hover:bg-white/[0.06] hover:text-[#F4F5F7]"
                         )}
                       >
-                        {/* 3px Flame Active Bar on Left Edge */}
-                        {isActive && (
-                          <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r bg-[#FF5A1F] transition-all duration-320 shadow-[0_0_8px_rgba(255,90,31,0.5)]" />
-                        )}
+                        {/* 22px Icon */}
+                        <Icon
+                          className={cn(
+                            "h-[22px] w-[22px] shrink-0 transition-colors",
+                            isActive ? "text-white" : "text-[#A3A9B6] group-hover:text-white"
+                          )}
+                        />
 
-                        {/* Active: 36px rounded-square chip in module's hue tint with duotone icon */}
-                        {isActive ? (
-                          <div
-                            className={cn(
-                              "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] transition-transform duration-120",
-                              modColor.tint,
-                              modColor.text
-                            )}
-                          >
-                            <Icon className="h-[22px] w-[22px]" />
-                          </div>
-                        ) : (
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center transition-transform duration-120 group-hover:translate-x-[1px]">
-                            <Icon
-                              className={cn(
-                                "h-[22px] w-[22px] text-[#A3A9B6] transition-colors duration-140",
-                                modColor.hover
-                              )}
-                            />
-                          </div>
-                        )}
-
-                        {/* Title Label: 16px */}
+                        {/* 15px Label */}
                         {!collapsed && (
                           <span
                             className={cn(
-                              "ml-3 truncate text-[16px] leading-tight transition-colors",
-                              isActive
-                                ? "text-[#F4F5F7] font-medium"
-                                : "text-[#A3A9B6] group-hover:text-[#F4F5F7] font-normal"
+                              "text-[15px] leading-tight truncate",
+                              isActive ? "font-medium text-white" : "font-normal"
                             )}
                           >
                             {item.title}
                           </span>
                         )}
 
-                        {/* Badges: Flame for attention counts */}
+                        {/* Badges: Orange rounded square */}
                         {item.badge && !collapsed && (
                           <span
                             className={cn(
-                              "ml-auto h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[13px] font-variant-numeric tabular-nums font-medium",
-                              item.isAttentionBadge
-                                ? "bg-[#FF5A1F] text-white"
-                                : "bg-[#1B1F29] text-[#A3A9B6] border border-[#242A38]"
+                              "ml-auto text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-[6px] shrink-0",
+                              item.badgeType === "ai"
+                                ? "bg-[#FF5A1F] text-white shadow-xs"
+                                : isActive
+                                ? "bg-white/20 text-white"
+                                : "bg-[#FF5A1F] text-white"
                             )}
                           >
                             {item.badge}
                           </span>
                         )}
 
-                        {/* Collapsed dot marker for attention badge */}
-                        {item.badge && collapsed && item.isAttentionBadge && (
-                          <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-[#FF5A1F]" />
+                        {/* Dot badge when collapsed */}
+                        {item.badge && collapsed && (
+                          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#FF5A1F]" />
                         )}
                       </Link>
                     );
@@ -754,91 +438,69 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       {/* FLOATING HOVER TOOLTIP IN COLLAPSED MODE */}
       {collapsed && hoveredTooltip && (
         <div
-          className="fixed z-50 left-[96px] px-3 py-1.5 rounded-[8px] bg-[#12151C] text-[#F4F5F7] border border-[#242A38] text-[13px] font-medium shadow-overlay pointer-events-none flex items-center gap-2 animate-reveal"
+          className="fixed z-50 left-[84px] px-3 py-1.5 rounded-[8px] bg-[#12151C] text-[#F4F5F7] border border-white/[0.12] text-[13px] font-medium shadow-overlay pointer-events-none flex items-center gap-2"
           style={{ top: `${hoveredTooltip.top + 6}px` }}
         >
           <span>{hoveredTooltip.title}</span>
           {hoveredTooltip.shortcut && (
-            <kbd className="text-[11px] text-[#A3A9B6] border border-[#242A38] bg-[#0B0D12] px-1 py-0.5 rounded">
+            <kbd className="text-[11px] text-[#A3A9B6] border border-white/[0.1] bg-[#0B0D12] px-1 py-0.5 rounded">
               {hoveredTooltip.shortcut}
             </kbd>
           )}
         </div>
       )}
 
-      {/* 4. PINNED BOTTOM USER ACCOUNT & COLLAPSED SANDBOX */}
-      <div className="shrink-0 p-3 border-t border-[#1B1F29]/60 space-y-2 rounded-b-[24px]">
-        {/* Collapsible Sandbox Simulation Controller */}
-        <div>
-          <button
-            type="button"
-            onClick={() => setSandboxOpen((prev) => !prev)}
-            className={cn(
-              "flex items-center justify-between w-full px-2.5 py-1.5 rounded-[8px] text-[12px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29]/60 transition-colors",
-              collapsed && "justify-center px-0 w-11 mx-auto"
-            )}
-            title="Sandbox Simulation Controls"
-          >
-            <div className="flex items-center gap-2">
-              <Terminal className="h-3.5 w-3.5 text-[#FF5A1F]" />
-              {!collapsed && <span>Sandbox Tools</span>}
-            </div>
-            {!collapsed && (
-              <ChevronDown
-                className={cn(
-                  "h-3 w-3 text-[#6B7280] transition-transform",
-                  sandboxOpen && "rotate-180"
-                )}
-              />
-            )}
-          </button>
+      {/* 4. PINNED BOTTOM SECTION: PLAN UPGRADE CARD & ACCOUNT CARD */}
+      <div className="shrink-0 p-3 border-t border-white/[0.06] space-y-2.5">
+        {/* Plan Upgrade Card (rendered when below top tier) */}
+        {isBelowTopTier && !collapsed && (
+          <div className="relative rounded-[14px] bg-[#12151C] border border-white/[0.08] p-3.5 overflow-hidden shadow-xs">
+            {/* Radial orange glow in corner */}
+            <div
+              className="absolute pointer-events-none -right-4 -bottom-4 w-28 h-28 rounded-full"
+              style={{
+                background: "radial-gradient(circle, rgba(255,90,31,0.38) 0%, transparent 70%)",
+              }}
+            />
 
-          {sandboxOpen && !collapsed && (
-            <div className="mt-2 p-2.5 rounded-[12px] bg-[#12151C] border border-[#242A38] space-y-2 text-[12px] animate-reveal">
-              <div className="flex items-center justify-between text-[#A3A9B6]">
-                <span>Active Role:</span>
-                <span className="text-[#FF5A1F] font-medium uppercase">{userRole}</span>
+            <div className="relative z-10 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-white block">
+                  {planName}
+                </span>
+                <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full bg-[#FF5A1F]/20 text-[#FF5A1F] border border-[#FF5A1F]/30">
+                  Active
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-1.5 pt-1">
-                {(["owner", "admin", "senior_manager", "junior_manager"] as const).map(
-                  (role) => (
-                    <button
-                      key={role}
-                      type="button"
-                      onClick={() => setUserRole(role)}
-                      className={cn(
-                        "px-1.5 py-1 rounded-[6px] text-[11px] transition-colors border text-center capitalize",
-                        userRole === role
-                          ? "bg-[#FF5A1F]/15 text-[#FF5A1F] border-[#FF5A1F]/40 font-medium"
-                          : "bg-[#1B1F29] text-[#A3A9B6] border-[#242A38] hover:text-[#F4F5F7]"
-                      )}
-                    >
-                      {role.replace("_", " ")}
-                    </button>
-                  )
-                )}
-              </div>
+              <p className="text-[12px] text-[#A3A9B6] font-normal leading-snug">
+                Scale broadcasts &amp; unlock unlimited automations.
+              </p>
+              <Link
+                href={`/app/${orgSlug}/subscription`}
+                className="inline-flex items-center justify-center w-full h-8 rounded-[10px] bg-gradient-to-b from-[#FF7A3D] to-[#FF5A1F] text-white text-[12px] font-medium shadow-[0_2px_8px_rgba(255,90,31,0.3)] hover:opacity-95 transition-opacity"
+              >
+                Upgrade Plan
+              </Link>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 56px Workspace & Account Card */}
+        {/* Account Card (Avatar, Name, Role, Workspace, Chevron) */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setUserMenuOpen((prev) => !prev)}
             className={cn(
-              "flex items-center justify-between w-full h-14 p-2 rounded-[14px] bg-[#12151C] border border-[#1B1F29] hover:border-[#242A38] transition-all duration-140 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F]",
-              collapsed && "justify-center p-0 h-11 w-11 mx-auto"
+              "flex items-center justify-between w-full h-[52px] px-2.5 rounded-[12px] bg-[#12151C] border border-white/[0.06] hover:bg-[#1B1F29] hover:border-white/[0.12] transition-all duration-140 cursor-pointer",
+              collapsed && "justify-center p-0 h-10 w-10 mx-auto"
             )}
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div
                 className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border text-[13px] font-medium",
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[13px] font-semibold",
                   avatarColors.bg,
-                  avatarColors.text,
-                  avatarColors.border
+                  avatarColors.text
                 )}
               >
                 {getInitials("Praveen")}
@@ -850,8 +512,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                     <span className="text-[14px] font-medium text-[#F4F5F7] truncate leading-tight">
                       Praveen
                     </span>
-                    <span className="text-[11px] uppercase px-1.5 py-0.5 rounded-[4px] bg-[#1B1F29] text-[#A3A9B6] border border-[#242A38]">
-                      {roleLabel}
+                    <span className="text-[10px] uppercase px-1 py-0.2 rounded bg-white/[0.08] text-[#A3A9B6]">
+                      {userRole === "owner" ? "Owner" : "Admin"}
                     </span>
                   </div>
                   <span className="text-[12px] text-[#6B7280] truncate mt-0.5">
@@ -866,7 +528,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             )}
           </button>
 
-          {/* User Account Popover */}
+          {/* User Popover Menu */}
           {userMenuOpen && (
             <>
               <div
@@ -875,32 +537,32 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               />
               <div
                 className={cn(
-                  "absolute z-50 rounded-[16px] border border-[#242A38] bg-[#12151C] p-2 shadow-overlay text-[#F4F5F7] animate-reveal",
+                  "absolute z-50 rounded-[14px] border border-white/[0.12] bg-[#12151C] p-1.5 shadow-overlay text-[#F4F5F7] animate-reveal",
                   collapsed
-                    ? "left-full bottom-0 ml-2 w-56"
+                    ? "left-full bottom-0 ml-2 w-52"
                     : "bottom-full mb-2 left-0 right-0"
                 )}
               >
-                <div className="px-2.5 py-2 border-b border-[#1B1F29] mb-1">
-                  <p className="text-[14px] font-medium text-[#F4F5F7]">Praveen</p>
-                  <p className="text-[12px] text-[#6B7280] truncate">praveen@roosstudiox.com</p>
+                <div className="px-3 py-2 border-b border-white/[0.08] mb-1">
+                  <p className="text-[13px] font-medium text-[#F4F5F7]">Praveen</p>
+                  <p className="text-[11px] text-[#6B7280] truncate">praveen@roosstudiox.com</p>
                 </div>
 
                 <Link
-                  href={`/app/${orgSlug}/settings`}
+                  href={`/app/${orgSlug}/settings/business-profile`}
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center px-2.5 py-2 text-[14px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-[#1B1F29] rounded-[8px] transition-colors"
+                  className="flex items-center px-3 py-2 text-[13px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-white/[0.06] rounded-[8px] transition-colors"
                 >
                   <Building2 className="mr-2 h-4 w-4 text-[#6B7280]" />
                   Organisation Details
                 </Link>
 
-                <div className="my-1 border-t border-[#1B1F29]" />
+                <div className="my-1 border-t border-white/[0.08]" />
 
                 <Link
                   href="/login"
                   onClick={() => setUserMenuOpen(false)}
-                  className="w-full flex items-center px-2.5 py-2 text-[14px] text-[#E5484D] hover:bg-[#FFE9EA]/10 rounded-[8px] transition-colors"
+                  className="w-full flex items-center px-3 py-2 text-[13px] text-[#E5484D] hover:bg-[#FFE9EA]/10 rounded-[8px] transition-colors"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
@@ -915,17 +577,22 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
   return (
     <>
-      {/* Desktop Inset Floating Sidebar (>= 1024px) */}
-      <aside className={cn("sidebar", collapsed && "is-collapsed")}>
+      {/* Desktop Fixed Full-height Dark Sidebar (>= 1024px) */}
+      <aside
+        className={cn(
+          "hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col border-r border-white/[0.06] bg-[#0B0D12] transition-all duration-160 ease-out",
+          collapsed ? "w-[76px]" : "w-[244px]"
+        )}
+      >
         {sidebarContent}
       </aside>
 
-      {/* Mobile / Tablet Menu Trigger (< 1024px) */}
+      {/* Mobile Drawer Trigger (< 1024px) */}
       <div className="lg:hidden fixed top-3 left-3 z-40">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#0B0D12] text-white border border-[#242A38] shadow-[0_2px_8px_rgba(11,13,18,0.2)] hover:bg-[#1B1F29] transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#0B0D12] text-white border border-white/[0.1] shadow-xs hover:bg-[#1B1F29] transition-colors cursor-pointer"
           aria-label="Open mobile navigation"
         >
           <Menu className="h-5 w-5" />
@@ -934,16 +601,16 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
       {/* Mobile Overlay Drawer (< 1024px) */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex p-3">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-[#0B0D12]/60 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-[272px] max-w-[85vw] h-full z-50 bg-[#0B0D12] rounded-[24px] border border-white/[0.08] shadow-overlay overflow-hidden">
+          <div className="relative w-[244px] max-w-[85vw] h-full z-50 bg-[#0B0D12] border-r border-white/[0.08] shadow-overlay overflow-hidden">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-4 h-8 w-8 flex items-center justify-center rounded-[8px] bg-[#1B1F29] text-[#A3A9B6] hover:text-white transition-colors z-50"
+              className="absolute top-4 right-4 h-8 w-8 flex items-center justify-center rounded-[8px] bg-white/[0.08] text-[#A3A9B6] hover:text-white transition-colors z-50 cursor-pointer"
               aria-label="Close navigation"
             >
               <X className="h-4 w-4" />

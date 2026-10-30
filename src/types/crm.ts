@@ -39,6 +39,9 @@ export interface Contact {
   role?: string | null;
   department?: DepartmentType | string | null;
   classification?: ContactClassification | string | null;
+  age?: number | null;
+  gender?: "male" | "female" | "other" | null;
+  city?: string | null;
   tags: string[];
   source?: string | null;
   notes?: string | null;

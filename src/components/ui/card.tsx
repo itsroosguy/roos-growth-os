@@ -3,19 +3,25 @@ import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "dark" }
->(({ className, variant = "default", ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & {
+    variant?: "default" | "dark" | "hero";
+    hoverLift?: boolean;
+  }
+>(({ className, variant = "default", hoverLift = false, children, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl transition-all duration-200",
-      variant === "dark"
-        ? "bg-[#121214] border border-[#1F1F23] text-white shadow-sm"
-        : "bg-white border border-[#EAEAEA] text-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.03)]",
+      "rounded-[16px] transition-all duration-160 ease-out",
+      variant === "dark" || variant === "hero"
+        ? "bg-[#12151C] border border-[#242A38] text-[#F4F5F7] shadow-[0_1px_2px_rgba(11,13,18,.04),0_10px_28px_-14px_rgba(11,13,18,.14)] relative overflow-hidden"
+        : "bg-white border border-[#EDE8E0] text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,.04),0_10px_28px_-14px_rgba(11,13,18,.14)]",
+      hoverLift && "hover:-translate-y-[2px] transition-transform duration-160",
       className
     )}
     {...props}
-  />
+  >
+    {children}
+  </div>
 ));
 Card.displayName = "Card";
 
@@ -38,7 +44,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight text-foreground",
+      "text-[20px] font-semibold leading-tight tracking-tight text-[#12141A]",
       className
     )}
     {...props}
@@ -52,7 +58,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-foreground-secondary", className)}
+    className={cn("text-[13px] text-[#666C78] font-normal leading-normal", className)}
     {...props}
   />
 ));

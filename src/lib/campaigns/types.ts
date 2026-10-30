@@ -30,6 +30,11 @@ export interface AudienceFilterCriteria {
   consent_status?: ConsentStatus[];
   created_after?: string;
   created_before?: string;
+  age_range?: string; // "all" | "18-25" | "26-35" | "36-50" | "50+"
+  gender?: "all" | "male" | "female" | "other";
+  department?: string; // "all" | "finance" | "operations" | "marketing" | "executive" | "technology" | "sales"
+  classification?: string; // "all" | "ongoing_client" | "new_opportunity"
+  recipient_limit?: number | null;
 }
 
 export interface AudienceSegment {
@@ -102,6 +107,11 @@ export interface CampaignRecipient {
   idempotency_key: string;
   error_message?: string | null;
   cost: number;
+  age?: number;
+  gender?: "male" | "female" | "other";
+  department?: string;
+  classification?: string;
+  city?: string;
   sent_at?: string | null;
   delivered_at?: string | null;
   read_at?: string | null;

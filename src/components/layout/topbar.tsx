@@ -201,13 +201,13 @@ export function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#E6E2D8] bg-[#F7F5F0] px-4 md:px-8 select-none lg:ml-[308px] transition-[margin] duration-200">
+      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#EDE8E0] bg-[#F7F3EE]/90 backdrop-blur-md px-6 select-none lg:ml-[244px] transition-[margin] duration-160">
         {/* Left: Contextual Breadcrumb */}
         <div className="flex items-center gap-2 text-[14px]">
           <span className="text-[#666C78] font-normal">
             {currentBreadcrumb.section}
           </span>
-          <span className="text-[#D2CEC2] select-none font-normal">/</span>
+          <span className="text-[#DCD6CC] select-none font-normal">/</span>
           <span className="font-medium text-[#12141A]">
             {currentBreadcrumb.page}
           </span>
@@ -219,13 +219,13 @@ export function Topbar() {
           <button
             type="button"
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center justify-between w-60 h-9 px-3 rounded-[12px] bg-white border border-[#E6E2D8] text-[14px] text-[#666C78] hover:border-[#D2CEC2] hover:text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04)] transition-all"
+            className="hidden sm:flex items-center justify-between w-64 h-9 px-3 rounded-[12px] bg-white border border-[#EDE8E0] text-[14px] text-[#666C78] hover:border-[#DCD6CC] hover:text-[#12141A] shadow-[0_1px_2px_rgba(11,13,18,0.04)] transition-all cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-[#666C78]" />
-              <span className="text-[14px]">Search or jump to...</span>
+              <span className="text-[14px]">Search, jump to...</span>
             </div>
-            <kbd className="inline-flex items-center rounded-[6px] border border-[#E6E2D8] bg-[#F7F5F0] px-2 py-0.5 text-[13px] text-[#666C78] font-variant-numeric tabular-nums">
+            <kbd className="inline-flex items-center rounded-[6px] border border-[#EDE8E0] bg-[#F7F3EE] px-1.5 py-0.5 text-[12px] text-[#666C78] font-variant-numeric tabular-nums">
               ⌘K
             </kbd>
           </button>
@@ -235,7 +235,7 @@ export function Topbar() {
             <button
               type="button"
               onClick={() => setNotificationsOpen((prev) => !prev)}
-              className="relative flex h-9 w-9 items-center justify-center rounded-[12px] border border-[#E6E2D8] bg-white text-[#454B57] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-all shadow-[0_1px_2px_rgba(11,13,18,0.04)]"
+              className="relative flex h-9 w-9 items-center justify-center rounded-[12px] border border-[#EDE8E0] bg-white text-[#454B57] hover:text-[#12141A] hover:bg-[#F7F3EE] transition-all shadow-[0_1px_2px_rgba(11,13,18,0.04)] cursor-pointer"
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
@@ -301,9 +301,11 @@ export function Topbar() {
             <button
               type="button"
               onClick={() => setOrgDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 h-9 px-3 rounded-[10px] border border-[#E6E2D8] bg-white text-[14px] font-medium text-[#12141A] hover:bg-[#F7F5F0] transition-colors shadow-xs"
+              className="flex items-center gap-2 h-9 px-3 rounded-[12px] border border-[#EDE8E0] bg-white text-[14px] font-medium text-[#12141A] hover:bg-[#F7F3EE] transition-colors shadow-[0_1px_2px_rgba(11,13,18,0.04)] cursor-pointer"
             >
-              <Building2 className="h-4 w-4 text-[#666C78]" />
+              <div className="h-5 w-5 rounded-[6px] bg-[#12151C] text-white flex items-center justify-center text-[10px] font-semibold">
+                {currentOrg.name.charAt(0)}
+              </div>
               <span className="max-w-[140px] truncate">{currentOrg.name}</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#666C78]" />
             </button>

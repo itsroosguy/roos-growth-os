@@ -121,6 +121,36 @@ class SegmentEngine {
         if (!hasMatchingStage) return false;
       }
 
+      // Age Range filter ("18-25", "26-35", "36-50", "50+")
+      if (criteria.age_range && criteria.age_range !== "all") {
+        const age = contact.age || 30; // sensible default
+        if (criteria.age_range === "18-25" && (age < 18 || age > 25)) return false;
+        if (criteria.age_range === "26-35" && (age < 26 || age > 35)) return false;
+        if (criteria.age_range === "36-50" && (age < 36 || age > 50)) return false;
+        if (criteria.age_range === "50+" && age < 50) return false;
+      }
+
+      // Gender filter ("all", "male", "female", "other")
+      if (criteria.gender && criteria.gender !== "all") {
+        if (contact.gender && contact.gender !== criteria.gender) {
+          return false;
+        }
+      }
+
+      // Department filter ("all", "finance", "operations", "marketing", etc.)
+      if (criteria.department && criteria.department !== "all") {
+        if (contact.department && contact.department !== criteria.department) {
+          return false;
+        }
+      }
+
+      // Classification filter ("all", "ongoing_client", "new_opportunity")
+      if (criteria.classification && criteria.classification !== "all") {
+        if (contact.classification && contact.classification !== criteria.classification) {
+          return false;
+        }
+      }
+
       // Creation date range
       if (criteria.created_after) {
         if (new Date(contact.created_at) < new Date(criteria.created_after)) {

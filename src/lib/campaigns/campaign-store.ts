@@ -115,6 +115,11 @@ class CampaignStore {
         contact_name: "Aarav Patel",
         phone: "+919876543210",
         status: "read",
+        age: 32,
+        gender: "male",
+        department: "executive",
+        classification: "new_opportunity",
+        city: "Mumbai",
         rendered_body: "Hello Aarav, we are pleased to offer Patel Enterprises an exclusive 20% savings on our retail automation suite for this quarter. Use code SAVE20 before month-end. Reply STOP to opt out.",
         external_message_id: "mock_camp_wamid_aarav_1",
         idempotency_key: `camp_${camp1Id}_c_101`,
@@ -132,6 +137,11 @@ class CampaignStore {
         contact_name: "Neha Gupta",
         phone: "+919876543211",
         status: "delivered",
+        age: 28,
+        gender: "female",
+        department: "marketing",
+        classification: "new_opportunity",
+        city: "Delhi",
         rendered_body: "Hello Neha, we are pleased to offer Patel Enterprises an exclusive 20% savings on our retail automation suite for this quarter. Use code SAVE20 before month-end. Reply STOP to opt out.",
         external_message_id: "mock_camp_wamid_neha_2",
         idempotency_key: `camp_${camp1Id}_c_102`,
@@ -273,6 +283,11 @@ class CampaignStore {
         contact_name: `${c.first_name} ${c.last_name || ""}`.trim(),
         phone: c.phone,
         status: "queued",
+        age: c.age ?? 30,
+        gender: c.gender ?? "male",
+        department: c.department ?? "operations",
+        classification: c.classification ?? "new_opportunity",
+        city: c.city ?? "Mumbai",
         rendered_body: renderedText,
         external_message_id: null,
         idempotency_key: idempotencyKey,
@@ -414,14 +429,18 @@ class CampaignStore {
   }
 
   /**
-   * Generates a validated CSV export of campaign delivery results
+   * Generates a validated CSV export of campaign delivery results with demographic metrics
    */
   exportCampaignReportCSV(campaignId: string): string {
     const recips = this.recipients.get(campaignId) || [];
     const headers = [
       "Contact Name",
       "Phone",
-      "Status",
+      "Age",
+      "Gender",
+      "Department",
+      "Relationship Status",
+      "Delivery Status",
       "External Message ID",
       "Cost (INR)",
       "Sent At",
@@ -433,6 +452,10 @@ class CampaignStore {
     const rows = recips.map((r) => [
       `"${r.contact_name.replace(/"/g, '""')}"`,
       `"${r.phone}"`,
+      r.age ?? "",
+      r.gender ?? "",
+      `"${r.department || "Operations"}"`,
+      `"${r.classification === "ongoing_client" ? "Ongoing Client" : "New Opportunity"}"`,
       r.status,
       r.external_message_id || "",
       r.cost.toFixed(2),
@@ -441,6 +464,51 @@ class CampaignStore {
       r.read_at || "",
       `"${(r.error_message || "").replace(/"/g, '""')}"`,
     ]);
+
+    return [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+  }
+
+  /**
+   * Generates an executive summary CSV export of all campaigns across the organization
+   */
+  exportAllCampaignsCSV(orgSlug: string): string {
+    const list = this.getCampaigns(orgSlug);
+    const headers = [
+      "Campaign ID",
+      "Campaign Name",
+      "Template Name",
+      "Category",
+      "Status",
+      "Total Audience",
+      "Dispatched",
+      "Delivered",
+      "Read",
+      "Failed",
+      "Read Rate (%)",
+      "Actual Cost (INR)",
+      "Created By",
+      "Created Date",
+    ];
+
+    const rows = list.map((c) => {
+      const readRate = c.sent_count > 0 ? Math.round((c.read_count / c.sent_count) * 100) : 0;
+      return [
+        c.id,
+        `"${c.name.replace(/"/g, '""')}"`,
+        c.template_name,
+        c.template_category,
+        c.status,
+        c.total_recipients,
+        c.sent_count,
+        c.delivered_count,
+        c.read_count,
+        c.failed_count,
+        `${readRate}%`,
+        (c.actual_cost > 0 ? c.actual_cost : c.estimated_cost).toFixed(2),
+        `"${c.created_by_name}"`,
+        c.created_at,
+      ];
+    });
 
     return [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
   }
