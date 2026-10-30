@@ -263,6 +263,18 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
   const isBelowTopTier = currentOrg.plan_tier !== "business";
 
+  // Plan upgrade card dismiss state (closed by default per user request)
+  const [isPlanDismissed, setIsPlanDismissed] = useState(true);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("roos_plan_upgrade_dismissed");
+      if (stored !== null) {
+        setIsPlanDismissed(stored === "true");
+      }
+    } catch {}
+  }, []);
+
   const avatarColors = getAvatarColor("Praveen");
 
   const sidebarContent = (
@@ -452,9 +464,9 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
       {/* 4. PINNED BOTTOM SECTION: PLAN UPGRADE CARD & ACCOUNT CARD */}
       <div className="shrink-0 p-3 border-t border-white/[0.06] space-y-2.5">
-        {/* Plan Upgrade Card (rendered when below top tier) */}
-        {isBelowTopTier && !collapsed && (
-          <div className="relative rounded-[14px] bg-[#12151C] border border-white/[0.08] p-3.5 overflow-hidden shadow-xs">
+        {/* Plan Upgrade Card (rendered when below top tier and not closed) */}
+        {isBelowTopTier && !collapsed && !isPlanDismissed && (
+          <div className="relative rounded-[14px] bg-[#12151C] border border-white/[0.08] p-3.5 overflow-hidden shadow-xs animate-fade-rise">
             {/* Radial orange glow in corner */}
             <div
               className="absolute pointer-events-none -right-4 -bottom-4 w-28 h-28 rounded-full"
@@ -468,9 +480,25 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                 <span className="text-[13px] font-medium text-white block">
                   {planName}
                 </span>
-                <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full bg-[#FF5A1F]/20 text-[#FF5A1F] border border-[#FF5A1F]/30">
-                  Active
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full bg-[#FF5A1F]/20 text-[#FF5A1F] border border-[#FF5A1F]/30">
+                    Active
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPlanDismissed(true);
+                      try {
+                        localStorage.setItem("roos_plan_upgrade_dismissed", "true");
+                      } catch {}
+                    }}
+                    className="p-0.5 -mr-1 text-[#6B7280] hover:text-white rounded-[4px] hover:bg-white/10 transition-colors cursor-pointer"
+                    title="Close"
+                    aria-label="Close"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
               <p className="text-[12px] text-[#A3A9B6] font-normal leading-snug">
                 Scale broadcasts &amp; unlock unlimited automations.
