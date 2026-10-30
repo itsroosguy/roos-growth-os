@@ -96,8 +96,9 @@ class WhatsAppStore {
         last_message_at: new Date(Date.now() - 3600000 * 1).toISOString(),
         last_customer_message_at: new Date(Date.now() - 3600000 * 1).toISOString(),
         status: "pending",
-        assigned_to_user_id: "user-102",
-        assigned_to_name: "Operations Lead",
+        assigned_to_user_id: "user-101",
+        assigned_to_name: "Praveen",
+        assigned_department: "sales",
         assigned_by_name: "Workspace Founder",
         assigned_at: new Date(Date.now() - 86400000 * 1).toISOString(),
         lead_id: "lead-204",
@@ -118,7 +119,8 @@ class WhatsAppStore {
         last_customer_message_at: new Date(Date.now() - 3600000 * 2).toISOString(),
         status: "open",
         assigned_to_user_id: "user-101",
-        assigned_to_name: "Workspace Founder",
+        assigned_to_name: "Praveen",
+        assigned_department: "sales",
         lead_id: "lead-201",
         lead_title: "Retail Automation Inquiry",
         unread_count: 1,
@@ -136,8 +138,9 @@ class WhatsAppStore {
         last_message_at: new Date(Date.now() - 3600000 * 2).toISOString(),
         last_customer_message_at: new Date(Date.now() - 3600000 * 2).toISOString(),
         status: "open",
-        assigned_to_user_id: "user-101",
-        assigned_to_name: "Workspace Founder",
+        assigned_to_user_id: "user-102",
+        assigned_to_name: "Rohan Mehta",
+        assigned_department: "billing",
         lead_title: "Mehta Enterprises Deployment",
         unread_count: 2,
         created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
@@ -154,8 +157,9 @@ class WhatsAppStore {
         last_message_at: new Date(Date.now() - 86400000 * 1).toISOString(),
         last_customer_message_at: new Date(Date.now() - 86400000 * 1).toISOString(),
         status: "open",
-        assigned_to_user_id: "user-101",
-        assigned_to_name: "Workspace Founder",
+        assigned_to_user_id: "user-105",
+        assigned_to_name: "Priya Sharma",
+        assigned_department: "support",
         lead_title: "Sharma Distributors CRM",
         unread_count: 0,
         created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
@@ -727,8 +731,9 @@ class WhatsAppStore {
   assignConversation(
     orgSlug: string,
     conversationId: string,
-    assignee: { userId: string | null; name: string | null },
-    actorName = "Staff Member"
+    assignee: { userId: string | null; name: string | null; department?: string | null },
+    actorName = "Staff Member",
+    handoffNote?: string | null
   ): WhatsAppConversation | null {
     const conv = this.getConversationById(orgSlug, conversationId);
     if (!conv) return null;
@@ -736,20 +741,40 @@ class WhatsAppStore {
     const nowIso = new Date().toISOString();
     conv.assigned_to_user_id = assignee.userId;
     conv.assigned_to_name = assignee.name;
+    conv.assigned_department = assignee.department || null;
     conv.assigned_by_name = actorName;
     conv.assigned_at = nowIso;
     conv.updated_at = nowIso;
+    if (handoffNote) {
+      conv.handoff_note = handoffNote;
+    }
 
+    const deptStr = assignee.department ? ` (${assignee.department.charAt(0).toUpperCase() + assignee.department.slice(1)})` : "";
     const desc = assignee.name
-      ? `Assigned to ${assignee.name} by ${actorName}`
+      ? `Assigned to ${assignee.name}${deptStr} by ${actorName}`
       : `Unassigned by ${actorName}`;
 
     this.addActivity(orgSlug, conversationId, {
       type: assignee.name ? "assigned" : "unassigned",
       description: desc,
       actor_name: actorName,
-      metadata: { assigneeId: assignee.userId, assigneeName: assignee.name },
+      metadata: {
+        assigneeId: assignee.userId,
+        assigneeName: assignee.name,
+        department: assignee.department,
+        handoffNote: handoffNote || null,
+      },
     });
+
+    if (handoffNote && handoffNote.trim()) {
+      this.addInternalNote(
+        orgSlug,
+        conversationId,
+        `🔀 Handoff Note • Forwarded to ${assignee.name || "Colleague"}${deptStr}:\n"${handoffNote.trim()}"`,
+        actorName,
+        "user-current"
+      );
+    }
 
     return conv;
   }

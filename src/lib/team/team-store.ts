@@ -1,5 +1,7 @@
 import { OrganizationRole } from "@/lib/organizations/types";
 
+export type DepartmentType = "sales" | "billing" | "support" | "ops" | "management";
+
 export interface TeamMember {
   id: string;
   organization_id: string;
@@ -7,6 +9,8 @@ export interface TeamMember {
   email: string;
   role: OrganizationRole;
   status: "active" | "invited";
+  department?: DepartmentType;
+  title?: string;
   avatar?: string;
   joined_at: string;
 }
@@ -26,47 +30,68 @@ class TeamStore {
       {
         id: "user-101",
         organization_id: acmeOrg,
-        name: "Workspace Founder",
-        email: "founder@acmetech.io",
+        name: "Praveen",
+        email: "praveen@acmetech.io",
         role: "owner",
+        department: "sales",
+        title: "Sales Lead & Founder",
         status: "active",
         joined_at: "2026-01-10T10:00:00.000Z",
       },
       {
         id: "user-102",
         organization_id: acmeOrg,
-        name: "Admin (Full Access)",
-        email: "admin@acmetech.io",
+        name: "Rohan Mehta",
+        email: "rohan.billing@acmetech.io",
         role: "admin",
+        department: "billing",
+        title: "Billing & Invoicing Specialist",
         status: "active",
         joined_at: "2026-01-12T11:00:00.000Z",
       },
       {
         id: "user-103",
         organization_id: acmeOrg,
-        name: "Senior Operations Manager",
+        name: "Sneha Reddy",
         email: "operations.lead@acmetech.io",
         role: "senior_manager",
+        department: "ops",
+        title: "Operations & Fleet Lead",
         status: "active",
         joined_at: "2026-01-15T12:00:00.000Z",
       },
       {
         id: "user-104",
         organization_id: acmeOrg,
-        name: "Junior Manager (Tasks & Performance)",
-        email: "jr.manager@acmetech.io",
+        name: "Vikram Deshmukh",
+        email: "vikram.sales@acmetech.io",
         role: "junior_manager",
+        department: "sales",
+        title: "Commercial Account Executive",
         status: "active",
         joined_at: "2026-02-01T09:30:00.000Z",
       },
       {
         id: "user-105",
         organization_id: acmeOrg,
-        name: "Customer Support Agent",
+        name: "Priya Sharma",
         email: "support@acmetech.io",
         role: "staff",
+        department: "support",
+        title: "Customer Support Agent",
         status: "active",
         joined_at: "2026-02-15T14:20:00.000Z",
+      },
+      {
+        id: "user-106",
+        organization_id: acmeOrg,
+        name: "Ananya Rao",
+        email: "ananya.tax@acmetech.io",
+        role: "staff",
+        department: "billing",
+        title: "Billing & Accounts Associate",
+        status: "active",
+        joined_at: "2026-02-20T10:00:00.000Z",
       },
     ];
 

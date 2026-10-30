@@ -101,6 +101,29 @@ describe("Milestone 5: Shared Inbox Unit Tests", () => {
       const unassignAct = activities.find((a) => a.type === "unassigned");
       expect(unassignAct).toBeDefined();
     });
+
+    it("should forward conversation to a different department (sales to billing) with a handoff note", () => {
+      const conv = whatsappStore.getConversations(orgSlug)[0];
+      const result = whatsappStore.assignConversation(
+        orgSlug,
+        conv.id,
+        { userId: "user-102", name: "Rohan Mehta", department: "billing" },
+        "Praveen (Sales Lead)",
+        "Customer needs GST invoice and payment link for the fleet proposal."
+      );
+
+      expect(result).not.toBeNull();
+      expect(result?.assigned_to_user_id).toBe("user-102");
+      expect(result?.assigned_to_name).toBe("Rohan Mehta");
+      expect(result?.assigned_department).toBe("billing");
+      expect(result?.handoff_note).toBe("Customer needs GST invoice and payment link for the fleet proposal.");
+
+      // Verify internal note was posted in thread
+      const messages = whatsappStore.getMessages(conv.id);
+      const handoffNoteMsg = messages.find((m) => m.body.includes("Handoff Note • Forwarded to Rohan Mehta"));
+      expect(handoffNoteMsg).toBeDefined();
+      expect(handoffNoteMsg?.is_internal).toBe(true);
+    });
   });
 
   describe("3. Status Lifecycle (Open, Pending, Resolved, Reopen)", () => {

@@ -21,6 +21,7 @@ export type ActivityType =
   | "status_changed"
   | "assigned"
   | "unassigned"
+  | "forwarded"
   | "lead_linked"
   | "lead_created"
   | "note_added"
@@ -67,9 +68,11 @@ export interface WhatsAppConversation {
   status: ConversationStatus;
   assigned_to_user_id?: string | null;
   assigned_to_name?: string | null;
+  assigned_department?: string | null;
   assigned_by_user_id?: string | null;
   assigned_by_name?: string | null;
   assigned_at?: string | null;
+  handoff_note?: string | null;
   resolved_at?: string | null;
   lead_id?: string | null;
   lead_title?: string | null;

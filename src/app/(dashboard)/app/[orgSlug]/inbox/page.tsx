@@ -15,6 +15,7 @@ import { MOCK_TEMPLATES } from "@/lib/whatsapp/mock-provider";
 import { LeadStage, TaskPriority, Task } from "@/types/crm";
 import { aiService } from "@/lib/ai/ai-service";
 import { ReplySuggestionResult } from "@/lib/ai/types";
+import { ForwardConversationModal } from "@/components/inbox/forward-conversation-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusPill } from "@/components/ui/status-pill";
@@ -47,6 +48,7 @@ import {
   X,
   FileText,
   Lock,
+  ArrowRightLeft,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -61,8 +63,11 @@ function InboxContent() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeConversationId, setActiveConversationId] = useState<string>("conv-102");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterTab, setFilterTab] = useState<"all" | "mine" | "unassigned" | "unread" | "closed">("all");
+  const [filterTab, setFilterTab] = useState<"all" | "mine" | "billing" | "unassigned" | "unread" | "closed">("all");
   const [contextPaneOpen, setContextPaneOpen] = useState(true);
+
+  // Forward / Reassignment Modal
+  const [forwardModalOpen, setForwardModalOpen] = useState(false);
 
   // Composer mode: "whatsapp" (Client outbound) | "note" (Internal team note)
   const [composerMode, setComposerMode] = useState<"whatsapp" | "note">("whatsapp");
@@ -160,6 +165,14 @@ function InboxContent() {
       if (filterTab === "unassigned" && c.assigned_to_user_id) return false;
       if (filterTab === "closed" && c.status !== "resolved" && c.status !== "closed") return false;
       if (filterTab === "mine" && userRole === "staff" && c.assigned_to_user_id !== "user-staff") return false;
+      if (
+        filterTab === "billing" &&
+        c.assigned_department !== "billing" &&
+        !c.assigned_to_name?.toLowerCase().includes("billing") &&
+        c.assigned_to_user_id !== "user-102"
+      ) {
+        return false;
+      }
 
       // Search filter
       if (searchQuery.trim()) {
@@ -330,6 +343,36 @@ function InboxContent() {
     toast("Follow-up task created", { type: "success" });
   };
 
+  // Handler: Forward Conversation & Department Handoff
+  const handleForwardConversation = (
+    assignee: { userId: string | null; name: string | null; department?: string | null },
+    note: string
+  ) => {
+    if (!activeConversation) return;
+
+    whatsappStore.assignConversation(
+      orgSlug,
+      activeConversation.id,
+      assignee,
+      "Praveen (Sales Lead)",
+      note
+    );
+
+    setRefreshKey((k) => k + 1);
+    const deptLabel = assignee.department
+      ? ` (${assignee.department.charAt(0).toUpperCase() + assignee.department.slice(1)})`
+      : "";
+    toast(
+      assignee.name
+        ? `Forwarded to ${assignee.name}${deptLabel}`
+        : "Conversation unassigned",
+      {
+        type: "success",
+        message: note ? "Handoff note posted in chat thread." : undefined,
+      }
+    );
+  };
+
   return (
     <div className="flex h-[calc(100vh-100px)] -m-4 sm:-m-6 md:-m-10 overflow-hidden bg-[#F7F5F0] select-none animate-page-enter">
       {/* ========================================================================= */}
@@ -350,20 +393,20 @@ function InboxContent() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex items-center justify-between pt-3 text-[13px] font-medium text-[#666C78]">
-            {(["all", "mine", "unassigned", "unread", "closed"] as const).map((tab) => (
+          <div className="flex items-center justify-between pt-3 text-[12.5px] font-medium text-[#666C78] overflow-x-auto gap-1">
+            {(["all", "mine", "billing", "unassigned", "unread", "closed"] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setFilterTab(tab)}
                 className={cn(
-                  "px-2 py-1 rounded-[8px] capitalize transition-colors",
+                  "px-2 py-1 rounded-[8px] capitalize transition-colors shrink-0",
                   filterTab === tab
-                    ? "bg-white text-[#12141A] font-medium shadow-[0_1px_2px_rgba(11,13,18,0.04)] border border-[#EDE8E0]"
+                    ? "bg-white text-[#12141A] font-semibold shadow-[0_1px_2px_rgba(11,13,18,0.04)] border border-[#EDE8E0]"
                     : "hover:text-[#12141A]"
                 )}
               >
-                {tab}
+                {tab === "billing" ? "💳 Billing" : tab}
               </button>
             ))}
           </div>
@@ -398,8 +441,8 @@ function InboxContent() {
                   <span className="text-[14px] font-medium text-[#12141A] truncate">
                     {c.contact_name || c.contact_phone}
                   </span>
-                  <span className="text-[13px] text-[#666C78] font-variant-numeric tabular-nums shrink-0">
-                    {timeDisplay}
+                  <span suppressHydrationWarning className="text-[13px] text-[#666C78] font-variant-numeric tabular-nums shrink-0">
+                    {mounted ? timeDisplay : "--:--"}
                   </span>
                 </div>
 
@@ -412,6 +455,33 @@ function InboxContent() {
                       {c.unread_count}
                     </span>
                   )}
+                </div>
+
+                {/* Assignee & Department Pill Strip */}
+                <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-[#F0ECE4]/60 text-[11.5px]">
+                  <span className="text-[#666C78] flex items-center gap-1 truncate max-w-[170px]">
+                    <User className="h-3 w-3 text-[#8A909D] shrink-0" />
+                    <span className="truncate">
+                      {c.assigned_to_name ? c.assigned_to_name.split(" ")[0] : "Unassigned"}
+                    </span>
+                  </span>
+                  {c.assigned_department === "billing" ? (
+                    <span className="px-1.5 py-0.2 rounded text-[10.5px] font-medium bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9] shrink-0">
+                      💳 Billing
+                    </span>
+                  ) : c.assigned_department === "sales" ? (
+                    <span className="px-1.5 py-0.2 rounded text-[10.5px] font-medium bg-[#FFF1EA] text-[#B93A0A] border border-[#FFE2D4] shrink-0">
+                      💼 Sales
+                    </span>
+                  ) : c.assigned_department === "support" ? (
+                    <span className="px-1.5 py-0.2 rounded text-[10.5px] font-medium bg-[#F0EAFF] text-[#6538E8] border border-[#D9C9FF] shrink-0">
+                      🎧 Support
+                    </span>
+                  ) : c.assigned_to_name ? (
+                    <span className="px-1.5 py-0.2 rounded text-[10.5px] font-medium bg-[#F5F3ED] text-[#666C78] border border-[#EDE8E0] shrink-0">
+                      Team
+                    </span>
+                  ) : null}
                 </div>
               </div>
             );
@@ -459,7 +529,36 @@ function InboxContent() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Active Assignee Pill (Clickable) */}
+                <button
+                  type="button"
+                  onClick={() => setForwardModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-medium bg-[#FAF9F5] border border-[#EDE8E0] text-[#343A46] hover:bg-[#F0ECE4] transition-colors cursor-pointer shadow-2xs"
+                  title="Assigned team member • Click to forward or reassign"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#3D5AFE]" />
+                  <span className="font-semibold text-[#12141A]">
+                    {activeConversation.assigned_to_name || "Unassigned"}
+                  </span>
+                  {activeConversation.assigned_department && (
+                    <span className="text-[10.5px] uppercase tracking-wider font-semibold px-1.5 py-0.2 rounded bg-white border border-[#EDE8E0] text-[#3D5AFE]">
+                      {activeConversation.assigned_department}
+                    </span>
+                  )}
+                </button>
+
+                {/* Forward to Next Person Action Button */}
+                <button
+                  type="button"
+                  onClick={() => setForwardModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-[9px] border border-[#D3DCFF] bg-[#F0F3FF] hover:bg-[#E5EAFF] text-[#2C48E8] text-[12.5px] font-medium shadow-2xs transition-colors cursor-pointer"
+                  title="Forward conversation to next person (e.g. Sales to Billing)"
+                >
+                  <ArrowRightLeft className="h-3.5 w-3.5 text-[#3D5AFE]" />
+                  <span>Forward</span>
+                </button>
+
                 <StatusPill
                   variant={activeConversation.status === "open" ? "success" : "neutral"}
                   dot
@@ -523,8 +622,8 @@ function InboxContent() {
                             <p className="text-[14px] text-[#12141A] leading-relaxed">
                               {msg.body}
                             </p>
-                            <span className="text-[12px] text-[#8F5300] block mt-1.5 text-right font-variant-numeric tabular-nums">
-                              {timeOnly}
+                            <span suppressHydrationWarning className="text-[12px] text-[#8F5300] block mt-1.5 text-right font-variant-numeric tabular-nums">
+                              {mounted ? timeOnly : "--:--"}
                             </span>
                           </div>
                         </div>
@@ -551,7 +650,7 @@ function InboxContent() {
                               isClient ? "justify-start" : "justify-end"
                             )}
                           >
-                            <span>{timeOnly}</span>
+                            <span suppressHydrationWarning>{mounted ? timeOnly : "--:--"}</span>
                             {!isClient && <CheckCheck className="h-3.5 w-3.5 text-[#3D5AFE]" />}
                           </div>
                         </div>
@@ -706,6 +805,72 @@ function InboxContent() {
                   Opted In
                 </StatusPill>
               </div>
+            </div>
+          </div>
+
+          {/* Assignment & Department Handoff Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="type-eyebrow text-[#666C78]">
+                Assigned Specialist
+              </h4>
+              <button
+                type="button"
+                onClick={() => setForwardModalOpen(true)}
+                className="text-[12.5px] text-[#3D5AFE] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+              >
+                <ArrowRightLeft className="h-3 w-3" />
+                <span>Forward / Assign</span>
+              </button>
+            </div>
+            <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="h-7 w-7 rounded-full bg-[#EEF2FF] text-[#3D5AFE] flex items-center justify-center font-medium text-[12px] border border-[#D3DCFF] shrink-0">
+                    {getInitials(activeConversation.assigned_to_name || "Unassigned")}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-[#12141A] leading-tight truncate">
+                      {activeConversation.assigned_to_name || "Unassigned"}
+                    </div>
+                    <div className="text-[11.5px] text-[#666C78] truncate">
+                      {activeConversation.assigned_department
+                        ? `${activeConversation.assigned_department.toUpperCase()} TEAM`
+                        : "General Inbound Queue"}
+                    </div>
+                  </div>
+                </div>
+                {activeConversation.assigned_department === "billing" ? (
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9] shrink-0">
+                    💳 Billing
+                  </span>
+                ) : activeConversation.assigned_department === "sales" ? (
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FFF1EA] text-[#B93A0A] border border-[#FFE2D4] shrink-0">
+                    💼 Sales
+                  </span>
+                ) : activeConversation.assigned_department === "support" ? (
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#F0EAFF] text-[#6538E8] border border-[#D9C9FF] shrink-0">
+                    🎧 Support
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FAF9F5] text-[#666C78] border border-[#EDE8E0] shrink-0">
+                    General
+                  </span>
+                )}
+              </div>
+              {activeConversation.assigned_at && (
+                <div className="text-[11.5px] text-[#666C78] border-t border-[#F0ECE4] pt-2 flex items-center justify-between">
+                  <span>Assigned by {activeConversation.assigned_by_name || "Staff"}</span>
+                  <span suppressHydrationWarning className="tabular-nums">
+                    {mounted
+                      ? new Date(activeConversation.assigned_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                        })
+                      : "--"}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -895,6 +1060,20 @@ function InboxContent() {
           </DialogFooter>
         </form>
       </Dialog>
+
+      {/* Forward Conversation & Handoff Modal */}
+      {activeConversation && (
+        <ForwardConversationModal
+          open={forwardModalOpen}
+          onClose={() => setForwardModalOpen(false)}
+          customerName={activeConversation.contact_name || activeConversation.contact_phone}
+          customerPhone={activeConversation.contact_phone}
+          currentAssigneeName={activeConversation.assigned_to_name}
+          currentDepartment={activeConversation.assigned_department}
+          teamMembers={teamMembers}
+          onForward={handleForwardConversation}
+        />
+      )}
     </div>
   );
 }
