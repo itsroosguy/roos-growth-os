@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { MobileNoticeModal } from "@/components/layout/mobile-notice-modal";
 import { TenantProvider } from "@/lib/organizations/tenant-context";
 import { ToastProvider } from "@/components/ui/toast-context";
 import { Organization, OrganizationRole } from "@/lib/organizations/types";
@@ -81,6 +82,7 @@ export default async function OrgDashboardLayout({
             </main>
           </div>
           <MobileBottomNav orgSlug={orgSlug} />
+          <MobileNoticeModal />
         </div>
       </ToastProvider>
     </TenantProvider>
