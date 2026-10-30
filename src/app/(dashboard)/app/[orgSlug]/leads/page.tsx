@@ -91,6 +91,7 @@ export default function LeadsPage() {
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   const [activeMenuLeadId, setActiveMenuLeadId] = useState<string | null>(null);
+  const [mobileStage, setMobileStage] = useState<LeadStage>("new");
 
   // Drag and drop state
   const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null);
@@ -626,9 +627,42 @@ export default function LeadsPage() {
             </div>
           </div>
 
+          {/* Mobile Stage Selector Tabs (< 768px) */}
+          <div className="md:hidden flex items-center gap-1.5 overflow-x-auto pb-2 custom-light-scroll select-none">
+            {stages.map((stage) => {
+              const isActive = mobileStage === stage.id;
+              const StageIcon = stage.icon;
+              return (
+                <button
+                  key={stage.id}
+                  type="button"
+                  onClick={() => setMobileStage(stage.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium shrink-0 transition-all border shadow-2xs cursor-pointer",
+                    isActive
+                      ? cn(stage.pillBg, stage.pillText, stage.pillBorder, "ring-1 ring-[#FF5A1F]/30 font-semibold")
+                      : "bg-white text-[#666C78] border-[#EDE8E0] hover:text-[#12141A]"
+                  )}
+                >
+                  <StageIcon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{stage.label}</span>
+                  <span
+                    className={cn(
+                      "h-4.5 min-w-[18px] px-1 rounded-full text-[10.5px] font-medium flex items-center justify-center tabular-nums",
+                      isActive ? "bg-black/10" : "bg-[#F0ECE2] text-[#666C78]"
+                    )}
+                  >
+                    {stage.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           <div className="overflow-x-auto pb-6 custom-light-scroll">
-            <div className="flex gap-4.5 min-w-[1420px] items-start">
+            <div className="flex gap-4.5 min-w-0 md:min-w-[1420px] items-start">
               {stages.map((stage) => {
+                const isMobileVisible = mobileStage === stage.id;
                 const stageLeads = leads.filter((l) => l.stage === stage.id);
                 const isOver = dragOverStage === stage.id;
                 const StageIcon = stage.icon;
@@ -638,7 +672,12 @@ export default function LeadsPage() {
                     key={stage.id}
                     onDragOver={(e) => handleDragOver(e, stage.id)}
                     onDrop={() => handleDrop(stage.id)}
-                    className="flex flex-col w-[290px] shrink-0 transition-all duration-140"
+                    className={cn(
+                      "flex-col transition-all duration-140",
+                      isMobileVisible
+                        ? "flex w-full md:w-[290px] md:shrink-0"
+                        : "hidden md:flex md:w-[290px] md:shrink-0"
+                    )}
                   >
                     {/* --- Unified Column Header (Icon, Title, Count, Add Deal & Stage Total) --- */}
                     <div

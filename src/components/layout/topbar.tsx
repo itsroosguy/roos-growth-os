@@ -26,6 +26,7 @@ import {
   Smartphone,
   Sliders,
   CreditCard,
+  Menu,
 } from "lucide-react";
 import { cn, formatINR } from "@/lib/utils";
 
@@ -203,13 +204,25 @@ export function Topbar() {
     <>
       <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center border-b border-[#EDE8E0] bg-[#F7F3EE]/90 backdrop-blur-md px-6 select-none lg:ml-[var(--sidebar-width,244px)]">
         <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between">
-        {/* Left: Contextual Breadcrumb */}
-        <div className="flex items-center gap-2 text-[14px]">
-          <span className="text-[#666C78] font-normal">
+        {/* Left: Mobile Menu + Contextual Breadcrumb */}
+        <div className="flex items-center gap-1.5 sm:gap-2 text-[13.5px] sm:text-[14px] min-w-0">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("roos_toggle_mobile_nav"));
+              }
+            }}
+            className="lg:hidden flex h-8.5 w-8.5 items-center justify-center rounded-[10px] border border-[#EDE8E0] bg-white text-[#12141A] hover:bg-[#FAF9F5] active:scale-95 transition-all shadow-2xs mr-1 shrink-0 cursor-pointer"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+          <span className="text-[#666C78] font-normal truncate">
             {currentBreadcrumb.section}
           </span>
           <span className="text-[#DCD6CC] select-none font-normal">/</span>
-          <span className="font-medium text-[#12141A]">
+          <span className="font-medium text-[#12141A] truncate">
             {currentBreadcrumb.page}
           </span>
         </div>
@@ -307,7 +320,7 @@ export function Topbar() {
               <div className="h-5 w-5 rounded-[6px] bg-[#12151C] text-white flex items-center justify-center text-[10px] font-semibold">
                 {currentOrg.name.charAt(0)}
               </div>
-              <span className="max-w-[140px] truncate">{currentOrg.name}</span>
+              <span className="max-w-[80px] sm:max-w-[140px] truncate">{currentOrg.name}</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#666C78]" />
             </button>
 

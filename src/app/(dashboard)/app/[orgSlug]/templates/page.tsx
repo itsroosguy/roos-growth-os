@@ -88,8 +88,8 @@ export default function TemplatesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative w-56 sm:w-64">
+        <div className="flex items-center flex-wrap gap-2.5 sm:gap-3">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666C78]" />
             <input
               type="text"

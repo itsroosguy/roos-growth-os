@@ -85,6 +85,18 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     }
   }, []);
 
+  // Listen for mobile nav toggle events from Topbar and BottomNav
+  useEffect(() => {
+    const handleToggle = () => setMobileOpen((prev) => !prev);
+    const handleClose = () => setMobileOpen(false);
+    window.addEventListener("roos_toggle_mobile_nav", handleToggle);
+    window.addEventListener("roos_close_mobile_nav", handleClose);
+    return () => {
+      window.removeEventListener("roos_toggle_mobile_nav", handleToggle);
+      window.removeEventListener("roos_close_mobile_nav", handleClose);
+    };
+  }, []);
+
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
       const next = !prev;
@@ -651,18 +663,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
         {sidebarContent}
       </aside>
 
-      {/* Mobile Drawer Trigger (< 1024px) */}
-      <div className="lg:hidden fixed top-3 left-3 z-40">
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#0B0D12] text-white border border-white/[0.1] shadow-xs hover:bg-[#1B1F29] transition-colors cursor-pointer"
-          aria-label="Open mobile navigation"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-      </div>
-
       {/* Mobile Overlay Drawer (< 1024px) */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
@@ -670,16 +670,30 @@ export function Sidebar({ orgSlug }: SidebarProps) {
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-[244px] max-w-[85vw] h-full z-50 bg-[#0B0D12] border-r border-white/[0.08] shadow-overlay overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-4 h-8 w-8 flex items-center justify-center rounded-[8px] bg-white/[0.08] text-[#A3A9B6] hover:text-white transition-colors z-50 cursor-pointer"
-              aria-label="Close navigation"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            {sidebarContent}
+          <div
+            className="relative w-[280px] max-w-[85vw] h-full z-50 bg-[#0B0D12] border-r border-white/[0.08] shadow-overlay overflow-hidden flex flex-col"
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest("a")) {
+                setMobileOpen(false);
+              }
+            }}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.08]">
+              <span className="text-[14px] font-medium text-[#F4F5F7] tracking-tight">
+                Navigation
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="h-8 w-8 flex items-center justify-center rounded-[8px] bg-white/[0.08] text-[#A3A9B6] hover:text-white transition-colors cursor-pointer"
+                aria-label="Close navigation"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              {sidebarContent}
+            </div>
           </div>
         </div>
       )}

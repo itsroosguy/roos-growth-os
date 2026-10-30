@@ -227,7 +227,7 @@ export default function TeamAndCredentialsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center flex-wrap gap-2.5 shrink-0">
           {isAdmin ? (
             <>
               <Button

@@ -41,6 +41,7 @@ import {
   AlertCircle,
   Tag,
   ChevronRight,
+  ChevronLeft,
   CheckSquare,
   PanelRightClose,
   PanelRightOpen,
@@ -65,6 +66,7 @@ function InboxContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterTab, setFilterTab] = useState<"all" | "mine" | "billing" | "unassigned" | "unread" | "closed">("all");
   const [contextPaneOpen, setContextPaneOpen] = useState(true);
+  const [mobileDetailsOpen, setMobileDetailsOpen] = useState(false);
 
   // Forward / Reassignment Modal
   const [forwardModalOpen, setForwardModalOpen] = useState(false);
@@ -378,7 +380,12 @@ function InboxContent() {
       {/* ========================================================================= */}
       {/* 1. LEFT PANE: CONVERSATION LIST (ON CANVAS, NO WHITE CONTAINER)            */}
       {/* ========================================================================= */}
-      <div className="w-[340px] shrink-0 border-r border-[#EDE8E0] flex flex-col bg-transparent">
+      <div
+        className={cn(
+          "w-full md:w-[340px] shrink-0 border-r border-[#EDE8E0] flex-col bg-transparent",
+          activeConversationId ? "hidden md:flex" : "flex"
+        )}
+      >
         {/* Search Header */}
         <div className="p-3.5 border-b border-[#EDE8E0]">
           <div className="relative flex items-center">
@@ -498,12 +505,27 @@ function InboxContent() {
       {/* ========================================================================= */}
       {/* 2. CENTER PANE: ACTIVE THREAD ON WHITE RAISED PANEL                       */}
       {/* ========================================================================= */}
-      <div className="flex flex-1 flex-col min-w-0 bg-white rounded-[24px] border border-[#EDE8E0] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden m-2.5">
+      <div
+        className={cn(
+          "flex-1 flex-col min-w-0 bg-white md:rounded-[24px] border-y md:border border-[#EDE8E0] shadow-[0_1px_2px_rgba(11,13,18,.04),0_8px_24px_-12px_rgba(11,13,18,.12)] overflow-hidden m-0 md:m-2.5",
+          activeConversationId ? "flex" : "hidden md:flex"
+        )}
+      >
         {activeConversation ? (
           <>
             {/* Thread Header */}
-            <div className="flex h-[56px] shrink-0 items-center justify-between px-6 border-b border-[#EDE8E0] bg-white">
-              <div className="flex items-center gap-3">
+            <div className="flex h-[56px] shrink-0 items-center justify-between px-3 sm:px-6 border-b border-[#EDE8E0] bg-white">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                {/* Mobile Back Button to Conversation List */}
+                <button
+                  type="button"
+                  onClick={() => setActiveConversationId("")}
+                  className="md:hidden flex h-8 w-8 items-center justify-center rounded-[8px] hover:bg-[#FAF9F5] text-[#12141A] shrink-0 -ml-1 cursor-pointer"
+                  title="Back to conversation list"
+                  aria-label="Back to conversations"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
                 {(() => {
                   const avatarColor = getAvatarColor(activeConversation.contact_name || "Contact");
                   return (
@@ -567,11 +589,22 @@ function InboxContent() {
                   {activeConversation.status === "open" ? "Open Thread" : "Resolved"}
                 </StatusPill>
 
-                {/* Context Pane Toggle */}
+                {/* Mobile / Tablet Details Drawer Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setMobileDetailsOpen(true)}
+                  className="xl:hidden flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#EDE8E0] bg-[#FAF9F5] text-[#454B57] hover:text-[#12141A] transition-colors cursor-pointer"
+                  title="View customer information"
+                  aria-label="View customer details"
+                >
+                  <User className="h-4 w-4" />
+                </button>
+
+                {/* Desktop Context Pane Toggle */}
                 <button
                   type="button"
                   onClick={() => setContextPaneOpen((prev) => !prev)}
-                  className="flex h-8 w-8 items-center justify-center rounded-[6px] border border-[#E4E1D8] text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
+                  className="hidden xl:flex h-8 w-8 items-center justify-center rounded-[6px] border border-[#E4E1D8] text-[#4B515D] hover:text-[#12141A] hover:bg-[#EFEDE7] transition-colors"
                   title={contextPaneOpen ? "Hide customer context" : "Show customer context"}
                 >
                   {contextPaneOpen ? (
@@ -777,10 +810,10 @@ function InboxContent() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. RIGHT PANE: QUIET CUSTOMER & DEAL CONTEXT (340px Collapsible)           */}
+      {/* 3. RIGHT PANE: QUIET CUSTOMER & DEAL CONTEXT (320px Collapsible)           */}
       {/* ========================================================================= */}
       {contextPaneOpen && activeConversation && (
-        <div className="w-[340px] shrink-0 border-l border-[#EDE8E0] bg-[#FAF9F5] flex flex-col overflow-y-auto p-5 space-y-6 custom-light-scroll">
+        <div className="hidden xl:flex w-[320px] shrink-0 border-l border-[#EDE8E0] bg-[#FAF9F5] flex-col overflow-y-auto p-5 space-y-6 custom-light-scroll">
           {/* Contact Details Section */}
           <div className="space-y-3">
             <h4 className="type-eyebrow text-[#666C78]">
@@ -945,6 +978,113 @@ function InboxContent() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Mobile Customer Details Drawer (< 1280px) */}
+      {activeConversation && (
+        <Drawer
+          isOpen={mobileDetailsOpen}
+          onClose={() => setMobileDetailsOpen(false)}
+          title="Customer & Deals"
+          description={activeConversation.contact_name || activeConversation.contact_phone}
+        >
+          <div className="space-y-6 pt-2">
+            {/* Contact Details Section */}
+            <div className="space-y-3">
+              <h4 className="type-eyebrow text-[#666C78]">Customer Information</h4>
+              <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+                <div className="flex items-center justify-between text-[#454B57]">
+                  <span>Contact Name</span>
+                  <span className="font-medium text-[#12141A]">
+                    {activeConversation.contact_name || "Enterprise Client"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[#454B57]">
+                  <span>WhatsApp</span>
+                  <span className="font-medium text-[#12141A] font-variant-numeric tabular-nums">
+                    {activeConversation.contact_phone}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[#4B515D]">
+                  <span>Status</span>
+                  <StatusPill variant="success" size="sm">Opted In</StatusPill>
+                </div>
+              </div>
+            </div>
+
+            {/* Assignment & Department Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="type-eyebrow text-[#666C78]">Assigned Specialist</h4>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileDetailsOpen(false);
+                    setForwardModalOpen(true);
+                  }}
+                  className="text-[12.5px] text-[#3D5AFE] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                >
+                  <ArrowRightLeft className="h-3 w-3" />
+                  <span>Forward / Assign</span>
+                </button>
+              </div>
+              <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2.5 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="h-7 w-7 rounded-full bg-[#EEF2FF] text-[#3D5AFE] flex items-center justify-center font-medium text-[12px] border border-[#D3DCFF] shrink-0">
+                      {getInitials(activeConversation.assigned_to_name || "Unassigned")}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-[#12141A] leading-tight truncate">
+                        {activeConversation.assigned_to_name || "Unassigned"}
+                      </div>
+                      <div className="text-[11.5px] text-[#666C78] truncate">
+                        {activeConversation.assigned_department
+                          ? `${activeConversation.assigned_department.toUpperCase()} TEAM`
+                          : "General Inbound Queue"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Linked Pipeline Opportunity */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="type-eyebrow text-[#666C78]">Opportunity</h4>
+                {!linkedLead && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileDetailsOpen(false);
+                      setLeadModalOpen(true);
+                    }}
+                    className="text-[12.5px] text-[#FF5A1F] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                  >
+                    <Plus className="h-3 w-3" />
+                    <span>Create Deal</span>
+                  </button>
+                )}
+              </div>
+              {linkedLead ? (
+                <div className="p-4 rounded-[16px] bg-white border border-[#EDE8E0] space-y-2 text-[13px] shadow-[0_1px_2px_rgba(11,13,18,0.04)]">
+                  <div className="font-medium text-[#12141A]">{linkedLead.title}</div>
+                  <div className="flex items-center justify-between text-[12.5px] pt-1 border-t border-[#EDE8E0]">
+                    <span className="text-[#666C78]">Value</span>
+                    <span className="font-semibold text-[#0A7A53] tabular-nums">
+                      {formatINR(linkedLead.estimated_value || 0)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-[16px] bg-[#FAF9F5] border border-dashed border-[#EDE8E0] text-center">
+                  <p className="text-[13px] text-[#666C78]">No opportunity linked yet.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </Drawer>
       )}
 
       {/* Templates Drawer */}

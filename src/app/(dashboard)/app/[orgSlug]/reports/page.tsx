@@ -163,7 +163,7 @@ export default function ReportsPage() {
 
             {/* View Mode Toggle & Download Menu */}
             <div className="flex items-center gap-2 self-start shrink-0">
-              <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5">
+              <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5 overflow-x-auto max-w-full">
                 <button
                   type="button"
                   onClick={() => setQ1ViewMode("growth")}
@@ -274,7 +274,7 @@ export default function ReportsPage() {
 
               {/* View Mode Toggle & Download Menu */}
               <div className="flex items-center gap-2 self-start shrink-0">
-                <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5">
+                <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5 overflow-x-auto max-w-full">
                   <button
                     type="button"
                     onClick={() => setQ2ViewMode("circle")}
@@ -359,7 +359,7 @@ export default function ReportsPage() {
 
               {/* View Mode Toggle & Download Menu */}
               <div className="flex items-center gap-2 self-start shrink-0">
-                <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5">
+                <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5 overflow-x-auto max-w-full">
                   <button
                     type="button"
                     onClick={() => setQ3ViewMode("circle")}

@@ -395,9 +395,87 @@ export default function ContactsPage() {
         </div>
       </div>
 
-      {/* 3. DENSE CONTACTS DATA TABLE */}
+      {/* 3. DENSE CONTACTS DATA TABLE & MOBILE CARD LIST */}
       <div className="space-y-4">
-        <Table>
+        {/* Mobile Contact Cards (< 768px) */}
+        <div className="md:hidden space-y-3">
+          {paginatedContacts.map((contact) => {
+            const avatarStyle = getAvatarColor(contact.first_name);
+
+            return (
+              <div
+                key={contact.id}
+                onClick={() => setSelectedContact(contact)}
+                className="p-3.5 rounded-[16px] border border-[#EDE8E0] bg-white shadow-2xs hover:border-[#FF5A1F]/40 transition-all cursor-pointer space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className={cn(
+                        "flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-medium border shrink-0 select-none",
+                        avatarStyle.bg,
+                        avatarStyle.text,
+                        avatarStyle.border
+                      )}
+                    >
+                      {getInitials(`${contact.first_name} ${contact.last_name || ""}`)}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[14px] font-semibold text-[#12141A] truncate">
+                        {contact.first_name} {contact.last_name || ""}
+                      </div>
+                      <div className="text-[12px] text-[#666C78] truncate">
+                        {contact.role || "Lead Contact"} • {contact.company || "Enterprise"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <StatusPill
+                    variant={
+                      contact.consent_status === "opted_in"
+                        ? "emerald"
+                        : contact.consent_status === "opted_out"
+                        ? "rose"
+                        : "amber"
+                    }
+                    dot
+                    size="sm"
+                  >
+                    {contact.consent_status === "opted_in" ? "Opted In" : "Pending"}
+                  </StatusPill>
+                </div>
+
+                <div className="flex items-center justify-between text-[12.5px] pt-2 border-t border-[#F0ECE2]">
+                  <div className="flex items-center gap-1.5 text-[#3D5AFE] font-medium">
+                    <Phone className="h-3.5 w-3.5 text-[#12B886]" />
+                    <span>{contact.phone}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href={`/app/${orgSlug}/inbox?phone=${encodeURIComponent(contact.phone)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-1.5 rounded-[8px] text-[#075E54] bg-[#25D366]/15 hover:bg-[#25D366]/25 transition-colors"
+                      title="Open WhatsApp chat"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {paginatedContacts.length === 0 && (
+            <div className="p-8 text-center text-[13.5px] text-[#666C78] bg-white rounded-[16px] border border-[#EDE8E0]">
+              No contacts found matching your criteria.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop & Tablet Table (>= 768px) */}
+        <div className="hidden md:block">
+          <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Contact & Role</TableHead>
@@ -572,6 +650,7 @@ export default function ContactsPage() {
             )}
           </TableBody>
         </Table>
+        </div>
 
         {/* Real Pagination Controls */}
         <div className="flex items-center justify-between px-2 text-[13px] text-[#666C78]">

@@ -83,10 +83,39 @@ export function SettingsShell({
         </p>
       </div>
 
-      {/* Main 2-Column Grid: Sub-nav (left 220px) + Form column (max 760px) */}
+      {/* Mobile / Tablet Horizontal Navigation Tabs (< 1024px) */}
+      <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-2 custom-light-scroll select-none">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-2 px-3.5 py-2 rounded-full text-[13px] font-medium shrink-0 transition-all border shadow-2xs",
+                isActive
+                  ? "bg-[#0B0D12] text-white border-[#0B0D12] font-semibold"
+                  : "bg-white text-[#454B57] border-[#EDE8E0] hover:text-[#12141A] hover:bg-[#FAF9F5]"
+              )}
+            >
+              <Icon
+                className={cn(
+                  "h-4 w-4 shrink-0",
+                  isActive ? "text-[#FF5A1F]" : "text-[#666C78]"
+                )}
+              />
+              <span>{item.title}</span>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Main 2-Column Grid: Sub-nav (desktop left 220px) + Form column */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Sub-nav */}
-        <aside className="lg:col-span-3 space-y-1">
+        {/* Desktop Left Sub-nav */}
+        <aside className="hidden lg:block lg:col-span-3 space-y-1">
           <div className="type-eyebrow text-[#666C78] px-3 py-1 mb-1">
             Configuration
           </div>
@@ -119,7 +148,7 @@ export function SettingsShell({
         </aside>
 
         {/* Right Form Column (720px - 880px by default) */}
-        <main className={cn("lg:col-span-9 space-y-6", contentClassName || "max-w-[880px]")}>
+        <main className={cn("lg:col-span-9 space-y-6 w-full", contentClassName || "max-w-[880px]")}>
           {children}
 
           {/* Sticky Save Bar */}

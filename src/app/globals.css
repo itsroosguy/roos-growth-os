@@ -750,7 +750,7 @@ a.btn-primary::after,
 
   @media (max-width: 1023px) {
     .sidebar { display: none; }
-    .sidebar.mobile-open { display: flex; inset: 0 auto 0 0; width: 244px; }
-    .app-main { margin-left: 0; padding: 20px 16px 48px; }
+    .sidebar.mobile-open { display: flex; inset: 0 auto 0 0; width: 280px; z-index: 50; }
+    .app-main { margin-left: 0; padding: 16px 16px 84px; width: 100%; }
   }
 }

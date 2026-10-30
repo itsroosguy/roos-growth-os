@@ -817,9 +817,9 @@ export default function OverviewPage() {
       {/* ==================================================================== */}
       {/* 2. KPI ROW (4 Cards: Waiting on you, Due today, Overdue, In proposal)*/}
       {/* ==================================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Card 1: Waiting on you */}
-        <div className="card-ref p-6 flex flex-col justify-between">
+        <div className="card-ref p-3.5 sm:p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-[10px] bg-[#EAEEFF] text-[#2A3DB5] flex items-center justify-center">
@@ -846,7 +846,7 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 2: Due today */}
-        <div className="card-ref p-6 flex flex-col justify-between">
+        <div className="card-ref p-3.5 sm:p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-[10px] bg-[#FFF3D6] text-[#8F5300] flex items-center justify-center">
@@ -873,7 +873,7 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 3: Overdue */}
-        <div className="card-ref p-6 flex flex-col justify-between">
+        <div className="card-ref p-3.5 sm:p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-[10px] bg-[#FFE9EA] text-[#B42336] flex items-center justify-center">
@@ -900,7 +900,7 @@ export default function OverviewPage() {
         </div>
 
         {/* Card 4: In proposal */}
-        <div className="card-ref p-6 flex flex-col justify-between">
+        <div className="card-ref p-3.5 sm:p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-[10px] bg-[#E4F7EF] text-[#0A7A53] flex items-center justify-center">

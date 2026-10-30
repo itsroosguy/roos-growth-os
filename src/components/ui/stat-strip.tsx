@@ -54,7 +54,7 @@ export function StatStrip({ stats, variant = "strip", className }: StatStripProp
       {stats.map((stat) => (
         <div
           key={stat.id}
-          className="p-5 flex flex-col justify-between transition-colors hover:bg-[#F6F5F1]/60"
+          className="p-3.5 sm:p-5 flex flex-col justify-between transition-colors hover:bg-[#F6F5F1]/60"
         >
           <div className="flex items-center justify-between gap-2">
             <span className="type-eyebrow text-[#6A707C] truncate">
