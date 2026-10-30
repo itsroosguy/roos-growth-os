@@ -37,6 +37,11 @@ class SubscriptionService {
       created_at: new Date(now.getTime() - 86400000 * 45).toISOString(),
       updated_at: new Date().toISOString(),
     });
+    this.subscriptions.set("demo-corp", {
+      ...this.subscriptions.get("acme-corp")!,
+      organization_id: "demo-corp",
+      id: "sub-demo-1",
+    });
 
     this.paymentEvents.set("acme-corp", [
       {
@@ -68,6 +73,7 @@ class SubscriptionService {
         created_at: periodStart,
       },
     ]);
+    this.paymentEvents.set("demo-corp", this.paymentEvents.get("acme-corp") || []);
 
     // 2. Beta Logistics (Starter Plan, Active)
     this.subscriptions.set("beta-logistics", {

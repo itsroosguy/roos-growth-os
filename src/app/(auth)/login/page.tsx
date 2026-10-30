@@ -72,9 +72,9 @@ export default function LoginPage() {
       }).catch(() => {});
 
       // 3. Direct document navigation to workspace overview
-      window.location.href = "/app/acme-corp/overview";
+      window.location.href = "/app/demo-corp/overview";
     } catch {
-      window.location.href = "/app/acme-corp/overview";
+      window.location.href = "/app/demo-corp/overview";
     }
   };
 
@@ -122,7 +122,7 @@ export default function LoginPage() {
 
       // Supabase authenticated session
       document.cookie = `roos_session=true; path=/; max-age=604800; SameSite=Lax`;
-      window.location.href = "/app/acme-corp/overview";
+      window.location.href = "/app/demo-corp/overview";
     } catch {
       await executeDemoLogin(normalizedEmail);
     }

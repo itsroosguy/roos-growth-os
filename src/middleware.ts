@@ -5,7 +5,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 // TEMPORARY AUTH BYPASS CONFIGURATION
 // When set to `true`:
 // - Anyone visiting the site (root '/', '/login', '/signup', etc.) is seamlessly
-//   and immediately routed to the dashboard (`/app/acme-corp/overview`).
+//   and immediately routed to the dashboard (`/app/demo-corp/overview`).
 // - All workspace routes (`/app/*`) are completely accessible with zero login prompt.
 // - Demo session cookies are set automatically so all workspace features work seamlessly.
 // - ZERO login code, forms, or pages are deleted.
@@ -14,6 +14,13 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 export const TEMPORARY_BYPASS_AUTH = false;
 
 export async function middleware(request: NextRequest) {
+  // Legacy /app/acme-corp/* forwarder to /app/demo-corp/*
+  if (request.nextUrl.pathname.startsWith("/app/acme-corp")) {
+    const url = request.nextUrl.clone();
+    url.pathname = request.nextUrl.pathname.replace("/app/acme-corp", "/app/demo-corp");
+    return NextResponse.redirect(url);
+  }
+
   // --------------------------------------------------------------------------
   // 1. TEMPORARY AUTH BYPASS (Active when testing online without login)
   // --------------------------------------------------------------------------
@@ -26,7 +33,7 @@ export async function middleware(request: NextRequest) {
 
     if (isAuthRoute) {
       const url = request.nextUrl.clone();
-      url.pathname = "/app/acme-corp/overview";
+      url.pathname = "/app/demo-corp/overview";
       const redirectResponse = NextResponse.redirect(url);
 
       // Inject active session cookies for smooth seamless access

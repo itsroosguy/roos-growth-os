@@ -7,7 +7,12 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: TEMPORARY_BYPASS_AUTH ? '/app/acme-corp/overview' : '/login',
+        destination: TEMPORARY_BYPASS_AUTH ? '/app/demo-corp/overview' : '/login',
+        permanent: false,
+      },
+      {
+        source: '/app/acme-corp/:path*',
+        destination: '/app/demo-corp/:path*',
         permanent: false,
       },
     ];

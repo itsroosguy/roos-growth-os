@@ -103,6 +103,7 @@ class CampaignStore {
     ];
 
     this.campaigns.set(acmeOrg, acmeCampaigns);
+    this.campaigns.set("demo-corp", acmeCampaigns);
     this.campaigns.set(betaOrg, []);
 
     // Seed recipients for completed campaign 1

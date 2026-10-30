@@ -103,6 +103,7 @@ class InvitationStore {
     ];
 
     this.invitations.set(acmeSlug, acmeInvites);
+    this.invitations.set("demo-corp", acmeInvites);
   }
 
   getInvitations(orgSlug: string): TeamInvitation[] {

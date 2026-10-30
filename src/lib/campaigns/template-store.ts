@@ -115,6 +115,7 @@ class TemplateStore {
     ];
 
     this.templates.set(acmeOrg, acmeTemplates);
+    this.templates.set("demo-corp", acmeTemplates);
     this.templates.set(betaOrg, betaTemplates);
   }
 

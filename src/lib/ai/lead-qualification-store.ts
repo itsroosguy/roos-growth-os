@@ -46,6 +46,7 @@ class LeadQualificationStore {
         created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
       },
     ]);
+    this.qualifications.set("demo-corp", this.qualifications.get("acme-corp") || []);
   }
 
   public getQualificationForLead(

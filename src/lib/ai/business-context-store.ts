@@ -57,6 +57,7 @@ class BusinessContextStore {
       preferred_tone: "friendly",
       updated_at: new Date().toISOString(),
     });
+    this.profiles.set("demo-corp", { ...this.profiles.get("acme-corp")!, organization_id: "demo-corp" });
 
     // 2. Beta Logistics Business Context
     this.profiles.set("beta-logistics", {

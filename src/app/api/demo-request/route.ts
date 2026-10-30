@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Create Contact in CRM
-    const contact = crmStore.createContact("acme-corp", {
+    const contact = crmStore.createContact("demo-corp", {
       first_name: fullName.split(" ")[0] || fullName,
       last_name: fullName.split(" ").slice(1).join(" ") || "Lead",
       phone: contactPhone,
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     });
 
     // 2. Create Lead in Pipeline
-    const lead = crmStore.createLead("acme-corp", {
+    const lead = crmStore.createLead("demo-corp", {
       contact_id: contact.id,
       contact_name: `${contact.first_name} ${contact.last_name}`,
       contact_phone: contact.phone,

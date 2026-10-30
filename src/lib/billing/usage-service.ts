@@ -33,6 +33,7 @@ class UsageService {
         created_at: new Date(Date.now() - 86400000 * 10).toISOString(),
       },
     ]);
+    this.overrides.set("demo-corp", this.overrides.get("acme-corp") || []);
   }
 
   // ============================================================================

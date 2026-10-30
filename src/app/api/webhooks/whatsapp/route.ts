@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       const changes = entry?.changes || [];
       for (const change of changes) {
         const value = change?.value;
-        const orgSlug = "acme-corp"; // Default workspace for standalone single-tenant webhook or resolve from WABA ID
+        const orgSlug = "demo-corp"; // Default workspace for standalone single-tenant webhook or resolve from WABA ID
 
         // 1. Process Inbound Messages
         const messages = value?.messages || [];

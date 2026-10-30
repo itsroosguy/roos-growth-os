@@ -33,7 +33,7 @@ export default function PlatformAdminPage() {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   // Cross-tenant data
-  const tenantSlugs = ["acme-corp", "sub-brand-2"];
+  const tenantSlugs = ["demo-corp", "sub-brand-2"];
   const tenantData = tenantSlugs.map((slug) => {
     const sub = subscriptionService.getSubscription(slug);
     const plan = getPlanDefinition(sub.plan_tier);
@@ -215,7 +215,7 @@ export default function PlatformAdminPage() {
                 {tenantData.map((item) => (
                   <tr key={item.slug} className="hover:bg-[#F7F5F0]/70 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-[#12141A]">
-                      {item.slug === "acme-corp" ? "ABC Testing Brand" : "Sub Testing 2"}
+                      {item.slug === "demo-corp" ? "ABC Testing Brand" : "Sub Testing 2"}
                       <span className="block text-[11.5px] tabular-nums text-[#666C78] font-normal mt-0.5">
                         /app/{item.slug}
                       </span>

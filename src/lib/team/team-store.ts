@@ -108,6 +108,7 @@ class TeamStore {
     ];
 
     this.members.set(acmeOrg, acmeMembers);
+    this.members.set("demo-corp", acmeMembers);
     this.members.set(betaOrg, betaMembers);
   }
 

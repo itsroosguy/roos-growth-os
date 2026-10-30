@@ -69,6 +69,7 @@ class WhatsAppStore {
     };
 
     this.connections.set(acmeOrg, acmeConn);
+    this.connections.set("demo-corp", { ...acmeConn, organization_id: "demo-corp" });
     this.connections.set(betaOrg, betaConn);
 
     // 3. Seed Acme Conversations
@@ -254,6 +255,7 @@ class WhatsAppStore {
     ];
 
     this.conversations.set(acmeOrg, acmeConversations);
+    this.conversations.set("demo-corp", acmeConversations);
 
     // 4. Seed Messages for Acme Conversations
     const conv2Messages: WhatsAppMessage[] = [

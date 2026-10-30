@@ -30,7 +30,7 @@ export default function SelectOrgPage() {
     {
       id: "org-1",
       name: "ABC Testing Brand",
-      slug: "acme-corp",
+      slug: "demo-corp",
       role: "owner",
       plan: "Growth OS",
       level: "Level 1 Root Owner",

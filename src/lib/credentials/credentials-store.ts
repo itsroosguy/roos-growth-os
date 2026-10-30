@@ -104,6 +104,7 @@ class CredentialsStore {
     ];
 
     this.credentials.set(acmeOrg, acmeCredentials);
+    this.credentials.set("demo-corp", acmeCredentials);
     this.credentials.set(betaOrg, betaCredentials);
   }
 

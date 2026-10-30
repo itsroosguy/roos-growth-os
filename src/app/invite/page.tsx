@@ -12,7 +12,7 @@ import { Shield, KeyRound, ArrowRight, Check, Users } from "lucide-react";
 export default function InviteIndexPage() {
   const router = useRouter();
   const [inputToken, setInputToken] = useState("");
-  const pendingInvites = invitationStore.getInvitations("acme-corp");
+  const pendingInvites = invitationStore.getInvitations("demo-corp");
 
   const handleLookup = (e: React.FormEvent) => {
     e.preventDefault();

@@ -39,6 +39,7 @@ class AIService {
       enable_workflow_ai: true,
       updated_at: new Date().toISOString(),
     });
+    this.settings.set("demo-corp", { ...this.settings.get("acme-corp")!, organization_id: "demo-corp" });
 
     this.logs.set("acme-corp", [
       {
@@ -68,6 +69,7 @@ class AIService {
         created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
       },
     ]);
+    this.logs.set("demo-corp", this.logs.get("acme-corp") || []);
 
     // 2. Beta Logistics Settings
     this.settings.set("beta-logistics", {

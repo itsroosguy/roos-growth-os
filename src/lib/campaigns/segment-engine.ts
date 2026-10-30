@@ -77,6 +77,7 @@ class SegmentEngine {
     ];
 
     this.savedSegments.set(acmeOrg, acmeSegments);
+    this.savedSegments.set("demo-corp", acmeSegments);
     this.savedSegments.set(betaOrg, betaSegments);
   }
 

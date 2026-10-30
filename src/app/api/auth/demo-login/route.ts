@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       success: true,
       email: normalizedEmail,
       role,
-      redirectTo: "/app/acme-corp/overview",
+      redirectTo: "/app/demo-corp/overview",
     });
 
     const maxAge = 60 * 60 * 24 * 7; // 7 days

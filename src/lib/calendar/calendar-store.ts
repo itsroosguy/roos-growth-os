@@ -78,6 +78,7 @@ class CalendarStore {
     ];
 
     this.meetings.set(acmeOrg, acmeMeetings);
+    this.meetings.set("demo-corp", acmeMeetings);
     this.meetings.set(betaOrg, []);
 
     // 2. Acme Integrations Seed
@@ -120,6 +121,7 @@ class CalendarStore {
     };
 
     this.integrations.set(acmeOrg, acmeIntegrations);
+    this.integrations.set("demo-corp", acmeIntegrations);
     this.integrations.set(betaOrg, betaIntegrations);
   }
 

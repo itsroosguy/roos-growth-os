@@ -377,6 +377,10 @@ class CRMStore {
     this.contacts.set(acmeOrg, acmeContacts);
     this.leads.set(acmeOrg, acmeLeads);
     this.tasks.set(acmeOrg, acmeTasks);
+    // Also bind demo-corp workspace
+    this.contacts.set("demo-corp", acmeContacts);
+    this.leads.set("demo-corp", acmeLeads);
+    this.tasks.set("demo-corp", acmeTasks);
 
     this.contacts.set(betaOrg, betaContacts);
     this.leads.set(betaOrg, betaLeads);

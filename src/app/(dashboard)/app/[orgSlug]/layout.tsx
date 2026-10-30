@@ -45,7 +45,7 @@ export default async function OrgDashboardLayout({
     {
       id: "org-1",
       name: "ABC Testing Brand",
-      slug: "acme-corp",
+      slug: "demo-corp",
       plan_tier: "growth",
       is_active: true,
       created_at: new Date().toISOString(),

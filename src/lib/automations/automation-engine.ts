@@ -91,6 +91,7 @@ class AutomationEngine {
     ];
 
     this.rules.set(acmeOrg, acmeRules);
+    this.rules.set("demo-corp", acmeRules);
     this.rules.set(betaOrg, betaRules);
 
     // Seed Sample Executions for Acme
@@ -164,6 +165,7 @@ class AutomationEngine {
         created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
       },
     ]);
+    this.executions.set("demo-corp", this.executions.get(acmeOrg) || []);
   }
 
   // ============================================================================
