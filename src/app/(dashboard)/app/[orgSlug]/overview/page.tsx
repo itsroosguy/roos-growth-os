@@ -14,6 +14,10 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useToast } from "@/components/ui/toast-context";
 import { NewOpportunityModal } from "@/components/crm/new-opportunity-modal";
 import {
+  CustomDateRangeModal,
+  SortCriterion,
+} from "@/components/overview/custom-date-range-modal";
+import {
   cn,
   formatINR,
   formatCompactINR,
@@ -27,6 +31,7 @@ import {
   Send,
   Clock,
   ArrowRight,
+  ArrowUpDown,
   TrendingUp,
   Undo2,
   Pencil,
@@ -167,6 +172,10 @@ export default function OverviewPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedPeriod, setSelectedPeriod] = useState<"This Month" | "Yearly" | "All Time" | "Custom">("This Month");
   const [periodDropdownOpen, setPeriodDropdownOpen] = useState(false);
+  const [customModalOpen, setCustomModalOpen] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState("2026-10-01");
+  const [customEndDate, setCustomEndDate] = useState("2026-10-30");
+  const [customSortBy, setCustomSortBy] = useState<SortCriterion>("date_desc");
   const [resolvedQueueIds, setResolvedQueueIds] = useState<Set<string>>(new Set());
 
   // Priority Action Card Enhanced State
@@ -290,9 +299,12 @@ export default function OverviewPage() {
   // Live Clock & Timezone
   const [selectedTimezone, setSelectedTimezone] = useState<string>("Asia/Kolkata");
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [mounted, setMounted] = useState(false);
   const [tzDropdownOpen, setTzDropdownOpen] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setCurrentTime(new Date());
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -426,15 +438,77 @@ export default function OverviewPage() {
     );
   }, [tasks, startOfToday, resolvedQueueIds]);
 
-  // 4. In Proposal Deals
-  const proposalLeads = useMemo(() => {
-    return leads.filter((l) => l.stage === "proposal");
-  }, [leads]);
+  // Period Date Boundaries & Label computation
+  const periodRange = useMemo(() => {
+    const now = new Date();
+    if (selectedPeriod === "This Month") {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      return { start, end };
+    }
+    if (selectedPeriod === "Yearly") {
+      const start = new Date(now.getFullYear(), 0, 1, 0, 0, 0);
+      const end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      return { start, end };
+    }
+    if (selectedPeriod === "Custom") {
+      const start = new Date(`${customStartDate}T00:00:00`);
+      const end = new Date(`${customEndDate}T23:59:59.999`);
+      return { start, end };
+    }
+    // All Time: epoch 0 to far future
+    return { start: new Date(0), end: new Date(8640000000000000) };
+  }, [selectedPeriod, customStartDate, customEndDate]);
 
-  // Total Open Pipeline Value
+  const periodButtonLabel = useMemo(() => {
+    if (selectedPeriod === "Custom") {
+      try {
+        const s = new Date(customStartDate + "T00:00:00");
+        const e = new Date(customEndDate + "T00:00:00");
+        const sStr = s.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+        const eStr = e.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+        return `${sStr} – ${eStr}`;
+      } catch {
+        return "Custom Range";
+      }
+    }
+    return selectedPeriod;
+  }, [selectedPeriod, customStartDate, customEndDate]);
+
+  // Filter and Sort leads based on active period range and sort criterion
+  const periodLeads = useMemo(() => {
+    const list = leads.filter((l) => {
+      if (!l.created_at) return true;
+      const d = new Date(l.created_at);
+      return d >= periodRange.start && d <= periodRange.end;
+    });
+
+    list.sort((a, b) => {
+      if (customSortBy === "value_desc") {
+        return (b.estimated_value || 0) - (a.estimated_value || 0);
+      }
+      if (customSortBy === "value_asc") {
+        return (a.estimated_value || 0) - (b.estimated_value || 0);
+      }
+      if (customSortBy === "date_asc") {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+      // Default: date_desc (most recent first)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    return list;
+  }, [leads, periodRange, customSortBy]);
+
+  // 4. In Proposal Deals (filtered to period)
+  const proposalLeads = useMemo(() => {
+    return periodLeads.filter((l) => l.stage === "proposal");
+  }, [periodLeads]);
+
+  // Total Open Pipeline Value (filtered to period)
   const activeLeads = useMemo(() => {
-    return leads.filter((l) => l.stage !== "lost");
-  }, [leads]);
+    return periodLeads.filter((l) => l.stage !== "lost");
+  }, [periodLeads]);
 
   const pipelineValue = useMemo(() => {
     return activeLeads.reduce((sum, l) => sum + (l.estimated_value || 0), 0);
@@ -583,7 +657,7 @@ export default function OverviewPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-1">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-[22px] sm:text-[24px] font-semibold text-[#12141A] tracking-[-0.02em] leading-tight">
+            <h2 suppressHydrationWarning className="text-[22px] sm:text-[24px] font-semibold text-[#12141A] tracking-[-0.02em] leading-tight">
               {greeting}, Praveen
             </h2>
 
@@ -591,12 +665,15 @@ export default function OverviewPage() {
             <div className="relative">
               <button
                 type="button"
+                suppressHydrationWarning
                 onClick={() => setTzDropdownOpen(!tzDropdownOpen)}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[12.5px] font-medium bg-white border border-[#EDE8E0] text-[#343A46] hover:bg-[#FAF9F5] shadow-2xs transition-colors cursor-pointer"
                 title="Select timezone"
               >
                 <span className="h-2 w-2 rounded-full bg-[#12B886] animate-pulse shrink-0" />
-                <span className="tabular-nums font-semibold text-[#12141A]">{formattedTime}</span>
+                <span suppressHydrationWarning className="tabular-nums font-semibold text-[#12141A]">
+                  {mounted ? formattedTime : "--:--:--"}
+                </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-[#FAF9F5] text-[11px] font-medium text-[#666C78] border border-[#EDE8E0]">
                   {TIMEZONE_OPTIONS.find((t) => t.value === selectedTimezone)?.code || "IST"}
                 </span>
@@ -667,30 +744,38 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
           {/* Period Dropdown */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setPeriodDropdownOpen(!periodDropdownOpen)}
               className="h-10 px-3.5 rounded-[12px] border border-[#EDE8E0] bg-white text-[13.5px] font-medium text-[#12141A] hover:bg-[#FAF9F5] shadow-2xs flex items-center gap-2 transition-colors cursor-pointer"
+              title="Select timeframe"
             >
-              <span>{selectedPeriod}</span>
+              <Calendar className="h-4 w-4 text-[#FF5A1F]" />
+              <span>{periodButtonLabel}</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#666C78]" />
             </button>
             {periodDropdownOpen && (
-              <div className="absolute right-0 top-11 w-36 rounded-[12px] bg-white border border-[#EDE8E0] shadow-lg p-1.5 z-20 space-y-0.5 animate-fade-rise">
+              <div className="absolute right-0 top-11 w-44 rounded-[12px] bg-white border border-[#EDE8E0] shadow-lg p-1.5 z-20 space-y-0.5 animate-fade-rise">
                 {(["This Month", "Yearly", "All Time", "Custom"] as const).map((p) => (
                   <button
                     key={p}
                     type="button"
                     onClick={() => {
-                      setSelectedPeriod(p);
-                      setPeriodDropdownOpen(false);
+                      if (p === "Custom") {
+                        setCustomModalOpen(true);
+                        setPeriodDropdownOpen(false);
+                      } else {
+                        setSelectedPeriod(p);
+                        setPeriodDropdownOpen(false);
+                        toast(`Filtered by ${p}`, { type: "info" });
+                      }
                     }}
                     className={cn(
                       "w-full text-left px-2.5 py-1.5 rounded-[8px] text-[13px] font-medium transition-colors cursor-pointer flex items-center justify-between",
-                      selectedPeriod === p ? "bg-[#0B0D12] text-white" : "text-[#12141A] hover:bg-[#FAF9F5]"
+                      selectedPeriod === p ? "bg-[#0B0D12] text-white font-semibold" : "text-[#12141A] hover:bg-[#FAF9F5]"
                     )}
                   >
                     <span>{p}</span>
@@ -700,6 +785,22 @@ export default function OverviewPage() {
               </div>
             )}
           </div>
+
+          {/* Reset button when custom period active */}
+          {selectedPeriod === "Custom" && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedPeriod("This Month");
+                toast("Reset to This Month", { type: "info" });
+              }}
+              className="h-10 px-2.5 rounded-[12px] bg-[#FFF1EA] border border-[#FF5A1F]/30 text-[#FF5A1F] text-[12.5px] font-medium flex items-center gap-1.5 hover:bg-[#FFE2D4] transition-colors cursor-pointer"
+              title="Reset date range filter"
+            >
+              <span>Reset</span>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
 
           {/* Primary Orange Gradient Button */}
           <Button
@@ -1392,7 +1493,26 @@ export default function OverviewPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Sort Order Selector Button */}
+                <button
+                  type="button"
+                  onClick={() => setCustomModalOpen(true)}
+                  className="h-8 px-2.5 rounded-[9px] border border-[#EDE8E0] bg-white hover:bg-[#FAF9F5] text-[12.5px] font-medium text-[#454B57] hover:text-[#12141A] flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                  title="Change sort order or custom dates"
+                >
+                  <ArrowUpDown className="h-3 w-3 text-[#FF5A1F]" />
+                  <span>
+                    {customSortBy === "value_desc"
+                      ? "Highest Value"
+                      : customSortBy === "value_asc"
+                      ? "Lowest Value"
+                      : customSortBy === "date_asc"
+                      ? "Oldest First"
+                      : "Newest First"}
+                  </span>
+                </button>
+
                 {/* Single Common Add Deal button */}
                 <Button
                   variant="primary"
@@ -1416,7 +1536,7 @@ export default function OverviewPage() {
             {/* Kanban Columns Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5 pt-1">
               {pipelineColumns.map((col) => {
-                const colLeads = leads.filter((l) => l.stage === col.stage);
+                const colLeads = periodLeads.filter((l) => l.stage === col.stage);
                 const colTotal = colLeads.reduce((s, l) => s + (l.estimated_value || 0), 0);
                 const isOver = dragOverStage === col.stage;
 
@@ -1625,7 +1745,7 @@ export default function OverviewPage() {
               </div>
 
               <div className="space-y-3">
-                {leads.slice(0, 3).map((ld) => {
+                {periodLeads.slice(0, 3).map((ld) => {
                   const av = getAvatarColor(ld.contact_name || ld.title);
 
                   return (
@@ -2101,6 +2221,35 @@ export default function OverviewPage() {
         onClose={() => setCreateModalOpen(false)}
         orgSlug={orgSlug}
         onSuccess={() => setRefreshKey((k) => k + 1)}
+      />
+
+      {/* Custom Date Range & Sort Modal */}
+      <CustomDateRangeModal
+        open={customModalOpen}
+        onClose={() => setCustomModalOpen(false)}
+        startDate={customStartDate}
+        endDate={customEndDate}
+        sortBy={customSortBy}
+        dealsCount={activeLeads.length}
+        dealsValue={pipelineValue}
+        onApply={(start, end, sort) => {
+          setSelectedPeriod("Custom");
+          setCustomStartDate(start);
+          setCustomEndDate(end);
+          setCustomSortBy(sort);
+          toast(
+            `Custom filter applied (${start} to ${end}) • Sorted by ${
+              sort === "value_desc"
+                ? "Highest Value"
+                : sort === "value_asc"
+                ? "Lowest Value"
+                : sort === "date_asc"
+                ? "Oldest First"
+                : "Newest First"
+            }`,
+            { type: "success" }
+          );
+        }}
       />
     </div>
   );
