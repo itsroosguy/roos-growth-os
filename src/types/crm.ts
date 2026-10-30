@@ -8,6 +8,22 @@ export type LeadStage =
 
 export type ConsentStatus = "opted_in" | "opted_out" | "pending";
 
+export type ContactClassification =
+  | "ongoing_client"
+  | "new_opportunity"
+  | "vip"
+  | "partner"
+  | "lead";
+
+export type DepartmentType =
+  | "finance"
+  | "operations"
+  | "marketing"
+  | "executive"
+  | "technology"
+  | "sales"
+  | "other";
+
 export type TaskPriority = "low" | "medium" | "high";
 
 export type TaskStatus = "todo" | "in_progress" | "completed" | "cancelled";
@@ -20,6 +36,9 @@ export interface Contact {
   phone: string;
   email?: string | null;
   company?: string | null;
+  role?: string | null;
+  department?: DepartmentType | string | null;
+  classification?: ContactClassification | string | null;
   tags: string[];
   source?: string | null;
   notes?: string | null;
