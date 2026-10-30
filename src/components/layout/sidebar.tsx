@@ -30,7 +30,6 @@ import {
   LogOut,
   Search,
   Sparkle,
-  Check,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -56,7 +55,7 @@ interface NavGroup {
 export function Sidebar({ orgSlug }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { currentOrg, userRole, organizations = [] } = useTenant();
+  const { currentOrg, userRole } = useTenant();
 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -330,12 +329,12 @@ export function Sidebar({ orgSlug }: SidebarProps) {
           </button>
         )}
 
-        {/* Expand Chevron Button when COLLAPSED in Header */}
+        {/* Floating Expand Chevron Button when COLLAPSED (On the Rail Border Edge) */}
         {collapsed && (
           <button
             type="button"
             onClick={toggleCollapsed}
-            className="hidden lg:flex items-center justify-center h-7 w-7 rounded-[8px] text-[#A3A9B6] hover:bg-white/[0.08] hover:text-[#F4F5F7] transition-colors duration-140 cursor-pointer"
+            className="hidden lg:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-50 items-center justify-center h-7 w-7 rounded-full bg-[#12151C] border border-white/[0.18] text-[#A3A9B6] hover:text-white hover:bg-[#1B1F29] hover:scale-105 shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-140 cursor-pointer will-change-transform"
             aria-label="Expand sidebar"
             title="Expand sidebar"
           >
@@ -426,17 +425,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                           }
                         }}
                         onMouseLeave={() => setHoveredTooltip(null)}
-                        onFocus={(e) => {
-                          if (collapsed) {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setHoveredTooltip({
-                              title: item.title,
-                              shortcut: item.shortcut,
-                              top: rect.top,
-                            });
-                          }
-                        }}
-                        onBlur={() => setHoveredTooltip(null)}
                         aria-current={isActive ? "page" : undefined}
                         data-nav-active={isActive ? "true" : undefined}
                         className={cn(
@@ -626,38 +614,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
                   <p className="text-[11px] text-[#6B7280] truncate">praveen@roosstudiox.com</p>
                 </div>
 
-                {/* Organization Switcher */}
-                <div className="px-3 py-1 text-[10px] uppercase font-semibold tracking-wider text-[#6B7280]">
-                  Organizations
-                </div>
-                {organizations.map((org) => {
-                  const isCurrent = org.slug === currentOrg.slug;
-                  return (
-                    <button
-                      key={org.id}
-                      type="button"
-                      onClick={() => {
-                        setUserMenuOpen(false);
-                        router.push(`/app/${org.slug}/overview`);
-                      }}
-                      className={cn(
-                        "w-full flex items-center justify-between px-3 py-1.5 text-[12.5px] rounded-[8px] transition-colors cursor-pointer text-left",
-                        isCurrent
-                          ? "bg-white/[0.08] text-white font-medium"
-                          : "text-[#A3A9B6] hover:text-white hover:bg-white/[0.04]"
-                      )}
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Building2 className="h-3.5 w-3.5 text-[#6B7280] shrink-0" />
-                        <span className="truncate">{org.name}</span>
-                      </div>
-                      {isCurrent && <Check className="h-3.5 w-3.5 text-[#FF5A1F] shrink-0" />}
-                    </button>
-                  );
-                })}
-
-                <div className="my-1.5 border-t border-white/[0.08]" />
-
                 <Link
                   href={`/app/${orgSlug}/settings/business-profile`}
                   onClick={() => setUserMenuOpen(false)}
@@ -690,31 +646,6 @@ export function Sidebar({ orgSlug }: SidebarProps) {
               </div>
             </>
           )}
-        </div>
-
-        {/* Dedicated Sidebar Collapse / Expand Toggle Button */}
-        <div className="hidden lg:block pt-1">
-          <button
-            type="button"
-            onClick={toggleCollapsed}
-            className={cn(
-              "flex items-center rounded-[10px] text-[#A3A9B6] hover:text-[#F4F5F7] hover:bg-white/[0.06] transition-colors duration-140 cursor-pointer",
-              collapsed
-                ? "h-9 w-9 mx-auto justify-center"
-                : "h-9 w-full px-2.5 gap-2.5 text-[12.5px] font-normal"
-            )}
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <>
-                <ChevronLeft className="h-4 w-4 shrink-0 text-[#6B7280]" />
-                <span>Collapse sidebar</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
     </div>

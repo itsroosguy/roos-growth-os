@@ -376,7 +376,7 @@ function InboxContent() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-130px)] rounded-[20px] border border-[#EDE8E0] overflow-hidden bg-[#F7F5F0] select-none animate-page-enter shadow-2xs">
+    <div className="flex h-[calc(100vh-100px)] -m-4 sm:-m-6 md:-m-10 overflow-hidden bg-[#F7F5F0] select-none animate-page-enter">
       {/* ========================================================================= */}
       {/* 1. LEFT PANE: CONVERSATION LIST (ON CANVAS, NO WHITE CONTAINER)            */}
       {/* ========================================================================= */}
