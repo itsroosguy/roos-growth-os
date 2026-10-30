@@ -215,7 +215,7 @@ export default function TeamAndCredentialsPage() {
   const pendingCount = invitations.filter((i) => i.status === "pending").length;
 
   return (
-    <div className="space-y-6 max-w-6xl pb-12 animate-page-enter">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12 animate-page-enter">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#EDE8E0]">
         <div>

@@ -69,7 +69,7 @@ export function SettingsShell({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="pb-4 border-b border-[#E6E2D8]">
         <div className="flex items-center gap-3">

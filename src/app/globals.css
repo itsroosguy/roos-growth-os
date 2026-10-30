@@ -741,8 +741,8 @@ a.btn-primary::after,
   .sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-width);background:var(--ink-950);
     display:flex;flex-direction:column;z-index:40;border-right:1px solid rgba(255,255,255,0.06)}
   .sidebar.is-collapsed{width:88px}
-  .app-main{margin-left:var(--sidebar-width);padding:24px 32px 64px;max-width:1680px;transition:margin-left .16s var(--ease-out)}
-  .app-main.sidebar-collapsed{margin-left:88px}
+  .app-main{margin-left:var(--sidebar-width);padding:24px 32px 64px;width:calc(100% - var(--sidebar-width));min-height:calc(100vh - 56px)}
+  .app-main.sidebar-collapsed{margin-left:88px;width:calc(100% - 88px)}
   .nav-item{height:42px;border-radius:12px;padding:0 12px;font-size:15px;color:#A3A9B6;
     display:flex;align-items:center;gap:12px;transition:background .12s var(--ease-out),color .12s}
   .nav-item:hover{background:rgba(255,255,255,.06);color:#F4F5F7}

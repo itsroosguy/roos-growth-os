@@ -74,7 +74,9 @@ export default async function OrgDashboardLayout({
           <div className="flex flex-col min-w-0">
             <Topbar />
             <main className="app-main">
-              <div className="animate-page-enter">{children}</div>
+              <div className="w-full max-w-[1600px] mx-auto animate-page-enter">
+                {children}
+              </div>
             </main>
           </div>
         </div>
