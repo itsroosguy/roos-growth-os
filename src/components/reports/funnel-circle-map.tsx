@@ -60,35 +60,41 @@ export function FunnelCircleMap({
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
             className={cn(
-              "p-2.5 rounded-[12px] border transition-colors cursor-pointer",
+              "p-3 rounded-[14px] border transition-colors cursor-pointer group",
               hoveredIndex === idx
-                ? "bg-[#F7F5F0] border-[#DCD6CC]"
-                : "bg-white border-[#EDE8E0]"
+                ? "bg-[#F7F5F0] border-[#DCD6CC] shadow-2xs"
+                : "bg-white border-[#EDE8E0] hover:bg-[#FAFAF9]"
             )}
           >
             <div className="flex items-center justify-between text-[13.5px]">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <span
-                  className="h-2.5 w-2.5 rounded-full shrink-0"
+                  className="h-2.5 w-2.5 rounded-full shrink-0 transition-transform duration-180 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-125"
                   style={{ backgroundColor: step.color }}
                 />
                 <span className="font-semibold text-[#12141A]">{step.stage}</span>
                 {step.dropOff && (
-                  <span className="text-[11px] font-medium text-[#E5484D] px-1.5 py-0.5 rounded-full bg-[#FFE9EA]">
-                    {step.dropOff}
+                  <span className="text-[11px] font-medium text-[#B93A0A] px-2 py-0.5 rounded-full bg-[#FFF1EA]">
+                    {step.dropOff} drop
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-3 text-[#666C78] tabular-nums">
-                <span>{step.val}</span>
-                <span className="font-semibold text-[#12141A]">{step.pct}</span>
+                <span className="text-[#12141A] font-semibold">{step.val}</span>
+                <span className="font-semibold text-[#12141A] px-2 py-0.5 rounded-full bg-[#F0ECE4] text-[12px]">
+                  {step.pct}
+                </span>
               </div>
             </div>
 
-            <div className="h-3 w-full rounded-full bg-[#F7F5F0] overflow-hidden border border-[#EDE8E0] mt-2">
+            <div className="h-3 w-full rounded-full bg-[#F7F5F0] overflow-hidden border border-[#EDE8E0] mt-2 relative">
               <div
-                style={{ width: step.pct, backgroundColor: step.color }}
-                className="h-full rounded-full transition-all duration-300"
+                style={{
+                  width: step.pct,
+                  backgroundColor: step.color,
+                  animationDelay: `${idx * 60}ms`,
+                }}
+                className="h-full rounded-full animate-grow-x will-change-transform"
               />
             </div>
           </div>

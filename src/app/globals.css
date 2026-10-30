@@ -580,6 +580,24 @@ a.btn-primary::after,
   will-change: transform;
 }
 
+/* GPU-Accelerated Growing Graph Bar Entrance */
+@keyframes emil-scale-x-grow {
+  from {
+    transform: scaleX(0);
+    opacity: 0.6;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-grow-x {
+  transform-origin: left center;
+  animation: emil-scale-x-grow 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
 /* Tactile Physics-Based Spring Button / Tap */
 .interactive-tap-btn,
 .interactive-tap-spring {

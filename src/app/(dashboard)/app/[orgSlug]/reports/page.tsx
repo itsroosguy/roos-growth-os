@@ -11,10 +11,12 @@ import {
   Download,
   PieChart,
   BarChart2,
+  TrendingUp,
 } from "lucide-react";
 import { CircleDonutMap, ChannelAttributionItem } from "@/components/reports/circle-donut-map";
 import { ConcentricRadialMap, SlaTierItem } from "@/components/reports/concentric-radial-map";
 import { FunnelCircleMap, PipelineStageItem } from "@/components/reports/funnel-circle-map";
+import { GrowingGraph } from "@/components/reports/growing-graph";
 import { DownloadCardMenu } from "@/components/reports/download-card-menu";
 import { exportTableAsCsv } from "@/lib/reports/report-exporter";
 
@@ -25,8 +27,8 @@ export default function ReportsPage() {
 
   const [timeRange, setTimeRange] = useState<ReportTimeRange>("30d");
 
-  // View mode toggles for each question card ("circle" by default per user request)
-  const [q1ViewMode, setQ1ViewMode] = useState<"circle" | "bars">("circle");
+  // View mode toggles for each question card ("growth" by default on Q1 per user request)
+  const [q1ViewMode, setQ1ViewMode] = useState<"growth" | "circle" | "bars">("growth");
   const [q2ViewMode, setQ2ViewMode] = useState<"circle" | "bars">("circle");
   const [q3ViewMode, setQ3ViewMode] = useState<"circle" | "bars">("circle");
 
@@ -164,6 +166,20 @@ export default function ReportsPage() {
               <div className="flex items-center rounded-[10px] border border-[#EDE8E0] bg-[#F7F5F0] p-0.5">
                 <button
                   type="button"
+                  onClick={() => setQ1ViewMode("growth")}
+                  className={cn(
+                    "flex items-center gap-1 px-2.5 py-1 rounded-[7px] text-[12px] font-medium transition-colors cursor-pointer",
+                    q1ViewMode === "growth"
+                      ? "bg-white text-[#12141A] shadow-xs font-semibold"
+                      : "text-[#666C78] hover:text-[#12141A]"
+                  )}
+                  title="Growing Graph View"
+                >
+                  <TrendingUp className="h-3.5 w-3.5 text-[#12B886]" />
+                  <span>Growing Graph</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setQ1ViewMode("circle")}
                   className={cn(
                     "flex items-center gap-1 px-2.5 py-1 rounded-[7px] text-[12px] font-medium transition-colors cursor-pointer",
@@ -194,7 +210,7 @@ export default function ReportsPage() {
 
               <DownloadCardMenu
                 cardId="card-question-1"
-                svgElementId="funnel-dynamics-circle"
+                svgElementId={q1ViewMode === "growth" ? "growing-graph-chart" : "funnel-dynamics-circle"}
                 filename={`roos-${orgSlug}-q1-conversion-dynamics`}
                 config={{
                   questionNumber: 1,
@@ -221,13 +237,22 @@ export default function ReportsPage() {
             </div>
           </div>
 
-          {/* Interactive Circle Map & Breakdown */}
-          <FunnelCircleMap
-            stages={q1Stages}
-            overallWinRate="28%"
-            wonRevenue="₹4,50,000"
-            viewMode={q1ViewMode}
-          />
+          {/* Interactive Growing Graph / Circle Map / Bars */}
+          {q1ViewMode === "growth" ? (
+            <GrowingGraph
+              stages={q1Stages}
+              overallWinRate="28%"
+              wonRevenue="₹4,50,000"
+              timeRangeLabel={timeRange === "7d" ? "7 days" : timeRange === "all" ? "All time" : "30 days"}
+            />
+          ) : (
+            <FunnelCircleMap
+              stages={q1Stages}
+              overallWinRate="28%"
+              wonRevenue="₹4,50,000"
+              viewMode={q1ViewMode}
+            />
+          )}
         </div>
 
         {/* QUESTION 2 & QUESTION 3 (Two Columns) */}
