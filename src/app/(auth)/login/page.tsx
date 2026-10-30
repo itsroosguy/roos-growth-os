@@ -19,6 +19,7 @@ import {
   X,
   Send,
   PlayCircle,
+  Zap,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -267,27 +268,81 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Quick Demo Credentials Pill with Instant 1-Click Access */}
-          <div className="mb-4 p-2.5 sm:p-3 rounded-2xl bg-[#F7F7F8] border border-[#E5E5E7] flex items-center justify-between gap-2 shadow-2xs">
-            <div className="flex items-center space-x-2 truncate">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <div className="flex flex-col truncate">
-                <span className="text-[#0D0D0E] font-semibold text-[11px] leading-tight">Master Admin Access</span>
-                <span className="font-sans text-[#71717A] text-[10px] truncate">admin@acmetech.io • roos2026demo</span>
+          {/* ================================================================= */}
+          {/* HIGH-CONVERTING 1-CLICK INSTANT DEMO ACCESS HERO CARD             */}
+          {/* ================================================================= */}
+          <div className="mb-5 p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-[#FFF9F5] via-[#FFFDFB] to-[#F7F7F8] border border-[#FF7900]/30 shadow-xs relative overflow-hidden">
+            {/* Top Status & Badge Bar */}
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center space-x-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-[11px] font-medium text-[#0D0D0E]">Live Demo Sandbox</span>
               </div>
+              <span className="px-2 py-0.5 rounded-full bg-[#FF7900]/10 text-[#FF5A1F] text-[10px] font-medium tracking-wide">
+                No Password Needed
+              </span>
             </div>
+
+            {/* Instant 1-Click Button with Snap Spring Motion */}
             <button
               type="button"
               disabled={loading}
-              onClick={() => {
-                setEmail("admin@acmetech.io");
-                setPassword("roos2026demo");
-                executeDemoLogin("admin@acmetech.io");
-              }}
-              className="text-[11px] font-medium text-white bg-[#FF7900] hover:bg-[#E66D00] px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0 shadow-2xs flex items-center gap-1 active:scale-95"
+              onClick={() => executeDemoLogin("admin@acmetech.io")}
+              className="w-full h-11 bg-gradient-to-r from-[#FF7900] to-[#FF5A1F] hover:from-[#E66D00] hover:to-[#E65100] text-white font-semibold rounded-xl text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 transition-transform duration-160 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95 cursor-pointer will-change-transform group"
             >
-              <span>{loading ? "Signing in..." : "1-Click Sign In"}</span>
+              <Zap className="h-4 w-4 fill-white shrink-0 group-hover:scale-110 transition-transform" />
+              <span>{loading ? "Launching Demo Workspace..." : "1-Click Instant Demo Access"}</span>
+              <ArrowRight className="h-4 w-4 shrink-0 group-hover:translate-x-0.5 transition-transform" />
             </button>
+
+            {/* Quick Role Switcher Chips */}
+            <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-black/5 text-[11px]">
+              <span className="text-[#8E8E93] font-normal text-[10px] sm:text-[11px]">Quick Role:</span>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => executeDemoLogin("admin@acmetech.io")}
+                  title="Master Owner with full system administration rights"
+                  className="px-2 py-0.5 rounded-md bg-[#FF7900]/15 text-[#D86200] font-medium text-[10px] sm:text-[11px] hover:bg-[#FF7900]/25 transition-colors cursor-pointer"
+                >
+                  ★ Owner / Admin
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => executeDemoLogin("operations.lead@acmetech.io")}
+                  title="Senior Manager / Operations Lead"
+                  className="px-2 py-0.5 rounded-md bg-black/5 text-[#52525B] font-medium text-[10px] sm:text-[11px] hover:bg-black/10 transition-colors cursor-pointer"
+                >
+                  Ops Lead
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => executeDemoLogin("jr.manager@acmetech.io")}
+                  title="Junior Account Manager"
+                  className="px-2 py-0.5 rounded-md bg-black/5 text-[#52525B] font-medium text-[10px] sm:text-[11px] hover:bg-black/10 transition-colors cursor-pointer"
+                >
+                  Jr Manager
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Clean Divider */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#E5E5E7]" />
+            </div>
+            <div className="relative flex justify-center text-[10px] sm:text-[11px]">
+              <span className="bg-white px-3 text-[#8E8E93] font-normal uppercase tracking-wider">
+                or sign in with password
+              </span>
+            </div>
           </div>
 
           {/* Email / Password Form (Removed Google & Apple logins and divider) */}

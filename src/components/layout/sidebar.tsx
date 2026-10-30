@@ -587,14 +587,24 @@ export function Sidebar({ orgSlug }: SidebarProps) {
 
                 <div className="my-1 border-t border-white/[0.08]" />
 
-                <Link
-                  href="/login"
-                  onClick={() => setUserMenuOpen(false)}
-                  className="w-full flex items-center px-3 py-2 text-[13px] text-[#E5484D] hover:bg-[#FFE9EA]/10 rounded-[8px] transition-colors"
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setUserMenuOpen(false);
+                    try {
+                      document.cookie = "roos_session=; path=/; max-age=0;";
+                      document.cookie = "roos_user_role=; path=/; max-age=0;";
+                      document.cookie = "roos_user_email=; path=/; max-age=0;";
+                      await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+                    } finally {
+                      window.location.href = "/login";
+                    }
+                  }}
+                  className="w-full flex items-center px-3 py-2 text-[13px] text-[#E5484D] hover:bg-[#FFE9EA]/10 rounded-[8px] transition-colors cursor-pointer text-left"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
-                </Link>
+                </button>
               </div>
             </>
           )}

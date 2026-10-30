@@ -1,5 +1,5 @@
 // Set to true to bypass login and route root directly into the dashboard for online testing
-const TEMPORARY_BYPASS_AUTH = true;
+const TEMPORARY_BYPASS_AUTH = false;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

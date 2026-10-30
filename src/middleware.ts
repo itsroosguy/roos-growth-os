@@ -11,7 +11,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 // - ZERO login code, forms, or pages are deleted.
 // - To restore the standard login & authentication flow at any time, simply set this to `false`.
 // ============================================================================
-export const TEMPORARY_BYPASS_AUTH = true;
+export const TEMPORARY_BYPASS_AUTH = false;
 
 export async function middleware(request: NextRequest) {
   // --------------------------------------------------------------------------
@@ -82,6 +82,11 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute =
     request.nextUrl.pathname.startsWith("/app") ||
     request.nextUrl.pathname.startsWith("/select-org");
+
+  // Allow auth routes (/login, /signup, etc.) to always render cleanly
+  if (isAuthRoute) {
+    return NextResponse.next();
+  }
 
   // If user is authenticated via demo session, allow immediate access to protected routes
   if (isDemoAuthenticated && isProtectedRoute) {
@@ -154,15 +159,6 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
-  }
-
-  // Redirect authenticated users trying to access login/signup back to app
-  if (isAuthRoute && (user || isDemoAuthenticated)) {
-    if (!request.nextUrl.searchParams.has("logout")) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/app/acme-corp/overview";
-      return NextResponse.redirect(url);
-    }
   }
 
   return response;
