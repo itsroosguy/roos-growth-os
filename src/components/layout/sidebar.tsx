@@ -74,7 +74,11 @@ export function Sidebar({ orgSlug }: SidebarProps) {
     try {
       const savedCollapsed = localStorage.getItem("roos_sidebar_collapsed");
       if (savedCollapsed !== null) {
-        setCollapsed(savedCollapsed === "true");
+        const isCol = savedCollapsed === "true";
+        setCollapsed(isCol);
+        if (typeof document !== "undefined") {
+          document.documentElement.classList.toggle("sidebar-collapsed", isCol);
+        }
       }
     } catch {
       // Ignore
@@ -86,6 +90,9 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       const next = !prev;
       try {
         localStorage.setItem("roos_sidebar_collapsed", String(next));
+        if (typeof document !== "undefined") {
+          document.documentElement.classList.toggle("sidebar-collapsed", next);
+        }
       } catch {
         // Ignore
       }
@@ -278,31 +285,50 @@ export function Sidebar({ orgSlug }: SidebarProps) {
   const avatarColors = getAvatarColor("Praveen");
 
   const sidebarContent = (
-    <div className="flex h-full flex-col text-[#F4F5F7] select-none bg-[#0B0D12] overflow-hidden">
+    <div className="flex h-full flex-col text-[#F4F5F7] select-none bg-[#0B0D12]">
       {/* 1. TOP LOGO & COLLAPSE HEADER */}
-      <div className="relative flex h-[64px] shrink-0 items-center justify-between px-4 border-b border-white/[0.06]">
+      <div
+        className={cn(
+          "relative flex h-[64px] shrink-0 items-center border-b border-white/[0.06]",
+          collapsed ? "justify-center px-2" : "justify-between px-4"
+        )}
+      >
         <Link
           href={`/app/${orgSlug}/overview`}
-          className="flex items-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[8px]"
+          className={cn(
+            "flex items-center outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A1F] rounded-[10px]",
+            collapsed ? "justify-center" : ""
+          )}
           title="ROOS STUDIOX"
         >
-          <RoosLogo collapsed={collapsed} size={collapsed ? "sm" : "md"} className="shrink-0" />
+          <RoosLogo collapsed={collapsed} size="md" className="shrink-0" />
         </Link>
 
-        {/* Collapse Chevron Button */}
-        <button
-          type="button"
-          onClick={toggleCollapsed}
-          className="hidden lg:flex items-center justify-center h-7 w-7 rounded-[8px] text-[#A3A9B6] hover:bg-white/[0.08] hover:text-[#F4F5F7] transition-all duration-140 cursor-pointer"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
+        {/* Collapse Chevron Button when EXPANDED */}
+        {!collapsed && (
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            className="hidden lg:flex items-center justify-center h-7 w-7 rounded-[8px] text-[#A3A9B6] hover:bg-white/[0.08] hover:text-[#F4F5F7] transition-colors duration-140 cursor-pointer"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+          >
             <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
+          </button>
+        )}
+
+        {/* Floating Expand Chevron Button when COLLAPSED (On the Rail Border Edge) */}
+        {collapsed && (
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            className="hidden lg:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-50 items-center justify-center h-7 w-7 rounded-full bg-[#12151C] border border-white/[0.18] text-[#A3A9B6] hover:text-white hover:bg-[#1B1F29] hover:scale-105 shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-140 cursor-pointer will-change-transform"
+            aria-label="Expand sidebar"
+            title="Expand sidebar"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* 2. SEARCH FIELD (⌘K) INSIDE SIDEBAR */}
@@ -450,7 +476,7 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       {/* FLOATING HOVER TOOLTIP IN COLLAPSED MODE */}
       {collapsed && hoveredTooltip && (
         <div
-          className="fixed z-50 left-[84px] px-3 py-1.5 rounded-[8px] bg-[#12151C] text-[#F4F5F7] border border-white/[0.12] text-[13px] font-medium shadow-overlay pointer-events-none flex items-center gap-2"
+          className="fixed z-50 left-[96px] px-3 py-1.5 rounded-[8px] bg-[#12151C] text-[#F4F5F7] border border-white/[0.12] text-[13px] font-medium shadow-overlay pointer-events-none flex items-center gap-2"
           style={{ top: `${hoveredTooltip.top + 6}px` }}
         >
           <span>{hoveredTooltip.title}</span>
@@ -618,8 +644,8 @@ export function Sidebar({ orgSlug }: SidebarProps) {
       {/* Desktop Fixed Full-height Dark Sidebar (>= 1024px) */}
       <aside
         className={cn(
-          "hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col border-r border-white/[0.06] bg-[#0B0D12] transition-all duration-160 ease-out",
-          collapsed ? "w-[76px]" : "w-[244px]"
+          "hidden lg:flex fixed inset-y-0 left-0 z-40 flex-col border-r border-white/[0.06] bg-[#0B0D12] transition-[width] duration-160 ease-out",
+          collapsed ? "w-[88px]" : "w-[244px]"
         )}
       >
         {sidebarContent}

@@ -17,8 +17,9 @@ export function RoosLogo({
   if (collapsed) {
     return (
       <div
+        key="roos-logo-mark"
         className={cn(
-          "flex items-center justify-center h-10 w-10 rounded-[14px] bg-[#121214] border border-[#27272A] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] select-none p-2 group hover:border-[#FF5A1F]/50 transition-all cursor-pointer",
+          "flex items-center justify-center h-10 w-10 rounded-[14px] bg-[#121214] border border-[#27272A] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] select-none p-2 group hover:border-[#FF5A1F]/50 transition-colors cursor-pointer shrink-0 will-change-transform",
           className
         )}
         title="ROOS STUDIOX"
@@ -26,7 +27,7 @@ export function RoosLogo({
         <img
           src="/mark.png"
           alt="ROOS STUDIOX"
-          className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,90,31,0.35)] transition-transform duration-200 group-hover:scale-110"
+          className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,90,31,0.35)] transition-transform duration-160 group-hover:scale-105"
           style={{
             filter:
               variant === "orange"
@@ -55,12 +56,12 @@ export function RoosLogo({
       : "brightness(0)"; // Dark overlay
 
   return (
-    <div className={cn("relative inline-flex items-center select-none", className)}>
+    <div key="roos-logo-expanded" className={cn("relative inline-flex items-center select-none shrink-0", className)}>
       <img
         src="/logo.png"
         alt="ROOS STUDIOX"
-        className={cn("w-auto object-contain transition-all duration-200", heightClass)}
-        style={{ filter: filterStyle }}
+        className={cn("w-auto object-contain shrink-0", heightClass)}
+        style={{ filter: filterStyle, maxWidth: "158px", maxHeight: "20px" }}
       />
     </div>
   );

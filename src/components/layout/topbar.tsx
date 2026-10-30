@@ -201,7 +201,7 @@ export function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#EDE8E0] bg-[#F7F3EE]/90 backdrop-blur-md px-6 select-none lg:ml-[244px] transition-[margin] duration-160">
+      <header className="sticky top-0 z-20 flex h-[56px] shrink-0 items-center justify-between border-b border-[#EDE8E0] bg-[#F7F3EE]/90 backdrop-blur-md px-6 select-none lg:ml-[var(--sidebar-width,244px)] transition-[margin] duration-160">
         {/* Left: Contextual Breadcrumb */}
         <div className="flex items-center gap-2 text-[14px]">
           <span className="text-[#666C78] font-normal">
